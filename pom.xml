@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.drowltd.dictionary</groupId>
+    <artifactId>dictionary</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0</version>
+
+    <name>Spellbook Dictionary</name>
+    <description>Spellbook Dictionary is multiplatfom dictionary with several UI</description>
+
+    <modules>
+        <module>core</module>
+        <module>desktop</module>
+        <module>web</module>
+    </modules>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.drowltd.dictionary</groupId>
+                <artifactId>dictionary-core</artifactId>
+                <version>1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>1.1.117</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jgoodies</groupId>
+                <artifactId>forms</artifactId>
+                <version>1.2.1</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>
