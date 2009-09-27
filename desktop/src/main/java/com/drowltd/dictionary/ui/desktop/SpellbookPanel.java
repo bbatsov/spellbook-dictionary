@@ -1,17 +1,19 @@
 package com.drowltd.dictionary.ui.desktop;
 
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.CellConstraints;
 import com.drowltd.dictionary.core.db.DictDb;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
-import java.awt.event.ActionListener;
+import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.util.List;
+import java.util.prefs.Preferences;
 
 /**
  * User: bozhidar
@@ -31,6 +33,17 @@ public class SpellbookPanel {
     private List<String> words;
 
     public SpellbookPanel() {
+        Preferences prefs = Preferences.userNodeForPackage(this.getClass());
+
+        while (true) {
+            if (verifyDbPresence(prefs)) {
+                System.out.println("true");
+                break;
+            }
+        }
+
+        DictDb.init(prefs.get("PATH_TO_DB", ""));
+
         dictDb = DictDb.getInstance();
 
         words = dictDb.getWordsFromSelectedDictionary();
@@ -88,6 +101,32 @@ public class SpellbookPanel {
                 }
             }
         });
+    }
+
+    private boolean verifyDbPresence(Preferences prefs) {
+        final String dbPath = prefs.get("PATH_TO_DB", "");
+
+        File file = new File(dbPath);
+
+        if (!file.exists()) {
+            JFileChooser fileChooser = new JFileChooser();
+            final int result = fileChooser.showDialog(topPanel, "Select dictionary database");
+
+            if (result == JFileChooser.APPROVE_OPTION) {
+                String selectedDbPath = fileChooser.getSelectedFile().getPath();
+
+                if (selectedDbPath.endsWith("dictionary.data.db")) {
+                    prefs.put("PATH_TO_DB", selectedDbPath);
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public JComponent getComponent() {

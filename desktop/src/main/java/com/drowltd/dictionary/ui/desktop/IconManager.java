@@ -12,25 +12,27 @@ public class IconManager {
         String iconPath = "/icons/";
 
         switch (iconSize) {
-            case SIZE16: iconPath += "16x16/";
+            case SIZE16:
+                iconPath += "16x16/";
                 break;
-            case SIZE24: iconPath += "24x24/";
+            case SIZE24:
+                iconPath += "24x24/";
                 break;
-            case SIZE32: iconPath += "32x32/";
+            case SIZE32:
+                iconPath += "32x32/";
                 break;
-            case SIZE48: iconPath += "48x48/";
+            case SIZE48:
+                iconPath += "48x48/";
                 break;
         }
 
         iconPath += filename;
 
-        System.out.println(iconPath);
-
         return new ImageIcon(IconManager.class.getResource(iconPath));
     }
 
     public static ImageIcon getMenuIcon(String filename) {
-       return getImageIcon(filename, IconSize.SIZE16); 
+        return getImageIcon(filename, IconSize.SIZE16);
     }
 
     public static enum IconSize {
