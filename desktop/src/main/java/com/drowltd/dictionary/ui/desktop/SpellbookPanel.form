@@ -60,7 +60,7 @@
           <forms/>
         </constraints>
         <properties>
-          <text value="Clear"/>
+          <text resource-bundle="i18n/DesktopUI" key="ClearButton(Label)"/>
         </properties>
       </component>
       <component id="25936" class="javax.swing.JLabel" binding="statusBar">
@@ -78,7 +78,7 @@
           <forms defaultalign-horz="false"/>
         </constraints>
         <properties>
-          <text value="Fueled by Drow Ltd."/>
+          <text resource-bundle="i18n/DesktopUI" key="FuelledBy(Label)"/>
         </properties>
       </component>
     </children>

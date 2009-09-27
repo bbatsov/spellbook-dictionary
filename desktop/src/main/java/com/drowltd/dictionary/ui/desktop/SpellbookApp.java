@@ -53,13 +53,12 @@ public class SpellbookApp extends JFrame {
         //Create the menu bar.
         menuBar = new JMenuBar();
 
-        //Build the first menu.
+        //Build the file menu.
         menu = new JMenu(TRANSLATOR.translate("File(Menu)"));
         menu.setMnemonic(KeyEvent.VK_F);
         menu.getAccessibleContext().setAccessibleDescription("File menu");
         menuBar.add(menu);
 
-        //a group of JMenuItems
         menuItem = new JMenuItem(TRANSLATOR.translate("FileExit(MenuItem)"), KeyEvent.VK_X);
         menuItem.setIcon(IconManager.getMenuIcon("exit.png"));
         menuItem.getAccessibleContext().setAccessibleDescription("Exit Spellbook Dict");
@@ -67,6 +66,23 @@ public class SpellbookApp extends JFrame {
         menuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 System.exit(0);
+            }
+        });
+
+        menu.add(menuItem);
+
+        //Build the edit menu
+        menu = new JMenu(TRANSLATOR.translate("Edit(Menu)"));
+        menu.setMnemonic(KeyEvent.VK_E);
+        menu.getAccessibleContext().setAccessibleDescription("Edit menu");
+        menuBar.add(menu);
+
+        menuItem = new JMenuItem(TRANSLATOR.translate("EditPreferences(MenuItem)"), KeyEvent.VK_P);
+        menuItem.getAccessibleContext().setAccessibleDescription("Edit Spellbook Dict preferences");
+
+        menuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                //TODO
             }
         });
 
