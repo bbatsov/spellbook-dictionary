@@ -1,7 +1,7 @@
 package com.drowltd.dictionary.core.i18n;
 
-import java.util.ResourceBundle;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * User: bozhidar
@@ -20,8 +20,6 @@ public class Translator {
     }
 
     public String translate(String resourceKey) {
-        System.out.println(resourceBundle.getLocale().getLanguage());
-        System.out.println(resourceBundle.getString(resourceKey));
         return resourceBundle.getString(resourceKey);
     }
 }

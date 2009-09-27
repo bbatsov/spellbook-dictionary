@@ -1,9 +1,8 @@
 package com.drowltd.dictionary.core.db;
 
-import java.net.URL;
-import java.util.List;
-import java.util.ArrayList;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: bozhidar
@@ -11,20 +10,16 @@ import java.sql.*;
  * Time: 4:43:46 PM
  */
 public class DictDb {
-    private static final String DICT_DB_FILE = "/db/dictionary.data.db";
-
     private static DictDb instance;
 
     private Connection connection;
 
     private String selectedDictionary;
 
-    private DictDb() {
-        URL db_url = this.getClass().getResource(DICT_DB_FILE);
+    private DictDb(String dictDbFile) {
+        System.out.println("db_url " + dictDbFile.replace(".data.db", ""));
 
-        System.out.println("db_url " + db_url.getPath().replace(".data.db", ""));
-
-        String url = "jdbc:h2:" + db_url.getPath().replace(".data.db", "");
+        String url = "jdbc:h2:" + dictDbFile.replace(".data.db", "");
         String user = "bozhidar";
         String password = "bozhidar";
 
@@ -37,11 +32,11 @@ public class DictDb {
         }
     }
 
-    public static DictDb getInstance() {
-        if (instance == null) {
-            instance = new DictDb();
-        }
+    public static void init(String dictDbFile) {
+        instance = new DictDb(dictDbFile);
+    }
 
+    public static DictDb getInstance() {
         return instance;
     }
 

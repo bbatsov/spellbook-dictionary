@@ -22,7 +22,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.drowltd.dictionary.ui.desktop.SpellbookAppFrame</mainClass>
+                            <mainClass>com.drowltd.dictionary.ui.desktop.SpellbookApp</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
