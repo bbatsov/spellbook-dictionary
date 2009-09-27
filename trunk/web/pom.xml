@@ -9,10 +9,11 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.drowltd.dictionary</groupId>
-    <artifactId>web</artifactId>
+    <artifactId>dictionary-web</artifactId>
     <version>1.0</version>
 
     <name>Spellbook Dictionary Web</name>
+    <description>A web version of Spellbook implemented with GWT</description>
 
     <dependencies>
         <dependency>

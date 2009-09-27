@@ -27,20 +27,20 @@
     <children>
       <component id="dcf2" class="javax.swing.JLabel">
         <constraints>
-          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-          <forms/>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-horz="false"/>
         </constraints>
         <properties>
-          <text value="Word"/>
+          <text resource-bundle="i18n/DesktopUI" key="Word(Label)"/>
         </properties>
       </component>
       <component id="eb6cd" class="javax.swing.JLabel">
         <constraints>
-          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-          <forms/>
+          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-horz="false"/>
         </constraints>
         <properties>
-          <text value="Translation"/>
+          <text resource-bundle="i18n/DesktopUI" key="Guess(Label)"/>
         </properties>
       </component>
       <component id="99810" class="javax.swing.JLabel" binding="currentWordLabel">
@@ -67,7 +67,7 @@
           <forms/>
         </constraints>
         <properties>
-          <text value="Answer"/>
+          <text resource-bundle="i18n/DesktopUI" key="Answer(Label)"/>
         </properties>
       </component>
       <component id="e18b8" class="javax.swing.JLabel" binding="scoreLabel">
@@ -76,7 +76,7 @@
           <forms/>
         </constraints>
         <properties>
-          <text value="Score:"/>
+          <text resource-bundle="i18n/DesktopUI" key="Score(Label)"/>
         </properties>
       </component>
       <component id="55ca1" class="javax.swing.JButton" binding="skipButton" default-binding="true">
@@ -85,7 +85,7 @@
           <forms/>
         </constraints>
         <properties>
-          <text value="Skip"/>
+          <text resource-bundle="i18n/DesktopUI" key="Skip(Label)"/>
         </properties>
       </component>
       <scrollpane id="d0961">
@@ -104,11 +104,11 @@
       </scrollpane>
       <component id="84b4d" class="javax.swing.JLabel">
         <constraints>
-          <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-          <forms/>
+          <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-horz="false"/>
         </constraints>
         <properties>
-          <text value="Translation"/>
+          <text resource-bundle="i18n/DesktopUI" key="Translation(Label)"/>
         </properties>
       </component>
       <component id="878a1" class="javax.swing.JLabel" binding="statusLabel">
@@ -117,7 +117,7 @@
           <forms/>
         </constraints>
         <properties>
-          <text value="No test in progress"/>
+          <text resource-bundle="i18n/DesktopUI" key="NoTest(Label)"/>
         </properties>
       </component>
       <component id="7b5d4" class="javax.swing.JLabel" binding="feedbackLabel">
@@ -126,7 +126,7 @@
           <forms/>
         </constraints>
         <properties>
-          <text value="Press &quot;Answer&quot; or &quot;Skip&quot; to begin"/>
+          <text resource-bundle="i18n/DesktopUI" key="BeginExam(Label)"/>
         </properties>
       </component>
     </children>
