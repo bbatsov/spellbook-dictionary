@@ -7,6 +7,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -37,7 +38,6 @@ public class SpellbookPanel {
 
         while (true) {
             if (verifyDbPresence(prefs)) {
-                System.out.println("true");
                 break;
             }
         }
@@ -101,6 +101,17 @@ public class SpellbookPanel {
                 }
             }
         });
+
+
+        setOsSpecificSettings();
+    }
+
+    private void setOsSpecificSettings() {
+        String osName = System.getProperty("os.name");
+
+        if (osName.contains("Windows")) {
+            wordTranslationTextArea.setFont(new Font("Arial", Font.PLAIN, 12));
+        }
     }
 
     private boolean verifyDbPresence(Preferences prefs) {
@@ -109,6 +120,17 @@ public class SpellbookPanel {
         File file = new File(dbPath);
 
         if (!file.exists()) {
+            if (dbPath.isEmpty()) {
+                JOptionPane.showMessageDialog(topPanel, "It seems you are running Spellbook " +
+                        "for the first time. Please, select" +
+                        "the file containing Spellbooks word database");
+            } else {
+                JOptionPane.showMessageDialog(topPanel, "Spellbook cannot find its word database - " +
+                        "it probably was moved or deleted. Please, select" +
+                        "the file containing Spellbooks word database");
+            }
+
+
             JFileChooser fileChooser = new JFileChooser();
             final int result = fileChooser.showDialog(topPanel, "Select dictionary database");
 
