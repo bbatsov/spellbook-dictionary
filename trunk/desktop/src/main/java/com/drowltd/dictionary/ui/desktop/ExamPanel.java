@@ -1,12 +1,12 @@
 package com.drowltd.dictionary.ui.desktop;
 
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.CellConstraints;
 import com.drowltd.dictionary.core.db.DictDb;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
 
 import javax.swing.*;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.Random;
 
@@ -17,7 +17,7 @@ import java.util.Random;
  */
 public class ExamPanel {
     private JPanel topPanel;
-    private JTextField translationField;
+    private JTextField guessField;
     private JButton answerButton;
     private JButton skipButton;
     private JTextArea translationTextArea;
@@ -42,7 +42,7 @@ public class ExamPanel {
 
         answerButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String answer = translationField.getText();
+                String answer = guessField.getText();
 
                 if (answer.length() > 0) {
                     String fullTranslation = dictDb.getTranslation(currentWordLabel.getText());
@@ -58,7 +58,7 @@ public class ExamPanel {
                     translationTextArea.setText(fullTranslation);
                 }
 
-                translationField.setText(null);
+                guessField.setText(null);
                 nextWord();
             }
         });
@@ -118,8 +118,8 @@ public class ExamPanel {
         currentWordLabel = new JLabel();
         currentWordLabel.setText("Label");
         topPanel.add(currentWordLabel, cc.xy(3, 1));
-        translationField = new JTextField();
-        topPanel.add(translationField, cc.xy(3, 3, CellConstraints.FILL, CellConstraints.DEFAULT));
+        guessField = new JTextField();
+        topPanel.add(guessField, cc.xy(3, 3, CellConstraints.FILL, CellConstraints.DEFAULT));
         answerButton = new JButton();
         answerButton.setText("Answer");
         topPanel.add(answerButton, cc.xy(3, 5));

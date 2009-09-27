@@ -12,7 +12,7 @@ public class Translator {
     private ResourceBundle resourceBundle;
 
     public Translator(final String resourceBundleName) {
-        resourceBundle = ResourceBundle.getBundle("i18n/" + resourceBundleName, new Locale("bg", "BG"));
+        resourceBundle = ResourceBundle.getBundle("i18n/" + resourceBundleName, Locale.getDefault());
 
         if (resourceBundle == null) {
             throw new IllegalArgumentException("No such resource bundle - " + resourceBundleName);

@@ -50,7 +50,9 @@
         <children>
           <component id="2d2ae" class="javax.swing.JTextArea" binding="wordTranslationTextArea">
             <constraints/>
-            <properties/>
+            <properties>
+              <font/>
+            </properties>
           </component>
         </children>
       </scrollpane>
