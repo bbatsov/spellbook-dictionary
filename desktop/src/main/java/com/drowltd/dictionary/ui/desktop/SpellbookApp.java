@@ -82,7 +82,8 @@ public class SpellbookApp extends JFrame {
 
         menuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                //TODO
+                JOptionPane.showConfirmDialog(SpellbookApp.this, new PreferencesPanel().getComponent(),
+                        TRANSLATOR.translate("Preferences(Title)"), JOptionPane.OK_CANCEL_OPTION);
             }
         });
 
