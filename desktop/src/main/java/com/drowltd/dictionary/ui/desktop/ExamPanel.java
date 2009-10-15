@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.Random;
+import java.util.ResourceBundle;
 
 /**
  * User: bozhidar
@@ -109,39 +110,93 @@ public class ExamPanel {
         topPanel = new JPanel();
         topPanel.setLayout(new FormLayout("fill:87px:noGrow,left:4dlu:noGrow,fill:182px:noGrow,left:4dlu:noGrow,fill:83px:noGrow,left:4dlu:noGrow,fill:max(d;4px):grow", "center:d:noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow,center:10dlu:noGrow,top:4dlu:noGrow,center:d:grow,top:5dlu:noGrow,center:10dlu:noGrow"));
         final JLabel label1 = new JLabel();
-        label1.setText("Word");
+        this.$$$loadLabelText$$$(label1, ResourceBundle.getBundle("i18n/DesktopUI").getString("Word(Label)"));
         CellConstraints cc = new CellConstraints();
-        topPanel.add(label1, cc.xy(1, 1));
+        topPanel.add(label1, cc.xy(1, 1, CellConstraints.CENTER, CellConstraints.DEFAULT));
         final JLabel label2 = new JLabel();
-        label2.setText("Translation");
-        topPanel.add(label2, cc.xy(1, 3));
+        this.$$$loadLabelText$$$(label2, ResourceBundle.getBundle("i18n/DesktopUI").getString("Guess(Label)"));
+        topPanel.add(label2, cc.xy(1, 3, CellConstraints.CENTER, CellConstraints.DEFAULT));
         currentWordLabel = new JLabel();
         currentWordLabel.setText("Label");
         topPanel.add(currentWordLabel, cc.xy(3, 1));
         guessField = new JTextField();
         topPanel.add(guessField, cc.xy(3, 3, CellConstraints.FILL, CellConstraints.DEFAULT));
         answerButton = new JButton();
-        answerButton.setText("Answer");
+        this.$$$loadButtonText$$$(answerButton, ResourceBundle.getBundle("i18n/DesktopUI").getString("Answer(Label)"));
         topPanel.add(answerButton, cc.xy(3, 5));
         scoreLabel = new JLabel();
-        scoreLabel.setText("Score:");
+        this.$$$loadLabelText$$$(scoreLabel, ResourceBundle.getBundle("i18n/DesktopUI").getString("Score(Label)"));
         topPanel.add(scoreLabel, cc.xy(7, 5));
         skipButton = new JButton();
-        skipButton.setText("Skip");
+        this.$$$loadButtonText$$$(skipButton, ResourceBundle.getBundle("i18n/DesktopUI").getString("Skip(Label)"));
         topPanel.add(skipButton, cc.xy(5, 5));
         final JScrollPane scrollPane1 = new JScrollPane();
         topPanel.add(scrollPane1, cc.xyw(3, 9, 5, CellConstraints.FILL, CellConstraints.FILL));
         translationTextArea = new JTextArea();
         scrollPane1.setViewportView(translationTextArea);
         final JLabel label3 = new JLabel();
-        label3.setText("Translation");
-        topPanel.add(label3, cc.xy(1, 9));
+        this.$$$loadLabelText$$$(label3, ResourceBundle.getBundle("i18n/DesktopUI").getString("Translation(Label)"));
+        topPanel.add(label3, cc.xy(1, 9, CellConstraints.CENTER, CellConstraints.DEFAULT));
         statusLabel = new JLabel();
-        statusLabel.setText("No test in progress");
+        this.$$$loadLabelText$$$(statusLabel, ResourceBundle.getBundle("i18n/DesktopUI").getString("NoTest(Label)"));
         topPanel.add(statusLabel, cc.xyw(1, 11, 7));
         feedbackLabel = new JLabel();
-        feedbackLabel.setText("Press \"Answer\" or \"Skip\" to begin");
+        this.$$$loadLabelText$$$(feedbackLabel, ResourceBundle.getBundle("i18n/DesktopUI").getString("BeginExam(Label)"));
         topPanel.add(feedbackLabel, cc.xyw(3, 7, 5));
+    }
+
+    /**
+     * @noinspection ALL
+     */
+    private void $$$loadLabelText$$$(JLabel component, String text) {
+        StringBuffer result = new StringBuffer();
+        boolean haveMnemonic = false;
+        char mnemonic = '\0';
+        int mnemonicIndex = -1;
+        for (int i = 0; i < text.length(); i++) {
+            if (text.charAt(i) == '&') {
+                i++;
+                if (i == text.length()) break;
+                if (!haveMnemonic && text.charAt(i) != '&') {
+                    haveMnemonic = true;
+                    mnemonic = text.charAt(i);
+                    mnemonicIndex = result.length();
+                }
+            }
+            result.append(text.charAt(i));
+        }
+        component.setText(result.toString());
+        if (haveMnemonic) {
+            component.setDisplayedMnemonic(mnemonic);
+            component.setDisplayedMnemonicIndex(mnemonicIndex);
+        }
+    }
+
+    /**
+     * @noinspection ALL
+     */
+    private void $$$loadButtonText$$$(AbstractButton component, String text) {
+        StringBuffer result = new StringBuffer();
+        boolean haveMnemonic = false;
+        char mnemonic = '\0';
+        int mnemonicIndex = -1;
+        for (int i = 0; i < text.length(); i++) {
+            if (text.charAt(i) == '&') {
+                i++;
+                if (i == text.length()) break;
+                if (!haveMnemonic && text.charAt(i) != '&') {
+                    haveMnemonic = true;
+                    mnemonic = text.charAt(i);
+                    mnemonicIndex = result.length();
+                }
+            }
+            result.append(text.charAt(i));
+        }
+        component.setText(result.toString());
+        if (haveMnemonic) {
+            component.setMnemonic(mnemonic);
+            component.setDisplayedMnemonicIndex(mnemonicIndex);
+        }
     }
 
     /**

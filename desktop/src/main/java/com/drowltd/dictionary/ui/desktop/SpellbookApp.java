@@ -164,7 +164,7 @@ public class SpellbookApp extends JFrame {
 
         menuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(SpellbookApp.this, "Drow Ltd.");
+                JOptionPane.showMessageDialog(SpellbookApp.this, "Spellbook Dictionary by Drow Ltd.");
             }
         });
 
@@ -183,7 +183,7 @@ public class SpellbookApp extends JFrame {
         final TrayIcon trayIcon =
                 new TrayIcon(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE48).getImage());
         trayIcon.setImageAutoSize(true);
-        trayIcon.setToolTip("Drow Dictionary");
+        trayIcon.setToolTip("Spellbook Dictionary");
         final SystemTray tray = SystemTray.getSystemTray();
 
         // Create a popup menu components
