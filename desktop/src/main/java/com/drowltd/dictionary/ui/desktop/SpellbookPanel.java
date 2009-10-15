@@ -14,6 +14,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.prefs.Preferences;
 
 /**
@@ -32,6 +35,8 @@ public class SpellbookPanel {
 
     private DictDb dictDb;
     private List<String> words;
+    private ClipboardTextTransfer clipboardTextTransfer;
+    private String lastTransfer;
 
     public SpellbookPanel() {
         Preferences prefs = Preferences.userNodeForPackage(this.getClass());
@@ -104,6 +109,39 @@ public class SpellbookPanel {
 
 
         setOsSpecificSettings();
+
+        activateClipboardMonitoring();
+    }
+
+    private void activateClipboardMonitoring() {
+        clipboardTextTransfer = new ClipboardTextTransfer();
+
+        Runnable clipboardRunnable = new Runnable() {
+            public void run() {
+                String transferredText = clipboardTextTransfer.getClipboardContents();
+
+                if (lastTransfer == null) {
+                    lastTransfer = transferredText;
+                }
+
+                if (!transferredText.equalsIgnoreCase(lastTransfer)) {
+                    String searchString = transferredText.split("\\W")[0];
+                    wordSearchField.setText(searchString);
+                    wordSearchField.selectAll();
+                    lastTransfer = transferredText;
+
+                    if (words.contains(searchString)) {
+                        int index = words.indexOf(searchString);
+                        wordsList.setSelectedIndex(index);
+                        wordsList.ensureIndexIsVisible(index);
+                        wordTranslationTextArea.setText(dictDb.getTranslation(searchString));
+                    }
+                }
+            }
+        };
+
+        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+        executorService.scheduleAtFixedRate(clipboardRunnable, 0, 1, TimeUnit.SECONDS);
     }
 
     private void setOsSpecificSettings() {
