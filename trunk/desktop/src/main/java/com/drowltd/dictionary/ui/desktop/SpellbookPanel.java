@@ -14,6 +14,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -233,16 +234,71 @@ public class SpellbookPanel {
         final JScrollPane scrollPane2 = new JScrollPane();
         topPanel.add(scrollPane2, cc.xyw(3, 3, 3, CellConstraints.FILL, CellConstraints.FILL));
         wordTranslationTextArea = new JTextArea();
+        wordTranslationTextArea.setFont(new Font(wordTranslationTextArea.getFont().getName(), wordTranslationTextArea.getFont().getStyle(), wordTranslationTextArea.getFont().getSize()));
         scrollPane2.setViewportView(wordTranslationTextArea);
         clearButton = new JButton();
-        clearButton.setText("Clear");
+        this.$$$loadButtonText$$$(clearButton, ResourceBundle.getBundle("i18n/DesktopUI").getString("ClearButton(Label)"));
         topPanel.add(clearButton, cc.xy(3, 1));
         statusBar = new JLabel();
         statusBar.setText("Status");
         topPanel.add(statusBar, cc.xyw(1, 5, 5));
         drowLabel = new JLabel();
-        drowLabel.setText("Fueled by Drow Ltd.");
+        this.$$$loadLabelText$$$(drowLabel, ResourceBundle.getBundle("i18n/DesktopUI").getString("FuelledBy(Label)"));
         topPanel.add(drowLabel, cc.xy(5, 1, CellConstraints.CENTER, CellConstraints.DEFAULT));
+    }
+
+    /**
+     * @noinspection ALL
+     */
+    private void $$$loadLabelText$$$(JLabel component, String text) {
+        StringBuffer result = new StringBuffer();
+        boolean haveMnemonic = false;
+        char mnemonic = '\0';
+        int mnemonicIndex = -1;
+        for (int i = 0; i < text.length(); i++) {
+            if (text.charAt(i) == '&') {
+                i++;
+                if (i == text.length()) break;
+                if (!haveMnemonic && text.charAt(i) != '&') {
+                    haveMnemonic = true;
+                    mnemonic = text.charAt(i);
+                    mnemonicIndex = result.length();
+                }
+            }
+            result.append(text.charAt(i));
+        }
+        component.setText(result.toString());
+        if (haveMnemonic) {
+            component.setDisplayedMnemonic(mnemonic);
+            component.setDisplayedMnemonicIndex(mnemonicIndex);
+        }
+    }
+
+    /**
+     * @noinspection ALL
+     */
+    private void $$$loadButtonText$$$(AbstractButton component, String text) {
+        StringBuffer result = new StringBuffer();
+        boolean haveMnemonic = false;
+        char mnemonic = '\0';
+        int mnemonicIndex = -1;
+        for (int i = 0; i < text.length(); i++) {
+            if (text.charAt(i) == '&') {
+                i++;
+                if (i == text.length()) break;
+                if (!haveMnemonic && text.charAt(i) != '&') {
+                    haveMnemonic = true;
+                    mnemonic = text.charAt(i);
+                    mnemonicIndex = result.length();
+                }
+            }
+            result.append(text.charAt(i));
+        }
+        component.setText(result.toString());
+        if (haveMnemonic) {
+            component.setMnemonic(mnemonic);
+            component.setDisplayedMnemonicIndex(mnemonicIndex);
+        }
     }
 
     /**
