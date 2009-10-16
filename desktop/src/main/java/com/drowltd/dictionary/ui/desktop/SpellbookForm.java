@@ -25,7 +25,7 @@ import java.util.prefs.Preferences;
  * Date: Sep 5, 2009
  * Time: 12:52:27 PM
  */
-public class SpellbookPanel {
+public class SpellbookForm {
     private JTextField wordSearchField;
     private JPanel topPanel;
     private JButton clearButton;
@@ -39,7 +39,7 @@ public class SpellbookPanel {
     private ClipboardTextTransfer clipboardTextTransfer;
     private String lastTransfer;
 
-    public SpellbookPanel() {
+    public SpellbookForm() {
         Preferences prefs = Preferences.userNodeForPackage(this.getClass());
 
         while (true) {

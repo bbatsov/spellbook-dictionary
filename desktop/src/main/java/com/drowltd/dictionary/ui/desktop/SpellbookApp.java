@@ -1,12 +1,16 @@
 package com.drowltd.dictionary.ui.desktop;
 
 import com.drowltd.dictionary.core.i18n.Translator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.Locale;
+import java.util.prefs.Preferences;
 
 /**
  * User: bozhidar
@@ -14,11 +18,23 @@ import java.awt.event.KeyEvent;
  * Time: 1:26:50 PM
  */
 public class SpellbookApp extends JFrame {
-    private static final Translator TRANSLATOR = new Translator("DesktopUI");
 
-    private SpellbookPanel spellbookPanel;
+    private static final Logger LOGGER = LoggerFactory.getLogger(SpellbookApp.class);
+
+    private Translator translator;
+
+    private SpellbookForm spellbookForm;
+
+    private static Preferences preferences = Preferences.userNodeForPackage(SpellbookApp.class);
 
     public SpellbookApp() throws HeadlessException {
+        if (preferences.get("LANG", "EN").equals("BG")) {
+            Locale.setDefault(new Locale("bg", "BG"));
+            LOGGER.info("Selected locate is" + Locale.getDefault());
+        }
+
+        translator = new Translator("DesktopUI");
+
         //dynamically determine an adequate frame size
         Toolkit toolkit = Toolkit.getDefaultToolkit();
 
@@ -28,11 +44,11 @@ public class SpellbookApp extends JFrame {
         setLocationByPlatform(true);
 
         //set the frame title
-        setTitle(TRANSLATOR.translate("ApplicationName(Title)"));
+        setTitle(translator.translate("ApplicationName(Title)"));
 
         //set the content of the frame
-        spellbookPanel = new SpellbookPanel();
-        setContentPane(spellbookPanel.getComponent());
+        spellbookForm = new SpellbookForm();
+        setContentPane(spellbookForm.getComponent());
 
         //set the menu
         setJMenuBar(createmenuBar());
@@ -54,12 +70,12 @@ public class SpellbookApp extends JFrame {
         menuBar = new JMenuBar();
 
         //Build the file menu.
-        menu = new JMenu(TRANSLATOR.translate("File(Menu)"));
+        menu = new JMenu(translator.translate("File(Menu)"));
         menu.setMnemonic(KeyEvent.VK_F);
         menu.getAccessibleContext().setAccessibleDescription("File menu");
         menuBar.add(menu);
 
-        menuItem = new JMenuItem(TRANSLATOR.translate("FileExit(MenuItem)"), KeyEvent.VK_X);
+        menuItem = new JMenuItem(translator.translate("FileExit(MenuItem)"), KeyEvent.VK_X);
         menuItem.setIcon(IconManager.getMenuIcon("exit.png"));
         menuItem.getAccessibleContext().setAccessibleDescription("Exit Spellbook Dict");
 
@@ -72,47 +88,53 @@ public class SpellbookApp extends JFrame {
         menu.add(menuItem);
 
         //Build the edit menu
-        menu = new JMenu(TRANSLATOR.translate("Edit(Menu)"));
+        menu = new JMenu(translator.translate("Edit(Menu)"));
         menu.setMnemonic(KeyEvent.VK_E);
         menu.getAccessibleContext().setAccessibleDescription("Edit menu");
         menuBar.add(menu);
 
-        menuItem = new JMenuItem(TRANSLATOR.translate("EditPreferences(MenuItem)"), KeyEvent.VK_P);
+        menuItem = new JMenuItem(translator.translate("EditPreferences(MenuItem)"), KeyEvent.VK_P);
         menuItem.getAccessibleContext().setAccessibleDescription("Edit Spellbook Dict preferences");
 
         menuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showConfirmDialog(SpellbookApp.this, new PreferencesPanel().getComponent(),
-                        TRANSLATOR.translate("Preferences(Title)"), JOptionPane.OK_CANCEL_OPTION);
+                PreferencesForm preferencesForm = new PreferencesForm();
+
+                int response = JOptionPane.showConfirmDialog(SpellbookApp.this, preferencesForm.getComponent(),
+                        translator.translate("Preferences(Title)"), JOptionPane.OK_CANCEL_OPTION);
+
+                if (response == JOptionPane.OK_OPTION) {
+                    preferences.put("LANG", preferencesForm.getSelectedLanguage().toString());
+                }
             }
         });
 
         menu.add(menuItem);
 
         //Build dictionaries menu
-        menu = new JMenu(TRANSLATOR.translate("Dictionaries(Menu)"));
+        menu = new JMenu(translator.translate("Dictionaries(Menu)"));
         menu.setMnemonic(KeyEvent.VK_D);
         menu.getAccessibleContext().setAccessibleDescription("Select the active dictionary");
         menuBar.add(menu);
 
         ButtonGroup group = new ButtonGroup();
-        rbMenuItem = new JRadioButtonMenuItem(TRANSLATOR.translate("DictionariesEnBg(MenuItem)"));
+        rbMenuItem = new JRadioButtonMenuItem(translator.translate("DictionariesEnBg(MenuItem)"));
         rbMenuItem.setSelected(true);
 
         rbMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                spellbookPanel.selectDictionary("en_bg");
+                spellbookForm.selectDictionary("en_bg");
             }
         });
 
         group.add(rbMenuItem);
         menu.add(rbMenuItem);
 
-        rbMenuItem = new JRadioButtonMenuItem(TRANSLATOR.translate("DictionariesBgEn(MenuItem)"));
+        rbMenuItem = new JRadioButtonMenuItem(translator.translate("DictionariesBgEn(MenuItem)"));
 
         rbMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                spellbookPanel.selectDictionary("bg_en");
+                spellbookForm.selectDictionary("bg_en");
             }
         });
 
@@ -120,13 +142,13 @@ public class SpellbookApp extends JFrame {
         menu.add(rbMenuItem);
 
         //Build exam menu
-        menu = new JMenu(TRANSLATOR.translate("Exams(Menu)"));
+        menu = new JMenu(translator.translate("Exams(Menu)"));
         menu.setMnemonic(KeyEvent.VK_E);
         menu.getAccessibleContext().setAccessibleDescription("Select the active dictionary");
         menuBar.add(menu);
 
         group = new ButtonGroup();
-        rbMenuItem = new JRadioButtonMenuItem(TRANSLATOR.translate("ExamsEnBg(MenuItem)"));
+        rbMenuItem = new JRadioButtonMenuItem(translator.translate("ExamsEnBg(MenuItem)"));
         rbMenuItem.setActionCommand("en_bg");
         rbMenuItem.setSelected(true);
 
@@ -141,7 +163,7 @@ public class SpellbookApp extends JFrame {
         group.add(rbMenuItem);
         menu.add(rbMenuItem);
 
-        rbMenuItem = new JRadioButtonMenuItem(TRANSLATOR.translate("ExamsBgEn(MenuItem)"));
+        rbMenuItem = new JRadioButtonMenuItem(translator.translate("ExamsBgEn(MenuItem)"));
 
         rbMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -155,11 +177,11 @@ public class SpellbookApp extends JFrame {
         menu.add(rbMenuItem);
 
         //help menu
-        menu = new JMenu(TRANSLATOR.translate("Help(Menu)"));
+        menu = new JMenu(translator.translate("Help(Menu)"));
         menu.setMnemonic(KeyEvent.VK_H);
         menuBar.add(menu);
 
-        menuItem = new JMenuItem(TRANSLATOR.translate("HelpAbout(MenuItem)"), KeyEvent.VK_A);
+        menuItem = new JMenuItem(translator.translate("HelpAbout(MenuItem)"), KeyEvent.VK_A);
         menuItem.setIcon(IconManager.getMenuIcon("about.png"));
         menuItem.getAccessibleContext().setAccessibleDescription("About Spellbook Dict");
 
