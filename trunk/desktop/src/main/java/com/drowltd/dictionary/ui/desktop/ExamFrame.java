@@ -26,6 +26,6 @@ public class ExamFrame extends JFrame {
         setTitle(TRANSLATOR.translate("Exam(Title)"));
 
         setIconImage(IconManager.getImageIcon("teacher.png", IconManager.IconSize.SIZE48).getImage());
-        setContentPane(new ExamPanel().getComponent());
+        setContentPane(new ExamForm().getComponent());
     }
 }

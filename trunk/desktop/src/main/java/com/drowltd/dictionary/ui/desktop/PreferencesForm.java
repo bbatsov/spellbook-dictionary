@@ -14,40 +14,40 @@ import java.util.prefs.Preferences;
  * Date: Oct 16, 2009
  * Time: 12:50:28 AM
  */
-public class PreferencesPanel {
+public class PreferencesForm {
     private JPanel topPanel;
-    private JCheckBox minimizeToTray;
+    private JCheckBox minimizeToTrayCheckBox;
     private JComboBox languageBox;
+    private JCheckBox checkBox1;
 
     private SupportedLanguages selectedLanguage;
 
-    public PreferencesPanel() {
+    public PreferencesForm() {
         String[] languages = {"English", "Bulgarian"};
 
         languageBox.setModel(new DefaultComboBoxModel(languages));
 
         Preferences preferences = Preferences.userNodeForPackage(SpellbookApp.class);
-        languageBox.setSelectedItem(preferences.get("LANG", "English"));
 
-        minimizeToTray.setSelected(!"false".equals(preferences.get("MIN_TO_TRAY", "false")));
+        selectedLanguage = SupportedLanguages.valueOf(preferences.get("LANG", "EN"));
 
+        languageBox.setSelectedItem(selectedLanguage == SupportedLanguages.EN ? "English" : "Bulgarian");
+
+        minimizeToTrayCheckBox.setSelected(!"false".equals(preferences.get("MIN_TO_TRAY", "false")));
 
         languageBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (languageBox.getSelectedIndex() == 0) {
                     selectedLanguage = SupportedLanguages.EN;
-                    System.out.println("EN");
                 } else {
                     selectedLanguage = SupportedLanguages.BG;
                 }
             }
         });
+    }
 
-        minimizeToTray.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-        });
+    public SupportedLanguages getSelectedLanguage() {
+        return selectedLanguage;
     }
 
     public JComponent getComponent() {
@@ -70,7 +70,7 @@ public class PreferencesPanel {
      */
     private void $$$setupUI$$$() {
         topPanel = new JPanel();
-        topPanel.setLayout(new FormLayout("fill:107px:noGrow,left:4dlu:noGrow,fill:149px:noGrow", "center:d:noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow"));
+        topPanel.setLayout(new FormLayout("fill:175px:noGrow,left:4dlu:noGrow,fill:149px:noGrow", "center:d:noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow"));
         final JLabel label1 = new JLabel();
         this.$$$loadLabelText$$$(label1, ResourceBundle.getBundle("i18n/DesktopUI").getString("Language(Label)"));
         CellConstraints cc = new CellConstraints();
@@ -78,11 +78,17 @@ public class PreferencesPanel {
         final JLabel label2 = new JLabel();
         this.$$$loadLabelText$$$(label2, ResourceBundle.getBundle("i18n/DesktopUI").getString("MinimizeToTray(Label)"));
         topPanel.add(label2, cc.xy(1, 3));
-        minimizeToTray = new JCheckBox();
-        minimizeToTray.setText("");
-        topPanel.add(minimizeToTray, cc.xy(3, 3, CellConstraints.CENTER, CellConstraints.DEFAULT));
+        minimizeToTrayCheckBox = new JCheckBox();
+        minimizeToTrayCheckBox.setText("");
+        topPanel.add(minimizeToTrayCheckBox, cc.xy(3, 3, CellConstraints.CENTER, CellConstraints.DEFAULT));
         languageBox = new JComboBox();
         topPanel.add(languageBox, cc.xy(3, 1));
+        final JLabel label3 = new JLabel();
+        this.$$$loadLabelText$$$(label3, ResourceBundle.getBundle("i18n/DesktopUI").getString("ClipboardIntegration(Label)"));
+        topPanel.add(label3, cc.xy(1, 5));
+        checkBox1 = new JCheckBox();
+        checkBox1.setText("");
+        topPanel.add(checkBox1, cc.xy(3, 5, CellConstraints.CENTER, CellConstraints.DEFAULT));
         label1.setLabelFor(languageBox);
     }
 

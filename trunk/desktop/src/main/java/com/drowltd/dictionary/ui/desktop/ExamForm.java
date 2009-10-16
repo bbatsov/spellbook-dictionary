@@ -16,7 +16,7 @@ import java.util.ResourceBundle;
  * Date: Sep 6, 2009
  * Time: 9:23:13 PM
  */
-public class ExamPanel {
+public class ExamForm {
     private JPanel topPanel;
     private JTextField guessField;
     private JButton answerButton;
@@ -35,7 +35,7 @@ public class ExamPanel {
     List<String> words;
     DictDb dictDb = DictDb.getInstance();
 
-    public ExamPanel() {
+    public ExamForm() {
         updateScore();
 
         words = dictDb.getWordsFromSelectedDictionary();
