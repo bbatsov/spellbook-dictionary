@@ -18,7 +18,8 @@ public class PreferencesForm {
     private JPanel topPanel;
     private JCheckBox minimizeToTrayCheckBox;
     private JComboBox languageBox;
-    private JCheckBox checkBox1;
+    private JCheckBox clipboardIntegrationCheckBox;
+    private JCheckBox minimizeToTrayOnCloseCheckBox;
 
     private SupportedLanguages selectedLanguage;
 
@@ -31,9 +32,14 @@ public class PreferencesForm {
 
         selectedLanguage = SupportedLanguages.valueOf(preferences.get("LANG", "EN"));
 
+        // set the selected values from preferences
         languageBox.setSelectedItem(selectedLanguage == SupportedLanguages.EN ? "English" : "Bulgarian");
 
-        minimizeToTrayCheckBox.setSelected(!"false".equals(preferences.get("MIN_TO_TRAY", "false")));
+        minimizeToTrayCheckBox.setSelected(preferences.getBoolean("MIN_TO_TRAY", false));
+
+        minimizeToTrayOnCloseCheckBox.setSelected(preferences.getBoolean("CLOSE_TO_TRAY", false));
+
+        clipboardIntegrationCheckBox.setSelected(preferences.getBoolean("CLIPBOARD_INTEGRATION", false));
 
         languageBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -48,6 +54,18 @@ public class PreferencesForm {
 
     public SupportedLanguages getSelectedLanguage() {
         return selectedLanguage;
+    }
+
+    public boolean isMinimizeToTrayEnabled() {
+        return minimizeToTrayCheckBox.isSelected();
+    }
+
+    public boolean isClipboardIntegrationEnabled() {
+        return clipboardIntegrationCheckBox.isSelected();
+    }
+
+    public boolean isMinimizeToTrayOnCloseEnabled() {
+        return minimizeToTrayOnCloseCheckBox.isSelected();
     }
 
     public JComponent getComponent() {
@@ -70,7 +88,7 @@ public class PreferencesForm {
      */
     private void $$$setupUI$$$() {
         topPanel = new JPanel();
-        topPanel.setLayout(new FormLayout("fill:175px:noGrow,left:4dlu:noGrow,fill:149px:noGrow", "center:d:noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow"));
+        topPanel.setLayout(new FormLayout("fill:100dlu:noGrow,left:4dlu:noGrow,fill:80dlu:noGrow", "center:20dlu:noGrow,top:4dlu:noGrow,center:20dlu:noGrow,top:4dlu:noGrow,center:20dlu:noGrow,top:4dlu:noGrow,center:20dlu:noGrow"));
         final JLabel label1 = new JLabel();
         this.$$$loadLabelText$$$(label1, ResourceBundle.getBundle("i18n/DesktopUI").getString("Language(Label)"));
         CellConstraints cc = new CellConstraints();
@@ -86,9 +104,15 @@ public class PreferencesForm {
         final JLabel label3 = new JLabel();
         this.$$$loadLabelText$$$(label3, ResourceBundle.getBundle("i18n/DesktopUI").getString("ClipboardIntegration(Label)"));
         topPanel.add(label3, cc.xy(1, 5));
-        checkBox1 = new JCheckBox();
-        checkBox1.setText("");
-        topPanel.add(checkBox1, cc.xy(3, 5, CellConstraints.CENTER, CellConstraints.DEFAULT));
+        clipboardIntegrationCheckBox = new JCheckBox();
+        clipboardIntegrationCheckBox.setText("");
+        topPanel.add(clipboardIntegrationCheckBox, cc.xy(3, 5, CellConstraints.CENTER, CellConstraints.DEFAULT));
+        final JLabel label4 = new JLabel();
+        this.$$$loadLabelText$$$(label4, ResourceBundle.getBundle("i18n/DesktopUI").getString("CloseToTray(Label)"));
+        topPanel.add(label4, cc.xy(1, 7));
+        minimizeToTrayOnCloseCheckBox = new JCheckBox();
+        minimizeToTrayOnCloseCheckBox.setText("");
+        topPanel.add(minimizeToTrayOnCloseCheckBox, cc.xy(3, 7, CellConstraints.CENTER, CellConstraints.DEFAULT));
         label1.setLabelFor(languageBox);
     }
 

@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.drowltd.dictionary.ui.desktop.PreferencesForm">
   <grid id="27dc6" binding="topPanel" layout-manager="FormLayout">
-    <rowspec value="center:d:noGrow"/>
+    <rowspec value="center:20dlu:noGrow"/>
     <rowspec value="top:4dlu:noGrow"/>
-    <rowspec value="center:max(d;4px):noGrow"/>
+    <rowspec value="center:20dlu:noGrow"/>
     <rowspec value="top:4dlu:noGrow"/>
-    <rowspec value="center:max(d;4px):noGrow"/>
-    <colspec value="fill:175px:noGrow"/>
+    <rowspec value="center:20dlu:noGrow"/>
+    <rowspec value="top:4dlu:noGrow"/>
+    <rowspec value="center:20dlu:noGrow"/>
+    <colspec value="fill:100dlu:noGrow"/>
     <colspec value="left:4dlu:noGrow"/>
-    <colspec value="fill:149px:noGrow"/>
+    <colspec value="fill:80dlu:noGrow"/>
     <constraints>
       <xy x="20" y="20" width="500" height="400"/>
     </constraints>
@@ -59,9 +61,27 @@
           <text resource-bundle="i18n/DesktopUI" key="ClipboardIntegration(Label)"/>
         </properties>
       </component>
-      <component id="931cc" class="javax.swing.JCheckBox" binding="checkBox1" default-binding="true">
+      <component id="931cc" class="javax.swing.JCheckBox" binding="clipboardIntegrationCheckBox" default-binding="true">
         <constraints>
           <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-horz="false"/>
+        </constraints>
+        <properties>
+          <text value=""/>
+        </properties>
+      </component>
+      <component id="c5ba9" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <text resource-bundle="i18n/DesktopUI" key="CloseToTray(Label)"/>
+        </properties>
+      </component>
+      <component id="4f9cd" class="javax.swing.JCheckBox" binding="minimizeToTrayOnCloseCheckBox" default-binding="true">
+        <constraints>
+          <grid row="6" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
           <forms defaultalign-horz="false"/>
         </constraints>
         <properties>

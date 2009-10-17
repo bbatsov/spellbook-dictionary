@@ -23,7 +23,6 @@ public class ExamForm {
     private JButton skipButton;
     private JTextArea translationTextArea;
     private JLabel currentWordLabel;
-    private JLabel scoreLabel;
     private JLabel statusLabel;
     private JLabel feedbackLabel;
     private JProgressBar progressBar1;
@@ -36,11 +35,14 @@ public class ExamForm {
     DictDb dictDb = DictDb.getInstance();
 
     public ExamForm() {
-        updateScore();
+        progressBar1.setMinimum(0);
+        progressBar1.setMaximum(10);
+        progressBar1.setValue(0);
+        progressBar1.setStringPainted(true);
 
         words = dictDb.getWordsFromSelectedDictionary();
 
-        nextWord();
+        getRandomWord();
 
         answerButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -50,43 +52,42 @@ public class ExamForm {
                     String fullTranslation = dictDb.getTranslation(currentWordLabel.getText());
 
                     if (fullTranslation.contains(answer)) {
-                        updateScore();
                         feedbackLabel.setText("Your guess was correct.");
+                        getRandomWord();
                     } else {
-                        nextWord();
                         feedbackLabel.setText("Your guess was incorrect");
+                        getRandomWord();
                     }
 
-                    translationTextArea.setText(fullTranslation);
-                }
+                    currentWordNumber++;
+                    updateScore();
 
-                guessField.setText(null);
-                nextWord();
+                    translationTextArea.setText(fullTranslation);
+                    guessField.setText(null);
+                } else {
+                    JOptionPane.showMessageDialog(topPanel, "Please, enter a guess");
+                }
             }
         });
 
         skipButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 translationTextArea.setText(dictDb.getTranslation(currentWordLabel.getText()));
-                nextWord();
                 feedbackLabel.setText("You skipped the last word");
+                getRandomWord();
+                currentWordNumber++;
+                updateScore();
             }
         });
     }
 
     private void updateScore() {
-        scoreLabel.setText("Score: " + wordsGuessed++ + "/" + maxWords);
+        progressBar1.setValue(currentWordNumber);
+        progressBar1.setString(wordsGuessed + "/" + maxWords);
     }
 
-    private void nextWord() {
-        if (currentWordNumber <= maxWords) {
-            currentWordLabel.setText(words.get(new Random().nextInt(words.size())));
-            statusLabel.setText(maxWords + 1 - currentWordNumber + " words remaining");
-            currentWordNumber++;
-        } else {
-            JOptionPane.showMessageDialog(this.getComponent(), "Test completed");
-            statusLabel.setText("Test completed");
-        }
+    private void getRandomWord() {
+        currentWordLabel.setText(words.get(new Random().nextInt(words.size())));
     }
 
     public JComponent getComponent() {
@@ -109,43 +110,40 @@ public class ExamForm {
      */
     private void $$$setupUI$$$() {
         topPanel = new JPanel();
-        topPanel.setLayout(new FormLayout("fill:87px:noGrow,left:4dlu:noGrow,fill:182px:noGrow,left:4dlu:noGrow,fill:83px:noGrow,left:4dlu:noGrow,fill:max(d;4px):grow", "center:18px:noGrow,top:4dlu:noGrow,center:d:noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow,center:10dlu:noGrow,top:4dlu:noGrow,center:d:grow,top:5dlu:noGrow,center:10dlu:noGrow"));
+        topPanel.setLayout(new FormLayout("fill:60dlu:noGrow,left:4dlu:noGrow,fill:100dlu:noGrow,left:4dlu:noGrow,fill:60dlu:noGrow,left:4dlu:noGrow,fill:60dlu:noGrow,left:5dlu:noGrow,fill:max(d;4px):grow", "center:20dlu:noGrow,top:4dlu:noGrow,center:20dlu:noGrow,top:4dlu:noGrow,center:20dlu:noGrow,top:4dlu:noGrow,center:10dlu:noGrow,top:4dlu:noGrow,center:d:grow,top:5dlu:noGrow,center:10dlu:noGrow"));
         final JLabel label1 = new JLabel();
         this.$$$loadLabelText$$$(label1, ResourceBundle.getBundle("i18n/DesktopUI").getString("Word(Label)"));
         CellConstraints cc = new CellConstraints();
-        topPanel.add(label1, cc.xy(1, 3, CellConstraints.CENTER, CellConstraints.DEFAULT));
+        topPanel.add(label1, cc.xy(1, 1, CellConstraints.CENTER, CellConstraints.DEFAULT));
         final JLabel label2 = new JLabel();
         this.$$$loadLabelText$$$(label2, ResourceBundle.getBundle("i18n/DesktopUI").getString("Guess(Label)"));
-        topPanel.add(label2, cc.xy(1, 5, CellConstraints.CENTER, CellConstraints.DEFAULT));
+        topPanel.add(label2, cc.xy(1, 3, CellConstraints.CENTER, CellConstraints.DEFAULT));
         currentWordLabel = new JLabel();
         currentWordLabel.setText("Label");
-        topPanel.add(currentWordLabel, cc.xy(3, 3));
+        topPanel.add(currentWordLabel, cc.xy(3, 1));
         guessField = new JTextField();
-        topPanel.add(guessField, cc.xy(3, 5, CellConstraints.FILL, CellConstraints.DEFAULT));
-        answerButton = new JButton();
-        this.$$$loadButtonText$$$(answerButton, ResourceBundle.getBundle("i18n/DesktopUI").getString("Answer(Label)"));
-        topPanel.add(answerButton, cc.xy(3, 7));
-        scoreLabel = new JLabel();
-        this.$$$loadLabelText$$$(scoreLabel, ResourceBundle.getBundle("i18n/DesktopUI").getString("Score(Label)"));
-        topPanel.add(scoreLabel, cc.xy(7, 7));
-        skipButton = new JButton();
-        this.$$$loadButtonText$$$(skipButton, ResourceBundle.getBundle("i18n/DesktopUI").getString("Skip(Label)"));
-        topPanel.add(skipButton, cc.xy(5, 7));
+        topPanel.add(guessField, cc.xy(3, 3, CellConstraints.FILL, CellConstraints.DEFAULT));
         final JScrollPane scrollPane1 = new JScrollPane();
-        topPanel.add(scrollPane1, cc.xyw(3, 11, 5, CellConstraints.FILL, CellConstraints.FILL));
+        topPanel.add(scrollPane1, cc.xyw(3, 9, 7, CellConstraints.FILL, CellConstraints.FILL));
         translationTextArea = new JTextArea();
         scrollPane1.setViewportView(translationTextArea);
         final JLabel label3 = new JLabel();
         this.$$$loadLabelText$$$(label3, ResourceBundle.getBundle("i18n/DesktopUI").getString("Translation(Label)"));
-        topPanel.add(label3, cc.xy(1, 11, CellConstraints.CENTER, CellConstraints.DEFAULT));
+        topPanel.add(label3, cc.xy(1, 9, CellConstraints.CENTER, CellConstraints.DEFAULT));
         statusLabel = new JLabel();
         this.$$$loadLabelText$$$(statusLabel, ResourceBundle.getBundle("i18n/DesktopUI").getString("NoTest(Label)"));
-        topPanel.add(statusLabel, cc.xyw(1, 13, 7));
+        topPanel.add(statusLabel, cc.xyw(1, 11, 7));
         feedbackLabel = new JLabel();
         this.$$$loadLabelText$$$(feedbackLabel, ResourceBundle.getBundle("i18n/DesktopUI").getString("BeginExam(Label)"));
-        topPanel.add(feedbackLabel, cc.xyw(3, 9, 5));
+        topPanel.add(feedbackLabel, cc.xyw(3, 7, 5));
+        answerButton = new JButton();
+        this.$$$loadButtonText$$$(answerButton, ResourceBundle.getBundle("i18n/DesktopUI").getString("Answer(Label)"));
+        topPanel.add(answerButton, cc.xy(5, 3));
+        skipButton = new JButton();
+        this.$$$loadButtonText$$$(skipButton, ResourceBundle.getBundle("i18n/DesktopUI").getString("Skip(Label)"));
+        topPanel.add(skipButton, cc.xy(7, 3));
         progressBar1 = new JProgressBar();
-        topPanel.add(progressBar1, cc.xyw(3, 1, 3, CellConstraints.FILL, CellConstraints.DEFAULT));
+        topPanel.add(progressBar1, cc.xyw(3, 5, 7, CellConstraints.FILL, CellConstraints.DEFAULT));
     }
 
     /**
