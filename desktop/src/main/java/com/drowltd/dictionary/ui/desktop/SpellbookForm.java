@@ -1,6 +1,7 @@
 package com.drowltd.dictionary.ui.desktop;
 
 import com.drowltd.dictionary.core.db.DictDb;
+import com.drowltd.dictionary.core.i18n.Translator;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
@@ -26,6 +27,8 @@ import java.util.prefs.Preferences;
  * Time: 12:52:27 PM
  */
 public class SpellbookForm {
+    private static final Translator TRANSLATOR = new Translator("DesktopUI");
+
     private JTextField wordSearchField;
     private JPanel topPanel;
     private JButton clearButton;
@@ -56,7 +59,7 @@ public class SpellbookForm {
 
         wordsList.setListData(words.toArray());
 
-        statusBar.setText("English-Bulgarian Dictionary containing " + words.size() + " words");
+        statusBar.setText(String.format(TRANSLATOR.translate("EnBgDictSize(Label)"), words.size()));
 
         wordsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -160,18 +163,14 @@ public class SpellbookForm {
 
         if (!file.exists()) {
             if (dbPath.isEmpty()) {
-                JOptionPane.showMessageDialog(topPanel, "It seems you are running Spellbook " +
-                        "for the first time. Please, select" +
-                        "the file containing Spellbooks word database");
+                JOptionPane.showMessageDialog(topPanel, TRANSLATOR.translate("SelectDb(Message)"));
             } else {
-                JOptionPane.showMessageDialog(topPanel, "Spellbook cannot find its word database - " +
-                        "it probably was moved or deleted. Please, select" +
-                        "the file containing Spellbooks word database");
+                JOptionPane.showMessageDialog(topPanel, TRANSLATOR.translate("MissingDb(Message)"));
             }
 
 
             JFileChooser fileChooser = new JFileChooser();
-            final int result = fileChooser.showDialog(topPanel, "Select dictionary database");
+            final int result = fileChooser.showDialog(topPanel, TRANSLATOR.translate("SelectDb(Title)"));
 
             if (result == JFileChooser.APPROVE_OPTION) {
                 String selectedDbPath = fileChooser.getSelectedFile().getPath();
@@ -201,9 +200,9 @@ public class SpellbookForm {
         wordsList.setListData(words.toArray());
 
         if (dictionary.equalsIgnoreCase("en_bg"))
-            statusBar.setText("English-Bulgarian Dictionary containing " + words.size() + " words");
+            statusBar.setText(String.format(TRANSLATOR.translate("EnBgDictSize(Label)"), words.size()));
         else
-            statusBar.setText("Bulgarian-English Dictionary containing " + words.size() + " words");
+            statusBar.setText(String.format(TRANSLATOR.translate("BgEnDictSize(Label)"), words.size()));
 
     }
 
@@ -223,7 +222,7 @@ public class SpellbookForm {
      */
     private void $$$setupUI$$$() {
         topPanel = new JPanel();
-        topPanel.setLayout(new FormLayout("fill:181px:noGrow,left:4dlu:noGrow,fill:142px:noGrow,left:5dlu:noGrow,fill:max(d;4px):grow", "center:d:noGrow,top:4dlu:noGrow,center:344px:grow,top:4dlu:noGrow,center:10dlu:noGrow"));
+        topPanel.setLayout(new FormLayout("fill:120dlu:noGrow,left:4dlu:noGrow,fill:60dlu:noGrow,left:5dlu:noGrow,fill:max(d;4px):grow", "center:20dlu:noGrow,top:4dlu:noGrow,center:344px:grow,top:4dlu:noGrow,center:10dlu:noGrow"));
         wordSearchField = new JTextField();
         CellConstraints cc = new CellConstraints();
         topPanel.add(wordSearchField, cc.xy(1, 1, CellConstraints.FILL, CellConstraints.DEFAULT));

@@ -27,4 +27,10 @@ Remaining(Label) = Остават %d думи
 CorrectAnswer(Label) = Верен отговор
 IncorrectAnswer(Label) = Неверен отговор
 NoTest(Label) = Не е започнат изпит
-BeginExam(Label) = Натиснете "Отгорови" или "Пропусни" за да започнете
+BeginExam(Label) = Натиснете "Отговори" или "Пропусни" за да започнете
+
+Preferences(Title)=Настройки
+Language(Label)=Език
+MinimizeToTray(Label)=Минимизирай в трей
+ClipboardIntegration(Label)=Включи интеграцията с клипбоарда
+CloseToTray(Label)=Минимизирай в трея при затваряне
