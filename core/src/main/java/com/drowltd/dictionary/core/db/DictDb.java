@@ -1,8 +1,14 @@
 package com.drowltd.dictionary.core.db;
 
+import com.drowltd.dictionary.core.exception.DictionaryDbLockedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: bozhidar
@@ -10,29 +16,41 @@ import java.util.List;
  * Time: 4:43:46 PM
  */
 public class DictDb {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DictDb.class);
+
     private static DictDb instance;
 
     private Connection connection;
 
     private String selectedDictionary;
 
-    private DictDb(String dictDbFile) {
-        System.out.println("db_url " + dictDbFile.replace(".data.db", ""));
+    // simple caching mechanism to avoid db operations
+    private Map<String, List<String>> dictionaryCache = new HashMap<String, List<String>>();
+
+    private DictDb(String dictDbFile) throws DictionaryDbLockedException {
+        LOGGER.info("dictionary database: " + dictDbFile.replace(".data.db", ""));
 
         String url = "jdbc:h2:" + dictDbFile.replace(".data.db", "");
         String user = "bozhidar";
         String password = "bozhidar";
 
-        selectedDictionary = "EN_BG";
+        // by default use english-bulgarian dictionary
+        selectedDictionary = "en_bg";
 
         try {
             connection = DriverManager.getConnection(url, user, password);
         } catch (SQLException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            if (e.getMessage() != null) {
+                if (e.getMessage().contains("Database may be already in use: Locked by another process.")) {
+                    throw new DictionaryDbLockedException();
+                }
+            }
+
+            e.printStackTrace();
         }
     }
 
-    public static void init(String dictDbFile) {
+    public static void init(String dictDbFile) throws DictionaryDbLockedException {
         instance = new DictDb(dictDbFile);
     }
 
@@ -41,6 +59,15 @@ public class DictDb {
     }
 
     public List<String> getWordsFromSelectedDictionary() {
+        LOGGER.info("Loading selected dictionary " + selectedDictionary);
+
+        LOGGER.info("Checking dictionary cache for " + selectedDictionary);
+
+        if (dictionaryCache.containsKey(selectedDictionary)) {
+            LOGGER.info("Dictionary " + selectedDictionary + " loaded from cache");
+            return dictionaryCache.get(selectedDictionary);
+        }
+
         final List<String> words = new ArrayList<String>();
 
         try {
@@ -53,13 +80,18 @@ public class DictDb {
                 words.add(word);
             }
         } catch (SQLException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
+
+        LOGGER.info("Caching " + selectedDictionary + " for future use");
+        dictionaryCache.put(selectedDictionary, words);
 
         return words;
     }
 
     public String getTranslation(String word) {
+        LOGGER.info("Getting translation for " + word);
+
         try {
             PreparedStatement ps = connection.prepareStatement("select translation from " + selectedDictionary + " where word='" + word.replaceAll("'", "''") + "'");
 
@@ -68,7 +100,7 @@ public class DictDb {
             resultSet.next();
             return resultSet.getString("TRANSLATION");
         } catch (SQLException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
 
         return null;
