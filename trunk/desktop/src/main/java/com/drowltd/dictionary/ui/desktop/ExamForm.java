@@ -44,6 +44,8 @@ public class ExamForm {
 
         getRandomWord();
 
+        updateStatusBar();
+
         answerButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String answer = guessField.getText();
@@ -84,6 +86,19 @@ public class ExamForm {
     private void updateScore() {
         progressBar1.setValue(currentWordNumber);
         progressBar1.setString(wordsGuessed + "/" + maxWords);
+
+        updateStatusBar();
+
+        if (currentWordNumber == maxWords + 1) {
+            answerButton.setEnabled(false);
+            skipButton.setEnabled(false);
+
+            JOptionPane.showMessageDialog(topPanel, "Exam finished");
+        }
+    }
+
+    private void updateStatusBar() {
+        statusLabel.setText((maxWords - currentWordNumber + 1) + " out of " + maxWords + " remaining");
     }
 
     private void getRandomWord() {

@@ -1,6 +1,7 @@
 package com.drowltd.dictionary.ui.desktop;
 
 import com.drowltd.dictionary.core.db.DictDb;
+import com.drowltd.dictionary.core.exception.DictionaryDbLockedException;
 import com.drowltd.dictionary.core.i18n.Translator;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -51,7 +52,12 @@ public class SpellbookForm {
             }
         }
 
-        DictDb.init(prefs.get("PATH_TO_DB", ""));
+        try {
+            DictDb.init(prefs.get("PATH_TO_DB", ""));
+        } catch (DictionaryDbLockedException e) {
+            JOptionPane.showMessageDialog(topPanel, "Another instance of Spellbook is already running");
+            System.exit(0);
+        }
 
         dictDb = DictDb.getInstance();
 
