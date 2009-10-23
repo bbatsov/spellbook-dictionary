@@ -14,6 +14,7 @@
         <module>core</module>
         <module>desktop</module>
         <module>web</module>
+        <module>utils</module>
     </modules>
 
     <build>
