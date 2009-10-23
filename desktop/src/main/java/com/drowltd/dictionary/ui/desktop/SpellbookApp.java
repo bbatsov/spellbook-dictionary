@@ -6,7 +6,13 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Locale;
 import java.util.prefs.Preferences;
 
@@ -113,6 +119,21 @@ public class SpellbookApp extends JFrame {
         menu.setMnemonic(KeyEvent.VK_E);
         menu.getAccessibleContext().setAccessibleDescription("Edit menu");
         menuBar.add(menu);
+
+        menuItem = new JMenuItem(translator.translate("EditFont(MenuItem)"));
+
+        menuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                FontChooserForm fontChooserForm = new FontChooserForm();
+
+                JOptionPane.showConfirmDialog(SpellbookApp.this, fontChooserForm.getComponent(),
+                        translator.translate("SelectFont(Title)"), JOptionPane.OK_CANCEL_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        IconManager.getImageIcon("font.png", IconManager.IconSize.SIZE48));
+            }
+        });
+
+        menu.add(menuItem);
 
         menuItem = new JMenuItem(translator.translate("EditPreferences(MenuItem)"), KeyEvent.VK_P);
         menuItem.getAccessibleContext().setAccessibleDescription("Edit Spellbook Dict preferences");
@@ -297,7 +318,6 @@ public class SpellbookApp extends JFrame {
                 }
 
                 SpellbookApp.this.setVisible(!SpellbookApp.this.isVisible());
-
             }
         });
 
@@ -307,7 +327,6 @@ public class SpellbookApp extends JFrame {
                         translator.translate("About(Message)"));
             }
         });
-
 
         exitItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {

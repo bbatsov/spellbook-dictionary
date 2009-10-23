@@ -37,6 +37,7 @@ public class SpellbookForm {
     private JTextArea wordTranslationTextArea;
     private JLabel statusBar;
     private JLabel drowLabel;
+    private JLabel matchLabel;
 
     private DictDb dictDb;
     private List<String> words;
@@ -71,10 +72,7 @@ public class SpellbookForm {
 
         clearButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                wordSearchField.setText(null);
-                wordsList.ensureIndexIsVisible(0);
-                wordsList.clearSelection();
-                wordTranslationTextArea.setText(null);
+                clear();
             }
         });
 
@@ -88,31 +86,29 @@ public class SpellbookForm {
                 } else {
                     wordTranslationTextArea.setText(dictDb.getTranslation(words.get(lastIndex)));
                 }
+
+                matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconManager.IconSize.SIZE24));
             }
         });
 
         wordSearchField.addKeyListener(new KeyAdapter() {
             @Override
-            public void keyTyped(KeyEvent e) {
-                String searchString = wordSearchField.getText() + e.getKeyChar();
-
-                if (words.contains(searchString)) {
-                    final int index = words.indexOf(searchString);
-                    wordsList.setSelectedIndex(index);
-                    wordsList.ensureIndexIsVisible(index);
-                    wordTranslationTextArea.setText(dictDb.getTranslation(searchString));
-                }
-            }
-
-            @Override
             public void keyReleased(KeyEvent e) {
                 String searchString = wordSearchField.getText();
 
+                // in case the user types backspaces
+                if (searchString.isEmpty()) {
+                    clear();
+                }
+
                 if (words.contains(searchString)) {
                     final int index = words.indexOf(searchString);
                     wordsList.setSelectedIndex(index);
                     wordsList.ensureIndexIsVisible(index);
                     wordTranslationTextArea.setText(dictDb.getTranslation(searchString));
+                    matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconManager.IconSize.SIZE24));
+                } else {
+                    matchLabel.setIcon(IconManager.getImageIcon("bell2_red.png", IconManager.IconSize.SIZE24));
                 }
             }
         });
@@ -120,6 +116,14 @@ public class SpellbookForm {
         setOsSpecificSettings();
 
         activateClipboardMonitoring();
+    }
+
+    private void clear() {
+        wordSearchField.setText(null);
+        wordsList.ensureIndexIsVisible(0);
+        wordsList.clearSelection();
+        wordTranslationTextArea.setText(null);
+        matchLabel.setIcon(IconManager.getImageIcon("bell2_red.png", IconManager.IconSize.SIZE24));
     }
 
     private void activateClipboardMonitoring() {
@@ -226,7 +230,7 @@ public class SpellbookForm {
      */
     private void $$$setupUI$$$() {
         topPanel = new JPanel();
-        topPanel.setLayout(new FormLayout("fill:120dlu:noGrow,left:4dlu:noGrow,fill:60dlu:noGrow,left:5dlu:noGrow,fill:max(d;4px):grow", "center:20dlu:noGrow,top:4dlu:noGrow,center:344px:grow,top:4dlu:noGrow,center:10dlu:noGrow"));
+        topPanel.setLayout(new FormLayout("fill:120dlu:noGrow,left:4dlu:noGrow,fill:60dlu:noGrow,left:6dlu:noGrow,fill:20dlu:noGrow,left:5dlu:noGrow,fill:max(d;4px):grow", "center:20dlu:noGrow,top:4dlu:noGrow,center:344px:grow,top:4dlu:noGrow,center:10dlu:noGrow"));
         wordSearchField = new JTextField();
         CellConstraints cc = new CellConstraints();
         topPanel.add(wordSearchField, cc.xy(1, 1, CellConstraints.FILL, CellConstraints.DEFAULT));
@@ -235,7 +239,7 @@ public class SpellbookForm {
         wordsList = new JList();
         scrollPane1.setViewportView(wordsList);
         final JScrollPane scrollPane2 = new JScrollPane();
-        topPanel.add(scrollPane2, cc.xyw(3, 3, 3, CellConstraints.FILL, CellConstraints.FILL));
+        topPanel.add(scrollPane2, cc.xyw(3, 3, 5, CellConstraints.FILL, CellConstraints.FILL));
         wordTranslationTextArea = new JTextArea();
         wordTranslationTextArea.setFont(new Font(wordTranslationTextArea.getFont().getName(), wordTranslationTextArea.getFont().getStyle(), wordTranslationTextArea.getFont().getSize()));
         scrollPane2.setViewportView(wordTranslationTextArea);
@@ -244,10 +248,14 @@ public class SpellbookForm {
         topPanel.add(clearButton, cc.xy(3, 1));
         statusBar = new JLabel();
         statusBar.setText("Status");
-        topPanel.add(statusBar, cc.xyw(1, 5, 5));
+        topPanel.add(statusBar, cc.xyw(1, 5, 7));
         drowLabel = new JLabel();
         this.$$$loadLabelText$$$(drowLabel, ResourceBundle.getBundle("i18n/DesktopUI").getString("FuelledBy(Label)"));
-        topPanel.add(drowLabel, cc.xy(5, 1, CellConstraints.CENTER, CellConstraints.DEFAULT));
+        topPanel.add(drowLabel, cc.xy(7, 1, CellConstraints.CENTER, CellConstraints.DEFAULT));
+        matchLabel = new JLabel();
+        matchLabel.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/bell2_red.png")));
+        matchLabel.setText("");
+        topPanel.add(matchLabel, cc.xy(5, 1, CellConstraints.CENTER, CellConstraints.DEFAULT));
     }
 
     /**
