@@ -117,7 +117,6 @@ public class SpellbookForm {
             }
         });
 
-
         setOsSpecificSettings();
 
         activateClipboardMonitoring();
@@ -174,7 +173,6 @@ public class SpellbookForm {
                 JOptionPane.showMessageDialog(topPanel, TRANSLATOR.translate("MissingDb(Message)"));
             }
 
-
             JFileChooser fileChooser = new JFileChooser();
             final int result = fileChooser.showDialog(topPanel, TRANSLATOR.translate("SelectDb(Title)"));
 
@@ -205,11 +203,11 @@ public class SpellbookForm {
         words = dictDb.getWordsFromSelectedDictionary();
         wordsList.setListData(words.toArray());
 
-        if (dictionary.equalsIgnoreCase("en_bg"))
+        if (dictionary.equalsIgnoreCase("en_bg")) {
             statusBar.setText(String.format(TRANSLATOR.translate("EnBgDictSize(Label)"), words.size()));
-        else
+        } else {
             statusBar.setText(String.format(TRANSLATOR.translate("BgEnDictSize(Label)"), words.size()));
-
+        }
     }
 
     {
@@ -263,7 +261,9 @@ public class SpellbookForm {
         for (int i = 0; i < text.length(); i++) {
             if (text.charAt(i) == '&') {
                 i++;
-                if (i == text.length()) break;
+                if (i == text.length()) {
+                    break;
+                }
                 if (!haveMnemonic && text.charAt(i) != '&') {
                     haveMnemonic = true;
                     mnemonic = text.charAt(i);
@@ -290,7 +290,9 @@ public class SpellbookForm {
         for (int i = 0; i < text.length(); i++) {
             if (text.charAt(i) == '&') {
                 i++;
-                if (i == text.length()) break;
+                if (i == text.length()) {
+                    break;
+                }
                 if (!haveMnemonic && text.charAt(i) != '&') {
                     haveMnemonic = true;
                     mnemonic = text.charAt(i);
