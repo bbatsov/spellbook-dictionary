@@ -95,32 +95,120 @@ public class SpellbookApp extends JFrame {
         //Create the menu bar.
         menuBar = new JMenuBar();
 
-        //Build the file menu.
-        menu = new JMenu(translator.translate("File(Menu)"));
-        menu.setMnemonic(KeyEvent.VK_F);
-        menu.getAccessibleContext().setAccessibleDescription("File menu");
-        menuBar.add(menu);
+        menuBar.add(buildFileMenu());
 
-        menuItem = new JMenuItem(translator.translate("FileExit(MenuItem)"), KeyEvent.VK_X);
-        menuItem.setIcon(IconManager.getMenuIcon("exit.png"));
-        menuItem.getAccessibleContext().setAccessibleDescription("Exit Spellbook Dict");
+        menuBar.add(buildEditMenu());
+
+        menuBar.add(buildDictionariesMenu());
+
+        menuBar.add(buildExamsMenu());
+
+        menuBar.add(buildHelpMenu());
+
+        return menuBar;
+    }
+
+    private JMenu buildHelpMenu() {
+        JMenu menu;
+        JMenuItem menuItem;//help menu
+        menu = new JMenu(translator.translate("Help(Menu)"));
+        menu.setMnemonic(KeyEvent.VK_H);
+
+        menuItem = new JMenuItem(translator.translate("HelpAbout(MenuItem)"), KeyEvent.VK_A);
+        menuItem.setIcon(IconManager.getMenuIcon("about.png"));
+        menuItem.getAccessibleContext().setAccessibleDescription("About Spellbook Dict");
 
         menuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                LOGGER.info("Exit from menu");
-                System.exit(0);
+                JOptionPane.showMessageDialog(SpellbookApp.this, translator.translate("About(Message)"), "About",
+                        JOptionPane.INFORMATION_MESSAGE, IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE48));
             }
         });
 
         menu.add(menuItem);
+        return menu;
+    }
 
-        //Build the edit menu
+    private JMenu buildExamsMenu() {
+        JMenu menu;
+        JRadioButtonMenuItem rbMenuItem;//Build exam menu
+        menu = new JMenu(translator.translate("Exams(Menu)"));
+        menu.setMnemonic(KeyEvent.VK_E);
+        menu.getAccessibleContext().setAccessibleDescription("Select the active dictionary");
+
+        ButtonGroup group = new ButtonGroup();
+        rbMenuItem = new JRadioButtonMenuItem(translator.translate("ExamsEnBg(MenuItem)"));
+        rbMenuItem.setActionCommand("en_bg");
+        rbMenuItem.setSelected(true);
+
+        rbMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JFrame examFrame = new ExamFrame();
+                examFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                examFrame.setVisible(true);
+            }
+        });
+
+        group.add(rbMenuItem);
+        menu.add(rbMenuItem);
+
+        rbMenuItem = new JRadioButtonMenuItem(translator.translate("ExamsBgEn(MenuItem)"));
+
+        rbMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JFrame examFrame = new ExamFrame();
+                examFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                examFrame.setVisible(true);
+            }
+        });
+
+        group.add(rbMenuItem);
+        menu.add(rbMenuItem);
+        return menu;
+    }
+
+    private JMenu buildDictionariesMenu() {
+        JMenu menu;
+        JRadioButtonMenuItem rbMenuItem;//Build dictionaries menu
+        menu = new JMenu(translator.translate("Dictionaries(Menu)"));
+        menu.setMnemonic(KeyEvent.VK_D);
+        menu.getAccessibleContext().setAccessibleDescription("Select the active dictionary");
+
+        ButtonGroup group = new ButtonGroup();
+        rbMenuItem = new JRadioButtonMenuItem(translator.translate("DictionariesEnBg(MenuItem)"));
+        rbMenuItem.setSelected(true);
+
+        rbMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                spellbookForm.selectDictionary("en_bg");
+            }
+        });
+
+        group.add(rbMenuItem);
+        menu.add(rbMenuItem);
+
+        rbMenuItem = new JRadioButtonMenuItem(translator.translate("DictionariesBgEn(MenuItem)"));
+
+        rbMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                spellbookForm.selectDictionary("bg_en");
+            }
+        });
+
+        group.add(rbMenuItem);
+        menu.add(rbMenuItem);
+        return menu;
+    }
+
+    private JMenu buildEditMenu() {
+        JMenu menu;
+        JMenuItem menuItem;//Build the edit menu
         menu = new JMenu(translator.translate("Edit(Menu)"));
         menu.setMnemonic(KeyEvent.VK_E);
         menu.getAccessibleContext().setAccessibleDescription("Edit menu");
-        menuBar.add(menu);
 
         menuItem = new JMenuItem(translator.translate("EditFont(MenuItem)"));
+        menuItem.setIcon(IconManager.getMenuIcon("font.png"));
 
         menuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -146,6 +234,7 @@ public class SpellbookApp extends JFrame {
         menu.add(menuItem);
 
         menuItem = new JMenuItem(translator.translate("EditPreferences(MenuItem)"), KeyEvent.VK_P);
+        menuItem.setIcon(IconManager.getMenuIcon("preferences.png"));
         menuItem.getAccessibleContext().setAccessibleDescription("Edit Spellbook Dict preferences");
 
         menuItem.addActionListener(new ActionListener() {
@@ -203,91 +292,29 @@ public class SpellbookApp extends JFrame {
         });
 
         menu.add(menuItem);
+        return menu;
+    }
 
-        //Build dictionaries menu
-        menu = new JMenu(translator.translate("Dictionaries(Menu)"));
-        menu.setMnemonic(KeyEvent.VK_D);
-        menu.getAccessibleContext().setAccessibleDescription("Select the active dictionary");
-        menuBar.add(menu);
+    private JMenu buildFileMenu() {
+        JMenu menu;
+        JMenuItem menuItem;//Build the file menu.
+        menu = new JMenu(translator.translate("File(Menu)"));
+        menu.setMnemonic(KeyEvent.VK_F);
+        menu.getAccessibleContext().setAccessibleDescription("File menu");
 
-        ButtonGroup group = new ButtonGroup();
-        rbMenuItem = new JRadioButtonMenuItem(translator.translate("DictionariesEnBg(MenuItem)"));
-        rbMenuItem.setSelected(true);
-
-        rbMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                spellbookForm.selectDictionary("en_bg");
-            }
-        });
-
-        group.add(rbMenuItem);
-        menu.add(rbMenuItem);
-
-        rbMenuItem = new JRadioButtonMenuItem(translator.translate("DictionariesBgEn(MenuItem)"));
-
-        rbMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                spellbookForm.selectDictionary("bg_en");
-            }
-        });
-
-        group.add(rbMenuItem);
-        menu.add(rbMenuItem);
-
-        //Build exam menu
-        menu = new JMenu(translator.translate("Exams(Menu)"));
-        menu.setMnemonic(KeyEvent.VK_E);
-        menu.getAccessibleContext().setAccessibleDescription("Select the active dictionary");
-        menuBar.add(menu);
-
-        group = new ButtonGroup();
-        rbMenuItem = new JRadioButtonMenuItem(translator.translate("ExamsEnBg(MenuItem)"));
-        rbMenuItem.setActionCommand("en_bg");
-        rbMenuItem.setSelected(true);
-
-        rbMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                JFrame examFrame = new ExamFrame();
-                examFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                examFrame.setVisible(true);
-            }
-        });
-
-        group.add(rbMenuItem);
-        menu.add(rbMenuItem);
-
-        rbMenuItem = new JRadioButtonMenuItem(translator.translate("ExamsBgEn(MenuItem)"));
-
-        rbMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                JFrame examFrame = new ExamFrame();
-                examFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                examFrame.setVisible(true);
-            }
-        });
-
-        group.add(rbMenuItem);
-        menu.add(rbMenuItem);
-
-        //help menu
-        menu = new JMenu(translator.translate("Help(Menu)"));
-        menu.setMnemonic(KeyEvent.VK_H);
-        menuBar.add(menu);
-
-        menuItem = new JMenuItem(translator.translate("HelpAbout(MenuItem)"), KeyEvent.VK_A);
-        menuItem.setIcon(IconManager.getMenuIcon("about.png"));
-        menuItem.getAccessibleContext().setAccessibleDescription("About Spellbook Dict");
+        menuItem = new JMenuItem(translator.translate("FileExit(MenuItem)"), KeyEvent.VK_X);
+        menuItem.setIcon(IconManager.getMenuIcon("exit.png"));
+        menuItem.getAccessibleContext().setAccessibleDescription("Exit Spellbook Dict");
 
         menuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(SpellbookApp.this, translator.translate("About(Message)"), "About",
-                        JOptionPane.INFORMATION_MESSAGE, IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE48));
+                LOGGER.info("Exit from menu");
+                System.exit(0);
             }
         });
 
         menu.add(menuItem);
-
-        return menuBar;
+        return menu;
     }
 
     private void createTraySection() {
