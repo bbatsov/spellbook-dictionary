@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.drowltd.dictionary.ui.desktop.FontChooserForm">
   <grid id="27dc6" binding="panel1" default-binding="true" layout-manager="FormLayout">
-    <rowspec value="center:d:noGrow"/>
+    <rowspec value="center:15dlu:noGrow"/>
     <rowspec value="top:4dlu:noGrow"/>
     <rowspec value="center:d:grow"/>
     <rowspec value="top:5dlu:noGrow"/>
-    <rowspec value="center:max(d;10dlu):noGrow"/>
+    <rowspec value="center:20px:noGrow"/>
     <rowspec value="top:4dlu:noGrow"/>
-    <rowspec value="center:max(d;10dlu):noGrow"/>
+    <rowspec value="center:max(d;15dlu):noGrow"/>
     <colspec value="fill:80dlu:grow"/>
     <colspec value="left:4dlu:noGrow"/>
     <colspec value="fill:134px:grow"/>

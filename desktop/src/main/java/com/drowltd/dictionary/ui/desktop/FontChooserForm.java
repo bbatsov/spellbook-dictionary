@@ -96,7 +96,7 @@ public class FontChooserForm {
      */
     private void $$$setupUI$$$() {
         panel1 = new JPanel();
-        panel1.setLayout(new FormLayout("fill:80dlu:grow,left:4dlu:noGrow,fill:134px:grow", "center:d:noGrow,top:4dlu:noGrow,center:d:grow,top:5dlu:noGrow,center:max(d;10dlu):noGrow,top:4dlu:noGrow,center:max(d;10dlu):noGrow"));
+        panel1.setLayout(new FormLayout("fill:80dlu:grow,left:4dlu:noGrow,fill:134px:grow", "center:15dlu:noGrow,top:4dlu:noGrow,center:d:grow,top:5dlu:noGrow,center:20px:noGrow,top:4dlu:noGrow,center:max(d;15dlu):noGrow"));
         final JLabel label1 = new JLabel();
         label1.setText("Font");
         CellConstraints cc = new CellConstraints();

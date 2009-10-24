@@ -7,11 +7,11 @@
     <rowspec value="top:4dlu:noGrow"/>
     <rowspec value="center:20dlu:noGrow"/>
     <rowspec value="top:4dlu:noGrow"/>
-    <rowspec value="center:10dlu:noGrow"/>
+    <rowspec value="center:15dlu:noGrow"/>
     <rowspec value="top:4dlu:noGrow"/>
     <rowspec value="center:d:grow"/>
     <rowspec value="top:5dlu:noGrow"/>
-    <rowspec value="center:10dlu:noGrow"/>
+    <rowspec value="center:15dlu:noGrow"/>
     <colspec value="fill:60dlu:noGrow"/>
     <colspec value="left:4dlu:noGrow"/>
     <colspec value="fill:100dlu:noGrow"/>

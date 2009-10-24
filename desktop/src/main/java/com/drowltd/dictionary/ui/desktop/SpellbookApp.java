@@ -153,7 +153,8 @@ public class SpellbookApp extends JFrame {
                 PreferencesForm preferencesForm = new PreferencesForm();
 
                 int response = JOptionPane.showConfirmDialog(SpellbookApp.this, preferencesForm.getComponent(),
-                        translator.translate("Preferences(Title)"), JOptionPane.OK_CANCEL_OPTION);
+                        translator.translate("Preferences(Title)"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE,
+                        IconManager.getImageIcon("preferences.png", IconManager.IconSize.SIZE48));
 
                 if (response == JOptionPane.OK_OPTION) {
                     String oldLanguage = preferences.get("LANG", "EN");
@@ -279,7 +280,8 @@ public class SpellbookApp extends JFrame {
 
         menuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(SpellbookApp.this, translator.translate("About(Message)"));
+                JOptionPane.showMessageDialog(SpellbookApp.this, translator.translate("About(Message)"), "About",
+                        JOptionPane.INFORMATION_MESSAGE, IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE48));
             }
         });
 
