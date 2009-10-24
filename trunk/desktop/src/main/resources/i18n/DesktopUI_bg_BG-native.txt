@@ -2,6 +2,7 @@ ApplicationName(Title) = Spellbook Десктоп издание
 File(Menu) = Файл
 FileExit(MenuItem) = Изход
 Edit(Menu) = Редактирай
+EditFont(MenuItem) = Шрифт
 EditPreferences(MenuItem) = Настройки
 Dictionaries(Menu) = Речници
 DictionariesEnBg(MenuItem) = Английско-Български
@@ -34,6 +35,8 @@ Language(Label)=Език
 MinimizeToTray(Label)=Минимизирай в трей
 ClipboardIntegration(Label)=Включи интеграцията с клипбоарда
 CloseToTray(Label)=Минимизирай в трея при затваряне
+
+SelectFont(Title) = Изберете шрифт
 
 About(Message)=Spellbook Dictionary\nТази програма е свободен софтуер лицензиран под GPL3\n2009 Drow Ltd.
 SelectDb(Message)=Изглежда, че пускате Spellbook за първи път. Моля, изберете файла, съдържащ речниковата база данни(dictionary.data.db)
