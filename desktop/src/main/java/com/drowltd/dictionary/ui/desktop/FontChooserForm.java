@@ -9,6 +9,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.util.prefs.Preferences;
 
 /**
  * Simple font chooser form.
@@ -25,17 +26,36 @@ public class FontChooserForm {
     private JCheckBox italicCheckBox;
     private JLabel previewLabel;
 
+    private Font selectedFont;
+
     public FontChooserForm() {
+        Preferences preferences = Preferences.userNodeForPackage(SpellbookApp.class);
+
         String[] availableFonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
         fontList.setListData(availableFonts);
-        fontList.setSelectedValue("Serif", true);
+
+        // select the current font
+        String selectedFontName = preferences.get("FONT_NAME", "Serif");
+        fontList.setSelectedValue(selectedFontName, true);
 
         fontList.addListSelectionListener(new SelectionUpdater());
 
         fontSizeList.setListData(new Integer[]{8, 10, 12, 14, 16, 18});
-        fontSizeList.setSelectedIndex(4);
+
+        int currentFontSize = preferences.getInt("FONT_SIZE", 12);
+        fontSizeList.setSelectedValue(currentFontSize, true);
 
         fontSizeList.addListSelectionListener(new SelectionUpdater());
+
+        int currentFontStyle = preferences.getInt("FONT_STYLE", Font.PLAIN);
+
+        if ((currentFontStyle & Font.BOLD) == Font.BOLD) {
+            boldCheckBox.setSelected(true);
+        }
+
+        if ((currentFontStyle & Font.ITALIC) == Font.ITALIC) {
+            italicCheckBox.setSelected(true);
+        }
 
         boldCheckBox.addChangeListener(new SelectionUpdater());
         italicCheckBox.addChangeListener(new SelectionUpdater());
@@ -48,10 +68,16 @@ public class FontChooserForm {
 
         Integer sizeInt = (Integer) fontSizeList.getSelectedValue();
 
-        return new Font(fontName,
+        selectedFont = new Font(fontName,
                 (italicCheckBox.isSelected() ? Font.ITALIC : Font.PLAIN)
                         | (boldCheckBox.isSelected() ? Font.BOLD : Font.PLAIN),
                 sizeInt);
+
+        return selectedFont;
+    }
+
+    public Font getSelectedFont() {
+        return selectedFont;
     }
 
     {

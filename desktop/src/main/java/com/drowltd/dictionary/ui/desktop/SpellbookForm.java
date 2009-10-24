@@ -113,7 +113,7 @@ public class SpellbookForm {
             }
         });
 
-        setOsSpecificSettings();
+        setDefaultFont();
 
         activateClipboardMonitoring();
     }
@@ -157,11 +157,23 @@ public class SpellbookForm {
         executorService.scheduleAtFixedRate(clipboardRunnable, 0, 1, TimeUnit.SECONDS);
     }
 
-    private void setOsSpecificSettings() {
-        String osName = System.getProperty("os.name");
+    private void setDefaultFont() {
+        Preferences preferences = Preferences.userNodeForPackage(SpellbookApp.class);
 
-        if (osName.contains("Windows")) {
-            wordTranslationTextArea.setFont(new Font("Arial", Font.PLAIN, 12));
+        if (preferences.get("FONT_NAME", "").isEmpty()) {
+            // dirty fix for windows - it seem that the default font there is too small, so we set
+            // a more appropriate one
+            String osName = System.getProperty("os.name");
+
+            if (osName.contains("Windows")) {
+                wordTranslationTextArea.setFont(new Font("Arial", Font.PLAIN, 14));
+            }
+        } else {
+            String fontName = preferences.get("FONT_NAME", "SansSerif");
+            int fontSize = preferences.getInt("FONT_SIZE", 14);
+            int fontStyle = preferences.getInt("FONT_STYLE", Font.PLAIN);
+
+            setFont(new Font(fontName, fontStyle, fontSize));
         }
     }
 
@@ -195,6 +207,15 @@ public class SpellbookForm {
         }
 
         return true;
+    }
+
+    public void setFont(Font font) {
+        wordSearchField.setFont(font);
+        wordsList.setFont(font);
+        wordTranslationTextArea.setFont(font);
+        statusBar.setFont(font);
+        drowLabel.setFont(font);
+        clearButton.setFont(font);
     }
 
     public JComponent getComponent() {
