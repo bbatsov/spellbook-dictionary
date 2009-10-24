@@ -126,10 +126,20 @@ public class SpellbookApp extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 FontChooserForm fontChooserForm = new FontChooserForm();
 
-                JOptionPane.showConfirmDialog(SpellbookApp.this, fontChooserForm.getComponent(),
+                int response = JOptionPane.showConfirmDialog(SpellbookApp.this, fontChooserForm.getComponent(),
                         translator.translate("SelectFont(Title)"), JOptionPane.OK_CANCEL_OPTION,
                         JOptionPane.QUESTION_MESSAGE,
                         IconManager.getImageIcon("font.png", IconManager.IconSize.SIZE48));
+
+                if (response == JOptionPane.OK_OPTION) {
+                    final Font selectedFont = fontChooserForm.getSelectedFont();
+
+                    preferences.put("FONT_NAME", selectedFont.getFontName());
+                    preferences.putInt("FONT_SIZE", selectedFont.getSize());
+                    preferences.putInt("FONT_STYLE", selectedFont.getStyle());
+
+                    spellbookForm.setFont(selectedFont);
+                }
             }
         });
 
