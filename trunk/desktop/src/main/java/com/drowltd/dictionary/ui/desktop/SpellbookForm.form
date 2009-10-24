@@ -5,7 +5,7 @@
     <rowspec value="top:4dlu:noGrow"/>
     <rowspec value="center:344px:grow"/>
     <rowspec value="top:4dlu:noGrow"/>
-    <rowspec value="center:10dlu:noGrow"/>
+    <rowspec value="center:15dlu:noGrow"/>
     <colspec value="fill:120dlu:noGrow"/>
     <colspec value="left:4dlu:noGrow"/>
     <colspec value="fill:60dlu:noGrow"/>

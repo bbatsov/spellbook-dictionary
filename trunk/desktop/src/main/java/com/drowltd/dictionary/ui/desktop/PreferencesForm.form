@@ -8,7 +8,7 @@
     <rowspec value="center:20dlu:noGrow"/>
     <rowspec value="top:4dlu:noGrow"/>
     <rowspec value="center:20dlu:noGrow"/>
-    <colspec value="fill:100dlu:noGrow"/>
+    <colspec value="fill:120dlu:noGrow"/>
     <colspec value="left:4dlu:noGrow"/>
     <colspec value="fill:80dlu:noGrow"/>
     <constraints>
