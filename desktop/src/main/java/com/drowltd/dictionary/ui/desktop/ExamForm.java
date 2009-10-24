@@ -26,6 +26,7 @@ public class ExamForm {
     private JLabel statusLabel;
     private JLabel feedbackLabel;
     private JProgressBar progressBar1;
+    private JLabel visualFeedback;
 
     int currentWordNumber = 1;
     int wordsGuessed = 0;
@@ -54,6 +55,8 @@ public class ExamForm {
                     String fullTranslation = dictDb.getTranslation(currentWordLabel.getText());
 
                     if (fullTranslation.contains(answer)) {
+                        //correct guess
+                        wordsGuessed++;
                         feedbackLabel.setText("Your guess was correct.");
                         getRandomWord();
                     } else {
