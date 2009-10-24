@@ -189,8 +189,10 @@ public class SpellbookApp extends JFrame {
                     final boolean clipboardIntegrationEnabled = preferencesForm.isClipboardIntegrationEnabled();
 
                     if (clipboardIntegrationEnabled) {
+                        spellbookForm.activateClipboardMonitoring();
                         LOGGER.info("Clipboard integration is enabled");
                     } else {
+                        spellbookForm.shutdownClipboardMonitoring();
                         LOGGER.info("Clipboard integration is disabled");
                     }
 

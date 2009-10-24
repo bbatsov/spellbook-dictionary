@@ -5,6 +5,8 @@ import com.drowltd.dictionary.core.exception.DictionaryDbLockedException;
 import com.drowltd.dictionary.core.i18n.Translator;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -30,6 +32,8 @@ import java.util.prefs.Preferences;
 public class SpellbookForm {
     private static final Translator TRANSLATOR = new Translator("DesktopUI");
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(SpellbookForm.class);
+
     private JTextField wordSearchField;
     private JPanel topPanel;
     private JButton clearButton;
@@ -43,6 +47,7 @@ public class SpellbookForm {
     private List<String> words;
     private ClipboardTextTransfer clipboardTextTransfer;
     private String lastTransfer;
+    private ScheduledExecutorService clipboardExecutorService;
 
     public SpellbookForm() {
         Preferences prefs = Preferences.userNodeForPackage(this.getClass());
@@ -115,7 +120,9 @@ public class SpellbookForm {
 
         setDefaultFont();
 
-        activateClipboardMonitoring();
+        if (prefs.getBoolean("CLIPBOARD_INTEGRATION", false)) {
+            activateClipboardMonitoring();
+        }
     }
 
     private void clear() {
@@ -126,35 +133,51 @@ public class SpellbookForm {
         matchLabel.setIcon(IconManager.getImageIcon("bell2_red.png", IconManager.IconSize.SIZE24));
     }
 
-    private void activateClipboardMonitoring() {
-        clipboardTextTransfer = new ClipboardTextTransfer();
+    public void activateClipboardMonitoring() {
+        LOGGER.info("Activating clipboard monitoring");
 
-        Runnable clipboardRunnable = new Runnable() {
-            public void run() {
-                String transferredText = clipboardTextTransfer.getClipboardContents();
+        if (clipboardExecutorService == null || clipboardExecutorService.isShutdown()) {
 
-                if (lastTransfer == null) {
-                    lastTransfer = transferredText;
-                }
+            clipboardTextTransfer = new ClipboardTextTransfer();
 
-                if (!transferredText.equalsIgnoreCase(lastTransfer)) {
-                    String searchString = transferredText.split("\\W")[0];
-                    wordSearchField.setText(searchString);
-                    wordSearchField.selectAll();
-                    lastTransfer = transferredText;
+            Runnable clipboardRunnable = new Runnable() {
+                public void run() {
+                    String transferredText = clipboardTextTransfer.getClipboardContents();
 
-                    if (words.contains(searchString)) {
-                        int index = words.indexOf(searchString);
-                        wordsList.setSelectedIndex(index);
-                        wordsList.ensureIndexIsVisible(index);
-                        wordTranslationTextArea.setText(dictDb.getTranslation(searchString));
+                    if (lastTransfer == null) {
+                        lastTransfer = transferredText;
+                    }
+
+                    if (!transferredText.equalsIgnoreCase(lastTransfer)) {
+                        LOGGER.info("'" + transferredText + "' received from clipboard");
+                        String searchString = transferredText.split("\\W")[0].toLowerCase();
+                        LOGGER.info("Search string from clipboard is " + searchString);
+                        wordSearchField.setText(searchString);
+                        wordSearchField.selectAll();
+                        lastTransfer = transferredText;
+
+                        if (words.contains(searchString)) {
+                            int index = words.indexOf(searchString);
+                            wordsList.setSelectedIndex(index);
+                            wordsList.ensureIndexIsVisible(index);
+                            wordTranslationTextArea.setText(dictDb.getTranslation(searchString));
+                        }
                     }
                 }
-            }
-        };
+            };
 
-        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-        executorService.scheduleAtFixedRate(clipboardRunnable, 0, 1, TimeUnit.SECONDS);
+            clipboardExecutorService = Executors.newSingleThreadScheduledExecutor();
+            clipboardExecutorService.scheduleAtFixedRate(clipboardRunnable, 0, 1, TimeUnit.SECONDS);
+        } else {
+            LOGGER.info("Clipboard monitoring is already running");
+        }
+    }
+
+    public void shutdownClipboardMonitoring() {
+        if (!clipboardExecutorService.isShutdown()) {
+            LOGGER.info("Shutting down clipboard monitoring");
+            clipboardExecutorService.shutdown();
+        }
     }
 
     private void setDefaultFont() {
