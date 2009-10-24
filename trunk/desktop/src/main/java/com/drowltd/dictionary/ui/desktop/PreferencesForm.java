@@ -20,6 +20,7 @@ public class PreferencesForm {
     private JComboBox languageBox;
     private JCheckBox clipboardIntegrationCheckBox;
     private JCheckBox minimizeToTrayOnCloseCheckBox;
+    private JTextField examWordsField;
 
     private SupportedLanguages selectedLanguage;
 

@@ -246,6 +246,12 @@ public class SpellbookForm {
     }
 
     public void selectDictionary(String dictionary) {
+        // if we select the currently selected dictionary we don't have to do nothing
+        if (dictionary.equalsIgnoreCase(dictDb.getSelectedDictionary())) {
+            LOGGER.info("Dictionary " + dictionary + " is already selected");
+            return;
+        }
+
         dictDb.setSelectedDictionary(dictionary);
 
         words = dictDb.getWordsFromSelectedDictionary();
