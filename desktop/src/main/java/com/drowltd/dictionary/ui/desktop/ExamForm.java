@@ -57,9 +57,11 @@ public class ExamForm {
                     if (fullTranslation.contains(answer)) {
                         //correct guess
                         wordsGuessed++;
+                        visualFeedback.setIcon(IconManager.getImageIcon("bell2_green.png", IconManager.IconSize.SIZE24));
                         feedbackLabel.setText("Your guess was correct.");
                         getRandomWord();
                     } else {
+                        visualFeedback.setIcon(IconManager.getImageIcon("bell2_red.png", IconManager.IconSize.SIZE24));
                         feedbackLabel.setText("Your guess was incorrect");
                         getRandomWord();
                     }
@@ -78,6 +80,7 @@ public class ExamForm {
         skipButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 translationTextArea.setText(dictDb.getTranslation(currentWordLabel.getText()));
+                visualFeedback.setIcon(IconManager.getImageIcon("bell2_gold.png", IconManager.IconSize.SIZE24));
                 feedbackLabel.setText("You skipped the last word");
                 getRandomWord();
                 currentWordNumber++;
@@ -97,6 +100,8 @@ public class ExamForm {
             skipButton.setEnabled(false);
 
             JOptionPane.showMessageDialog(topPanel, "Exam finished");
+
+            visualFeedback.setIcon(IconManager.getImageIcon("bell2_grey.png", IconManager.IconSize.SIZE24));
         }
     }
 
@@ -162,6 +167,10 @@ public class ExamForm {
         topPanel.add(skipButton, cc.xy(7, 3));
         progressBar1 = new JProgressBar();
         topPanel.add(progressBar1, cc.xyw(3, 5, 7, CellConstraints.FILL, CellConstraints.DEFAULT));
+        visualFeedback = new JLabel();
+        visualFeedback.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/bell2_grey.png")));
+        visualFeedback.setText("");
+        topPanel.add(visualFeedback, cc.xy(5, 1, CellConstraints.CENTER, CellConstraints.DEFAULT));
     }
 
     /**
