@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import javax.swing.UIManager.LookAndFeelInfo;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -287,6 +288,15 @@ public class SpellbookApp extends JFrame {
                     }
 
                     preferences.putBoolean("CLIPBOARD_INTEGRATION", clipboardIntegrationEnabled);
+
+                    preferences.putInt("EXAM_WORDS", preferencesForm.getExamWords());
+
+                    String selectedLookAndFeel = preferencesForm.getSelectedLookAndFeel();
+
+                    if (!selectedLookAndFeel.equals(preferences.get("LOOK_AND_FEEL", "System"))) {
+                        JOptionPane.showMessageDialog(SpellbookApp.this, "You have to restart the application so that the new look and feel can take effect");
+                        preferences.put("LOOK_AND_FEEL", selectedLookAndFeel);
+                    }
                 }
             }
         });
@@ -380,8 +390,22 @@ public class SpellbookApp extends JFrame {
 
     public static void main(String[] args) {
         try {
-            // Set System L&F
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            Preferences preferences = Preferences.userNodeForPackage(SpellbookApp.class);
+
+            String selectedLookAndFeel = preferences.get("LOOK_AND_FEEL", "System");
+
+            if (selectedLookAndFeel.equals("System")) {
+                // Set System L&F
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } else {
+                LookAndFeelInfo[] lookAndFeelInfos = UIManager.getInstalledLookAndFeels();
+
+                for (LookAndFeelInfo lookAndFeelInfo : lookAndFeelInfos) {
+                    if (lookAndFeelInfo.getName().equals(selectedLookAndFeel)) {
+                        UIManager.setLookAndFeel(lookAndFeelInfo.getClassName());
+                    }
+                }
+            }
         }
         catch (UnsupportedLookAndFeelException e) {
             // handle exception

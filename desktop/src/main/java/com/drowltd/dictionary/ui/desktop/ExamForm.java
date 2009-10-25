@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
+import java.util.prefs.Preferences;
 
 /**
  * User: bozhidar
@@ -29,9 +30,11 @@ public class ExamForm {
     private JProgressBar progressBar1;
     private JLabel visualFeedback;
 
+    private Preferences preferences = Preferences.userNodeForPackage(SpellbookApp.class);
+
     int currentWordNumber = 1;
     int wordsGuessed = 0;
-    int maxWords = 10;
+    int maxWords = preferences.getInt("EXAM_WORDS", 10);
 
     List<String> words;
     DictDb dictDb = DictDb.getInstance();

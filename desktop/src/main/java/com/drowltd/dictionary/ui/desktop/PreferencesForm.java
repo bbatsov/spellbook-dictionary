@@ -4,6 +4,7 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 import javax.swing.*;
+import javax.swing.UIManager.LookAndFeelInfo;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ResourceBundle;
@@ -21,6 +22,7 @@ public class PreferencesForm {
     private JCheckBox clipboardIntegrationCheckBox;
     private JCheckBox minimizeToTrayOnCloseCheckBox;
     private JTextField examWordsField;
+    private JComboBox lookAndFeelComboBox;
 
     private SupportedLanguages selectedLanguage;
 
@@ -51,6 +53,26 @@ public class PreferencesForm {
                 }
             }
         });
+
+        // exam length in words
+        examWordsField.setText("" + preferences.getInt("EXAM_WORDS", 10));
+        examWordsField.setToolTipText("The length of the exam in words");
+
+        // TODO implement a numeric document
+        //examWordsField.setDocument();
+
+        // build the look and feel section
+        LookAndFeelInfo[] lookAndFeelInfos = UIManager.getInstalledLookAndFeels();
+        String[] lookAndFeelNames = new String[lookAndFeelInfos.length + 1];
+        lookAndFeelNames[0] = "System";
+
+        for (int i = 0; i < lookAndFeelInfos.length; i++) {
+            lookAndFeelNames[i + 1] = lookAndFeelInfos[i].getName();
+        }
+
+        lookAndFeelComboBox.setModel(new DefaultComboBoxModel(lookAndFeelNames));
+
+        lookAndFeelComboBox.setSelectedItem(preferences.get("LOOK_AND_FEEL", "System"));
     }
 
     public SupportedLanguages getSelectedLanguage() {
@@ -67,6 +89,14 @@ public class PreferencesForm {
 
     public boolean isMinimizeToTrayOnCloseEnabled() {
         return minimizeToTrayOnCloseCheckBox.isSelected();
+    }
+
+    public int getExamWords() {
+        return Integer.parseInt(examWordsField.getText());
+    }
+
+    public String getSelectedLookAndFeel() {
+        return (String) lookAndFeelComboBox.getSelectedItem();
     }
 
     public JComponent getComponent() {
@@ -89,7 +119,7 @@ public class PreferencesForm {
      */
     private void $$$setupUI$$$() {
         topPanel = new JPanel();
-        topPanel.setLayout(new FormLayout("fill:120dlu:noGrow,left:4dlu:noGrow,fill:80dlu:noGrow", "center:20dlu:noGrow,top:4dlu:noGrow,center:20dlu:noGrow,top:4dlu:noGrow,center:20dlu:noGrow,top:4dlu:noGrow,center:20dlu:noGrow,top:4dlu:noGrow,center:15dlu:noGrow"));
+        topPanel.setLayout(new FormLayout("fill:120dlu:noGrow,left:4dlu:noGrow,fill:80dlu:noGrow", "center:20dlu:noGrow,top:4dlu:noGrow,center:20dlu:noGrow,top:4dlu:noGrow,center:20dlu:noGrow,top:4dlu:noGrow,center:20dlu:noGrow,top:4dlu:noGrow,center:15dlu:noGrow,top:4dlu:noGrow,center:15dlu:noGrow"));
         final JLabel label1 = new JLabel();
         this.$$$loadLabelText$$$(label1, ResourceBundle.getBundle("i18n/DesktopUI").getString("Language(Label)"));
         CellConstraints cc = new CellConstraints();
@@ -119,6 +149,11 @@ public class PreferencesForm {
         topPanel.add(label5, cc.xy(1, 9, CellConstraints.LEFT, CellConstraints.DEFAULT));
         examWordsField = new JTextField();
         topPanel.add(examWordsField, cc.xy(3, 9, CellConstraints.FILL, CellConstraints.DEFAULT));
+        final JLabel label6 = new JLabel();
+        label6.setText("Look and Feel");
+        topPanel.add(label6, cc.xy(1, 11));
+        lookAndFeelComboBox = new JComboBox();
+        topPanel.add(lookAndFeelComboBox, cc.xy(3, 11));
         label1.setLabelFor(languageBox);
     }
 
