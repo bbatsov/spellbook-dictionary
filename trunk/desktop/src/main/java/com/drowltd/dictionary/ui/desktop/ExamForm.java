@@ -1,6 +1,7 @@
 package com.drowltd.dictionary.ui.desktop;
 
 import com.drowltd.dictionary.core.db.DictDb;
+import com.drowltd.dictionary.core.i18n.Translator;
 import com.drowltd.dictionary.ui.desktop.IconManager.IconSize;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -19,6 +20,8 @@ import java.util.prefs.Preferences;
  * Time: 9:23:13 PM
  */
 public class ExamForm {
+    private static final Translator TRANSLATOR = new Translator("DesktopUI");
+
     private JPanel topPanel;
     private JTextField guessField;
     private JButton answerButton;
@@ -27,7 +30,7 @@ public class ExamForm {
     private JLabel currentWordLabel;
     private JLabel statusLabel;
     private JLabel feedbackLabel;
-    private JProgressBar progressBar1;
+    private JProgressBar examProgressBar;
     private JLabel visualFeedback;
 
     private Preferences preferences = Preferences.userNodeForPackage(SpellbookApp.class);
@@ -40,10 +43,10 @@ public class ExamForm {
     DictDb dictDb = DictDb.getInstance();
 
     public ExamForm() {
-        progressBar1.setMinimum(0);
-        progressBar1.setMaximum(10);
-        progressBar1.setValue(0);
-        progressBar1.setStringPainted(true);
+        examProgressBar.setMinimum(0);
+        examProgressBar.setMaximum(maxWords);
+        examProgressBar.setValue(0);
+        examProgressBar.setStringPainted(true);
 
         words = dictDb.getWordsFromSelectedDictionary();
 
@@ -62,11 +65,11 @@ public class ExamForm {
                         //correct guess
                         wordsGuessed++;
                         visualFeedback.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
-                        feedbackLabel.setText("Your guess was correct.");
+                        feedbackLabel.setText(TRANSLATOR.translate("CorrectAnswer(Message)"));
                         getRandomWord();
                     } else {
                         visualFeedback.setIcon(IconManager.getImageIcon("bell2_red.png", IconSize.SIZE24));
-                        feedbackLabel.setText("Your guess was incorrect");
+                        feedbackLabel.setText(TRANSLATOR.translate("IncorrectAnswer(Message)"));
                         getRandomWord();
                     }
 
@@ -76,7 +79,7 @@ public class ExamForm {
                     translationTextArea.setText(fullTranslation);
                     guessField.setText(null);
                 } else {
-                    JOptionPane.showMessageDialog(topPanel, "Please, enter a guess");
+                    JOptionPane.showMessageDialog(topPanel, TRANSLATOR.translate("EnterGuess(Message)"));
                 }
             }
         });
@@ -85,7 +88,7 @@ public class ExamForm {
             public void actionPerformed(ActionEvent e) {
                 translationTextArea.setText(dictDb.getTranslation(currentWordLabel.getText()));
                 visualFeedback.setIcon(IconManager.getImageIcon("bell2_gold.png", IconSize.SIZE24));
-                feedbackLabel.setText("You skipped the last word");
+                feedbackLabel.setText(TRANSLATOR.translate("SkippedWord(Message)"));
                 getRandomWord();
                 currentWordNumber++;
                 updateScore();
@@ -94,8 +97,8 @@ public class ExamForm {
     }
 
     private void updateScore() {
-        progressBar1.setValue(currentWordNumber);
-        progressBar1.setString(wordsGuessed + "/" + maxWords);
+        examProgressBar.setValue(currentWordNumber);
+        examProgressBar.setString(wordsGuessed + "/" + maxWords);
 
         updateStatusBar();
 
@@ -103,14 +106,15 @@ public class ExamForm {
             answerButton.setEnabled(false);
             skipButton.setEnabled(false);
 
-            JOptionPane.showMessageDialog(topPanel, "Exam finished");
+            JOptionPane.showMessageDialog(topPanel, TRANSLATOR.translate("ExamFinished(Message)"));
 
             visualFeedback.setIcon(IconManager.getImageIcon("bell2_grey.png", IconSize.SIZE24));
         }
     }
 
     private void updateStatusBar() {
-        statusLabel.setText((maxWords - currentWordNumber + 1) + " out of " + maxWords + " remaining");
+        String examStatusMessage = TRANSLATOR.translate("ExamStatus(Message)");
+        statusLabel.setText(String.format(examStatusMessage, maxWords - currentWordNumber + 1, maxWords));
     }
 
     private void getRandomWord() {
@@ -169,8 +173,8 @@ public class ExamForm {
         skipButton = new JButton();
         this.$$$loadButtonText$$$(skipButton, ResourceBundle.getBundle("i18n/DesktopUI").getString("Skip(Label)"));
         topPanel.add(skipButton, cc.xy(7, 3));
-        progressBar1 = new JProgressBar();
-        topPanel.add(progressBar1, cc.xyw(3, 5, 7, CellConstraints.FILL, CellConstraints.DEFAULT));
+        examProgressBar = new JProgressBar();
+        topPanel.add(examProgressBar, cc.xyw(3, 5, 7, CellConstraints.FILL, CellConstraints.DEFAULT));
         visualFeedback = new JLabel();
         visualFeedback.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/bell2_grey.png")));
         visualFeedback.setText("");

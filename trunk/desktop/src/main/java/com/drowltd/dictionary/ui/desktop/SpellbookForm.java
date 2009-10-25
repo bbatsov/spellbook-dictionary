@@ -62,7 +62,7 @@ public class SpellbookForm {
         try {
             DictDb.init(prefs.get("PATH_TO_DB", ""));
         } catch (DictionaryDbLockedException e) {
-            JOptionPane.showMessageDialog(topPanel, "Another instance of Spellbook is already running");
+            JOptionPane.showMessageDialog(topPanel, TRANSLATOR.translate("AlreadyRunning(Message)"));
             System.exit(0);
         }
 
@@ -73,6 +73,7 @@ public class SpellbookForm {
         wordsList.setListData(words.toArray());
 
         statusBar.setText(String.format(TRANSLATOR.translate("EnBgDictSize(Label)"), words.size()));
+        statusBar.setIcon(IconManager.getImageIcon("en-bg.png", IconSize.SIZE24));
 
         wordsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -94,6 +95,7 @@ public class SpellbookForm {
                 }
 
                 matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
+                matchLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
             }
         });
 
@@ -113,8 +115,10 @@ public class SpellbookForm {
                     wordsList.ensureIndexIsVisible(index);
                     wordTranslationTextArea.setText(dictDb.getTranslation(searchString));
                     matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
+                    matchLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
                 } else {
                     matchLabel.setIcon(IconManager.getImageIcon("bell2_red.png", IconSize.SIZE24));
+                    matchLabel.setToolTipText(TRANSLATOR.translate("NoMatchFound(ToolTip)"));
                 }
             }
         });
@@ -260,8 +264,10 @@ public class SpellbookForm {
 
         if (dictionary.equalsIgnoreCase("en_bg")) {
             statusBar.setText(String.format(TRANSLATOR.translate("EnBgDictSize(Label)"), words.size()));
+            statusBar.setIcon(IconManager.getImageIcon("en-bg.png", IconSize.SIZE24));
         } else {
             statusBar.setText(String.format(TRANSLATOR.translate("BgEnDictSize(Label)"), words.size()));
+            statusBar.setIcon(IconManager.getImageIcon("bg-en.png", IconSize.SIZE24));
         }
     }
 
@@ -283,11 +289,13 @@ public class SpellbookForm {
         topPanel = new JPanel();
         topPanel.setLayout(new FormLayout("fill:120dlu:noGrow,left:4dlu:noGrow,fill:60dlu:noGrow,left:6dlu:noGrow,fill:20dlu:noGrow,left:5dlu:noGrow,fill:max(d;4px):grow", "center:20dlu:noGrow,top:4dlu:noGrow,center:344px:grow,top:4dlu:noGrow,center:15dlu:noGrow"));
         wordSearchField = new JTextField();
+        wordSearchField.setToolTipText(ResourceBundle.getBundle("i18n/DesktopUI").getString("WordSearch(ToolTip)"));
         CellConstraints cc = new CellConstraints();
         topPanel.add(wordSearchField, cc.xy(1, 1, CellConstraints.FILL, CellConstraints.DEFAULT));
         final JScrollPane scrollPane1 = new JScrollPane();
         topPanel.add(scrollPane1, cc.xy(1, 3, CellConstraints.FILL, CellConstraints.FILL));
         wordsList = new JList();
+        wordsList.setToolTipText(ResourceBundle.getBundle("i18n/DesktopUI").getString("WordsList(ToolTip)"));
         scrollPane1.setViewportView(wordsList);
         final JScrollPane scrollPane2 = new JScrollPane();
         topPanel.add(scrollPane2, cc.xyw(3, 3, 5, CellConstraints.FILL, CellConstraints.FILL));
@@ -296,6 +304,7 @@ public class SpellbookForm {
         scrollPane2.setViewportView(wordTranslationTextArea);
         clearButton = new JButton();
         this.$$$loadButtonText$$$(clearButton, ResourceBundle.getBundle("i18n/DesktopUI").getString("ClearButton(Label)"));
+        clearButton.setToolTipText(ResourceBundle.getBundle("i18n/DesktopUI").getString("ClearButton(ToolTip)"));
         topPanel.add(clearButton, cc.xy(3, 1));
         statusBar = new JLabel();
         statusBar.setText("Status");
@@ -306,6 +315,7 @@ public class SpellbookForm {
         matchLabel = new JLabel();
         matchLabel.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/bell2_red.png")));
         matchLabel.setText("");
+        matchLabel.setToolTipText(ResourceBundle.getBundle("i18n/DesktopUI").getString("NoMatchFound(ToolTip)"));
         topPanel.add(matchLabel, cc.xy(5, 1, CellConstraints.CENTER, CellConstraints.DEFAULT));
     }
 
