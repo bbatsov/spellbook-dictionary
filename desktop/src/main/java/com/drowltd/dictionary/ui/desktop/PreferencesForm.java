@@ -56,7 +56,6 @@ public class PreferencesForm {
 
         // exam length in words
         examWordsField.setText("" + preferences.getInt("EXAM_WORDS", 10));
-        examWordsField.setToolTipText("The length of the exam in words");
 
         // TODO implement a numeric document
         //examWordsField.setDocument();
@@ -145,12 +144,13 @@ public class PreferencesForm {
         minimizeToTrayOnCloseCheckBox.setText("");
         topPanel.add(minimizeToTrayOnCloseCheckBox, cc.xy(3, 7, CellConstraints.CENTER, CellConstraints.DEFAULT));
         final JLabel label5 = new JLabel();
-        label5.setText("Exam words");
+        this.$$$loadLabelText$$$(label5, ResourceBundle.getBundle("i18n/DesktopUI").getString("ExamWords(Label)"));
         topPanel.add(label5, cc.xy(1, 9, CellConstraints.LEFT, CellConstraints.DEFAULT));
         examWordsField = new JTextField();
+        examWordsField.setText(ResourceBundle.getBundle("i18n/DesktopUI").getString("ExamWords(ToolTip)"));
         topPanel.add(examWordsField, cc.xy(3, 9, CellConstraints.FILL, CellConstraints.DEFAULT));
         final JLabel label6 = new JLabel();
-        label6.setText("Look and Feel");
+        this.$$$loadLabelText$$$(label6, ResourceBundle.getBundle("i18n/DesktopUI").getString("LookAndFeel(Label)"));
         topPanel.add(label6, cc.xy(1, 11));
         lookAndFeelComboBox = new JComboBox();
         topPanel.add(lookAndFeelComboBox, cc.xy(3, 11));

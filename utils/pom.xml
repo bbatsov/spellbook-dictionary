@@ -10,6 +10,7 @@
     <groupId>com.drowltd.dictionary</groupId>
     <artifactId>dictionary-utils</artifactId>
     <version>1.0</version>
+    <name>Spellbook Dictionary Utils</name>
 
     <dependencies>
         <dependency>

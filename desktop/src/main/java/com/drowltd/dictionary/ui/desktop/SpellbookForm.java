@@ -109,8 +109,14 @@ public class SpellbookForm {
                     clear();
                 }
 
-                if (words.contains(searchString)) {
-                    final int index = words.indexOf(searchString);
+                if (words.contains(searchString) || words.contains(searchString.toLowerCase())) {
+                    int index = words.indexOf(searchString);
+
+                    if (index < 0) {
+                        searchString = searchString.toLowerCase();
+                        index = words.indexOf(searchString);
+                    }
+
                     wordsList.setSelectedIndex(index);
                     wordsList.ensureIndexIsVisible(index);
                     wordTranslationTextArea.setText(dictDb.getTranslation(searchString));

@@ -98,7 +98,7 @@
           <forms defaultalign-horz="false"/>
         </constraints>
         <properties>
-          <text value="Exam words"/>
+          <text resource-bundle="i18n/DesktopUI" key="ExamWords(Label)"/>
         </properties>
       </component>
       <component id="7de2e" class="javax.swing.JTextField" binding="examWordsField">
@@ -108,7 +108,9 @@
           </grid>
           <forms defaultalign-horz="false"/>
         </constraints>
-        <properties/>
+        <properties>
+          <text resource-bundle="i18n/DesktopUI" key="ExamWords(ToolTip)"/>
+        </properties>
       </component>
       <component id="df6cf" class="javax.swing.JLabel">
         <constraints>
@@ -116,7 +118,7 @@
           <forms/>
         </constraints>
         <properties>
-          <text value="Look and Feel"/>
+          <text resource-bundle="i18n/DesktopUI" key="LookAndFeel(Label)"/>
         </properties>
       </component>
       <component id="b96c9" class="javax.swing.JComboBox" binding="lookAndFeelComboBox">

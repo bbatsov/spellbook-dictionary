@@ -88,13 +88,7 @@ public class SpellbookApp extends JFrame {
     }
 
     private JMenuBar createmenuBar() {
-        JMenuBar menuBar;
-        JMenu menu;
-        JMenuItem menuItem;
-        JRadioButtonMenuItem rbMenuItem;
-
-        //Create the menu bar.
-        menuBar = new JMenuBar();
+        JMenuBar menuBar = new JMenuBar();
 
         menuBar.add(buildFileMenu());
 
