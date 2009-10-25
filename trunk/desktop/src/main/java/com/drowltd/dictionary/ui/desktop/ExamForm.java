@@ -1,6 +1,7 @@
 package com.drowltd.dictionary.ui.desktop;
 
 import com.drowltd.dictionary.core.db.DictDb;
+import com.drowltd.dictionary.ui.desktop.IconManager.IconSize;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
@@ -57,11 +58,11 @@ public class ExamForm {
                     if (fullTranslation.contains(answer)) {
                         //correct guess
                         wordsGuessed++;
-                        visualFeedback.setIcon(IconManager.getImageIcon("bell2_green.png", IconManager.IconSize.SIZE24));
+                        visualFeedback.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
                         feedbackLabel.setText("Your guess was correct.");
                         getRandomWord();
                     } else {
-                        visualFeedback.setIcon(IconManager.getImageIcon("bell2_red.png", IconManager.IconSize.SIZE24));
+                        visualFeedback.setIcon(IconManager.getImageIcon("bell2_red.png", IconSize.SIZE24));
                         feedbackLabel.setText("Your guess was incorrect");
                         getRandomWord();
                     }
@@ -80,7 +81,7 @@ public class ExamForm {
         skipButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 translationTextArea.setText(dictDb.getTranslation(currentWordLabel.getText()));
-                visualFeedback.setIcon(IconManager.getImageIcon("bell2_gold.png", IconManager.IconSize.SIZE24));
+                visualFeedback.setIcon(IconManager.getImageIcon("bell2_gold.png", IconSize.SIZE24));
                 feedbackLabel.setText("You skipped the last word");
                 getRandomWord();
                 currentWordNumber++;
@@ -101,7 +102,7 @@ public class ExamForm {
 
             JOptionPane.showMessageDialog(topPanel, "Exam finished");
 
-            visualFeedback.setIcon(IconManager.getImageIcon("bell2_grey.png", IconManager.IconSize.SIZE24));
+            visualFeedback.setIcon(IconManager.getImageIcon("bell2_grey.png", IconSize.SIZE24));
         }
     }
 

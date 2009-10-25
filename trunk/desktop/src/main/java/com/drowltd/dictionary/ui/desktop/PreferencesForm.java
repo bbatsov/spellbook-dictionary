@@ -89,7 +89,7 @@ public class PreferencesForm {
      */
     private void $$$setupUI$$$() {
         topPanel = new JPanel();
-        topPanel.setLayout(new FormLayout("fill:120dlu:noGrow,left:4dlu:noGrow,fill:80dlu:noGrow", "center:20dlu:noGrow,top:4dlu:noGrow,center:20dlu:noGrow,top:4dlu:noGrow,center:20dlu:noGrow,top:4dlu:noGrow,center:20dlu:noGrow"));
+        topPanel.setLayout(new FormLayout("fill:120dlu:noGrow,left:4dlu:noGrow,fill:80dlu:noGrow", "center:20dlu:noGrow,top:4dlu:noGrow,center:20dlu:noGrow,top:4dlu:noGrow,center:20dlu:noGrow,top:4dlu:noGrow,center:20dlu:noGrow,top:4dlu:noGrow,center:15dlu:noGrow"));
         final JLabel label1 = new JLabel();
         this.$$$loadLabelText$$$(label1, ResourceBundle.getBundle("i18n/DesktopUI").getString("Language(Label)"));
         CellConstraints cc = new CellConstraints();
@@ -114,6 +114,11 @@ public class PreferencesForm {
         minimizeToTrayOnCloseCheckBox = new JCheckBox();
         minimizeToTrayOnCloseCheckBox.setText("");
         topPanel.add(minimizeToTrayOnCloseCheckBox, cc.xy(3, 7, CellConstraints.CENTER, CellConstraints.DEFAULT));
+        final JLabel label5 = new JLabel();
+        label5.setText("Exam words");
+        topPanel.add(label5, cc.xy(1, 9, CellConstraints.LEFT, CellConstraints.DEFAULT));
+        examWordsField = new JTextField();
+        topPanel.add(examWordsField, cc.xy(3, 9, CellConstraints.FILL, CellConstraints.DEFAULT));
         label1.setLabelFor(languageBox);
     }
 

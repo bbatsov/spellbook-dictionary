@@ -3,6 +3,7 @@ package com.drowltd.dictionary.ui.desktop;
 import com.drowltd.dictionary.core.db.DictDb;
 import com.drowltd.dictionary.core.exception.DictionaryDbLockedException;
 import com.drowltd.dictionary.core.i18n.Translator;
+import com.drowltd.dictionary.ui.desktop.IconManager.IconSize;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import org.slf4j.Logger;
@@ -92,7 +93,7 @@ public class SpellbookForm {
                     wordTranslationTextArea.setText(dictDb.getTranslation(words.get(lastIndex)));
                 }
 
-                matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconManager.IconSize.SIZE24));
+                matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
             }
         });
 
@@ -111,9 +112,9 @@ public class SpellbookForm {
                     wordsList.setSelectedIndex(index);
                     wordsList.ensureIndexIsVisible(index);
                     wordTranslationTextArea.setText(dictDb.getTranslation(searchString));
-                    matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconManager.IconSize.SIZE24));
+                    matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
                 } else {
-                    matchLabel.setIcon(IconManager.getImageIcon("bell2_red.png", IconManager.IconSize.SIZE24));
+                    matchLabel.setIcon(IconManager.getImageIcon("bell2_red.png", IconSize.SIZE24));
                 }
             }
         });
@@ -130,7 +131,7 @@ public class SpellbookForm {
         wordsList.ensureIndexIsVisible(0);
         wordsList.clearSelection();
         wordTranslationTextArea.setText(null);
-        matchLabel.setIcon(IconManager.getImageIcon("bell2_red.png", IconManager.IconSize.SIZE24));
+        matchLabel.setIcon(IconManager.getImageIcon("bell2_red.png", IconSize.SIZE24));
     }
 
     public void activateClipboardMonitoring() {
