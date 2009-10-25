@@ -141,6 +141,7 @@ public class SpellbookApp extends JFrame {
         rbMenuItem = new JRadioButtonMenuItem(translator.translate("ExamsEnBg(MenuItem)"));
         rbMenuItem.setActionCommand("en_bg");
         rbMenuItem.setSelected(true);
+        rbMenuItem.setIcon(IconManager.getMenuIcon("en-bg.png"));
 
         rbMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -154,6 +155,7 @@ public class SpellbookApp extends JFrame {
         menu.add(rbMenuItem);
 
         rbMenuItem = new JRadioButtonMenuItem(translator.translate("ExamsBgEn(MenuItem)"));
+        rbMenuItem.setIcon(IconManager.getMenuIcon("bg-en.png"));
 
         rbMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -178,6 +180,7 @@ public class SpellbookApp extends JFrame {
         ButtonGroup group = new ButtonGroup();
         rbMenuItem = new JRadioButtonMenuItem(translator.translate("DictionariesEnBg(MenuItem)"));
         rbMenuItem.setSelected(true);
+        rbMenuItem.setIcon(IconManager.getMenuIcon("en-bg.png"));
 
         rbMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -189,6 +192,7 @@ public class SpellbookApp extends JFrame {
         menu.add(rbMenuItem);
 
         rbMenuItem = new JRadioButtonMenuItem(translator.translate("DictionariesBgEn(MenuItem)"));
+        rbMenuItem.setIcon(IconManager.getMenuIcon("bg-en.png"));
 
         rbMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
