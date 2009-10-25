@@ -13,7 +13,7 @@ ExamsBgEn(MenuItem) = От български на английски
 Help(Menu) = Помощ
 HelpAbout(MenuItem) = Относно
 ClearButton(Label) = Изчисти
-FuelledBy(Label) = Продукт на Drow Ltd.
+FuelledBy(Label) = Spellbook Dictionary е разработен от Drow Ltd.
 EnBgDictSize(Label) = Английско-Български речник, съдържащ %d думи
 BgEnDictSize(Label) = Българо-Английски речник, съдържащ %d думи
 
@@ -38,8 +38,25 @@ CloseToTray(Label)=Минимизирай в трея при затваряне
 
 SelectFont(Title) = Изберете шрифт
 
-About(Message)=Spellbook Dictionary\nТази програма е свободен софтуер лицензиран под GPL3\n2009 Drow Ltd.
+About(Message)=Spellbook Dictionary\nВерсия 0.1\nТази програма е свободен софтуер лицензиран под GPL3\n2009 Drow Ltd.
 SelectDb(Message)=Изглежда, че пускате Spellbook за първи път. Моля, изберете файла, съдържащ речниковата база данни(dictionary.data.db)
 MissingDb(Message)=Spellbook не може да открие своята речникова база данни, тъй като вероятно тя е била преместена или изтрита. Моля, изберете файла, съдържащ речниковата база данни(dictionary.data.db)
 SelectDb(Title)=Изберете речниковата база данни
 Restart(Message)=За да влязат в сила новите езикови настройки, трябва да рестартирате Spellbook
+EditFont(MenuItem)=Шрифт
+ExamStatus(Message)=Остават %d от %d думи
+CorrectAnswer(Message)=Правилен отговор
+IncorrectAnswer(Message)=Грешен отговор
+SkippedWord(Message)=Пропусната дума
+ExamFinished(Message)=Изпитът завърши
+EnterGuess(Message)=Моля, въведете предложение
+SelectFont(Title)=Избери шрифт
+ExamWords(Label)=Думи на изпит
+ExamWords(ToolTip)=Дължината на изпита в брой думи
+LookAndFeel(Label)=Външен вид
+AlreadyRunning(Message)=Друга инстанция на Spellbook работи
+WordsList(ToolTip)=Изберете дума като кликнете върху нея
+WordSearch(ToolTip)=Напишете дума за да я търсите
+ClearButton(ToolTip)=Изчисти текущ резултат от търсене
+MatchFound(ToolTip)=Думата е открита
+NoMatchFound(ToolTip)=Думата не е открита
