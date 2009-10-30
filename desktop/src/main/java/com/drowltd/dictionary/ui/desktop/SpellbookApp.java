@@ -4,9 +4,27 @@ import com.drowltd.dictionary.core.i18n.Translator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
+import javax.swing.ButtonGroup;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
-import java.awt.*;
+import javax.swing.UnsupportedLookAndFeelException;
+
+import java.awt.AWTException;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.HeadlessException;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
+import java.awt.SystemTray;
+import java.awt.Toolkit;
+import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -22,7 +40,7 @@ import java.util.prefs.Preferences;
  * Date: Sep 5, 2009
  * Time: 1:26:50 PM
  */
-public class SpellbookApp extends JFrame {
+public class SpellbookApp {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellbookApp.class);
 
     private Translator translator;
@@ -30,6 +48,7 @@ public class SpellbookApp extends JFrame {
     private SpellbookForm spellbookForm;
 
     private static Preferences preferences = Preferences.userNodeForPackage(SpellbookApp.class);
+    private final JFrame frame = new JFrame();
 
     public SpellbookApp() throws HeadlessException {
         if (preferences.get("LANG", "EN").equals("BG")) {
@@ -44,31 +63,31 @@ public class SpellbookApp extends JFrame {
 
         Dimension screenSize = toolkit.getScreenSize();
 
-        setSize(screenSize.width / 2, screenSize.height / 2);
-        setLocationByPlatform(true);
+        frame.setSize(screenSize.width / 2, screenSize.height / 2);
+        frame.setLocationByPlatform(true);
 
         //set the frame title
-        setTitle(translator.translate("ApplicationName(Title)"));
+        frame.setTitle(translator.translate("ApplicationName(Title)"));
 
         //set the content of the frame
         spellbookForm = new SpellbookForm();
-        setContentPane(spellbookForm.getComponent());
+        frame.setContentPane(spellbookForm.getComponent());
 
         //set the menu
-        setJMenuBar(createmenuBar());
+        frame.setJMenuBar(createmenuBar());
 
         //set the frame icon
-        setIconImage(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE16).getImage());
+        frame.setIconImage(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE16).getImage());
 
         //create tray
         createTraySection();
 
-        addWindowListener(new WindowAdapter() {
+        frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowIconified(WindowEvent e) {
                 if (preferences.getBoolean("MIN_TO_TRAY", false)) {
                     LOGGER.info("Minimizing Spellbook to tray");
-                    setVisible(false);
+                    frame.setVisible(false);
                 }
             }
 
@@ -81,7 +100,7 @@ public class SpellbookApp extends JFrame {
             public void windowClosing(WindowEvent e) {
                 if (preferences.getBoolean("CLOSE_TO_TRAY", false)) {
                     LOGGER.info("Minimizing Spellbook to tray on window close");
-                    setVisible(false);
+                    frame.setVisible(false);
                 }
             }
         });
@@ -115,7 +134,7 @@ public class SpellbookApp extends JFrame {
 
         menuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(SpellbookApp.this, translator.translate("About(Message)"), "About",
+                JOptionPane.showMessageDialog(frame, translator.translate("About(Message)"), "About",
                         JOptionPane.INFORMATION_MESSAGE, IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE48));
             }
         });
@@ -213,7 +232,7 @@ public class SpellbookApp extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 FontChooserForm fontChooserForm = new FontChooserForm();
 
-                int response = JOptionPane.showConfirmDialog(SpellbookApp.this, fontChooserForm.getComponent(),
+                int response = JOptionPane.showConfirmDialog(frame, fontChooserForm.getComponent(),
                         translator.translate("SelectFont(Title)"), JOptionPane.OK_CANCEL_OPTION,
                         JOptionPane.QUESTION_MESSAGE,
                         IconManager.getImageIcon("font.png", IconManager.IconSize.SIZE48));
@@ -240,7 +259,7 @@ public class SpellbookApp extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 PreferencesForm preferencesForm = new PreferencesForm();
 
-                int response = JOptionPane.showConfirmDialog(SpellbookApp.this, preferencesForm.getComponent(),
+                int response = JOptionPane.showConfirmDialog(frame, preferencesForm.getComponent(),
                         translator.translate("Preferences(Title)"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE,
                         IconManager.getImageIcon("preferences.png", IconManager.IconSize.SIZE48));
 
@@ -251,7 +270,7 @@ public class SpellbookApp extends JFrame {
 
                     if (!oldLanguage.equals(newLanguage)) {
                         LOGGER.info("Language changed from " + oldLanguage + " to " + newLanguage);
-                        JOptionPane.showMessageDialog(SpellbookApp.this, translator.translate("Restart(Message)"));
+                        JOptionPane.showMessageDialog(frame, translator.translate("Restart(Message)"));
                     }
 
                     final boolean minimizeToTrayEnabled = preferencesForm.isMinimizeToTrayEnabled();
@@ -268,7 +287,7 @@ public class SpellbookApp extends JFrame {
 
                     if (minimizeToTrayOnCloseEnabled) {
                         LOGGER.info("Minimize to tray on close is enabled");
-                        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+                        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
                     } else {
                         LOGGER.info("Minimize to tray on close is disabled");
                     }
@@ -292,7 +311,7 @@ public class SpellbookApp extends JFrame {
                     String selectedLookAndFeel = preferencesForm.getSelectedLookAndFeel();
 
                     if (!selectedLookAndFeel.equals(preferences.get("LOOK_AND_FEEL", "System"))) {
-                        JOptionPane.showMessageDialog(SpellbookApp.this, "You have to restart the application so that the new look and feel can take effect");
+                        JOptionPane.showMessageDialog(getFrame(), "You have to restart the application so that the new look and feel can take effect");
                         preferences.put("LOOK_AND_FEEL", selectedLookAndFeel);
                     }
                 }
@@ -361,12 +380,12 @@ public class SpellbookApp extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 LOGGER.info("Tray icon clicked");
 
-                if (SpellbookApp.this.getState() == Frame.ICONIFIED) {
+                if (frame.getState() == JFrame.ICONIFIED) {
                     LOGGER.info("App is iconified");
-                    SpellbookApp.this.setState(Frame.NORMAL);
+                    frame.setState(JFrame.NORMAL);
                 }
 
-                SpellbookApp.this.setVisible(!SpellbookApp.this.isVisible());
+                frame.setVisible(!frame.isVisible());
             }
         });
 
@@ -386,7 +405,11 @@ public class SpellbookApp extends JFrame {
         });
     }
 
-    public static void main(String[] args) {
+    public JFrame getFrame() {
+        return frame;
+    }
+
+    public static void main(final String[] args) {
         try {
             Preferences preferences = Preferences.userNodeForPackage(SpellbookApp.class);
 
@@ -420,9 +443,9 @@ public class SpellbookApp extends JFrame {
 
         EventQueue.invokeLater(new Runnable() {
             public void run() {
-                JFrame appFrame = new SpellbookApp();
-                appFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                appFrame.setVisible(true);
+                final SpellbookApp tApp = new SpellbookApp();
+                tApp.getFrame().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                tApp.getFrame().setVisible(true);
             }
         });
     }
