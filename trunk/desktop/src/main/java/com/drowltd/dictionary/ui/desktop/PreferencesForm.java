@@ -3,8 +3,18 @@ package com.drowltd.dictionary.ui.desktop;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-import javax.swing.*;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.UnsupportedLookAndFeelException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ResourceBundle;
@@ -26,7 +36,7 @@ public class PreferencesForm {
 
     private SupportedLanguages selectedLanguage;
 
-    public PreferencesForm() {
+    public PreferencesForm(final JFrame appFrame) {
         String[] languages = {"English", "Bulgarian"};
 
         languageBox.setModel(new DefaultComboBoxModel(languages));
@@ -61,7 +71,7 @@ public class PreferencesForm {
         //examWordsField.setDocument();
 
         // build the look and feel section
-        LookAndFeelInfo[] lookAndFeelInfos = UIManager.getInstalledLookAndFeels();
+        final LookAndFeelInfo[] lookAndFeelInfos = UIManager.getInstalledLookAndFeels();
         String[] lookAndFeelNames = new String[lookAndFeelInfos.length + 1];
         lookAndFeelNames[0] = "System";
 
@@ -72,6 +82,31 @@ public class PreferencesForm {
         lookAndFeelComboBox.setModel(new DefaultComboBoxModel(lookAndFeelNames));
 
         lookAndFeelComboBox.setSelectedItem(preferences.get("LOOK_AND_FEEL", "System"));
+
+        lookAndFeelComboBox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String selectedLookAndFeel = (String) lookAndFeelComboBox.getSelectedItem();
+
+                for (LookAndFeelInfo lookAndFeelInfo : lookAndFeelInfos) {
+                    if (lookAndFeelInfo.getName().equals(selectedLookAndFeel)) {
+                        try {
+                            UIManager.setLookAndFeel(lookAndFeelInfo.getClassName());
+                        } catch (ClassNotFoundException e1) {
+                            e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                        } catch (InstantiationException e1) {
+                            e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                        } catch (IllegalAccessException e1) {
+                            e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                        } catch (UnsupportedLookAndFeelException e1) {
+                            e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                        }
+                    }
+                }
+
+                SwingUtilities.updateComponentTreeUI(topPanel);
+                SwingUtilities.updateComponentTreeUI(appFrame);
+            }
+        });
     }
 
     public SupportedLanguages getSelectedLanguage() {

@@ -14,7 +14,6 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
-
 import java.awt.AWTException;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -257,7 +256,7 @@ public class SpellbookApp {
 
         menuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                PreferencesForm preferencesForm = new PreferencesForm();
+                PreferencesForm preferencesForm = new PreferencesForm(frame);
 
                 int response = JOptionPane.showConfirmDialog(frame, preferencesForm.getComponent(),
                         translator.translate("Preferences(Title)"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE,
@@ -311,7 +310,6 @@ public class SpellbookApp {
                     String selectedLookAndFeel = preferencesForm.getSelectedLookAndFeel();
 
                     if (!selectedLookAndFeel.equals(preferences.get("LOOK_AND_FEEL", "System"))) {
-                        JOptionPane.showMessageDialog(getFrame(), "You have to restart the application so that the new look and feel can take effect");
                         preferences.put("LOOK_AND_FEEL", selectedLookAndFeel);
                     }
                 }
