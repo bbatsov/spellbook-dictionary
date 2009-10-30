@@ -185,7 +185,7 @@ public class SpellbookForm {
     }
 
     public void shutdownClipboardMonitoring() {
-        if (!clipboardExecutorService.isShutdown()) {
+        if (clipboardExecutorService !=null && !clipboardExecutorService.isShutdown()) {
             LOGGER.info("Shutting down clipboard monitoring");
             clipboardExecutorService.shutdown();
         }
