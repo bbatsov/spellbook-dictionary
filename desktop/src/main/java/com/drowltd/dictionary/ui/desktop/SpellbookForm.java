@@ -9,10 +9,22 @@ import com.jgoodies.forms.layout.FormLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
+import javax.swing.AbstractButton;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import java.awt.*;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -185,7 +197,7 @@ public class SpellbookForm {
     }
 
     public void shutdownClipboardMonitoring() {
-        if (clipboardExecutorService !=null && !clipboardExecutorService.isShutdown()) {
+        if (clipboardExecutorService != null && !clipboardExecutorService.isShutdown()) {
             LOGGER.info("Shutting down clipboard monitoring");
             clipboardExecutorService.shutdown();
         }
