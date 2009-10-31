@@ -33,7 +33,7 @@
           <forms defaultalign-horz="false"/>
         </constraints>
         <properties>
-          <text resource-bundle="i18n/DesktopUI" key="Word(Label)"/>
+          <text resource-bundle="i18n/ExamForm" key="Word(Label)"/>
         </properties>
       </component>
       <component id="eb6cd" class="javax.swing.JLabel">
@@ -42,7 +42,7 @@
           <forms defaultalign-horz="false"/>
         </constraints>
         <properties>
-          <text resource-bundle="i18n/DesktopUI" key="Guess(Label)"/>
+          <text resource-bundle="i18n/ExamForm" key="Guess(Label)"/>
         </properties>
       </component>
       <component id="99810" class="javax.swing.JLabel" binding="currentWordLabel">
@@ -83,7 +83,7 @@
           <forms defaultalign-horz="false"/>
         </constraints>
         <properties>
-          <text resource-bundle="i18n/DesktopUI" key="Translation(Label)"/>
+          <text resource-bundle="i18n/ExamForm" key="Translation(Label)"/>
         </properties>
       </component>
       <component id="878a1" class="javax.swing.JLabel" binding="statusLabel">
@@ -92,7 +92,7 @@
           <forms/>
         </constraints>
         <properties>
-          <text resource-bundle="i18n/DesktopUI" key="NoTest(Label)"/>
+          <text resource-bundle="i18n/ExamForm" key="NoTest(Label)"/>
         </properties>
       </component>
       <component id="7b5d4" class="javax.swing.JLabel" binding="feedbackLabel">
@@ -101,7 +101,7 @@
           <forms/>
         </constraints>
         <properties>
-          <text resource-bundle="i18n/DesktopUI" key="BeginExam(Label)"/>
+          <text resource-bundle="i18n/ExamForm" key="BeginExam(Label)"/>
         </properties>
       </component>
       <component id="c1b81" class="javax.swing.JButton" binding="answerButton" default-binding="true">
@@ -110,7 +110,7 @@
           <forms/>
         </constraints>
         <properties>
-          <text resource-bundle="i18n/DesktopUI" key="Answer(Label)"/>
+          <text resource-bundle="i18n/ExamForm" key="Answer(Label)"/>
         </properties>
       </component>
       <component id="55ca1" class="javax.swing.JButton" binding="skipButton" default-binding="true">
@@ -119,7 +119,7 @@
           <forms/>
         </constraints>
         <properties>
-          <text resource-bundle="i18n/DesktopUI" key="Skip(Label)"/>
+          <text resource-bundle="i18n/ExamForm" key="Skip(Label)"/>
         </properties>
       </component>
       <component id="5976b" class="javax.swing.JProgressBar" binding="examProgressBar" default-binding="true">

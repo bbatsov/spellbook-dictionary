@@ -43,7 +43,7 @@ import java.util.prefs.Preferences;
  * Time: 12:52:27 PM
  */
 public class SpellbookForm {
-    private static final Translator TRANSLATOR = new Translator("DesktopUI");
+    private static final Translator TRANSLATOR = new Translator("SpellbookForm");
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellbookForm.class);
 
@@ -307,13 +307,13 @@ public class SpellbookForm {
         topPanel = new JPanel();
         topPanel.setLayout(new FormLayout("fill:120dlu:noGrow,left:4dlu:noGrow,fill:60dlu:noGrow,left:6dlu:noGrow,fill:20dlu:noGrow,left:5dlu:noGrow,fill:max(d;4px):grow", "center:20dlu:noGrow,top:4dlu:noGrow,center:344px:grow,top:4dlu:noGrow,center:15dlu:noGrow"));
         wordSearchField = new JTextField();
-        wordSearchField.setToolTipText(ResourceBundle.getBundle("i18n/DesktopUI").getString("WordSearch(ToolTip)"));
+        wordSearchField.setToolTipText(ResourceBundle.getBundle("i18n/SpellbookForm").getString("WordSearch(ToolTip)"));
         CellConstraints cc = new CellConstraints();
         topPanel.add(wordSearchField, cc.xy(1, 1, CellConstraints.FILL, CellConstraints.DEFAULT));
         final JScrollPane scrollPane1 = new JScrollPane();
         topPanel.add(scrollPane1, cc.xy(1, 3, CellConstraints.FILL, CellConstraints.FILL));
         wordsList = new JList();
-        wordsList.setToolTipText(ResourceBundle.getBundle("i18n/DesktopUI").getString("WordsList(ToolTip)"));
+        wordsList.setToolTipText(ResourceBundle.getBundle("i18n/SpellbookForm").getString("WordsList(ToolTip)"));
         scrollPane1.setViewportView(wordsList);
         final JScrollPane scrollPane2 = new JScrollPane();
         topPanel.add(scrollPane2, cc.xyw(3, 3, 5, CellConstraints.FILL, CellConstraints.FILL));
@@ -321,19 +321,19 @@ public class SpellbookForm {
         wordTranslationTextArea.setFont(new Font(wordTranslationTextArea.getFont().getName(), wordTranslationTextArea.getFont().getStyle(), wordTranslationTextArea.getFont().getSize()));
         scrollPane2.setViewportView(wordTranslationTextArea);
         clearButton = new JButton();
-        this.$$$loadButtonText$$$(clearButton, ResourceBundle.getBundle("i18n/DesktopUI").getString("ClearButton(Label)"));
-        clearButton.setToolTipText(ResourceBundle.getBundle("i18n/DesktopUI").getString("ClearButton(ToolTip)"));
+        this.$$$loadButtonText$$$(clearButton, ResourceBundle.getBundle("i18n/SpellbookForm").getString("ClearButton(Label)"));
+        clearButton.setToolTipText(ResourceBundle.getBundle("i18n/SpellbookForm").getString("ClearButton(ToolTip)"));
         topPanel.add(clearButton, cc.xy(3, 1));
         statusBar = new JLabel();
         statusBar.setText("Status");
         topPanel.add(statusBar, cc.xyw(1, 5, 7));
         drowLabel = new JLabel();
-        this.$$$loadLabelText$$$(drowLabel, ResourceBundle.getBundle("i18n/DesktopUI").getString("FuelledBy(Label)"));
+        this.$$$loadLabelText$$$(drowLabel, ResourceBundle.getBundle("i18n/SpellbookForm").getString("FuelledBy(Label)"));
         topPanel.add(drowLabel, cc.xy(7, 1, CellConstraints.CENTER, CellConstraints.DEFAULT));
         matchLabel = new JLabel();
         matchLabel.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/bell2_red.png")));
         matchLabel.setText("");
-        matchLabel.setToolTipText(ResourceBundle.getBundle("i18n/DesktopUI").getString("NoMatchFound(ToolTip)"));
+        matchLabel.setToolTipText(ResourceBundle.getBundle("i18n/SpellbookForm").getString("NoMatchFound(ToolTip)"));
         topPanel.add(matchLabel, cc.xy(5, 1, CellConstraints.CENTER, CellConstraints.DEFAULT));
     }
 
