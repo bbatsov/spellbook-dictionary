@@ -3,6 +3,7 @@ package com.drowltd.dictionary.ui.desktop;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
+import javax.swing.AbstractButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -15,6 +16,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
+import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 
 /**
@@ -104,11 +106,11 @@ public class FontChooserForm extends BaseForm {
         topPanel = new JPanel();
         topPanel.setLayout(new FormLayout("fill:80dlu:grow,left:4dlu:noGrow,fill:134px:grow", "center:15dlu:noGrow,top:4dlu:noGrow,center:d:grow,top:5dlu:noGrow,center:20px:noGrow,top:4dlu:noGrow,center:max(d;15dlu):noGrow"));
         final JLabel label1 = new JLabel();
-        label1.setText("Font");
+        this.$$$loadLabelText$$$(label1, ResourceBundle.getBundle("i18n/FontChooserForm").getString("Font(Label)"));
         CellConstraints cc = new CellConstraints();
         topPanel.add(label1, cc.xy(1, 1));
         final JLabel label2 = new JLabel();
-        label2.setText("Size");
+        this.$$$loadLabelText$$$(label2, ResourceBundle.getBundle("i18n/FontChooserForm").getString("Size(Label)"));
         topPanel.add(label2, cc.xy(3, 1));
         final JScrollPane scrollPane1 = new JScrollPane();
         topPanel.add(scrollPane1, cc.xy(1, 3, CellConstraints.DEFAULT, CellConstraints.FILL));
@@ -119,14 +121,72 @@ public class FontChooserForm extends BaseForm {
         fontSizeList = new JList();
         scrollPane2.setViewportView(fontSizeList);
         previewLabel = new JLabel();
-        previewLabel.setText("The quick brown fox jumps over the lazy dog");
+        this.$$$loadLabelText$$$(previewLabel, ResourceBundle.getBundle("i18n/FontChooserForm").getString("PreviewText(Label)"));
         topPanel.add(previewLabel, cc.xyw(1, 7, 3));
         boldCheckBox = new JCheckBox();
-        boldCheckBox.setText("Bold");
+        this.$$$loadButtonText$$$(boldCheckBox, ResourceBundle.getBundle("i18n/FontChooserForm").getString("Bold(Label)"));
         topPanel.add(boldCheckBox, cc.xy(1, 5));
         italicCheckBox = new JCheckBox();
-        italicCheckBox.setText("Italic");
+        this.$$$loadButtonText$$$(italicCheckBox, ResourceBundle.getBundle("i18n/FontChooserForm").getString("Italic(Label)"));
         topPanel.add(italicCheckBox, cc.xy(3, 5));
+    }
+
+    /**
+     * @noinspection ALL
+     */
+    private void $$$loadLabelText$$$(JLabel component, String text) {
+        StringBuffer result = new StringBuffer();
+        boolean haveMnemonic = false;
+        char mnemonic = '\0';
+        int mnemonicIndex = -1;
+        for (int i = 0; i < text.length(); i++) {
+            if (text.charAt(i) == '&') {
+                i++;
+                if (i == text.length()) {
+                    break;
+                }
+                if (!haveMnemonic && text.charAt(i) != '&') {
+                    haveMnemonic = true;
+                    mnemonic = text.charAt(i);
+                    mnemonicIndex = result.length();
+                }
+            }
+            result.append(text.charAt(i));
+        }
+        component.setText(result.toString());
+        if (haveMnemonic) {
+            component.setDisplayedMnemonic(mnemonic);
+            component.setDisplayedMnemonicIndex(mnemonicIndex);
+        }
+    }
+
+    /**
+     * @noinspection ALL
+     */
+    private void $$$loadButtonText$$$(AbstractButton component, String text) {
+        StringBuffer result = new StringBuffer();
+        boolean haveMnemonic = false;
+        char mnemonic = '\0';
+        int mnemonicIndex = -1;
+        for (int i = 0; i < text.length(); i++) {
+            if (text.charAt(i) == '&') {
+                i++;
+                if (i == text.length()) {
+                    break;
+                }
+                if (!haveMnemonic && text.charAt(i) != '&') {
+                    haveMnemonic = true;
+                    mnemonic = text.charAt(i);
+                    mnemonicIndex = result.length();
+                }
+            }
+            result.append(text.charAt(i));
+        }
+        component.setText(result.toString());
+        if (haveMnemonic) {
+            component.setMnemonic(mnemonic);
+            component.setDisplayedMnemonicIndex(mnemonicIndex);
+        }
     }
 
     /**

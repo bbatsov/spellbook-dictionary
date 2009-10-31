@@ -23,7 +23,7 @@
           <forms/>
         </constraints>
         <properties>
-          <text value="Font"/>
+          <text resource-bundle="i18n/FontChooserForm" key="Font(Label)"/>
         </properties>
       </component>
       <component id="d793d" class="javax.swing.JLabel">
@@ -32,7 +32,7 @@
           <forms/>
         </constraints>
         <properties>
-          <text value="Size"/>
+          <text resource-bundle="i18n/FontChooserForm" key="Size(Label)"/>
         </properties>
       </component>
       <scrollpane id="e1397">
@@ -69,7 +69,7 @@
           <forms/>
         </constraints>
         <properties>
-          <text value="The quick brown fox jumps over the lazy dog"/>
+          <text resource-bundle="i18n/FontChooserForm" key="PreviewText(Label)"/>
         </properties>
       </component>
       <component id="78ccf" class="javax.swing.JCheckBox" binding="boldCheckBox" default-binding="true">
@@ -78,7 +78,7 @@
           <forms/>
         </constraints>
         <properties>
-          <text value="Bold"/>
+          <text resource-bundle="i18n/FontChooserForm" key="Bold(Label)"/>
         </properties>
       </component>
       <component id="a0512" class="javax.swing.JCheckBox" binding="italicCheckBox" default-binding="true">
@@ -87,7 +87,7 @@
           <forms/>
         </constraints>
         <properties>
-          <text value="Italic"/>
+          <text resource-bundle="i18n/FontChooserForm" key="Italic(Label)"/>
         </properties>
       </component>
     </children>
