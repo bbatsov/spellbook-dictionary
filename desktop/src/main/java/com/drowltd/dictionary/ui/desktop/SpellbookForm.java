@@ -2,7 +2,6 @@ package com.drowltd.dictionary.ui.desktop;
 
 import com.drowltd.dictionary.core.db.DictDb;
 import com.drowltd.dictionary.core.exception.DictionaryDbLockedException;
-import com.drowltd.dictionary.core.i18n.Translator;
 import com.drowltd.dictionary.ui.desktop.IconManager.IconSize;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -42,9 +41,7 @@ import java.util.prefs.Preferences;
  * Date: Sep 5, 2009
  * Time: 12:52:27 PM
  */
-public class SpellbookForm {
-    private static final Translator TRANSLATOR = new Translator("SpellbookForm");
-
+public class SpellbookForm extends BaseForm {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellbookForm.class);
 
     private JTextField wordSearchField;
@@ -74,7 +71,7 @@ public class SpellbookForm {
         try {
             DictDb.init(prefs.get("PATH_TO_DB", ""));
         } catch (DictionaryDbLockedException e) {
-            JOptionPane.showMessageDialog(topPanel, TRANSLATOR.translate("AlreadyRunning(Message)"));
+            JOptionPane.showMessageDialog(topPanel, getTranslator().translate("AlreadyRunning(Message)"));
             System.exit(0);
         }
 
@@ -84,7 +81,7 @@ public class SpellbookForm {
 
         wordsList.setListData(words.toArray());
 
-        statusBar.setText(String.format(TRANSLATOR.translate("EnBgDictSize(Label)"), words.size()));
+        statusBar.setText(String.format(getTranslator().translate("EnBgDictSize(Label)"), words.size()));
         statusBar.setIcon(IconManager.getImageIcon("en-bg.png", IconSize.SIZE24));
 
         wordsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -107,7 +104,7 @@ public class SpellbookForm {
                 }
 
                 matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
-                matchLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
+                matchLabel.setToolTipText(getTranslator().translate("MatchFound(ToolTip)"));
             }
         });
 
@@ -133,10 +130,10 @@ public class SpellbookForm {
                     wordsList.ensureIndexIsVisible(index);
                     wordTranslationTextArea.setText(dictDb.getTranslation(searchString));
                     matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
-                    matchLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
+                    matchLabel.setToolTipText(getTranslator().translate("MatchFound(ToolTip)"));
                 } else {
                     matchLabel.setIcon(IconManager.getImageIcon("bell2_red.png", IconSize.SIZE24));
-                    matchLabel.setToolTipText(TRANSLATOR.translate("NoMatchFound(ToolTip)"));
+                    matchLabel.setToolTipText(getTranslator().translate("NoMatchFound(ToolTip)"));
                 }
             }
         });
@@ -230,13 +227,13 @@ public class SpellbookForm {
 
         if (!file.exists()) {
             if (dbPath.isEmpty()) {
-                JOptionPane.showMessageDialog(topPanel, TRANSLATOR.translate("SelectDb(Message)"));
+                JOptionPane.showMessageDialog(topPanel, getTranslator().translate("SelectDb(Message)"));
             } else {
-                JOptionPane.showMessageDialog(topPanel, TRANSLATOR.translate("MissingDb(Message)"));
+                JOptionPane.showMessageDialog(topPanel, getTranslator().translate("MissingDb(Message)"));
             }
 
             JFileChooser fileChooser = new JFileChooser();
-            final int result = fileChooser.showDialog(topPanel, TRANSLATOR.translate("SelectDb(Title)"));
+            final int result = fileChooser.showDialog(topPanel, getTranslator().translate("SelectDb(Title)"));
 
             if (result == JFileChooser.APPROVE_OPTION) {
                 String selectedDbPath = fileChooser.getSelectedFile().getPath();
@@ -281,10 +278,10 @@ public class SpellbookForm {
         wordsList.setListData(words.toArray());
 
         if (dictionary.equalsIgnoreCase("en_bg")) {
-            statusBar.setText(String.format(TRANSLATOR.translate("EnBgDictSize(Label)"), words.size()));
+            statusBar.setText(String.format(getTranslator().translate("EnBgDictSize(Label)"), words.size()));
             statusBar.setIcon(IconManager.getImageIcon("en-bg.png", IconSize.SIZE24));
         } else {
-            statusBar.setText(String.format(TRANSLATOR.translate("BgEnDictSize(Label)"), words.size()));
+            statusBar.setText(String.format(getTranslator().translate("BgEnDictSize(Label)"), words.size()));
             statusBar.setIcon(IconManager.getImageIcon("bg-en.png", IconSize.SIZE24));
         }
     }

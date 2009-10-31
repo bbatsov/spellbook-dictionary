@@ -22,4 +22,9 @@ public class Translator {
     public String translate(String resourceKey) {
         return resourceBundle.getString(resourceKey);
     }
+
+    // TODO implement factory method with caching
+    public static Translator getTranslator(final String resourceBundleName) {
+        return null;
+    }
 }

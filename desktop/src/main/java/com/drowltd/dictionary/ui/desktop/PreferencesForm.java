@@ -25,7 +25,7 @@ import java.util.prefs.Preferences;
  * Date: Oct 16, 2009
  * Time: 12:50:28 AM
  */
-public class PreferencesForm {
+public class PreferencesForm extends BaseForm {
     private JPanel topPanel;
     private JCheckBox minimizeToTrayCheckBox;
     private JComboBox languageBox;
@@ -92,13 +92,13 @@ public class PreferencesForm {
                         try {
                             UIManager.setLookAndFeel(lookAndFeelInfo.getClassName());
                         } catch (ClassNotFoundException e1) {
-                            e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                            e1.printStackTrace();
                         } catch (InstantiationException e1) {
-                            e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                            e1.printStackTrace();
                         } catch (IllegalAccessException e1) {
-                            e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                            e1.printStackTrace();
                         } catch (UnsupportedLookAndFeelException e1) {
-                            e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                            e1.printStackTrace();
                         }
                     }
                 }

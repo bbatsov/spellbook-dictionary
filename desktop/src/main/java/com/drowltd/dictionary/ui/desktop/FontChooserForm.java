@@ -3,12 +3,18 @@ package com.drowltd.dictionary.ui.desktop;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-import javax.swing.*;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import java.awt.*;
+import java.awt.Font;
+import java.awt.GraphicsEnvironment;
 import java.util.prefs.Preferences;
 
 /**
@@ -18,8 +24,8 @@ import java.util.prefs.Preferences;
  * Date: Oct 23, 2009
  * Time: 10:04:46 PM
  */
-public class FontChooserForm {
-    private JPanel panel1;
+public class FontChooserForm extends BaseForm {
+    private JPanel topPanel;
     private JList fontList;
     private JList fontSizeList;
     private JCheckBox boldCheckBox;
@@ -95,39 +101,39 @@ public class FontChooserForm {
      * @noinspection ALL
      */
     private void $$$setupUI$$$() {
-        panel1 = new JPanel();
-        panel1.setLayout(new FormLayout("fill:80dlu:grow,left:4dlu:noGrow,fill:134px:grow", "center:15dlu:noGrow,top:4dlu:noGrow,center:d:grow,top:5dlu:noGrow,center:20px:noGrow,top:4dlu:noGrow,center:max(d;15dlu):noGrow"));
+        topPanel = new JPanel();
+        topPanel.setLayout(new FormLayout("fill:80dlu:grow,left:4dlu:noGrow,fill:134px:grow", "center:15dlu:noGrow,top:4dlu:noGrow,center:d:grow,top:5dlu:noGrow,center:20px:noGrow,top:4dlu:noGrow,center:max(d;15dlu):noGrow"));
         final JLabel label1 = new JLabel();
         label1.setText("Font");
         CellConstraints cc = new CellConstraints();
-        panel1.add(label1, cc.xy(1, 1));
+        topPanel.add(label1, cc.xy(1, 1));
         final JLabel label2 = new JLabel();
         label2.setText("Size");
-        panel1.add(label2, cc.xy(3, 1));
+        topPanel.add(label2, cc.xy(3, 1));
         final JScrollPane scrollPane1 = new JScrollPane();
-        panel1.add(scrollPane1, cc.xy(1, 3, CellConstraints.DEFAULT, CellConstraints.FILL));
+        topPanel.add(scrollPane1, cc.xy(1, 3, CellConstraints.DEFAULT, CellConstraints.FILL));
         fontList = new JList();
         scrollPane1.setViewportView(fontList);
         final JScrollPane scrollPane2 = new JScrollPane();
-        panel1.add(scrollPane2, cc.xy(3, 3, CellConstraints.DEFAULT, CellConstraints.FILL));
+        topPanel.add(scrollPane2, cc.xy(3, 3, CellConstraints.DEFAULT, CellConstraints.FILL));
         fontSizeList = new JList();
         scrollPane2.setViewportView(fontSizeList);
         previewLabel = new JLabel();
         previewLabel.setText("The quick brown fox jumps over the lazy dog");
-        panel1.add(previewLabel, cc.xyw(1, 7, 3));
+        topPanel.add(previewLabel, cc.xyw(1, 7, 3));
         boldCheckBox = new JCheckBox();
         boldCheckBox.setText("Bold");
-        panel1.add(boldCheckBox, cc.xy(1, 5));
+        topPanel.add(boldCheckBox, cc.xy(1, 5));
         italicCheckBox = new JCheckBox();
         italicCheckBox.setText("Italic");
-        panel1.add(italicCheckBox, cc.xy(3, 5));
+        topPanel.add(italicCheckBox, cc.xy(3, 5));
     }
 
     /**
      * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {
-        return panel1;
+        return topPanel;
     }
 
     private class SelectionUpdater implements ChangeListener, ListSelectionListener {
@@ -141,6 +147,6 @@ public class FontChooserForm {
     }
 
     public JComponent getComponent() {
-        return panel1;
+        return topPanel;
     }
 }
