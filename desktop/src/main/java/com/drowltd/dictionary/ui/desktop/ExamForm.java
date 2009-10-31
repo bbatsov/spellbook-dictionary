@@ -6,7 +6,17 @@ import com.drowltd.dictionary.ui.desktop.IconManager.IconSize;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-import javax.swing.*;
+import javax.swing.AbstractButton;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -20,7 +30,7 @@ import java.util.prefs.Preferences;
  * Time: 9:23:13 PM
  */
 public class ExamForm {
-    private static final Translator TRANSLATOR = new Translator("DesktopUI");
+    private static final Translator TRANSLATOR = new Translator("ExamForm");
 
     private JPanel topPanel;
     private JTextField guessField;
@@ -143,11 +153,11 @@ public class ExamForm {
         topPanel = new JPanel();
         topPanel.setLayout(new FormLayout("fill:60dlu:noGrow,left:4dlu:noGrow,fill:100dlu:noGrow,left:4dlu:noGrow,fill:60dlu:noGrow,left:4dlu:noGrow,fill:60dlu:noGrow,left:5dlu:noGrow,fill:max(d;4px):grow", "center:20dlu:noGrow,top:4dlu:noGrow,center:20dlu:noGrow,top:4dlu:noGrow,center:20dlu:noGrow,top:4dlu:noGrow,center:15dlu:noGrow,top:4dlu:noGrow,center:d:grow,top:5dlu:noGrow,center:15dlu:noGrow"));
         final JLabel label1 = new JLabel();
-        this.$$$loadLabelText$$$(label1, ResourceBundle.getBundle("i18n/DesktopUI").getString("Word(Label)"));
+        this.$$$loadLabelText$$$(label1, ResourceBundle.getBundle("i18n/ExamForm").getString("Word(Label)"));
         CellConstraints cc = new CellConstraints();
         topPanel.add(label1, cc.xy(1, 1, CellConstraints.CENTER, CellConstraints.DEFAULT));
         final JLabel label2 = new JLabel();
-        this.$$$loadLabelText$$$(label2, ResourceBundle.getBundle("i18n/DesktopUI").getString("Guess(Label)"));
+        this.$$$loadLabelText$$$(label2, ResourceBundle.getBundle("i18n/ExamForm").getString("Guess(Label)"));
         topPanel.add(label2, cc.xy(1, 3, CellConstraints.CENTER, CellConstraints.DEFAULT));
         currentWordLabel = new JLabel();
         currentWordLabel.setText("Label");
@@ -159,19 +169,19 @@ public class ExamForm {
         translationTextArea = new JTextArea();
         scrollPane1.setViewportView(translationTextArea);
         final JLabel label3 = new JLabel();
-        this.$$$loadLabelText$$$(label3, ResourceBundle.getBundle("i18n/DesktopUI").getString("Translation(Label)"));
+        this.$$$loadLabelText$$$(label3, ResourceBundle.getBundle("i18n/ExamForm").getString("Translation(Label)"));
         topPanel.add(label3, cc.xy(1, 9, CellConstraints.CENTER, CellConstraints.DEFAULT));
         statusLabel = new JLabel();
-        this.$$$loadLabelText$$$(statusLabel, ResourceBundle.getBundle("i18n/DesktopUI").getString("NoTest(Label)"));
+        this.$$$loadLabelText$$$(statusLabel, ResourceBundle.getBundle("i18n/ExamForm").getString("NoTest(Label)"));
         topPanel.add(statusLabel, cc.xyw(1, 11, 7));
         feedbackLabel = new JLabel();
-        this.$$$loadLabelText$$$(feedbackLabel, ResourceBundle.getBundle("i18n/DesktopUI").getString("BeginExam(Label)"));
+        this.$$$loadLabelText$$$(feedbackLabel, ResourceBundle.getBundle("i18n/ExamForm").getString("BeginExam(Label)"));
         topPanel.add(feedbackLabel, cc.xyw(3, 7, 5));
         answerButton = new JButton();
-        this.$$$loadButtonText$$$(answerButton, ResourceBundle.getBundle("i18n/DesktopUI").getString("Answer(Label)"));
+        this.$$$loadButtonText$$$(answerButton, ResourceBundle.getBundle("i18n/ExamForm").getString("Answer(Label)"));
         topPanel.add(answerButton, cc.xy(5, 3));
         skipButton = new JButton();
-        this.$$$loadButtonText$$$(skipButton, ResourceBundle.getBundle("i18n/DesktopUI").getString("Skip(Label)"));
+        this.$$$loadButtonText$$$(skipButton, ResourceBundle.getBundle("i18n/ExamForm").getString("Skip(Label)"));
         topPanel.add(skipButton, cc.xy(7, 3));
         examProgressBar = new JProgressBar();
         topPanel.add(examProgressBar, cc.xyw(3, 5, 7, CellConstraints.FILL, CellConstraints.DEFAULT));

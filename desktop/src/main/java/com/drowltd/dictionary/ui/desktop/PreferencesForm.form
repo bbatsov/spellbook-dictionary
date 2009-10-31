@@ -28,7 +28,7 @@
         </constraints>
         <properties>
           <labelFor value="1cefa"/>
-          <text resource-bundle="i18n/DesktopUI" key="Language(Label)"/>
+          <text resource-bundle="i18n/PreferencesForm" key="Language(Label)"/>
         </properties>
       </component>
       <component id="6b828" class="javax.swing.JLabel">
@@ -37,7 +37,7 @@
           <forms/>
         </constraints>
         <properties>
-          <text resource-bundle="i18n/DesktopUI" key="MinimizeToTray(Label)"/>
+          <text resource-bundle="i18n/PreferencesForm" key="MinimizeToTray(Label)"/>
         </properties>
       </component>
       <component id="be1b" class="javax.swing.JCheckBox" binding="minimizeToTrayCheckBox">
@@ -62,7 +62,7 @@
           <forms/>
         </constraints>
         <properties>
-          <text resource-bundle="i18n/DesktopUI" key="ClipboardIntegration(Label)"/>
+          <text resource-bundle="i18n/PreferencesForm" key="ClipboardIntegration(Label)"/>
         </properties>
       </component>
       <component id="931cc" class="javax.swing.JCheckBox" binding="clipboardIntegrationCheckBox" default-binding="true">
@@ -80,7 +80,7 @@
           <forms/>
         </constraints>
         <properties>
-          <text resource-bundle="i18n/DesktopUI" key="CloseToTray(Label)"/>
+          <text resource-bundle="i18n/PreferencesForm" key="CloseToTray(Label)"/>
         </properties>
       </component>
       <component id="4f9cd" class="javax.swing.JCheckBox" binding="minimizeToTrayOnCloseCheckBox" default-binding="true">
@@ -98,7 +98,7 @@
           <forms defaultalign-horz="false"/>
         </constraints>
         <properties>
-          <text resource-bundle="i18n/DesktopUI" key="ExamWords(Label)"/>
+          <text resource-bundle="i18n/PreferencesForm" key="ExamWords(Label)"/>
         </properties>
       </component>
       <component id="7de2e" class="javax.swing.JTextField" binding="examWordsField">
@@ -109,7 +109,7 @@
           <forms defaultalign-horz="false"/>
         </constraints>
         <properties>
-          <text resource-bundle="i18n/DesktopUI" key="ExamWords(ToolTip)"/>
+          <text resource-bundle="i18n/PreferencesForm" key="ExamWords(ToolTip)"/>
         </properties>
       </component>
       <component id="df6cf" class="javax.swing.JLabel">
@@ -118,7 +118,7 @@
           <forms/>
         </constraints>
         <properties>
-          <text resource-bundle="i18n/DesktopUI" key="LookAndFeel(Label)"/>
+          <text resource-bundle="i18n/PreferencesForm" key="LookAndFeel(Label)"/>
         </properties>
       </component>
       <component id="b96c9" class="javax.swing.JComboBox" binding="lookAndFeelComboBox">

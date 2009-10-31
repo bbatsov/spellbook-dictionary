@@ -55,7 +55,7 @@ public class SpellbookApp {
             LOGGER.info("Selected locate is " + Locale.getDefault());
         }
 
-        translator = new Translator("DesktopUI");
+        translator = new Translator("SpellbookApp");
 
         //dynamically determine an adequate frame size
         Toolkit toolkit = Toolkit.getDefaultToolkit();

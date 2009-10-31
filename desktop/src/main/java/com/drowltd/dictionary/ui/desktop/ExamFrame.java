@@ -2,8 +2,10 @@ package com.drowltd.dictionary.ui.desktop;
 
 import com.drowltd.dictionary.core.i18n.Translator;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JFrame;
+import java.awt.Dimension;
+import java.awt.HeadlessException;
+import java.awt.Toolkit;
 
 /**
  * User: bozhidar
@@ -11,7 +13,7 @@ import java.awt.*;
  * Time: 9:33:03 PM
  */
 public class ExamFrame extends JFrame {
-    private static final Translator TRANSLATOR = new Translator("DesktopUI");
+    private static final Translator TRANSLATOR = new Translator("SpellbookApp");
 
     public ExamFrame() throws HeadlessException {
         //dynamically determine an adequate frame size
