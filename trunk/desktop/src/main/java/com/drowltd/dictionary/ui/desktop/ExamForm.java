@@ -1,7 +1,6 @@
 package com.drowltd.dictionary.ui.desktop;
 
 import com.drowltd.dictionary.core.db.DictDb;
-import com.drowltd.dictionary.core.i18n.Translator;
 import com.drowltd.dictionary.ui.desktop.IconManager.IconSize;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -29,9 +28,7 @@ import java.util.prefs.Preferences;
  * Date: Sep 6, 2009
  * Time: 9:23:13 PM
  */
-public class ExamForm {
-    private static final Translator TRANSLATOR = new Translator("ExamForm");
-
+public class ExamForm extends BaseForm {
     private JPanel topPanel;
     private JTextField guessField;
     private JButton answerButton;
@@ -75,11 +72,11 @@ public class ExamForm {
                         //correct guess
                         wordsGuessed++;
                         visualFeedback.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
-                        feedbackLabel.setText(TRANSLATOR.translate("CorrectAnswer(Message)"));
+                        feedbackLabel.setText(getTranslator().translate("CorrectAnswer(Message)"));
                         getRandomWord();
                     } else {
                         visualFeedback.setIcon(IconManager.getImageIcon("bell2_red.png", IconSize.SIZE24));
-                        feedbackLabel.setText(TRANSLATOR.translate("IncorrectAnswer(Message)"));
+                        feedbackLabel.setText(getTranslator().translate("IncorrectAnswer(Message)"));
                         getRandomWord();
                     }
 
@@ -89,7 +86,7 @@ public class ExamForm {
                     translationTextArea.setText(fullTranslation);
                     guessField.setText(null);
                 } else {
-                    JOptionPane.showMessageDialog(topPanel, TRANSLATOR.translate("EnterGuess(Message)"));
+                    JOptionPane.showMessageDialog(topPanel, getTranslator().translate("EnterGuess(Message)"));
                 }
             }
         });
@@ -98,7 +95,7 @@ public class ExamForm {
             public void actionPerformed(ActionEvent e) {
                 translationTextArea.setText(dictDb.getTranslation(currentWordLabel.getText()));
                 visualFeedback.setIcon(IconManager.getImageIcon("bell2_gold.png", IconSize.SIZE24));
-                feedbackLabel.setText(TRANSLATOR.translate("SkippedWord(Message)"));
+                feedbackLabel.setText(getTranslator().translate("SkippedWord(Message)"));
                 getRandomWord();
                 currentWordNumber++;
                 updateScore();
@@ -116,14 +113,14 @@ public class ExamForm {
             answerButton.setEnabled(false);
             skipButton.setEnabled(false);
 
-            JOptionPane.showMessageDialog(topPanel, TRANSLATOR.translate("ExamFinished(Message)"));
+            JOptionPane.showMessageDialog(topPanel, getTranslator().translate("ExamFinished(Message)"));
 
             visualFeedback.setIcon(IconManager.getImageIcon("bell2_grey.png", IconSize.SIZE24));
         }
     }
 
     private void updateStatusBar() {
-        String examStatusMessage = TRANSLATOR.translate("ExamStatus(Message)");
+        String examStatusMessage = getTranslator().translate("ExamStatus(Message)");
         statusLabel.setText(String.format(examStatusMessage, maxWords - currentWordNumber + 1, maxWords));
     }
 
