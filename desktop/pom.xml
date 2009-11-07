@@ -42,9 +42,5 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.jgoodies</groupId>
-            <artifactId>forms</artifactId>
-        </dependency>
     </dependencies>
 </project>
