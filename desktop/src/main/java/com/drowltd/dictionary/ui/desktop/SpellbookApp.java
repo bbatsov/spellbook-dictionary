@@ -51,6 +51,7 @@ public class SpellbookApp {
         }
 
         EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 final SpellbookFrame tApp = new SpellbookFrame();
                 tApp.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

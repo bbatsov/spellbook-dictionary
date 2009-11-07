@@ -38,9 +38,6 @@ import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.UnsupportedLookAndFeelException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -367,11 +364,11 @@ public class SpellbookFrame extends javax.swing.JFrame {
         fontMenuItem = new javax.swing.JMenuItem();
         prefsMenuItem = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
-        jRadioButtonMenuItem1 = new javax.swing.JRadioButtonMenuItem();
-        jRadioButtonMenuItem2 = new javax.swing.JRadioButtonMenuItem();
+        enBgDictMenuItem = new javax.swing.JMenuItem();
+        bgEnDictMenuItem = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         jMenu5 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        aboutMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -451,6 +448,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         jMenu1.setText(bundle.getString("File(Menu)")); // NOI18N
 
+        exitMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/exit.png"))); // NOI18N
         exitMenuItem.setText(bundle.getString("FileExit(MenuItem)")); // NOI18N
         exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -463,6 +461,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         jMenu2.setText(bundle.getString("Edit(Menu)")); // NOI18N
 
+        fontMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/font.png"))); // NOI18N
         fontMenuItem.setText(bundle.getString("EditFont(MenuItem)")); // NOI18N
         fontMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -471,6 +470,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         });
         jMenu2.add(fontMenuItem);
 
+        prefsMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/preferences.png"))); // NOI18N
         prefsMenuItem.setText(bundle.getString("EditPreferences(MenuItem)")); // NOI18N
         prefsMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -483,22 +483,23 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         jMenu3.setText(bundle.getString("Dictionaries(Menu)")); // NOI18N
 
-        jRadioButtonMenuItem1.setSelected(true);
-        jRadioButtonMenuItem1.setText(bundle.getString("DictionariesEnBg(MenuItem)")); // NOI18N
-        jRadioButtonMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        enBgDictMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/en-bg.png"))); // NOI18N
+        enBgDictMenuItem.setText(bundle.getString("DictionariesEnBg(MenuItem)")); // NOI18N
+        enBgDictMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButtonMenuItem1ActionPerformed(evt);
+                enBgDictMenuItemActionPerformed(evt);
             }
         });
-        jMenu3.add(jRadioButtonMenuItem1);
+        jMenu3.add(enBgDictMenuItem);
 
-        jRadioButtonMenuItem2.setText(bundle.getString("DictionariesBgEn(MenuItem)")); // NOI18N
-        jRadioButtonMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+        bgEnDictMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/bg-en.png"))); // NOI18N
+        bgEnDictMenuItem.setText(bundle.getString("DictionariesBgEn(MenuItem)")); // NOI18N
+        bgEnDictMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButtonMenuItem2ActionPerformed(evt);
+                bgEnDictMenuItemActionPerformed(evt);
             }
         });
-        jMenu3.add(jRadioButtonMenuItem2);
+        jMenu3.add(bgEnDictMenuItem);
 
         jMenuBar1.add(jMenu3);
 
@@ -507,8 +508,14 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         jMenu5.setText(bundle.getString("Help(Menu)")); // NOI18N
 
-        jMenuItem1.setText(bundle.getString("HelpAbout(MenuItem)")); // NOI18N
-        jMenu5.add(jMenuItem1);
+        aboutMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/about.png"))); // NOI18N
+        aboutMenuItem.setText(bundle.getString("HelpAbout(MenuItem)")); // NOI18N
+        aboutMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                aboutMenuItemActionPerformed(evt);
+            }
+        });
+        jMenu5.add(aboutMenuItem);
 
         jMenuBar1.add(jMenu5);
 
@@ -572,14 +579,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearButtonActionPerformed
         clear();
     }//GEN-LAST:event_clearButtonActionPerformed
-
-    private void jRadioButtonMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonMenuItem1ActionPerformed
-        selectDictionary("EN_BG");
-    }//GEN-LAST:event_jRadioButtonMenuItem1ActionPerformed
-
-    private void jRadioButtonMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonMenuItem2ActionPerformed
-        selectDictionary("BG_EN");
-    }//GEN-LAST:event_jRadioButtonMenuItem2ActionPerformed
 
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
         System.exit(0);
@@ -655,9 +654,25 @@ public class SpellbookFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_fontMenuItemActionPerformed
 
+    private void enBgDictMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enBgDictMenuItemActionPerformed
+        selectDictionary("EN_BG");
+    }//GEN-LAST:event_enBgDictMenuItemActionPerformed
+
+    private void bgEnDictMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bgEnDictMenuItemActionPerformed
+        selectDictionary("BG_EN");
+    }//GEN-LAST:event_bgEnDictMenuItemActionPerformed
+
+    private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuItemActionPerformed
+        AboutDialog aboutDialog = new AboutDialog(this, true);
+        aboutDialog.setVisible(true);
+    }//GEN-LAST:event_aboutMenuItemActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem aboutMenuItem;
+    private javax.swing.JMenuItem bgEnDictMenuItem;
     private javax.swing.JButton clearButton;
     private javax.swing.JLabel drowLabel;
+    private javax.swing.JMenuItem enBgDictMenuItem;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenuItem fontMenuItem;
     private javax.swing.JMenu jMenu1;
@@ -666,10 +681,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem1;
-    private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel matchLabel;
