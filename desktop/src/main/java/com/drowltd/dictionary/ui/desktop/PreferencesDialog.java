@@ -48,11 +48,9 @@ public class PreferencesDialog extends javax.swing.JDialog {
 
         clipboardIntegrationCheckBox.setSelected(preferences.getBoolean("CLIPBOARD_INTEGRATION", false));
 
+        examWordsField.setDocument(new NumberDocument());
         // exam length in words
         examWordsField.setText("" + preferences.getInt("EXAM_WORDS", 10));
-
-        // TODO implement a numeric document
-        //examWordsField.setDocument();
 
         // build the look and feel section
         final LookAndFeelInfo[] lookAndFeelInfos = UIManager.getInstalledLookAndFeels();
@@ -171,8 +169,6 @@ public class PreferencesDialog extends javax.swing.JDialog {
             }
         });
 
-        examWordsField.setText("jTextField1");
-
         lookAndFeelComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         okButton.setText("OK");
@@ -205,18 +201,18 @@ public class PreferencesDialog extends javax.swing.JDialog {
                             .addComponent(jLabel5)
                             .addComponent(jLabel6))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lookAndFeelComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(examWordsField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(lookAndFeelComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(clipboardIntegrationCheckBox)
                             .addComponent(minimizeToTrayOnCloseCheckBox)
                             .addComponent(minimizeToTrayCheckBox)
-                            .addComponent(languageComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(languageComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(examWordsField)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(okButton)
                         .addGap(18, 18, 18)
                         .addComponent(cancelButton)))
-                .addContainerGap(73, Short.MAX_VALUE))
+                .addContainerGap(75, Short.MAX_VALUE))
         );
 
         jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {cancelButton, okButton});

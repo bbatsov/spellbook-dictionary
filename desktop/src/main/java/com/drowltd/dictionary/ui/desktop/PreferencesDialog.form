@@ -53,13 +53,13 @@
                               <Component id="jLabel6" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="lookAndFeelComboBox" min="-2" max="-2" attributes="0"/>
-                              <Component id="examWordsField" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="lookAndFeelComboBox" alignment="0" max="32767" attributes="1"/>
                               <Component id="clipboardIntegrationCheckBox" min="-2" max="-2" attributes="0"/>
                               <Component id="minimizeToTrayOnCloseCheckBox" min="-2" max="-2" attributes="0"/>
                               <Component id="minimizeToTrayCheckBox" min="-2" max="-2" attributes="0"/>
                               <Component id="languageComboBox" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="examWordsField" alignment="0" max="32767" attributes="1"/>
                           </Group>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
@@ -68,7 +68,7 @@
                           <Component id="cancelButton" linkSize="1" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace pref="73" max="32767" attributes="0"/>
+                  <EmptySpace pref="75" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -175,9 +175,6 @@
         <Component class="javax.swing.JCheckBox" name="clipboardIntegrationCheckBox">
         </Component>
         <Component class="javax.swing.JTextField" name="examWordsField">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="jTextField1"/>
-          </Properties>
         </Component>
         <Component class="javax.swing.JComboBox" name="lookAndFeelComboBox">
           <Properties>
