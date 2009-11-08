@@ -60,10 +60,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
     /** Creates new form SpellbookFrame */
     public SpellbookFrame() {
-        if (PREFS.get("LANG", "EN").equals("BG")) {
-            Locale.setDefault(new Locale("bg", "BG"));
-            LOGGER.info("Selected locate is " + Locale.getDefault());
-        }
+        
 
         //dynamically determine an adequate frame size
         Toolkit toolkit = Toolkit.getDefaultToolkit();

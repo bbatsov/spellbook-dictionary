@@ -8,6 +8,7 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 import java.awt.EventQueue;
+import java.util.Locale;
 import java.util.prefs.Preferences;
 
 /**
@@ -16,12 +17,18 @@ import java.util.prefs.Preferences;
  * Time: 1:26:50 PM
  */
 public class SpellbookApp {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellbookApp.class);
 
     public static void main(final String[] args) {
-        try {
-            Preferences preferences = Preferences.userNodeForPackage(SpellbookApp.class);
+        Preferences preferences = Preferences.userNodeForPackage(SpellbookApp.class);
 
+        if (preferences.get("LANG", "EN").equals("BG")) {
+            Locale.setDefault(new Locale("bg", "BG"));
+            LOGGER.info("Selected locate is " + Locale.getDefault());
+        }
+
+        try {
             String selectedLookAndFeel = preferences.get("LOOK_AND_FEEL", "System");
 
             if (selectedLookAndFeel.equals("System")) {
@@ -36,21 +43,18 @@ public class SpellbookApp {
                     }
                 }
             }
-        }
-        catch (UnsupportedLookAndFeelException e) {
+        } catch (UnsupportedLookAndFeelException e) {
             // handle exception
-        }
-        catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             // handle exception
-        }
-        catch (InstantiationException e) {
+        } catch (InstantiationException e) {
             // handle exception
-        }
-        catch (IllegalAccessException e) {
+        } catch (IllegalAccessException e) {
             // handle exception
         }
 
         EventQueue.invokeLater(new Runnable() {
+
             @Override
             public void run() {
                 final SpellbookFrame tApp = new SpellbookFrame();
