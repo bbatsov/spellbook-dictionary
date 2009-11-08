@@ -14,23 +14,14 @@ import com.drowltd.dictionary.core.db.DictDb;
 import com.drowltd.dictionary.core.exception.DictionaryDbLockedException;
 import com.drowltd.dictionary.core.i18n.Translator;
 import com.drowltd.dictionary.ui.desktop.IconManager.IconSize;
-import java.awt.AWTException;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.MenuItem;
-import java.awt.PopupMenu;
-import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -48,20 +39,17 @@ import org.slf4j.LoggerFactory;
 public class SpellbookFrame extends javax.swing.JFrame {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellbookFrame.class);
-
     private static final Translator TRANSLATOR = new Translator("SpellbookForm");
     private static final Preferences PREFS = Preferences.userNodeForPackage(SpellbookApp.class);
-
     private DictDb dictDb;
     private List<String> words;
     private ClipboardTextTransfer clipboardTextTransfer;
     private String lastTransfer;
     private ScheduledExecutorService clipboardExecutorService;
+    private TrayIcon trayIcon;
 
     /** Creates new form SpellbookFrame */
     public SpellbookFrame() {
-        
-
         //dynamically determine an adequate frame size
         Toolkit toolkit = Toolkit.getDefaultToolkit();
 
@@ -77,7 +65,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         setIconImage(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE16).getImage());
 
         //create tray
-        createTraySection();
+        trayIcon = SpellbookTray.createTraySection(this);
 
         addWindowListener(new WindowAdapter() {
 
@@ -130,72 +118,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
         if (PREFS.getBoolean("CLIPBOARD_INTEGRATION", false)) {
             activateClipboardMonitoring();
         }
-    }
-
-    private void createTraySection() {
-        //Check the SystemTray support
-        if (!SystemTray.isSupported()) {
-            System.out.println("SystemTray is not supported");
-            return;
-        }
-        final PopupMenu popup = new PopupMenu();
-        final TrayIcon trayIcon =
-                new TrayIcon(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE48).getImage());
-        trayIcon.setImageAutoSize(true);
-        trayIcon.setToolTip("Spellbook Dictionary");
-        final SystemTray tray = SystemTray.getSystemTray();
-
-        // Create a popup menu components
-        MenuItem aboutItem = new MenuItem("About");
-        MenuItem exitItem = new MenuItem("Exit");
-
-        //Add components to popup menu
-        popup.add(aboutItem);
-        popup.addSeparator();
-        popup.add(exitItem);
-
-        trayIcon.setPopupMenu(popup);
-
-        try {
-            tray.add(trayIcon);
-        } catch (AWTException e) {
-            System.out.println("TrayIcon could not be added.");
-            return;
-        }
-
-        trayIcon.addMouseListener(new MouseAdapter() {
-
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                LOGGER.info("Tray icon clicked");
-
-                if (getState() == JFrame.ICONIFIED) {
-                    LOGGER.info("App is iconified");
-                    setState(JFrame.NORMAL);
-                }
-
-                SpellbookFrame.this.setVisible(!SpellbookFrame.this.isVisible());
-            }
-        });
-
-        aboutItem.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null,
-                        TRANSLATOR.translate("About(Message)"));
-            }
-        });
-
-        exitItem.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                LOGGER.info("Exit from tray");
-                tray.remove(trayIcon);
-                System.exit(0);
-            }
-        });
     }
 
     private void clear() {
@@ -586,54 +508,54 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         if (preferencesDialog.showDialog()) {
             String oldLanguage = PREFS.get("LANG", "EN");
-                    final String newLanguage = preferencesDialog.getSelectedLanguage().toString();
-                    PREFS.put("LANG", newLanguage);
+            final String newLanguage = preferencesDialog.getSelectedLanguage().toString();
+            PREFS.put("LANG", newLanguage);
 
-                    if (!oldLanguage.equals(newLanguage)) {
-                        LOGGER.info("Language changed from " + oldLanguage + " to " + newLanguage);
-                        JOptionPane.showMessageDialog(this, TRANSLATOR.translate("Restart(Message)"));
-                    }
+            if (!oldLanguage.equals(newLanguage)) {
+                LOGGER.info("Language changed from " + oldLanguage + " to " + newLanguage);
+                JOptionPane.showMessageDialog(this, TRANSLATOR.translate("Restart(Message)"));
+            }
 
-                    final boolean minimizeToTrayEnabled = preferencesDialog.isMinimizeToTrayEnabled();
+            final boolean minimizeToTrayEnabled = preferencesDialog.isMinimizeToTrayEnabled();
 
-                    if (minimizeToTrayEnabled) {
-                        LOGGER.info("Minimize to tray is enabled");
-                    } else {
-                        LOGGER.info("Minimize to tray is disabled");
-                    }
+            if (minimizeToTrayEnabled) {
+                LOGGER.info("Minimize to tray is enabled");
+            } else {
+                LOGGER.info("Minimize to tray is disabled");
+            }
 
-                    PREFS.putBoolean("MIN_TO_TRAY", minimizeToTrayEnabled);
+            PREFS.putBoolean("MIN_TO_TRAY", minimizeToTrayEnabled);
 
-                    boolean minimizeToTrayOnCloseEnabled = preferencesDialog.isMinimizeToTrayOnCloseEnabled();
+            boolean minimizeToTrayOnCloseEnabled = preferencesDialog.isMinimizeToTrayOnCloseEnabled();
 
-                    if (minimizeToTrayOnCloseEnabled) {
-                        LOGGER.info("Minimize to tray on close is enabled");
-                        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-                    } else {
-                        LOGGER.info("Minimize to tray on close is disabled");
-                    }
+            if (minimizeToTrayOnCloseEnabled) {
+                LOGGER.info("Minimize to tray on close is enabled");
+                setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+            } else {
+                LOGGER.info("Minimize to tray on close is disabled");
+            }
 
-                    PREFS.putBoolean("CLOSE_TO_TRAY", minimizeToTrayOnCloseEnabled);
+            PREFS.putBoolean("CLOSE_TO_TRAY", minimizeToTrayOnCloseEnabled);
 
-                    final boolean clipboardIntegrationEnabled = preferencesDialog.isClipboardIntegrationEnabled();
+            final boolean clipboardIntegrationEnabled = preferencesDialog.isClipboardIntegrationEnabled();
 
-                    if (clipboardIntegrationEnabled) {
-                        activateClipboardMonitoring();
-                        LOGGER.info("Clipboard integration is enabled");
-                    } else {
-                        shutdownClipboardMonitoring();
-                        LOGGER.info("Clipboard integration is disabled");
-                    }
+            if (clipboardIntegrationEnabled) {
+                activateClipboardMonitoring();
+                LOGGER.info("Clipboard integration is enabled");
+            } else {
+                shutdownClipboardMonitoring();
+                LOGGER.info("Clipboard integration is disabled");
+            }
 
-                    PREFS.putBoolean("CLIPBOARD_INTEGRATION", clipboardIntegrationEnabled);
+            PREFS.putBoolean("CLIPBOARD_INTEGRATION", clipboardIntegrationEnabled);
 
-                    PREFS.putInt("EXAM_WORDS", preferencesDialog.getExamWords());
+            PREFS.putInt("EXAM_WORDS", preferencesDialog.getExamWords());
 
-                    String selectedLookAndFeel = preferencesDialog.getSelectedLookAndFeel();
+            String selectedLookAndFeel = preferencesDialog.getSelectedLookAndFeel();
 
-                    if (!selectedLookAndFeel.equals(PREFS.get("LOOK_AND_FEEL", "System"))) {
-                        PREFS.put("LOOK_AND_FEEL", selectedLookAndFeel);
-                    }
+            if (!selectedLookAndFeel.equals(PREFS.get("LOOK_AND_FEEL", "System"))) {
+                PREFS.put("LOOK_AND_FEEL", selectedLookAndFeel);
+            }
         }
     }//GEN-LAST:event_prefsMenuItemActionPerformed
 
@@ -663,7 +585,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
         AboutDialog aboutDialog = new AboutDialog(this, true);
         aboutDialog.setVisible(true);
     }//GEN-LAST:event_aboutMenuItemActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JMenuItem bgEnDictMenuItem;
