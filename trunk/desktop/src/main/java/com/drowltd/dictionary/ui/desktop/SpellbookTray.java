@@ -30,7 +30,7 @@ public class SpellbookTray {
     public static TrayIcon createTraySection(final JFrame appFrame) {
         //Check the SystemTray support
         if (!SystemTray.isSupported()) {
-            System.out.println("SystemTray is not supported");
+            LOGGER.info("SystemTray is not supported");
             return null;
         }
 
@@ -56,7 +56,7 @@ public class SpellbookTray {
         try {
             tray.add(trayIcon);
         } catch (AWTException e) {
-            System.out.println("TrayIcon could not be added.");
+            LOGGER.error("TrayIcon could not be added.");
             return null;
         }
 
@@ -79,6 +79,7 @@ public class SpellbookTray {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                LOGGER.info("About dialog opened from tray");
                 AboutDialog aboutDialog = new AboutDialog(appFrame, true);
                 aboutDialog.setVisible(true);
             }
