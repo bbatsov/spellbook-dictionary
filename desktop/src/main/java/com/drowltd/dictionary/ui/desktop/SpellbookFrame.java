@@ -43,7 +43,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private static final Preferences PREFS = Preferences.userNodeForPackage(SpellbookApp.class);
     private DictDb dictDb;
     private List<String> words;
-    private ClipboardTextTransfer clipboardTextTransfer;
+    private ClipboardIntegration clipboardIntegration;
     private String lastTransfer;
     private ScheduledExecutorService clipboardExecutorService;
     private TrayIcon trayIcon;
@@ -133,13 +133,13 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         if (clipboardExecutorService == null || clipboardExecutorService.isShutdown()) {
 
-            clipboardTextTransfer = new ClipboardTextTransfer();
+            clipboardIntegration = new ClipboardIntegration();
 
             Runnable clipboardRunnable = new Runnable() {
 
                 @Override
                 public void run() {
-                    String transferredText = clipboardTextTransfer.getClipboardContents();
+                    String transferredText = clipboardIntegration.getClipboardContents().trim();
 
                     if (lastTransfer == null) {
                         lastTransfer = transferredText;
@@ -157,7 +157,12 @@ public class SpellbookFrame extends javax.swing.JFrame {
                             int index = words.indexOf(searchString);
                             wordsList.setSelectedIndex(index);
                             wordsList.ensureIndexIsVisible(index);
-                            wordTranslationTextArea.setText(dictDb.getTranslation(searchString));
+                            final String translation = dictDb.getTranslation(searchString);
+                            wordTranslationTextArea.setText(translation);
+
+                            if (!SpellbookFrame.this.isVisible()) {
+                                trayIcon.displayMessage(searchString, translation, TrayIcon.MessageType.INFO);
+                            }
                         }
                     }
                 }
