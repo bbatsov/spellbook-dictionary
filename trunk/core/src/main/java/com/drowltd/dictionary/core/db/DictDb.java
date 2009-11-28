@@ -1,10 +1,14 @@
 package com.drowltd.dictionary.core.db;
 
 import com.drowltd.dictionary.core.exception.DictionaryDbLockedException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +39,7 @@ public class DictDb {
         String password = "bozhidar";
 
         // by default use english-bulgarian dictionary
-        selectedDictionary = "en_bg";
+        selectedDictionary = "EN_BG";
 
         try {
             connection = DriverManager.getConnection(url, user, password);
