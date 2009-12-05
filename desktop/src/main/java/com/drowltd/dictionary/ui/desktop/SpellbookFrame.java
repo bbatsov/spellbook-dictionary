@@ -10,7 +10,7 @@
  */
 package com.drowltd.dictionary.ui.desktop;
 
-import com.drowltd.dictionary.core.db.DictDb;
+import com.drowltd.dictionary.core.db.DatabaseService;
 import com.drowltd.dictionary.core.exception.DictionaryDbLockedException;
 import com.drowltd.dictionary.core.i18n.Translator;
 import com.drowltd.dictionary.ui.desktop.IconManager.IconSize;
@@ -41,7 +41,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellbookFrame.class);
     private static final Translator TRANSLATOR = new Translator("SpellbookForm");
     private static final Preferences PREFS = Preferences.userNodeForPackage(SpellbookApp.class);
-    private DictDb dictDb;
+    private DatabaseService databaseService;
     private List<String> words;
     private ClipboardIntegration clipboardIntegration;
     private String lastTransfer;
@@ -98,15 +98,15 @@ public class SpellbookFrame extends javax.swing.JFrame {
         }
 
         try {
-            DictDb.init(PREFS.get("PATH_TO_DB", ""));
+            DatabaseService.init(PREFS.get("PATH_TO_DB", ""));
         } catch (DictionaryDbLockedException e) {
             JOptionPane.showMessageDialog(null, TRANSLATOR.translate("AlreadyRunning(Message)"));
             System.exit(0);
         }
 
-        dictDb = DictDb.getInstance();
+        databaseService = DatabaseService.getInstance();
 
-        words = dictDb.getWordsFromSelectedDictionary();
+        words = databaseService.getWordsFromSelectedDictionary();
 
         initComponents();
 
@@ -157,7 +157,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
                             int index = words.indexOf(searchString);
                             wordsList.setSelectedIndex(index);
                             wordsList.ensureIndexIsVisible(index);
-                            final String translation = dictDb.getTranslation(searchString);
+                            final String translation = databaseService.getTranslation(searchString);
                             wordTranslationTextArea.setText(translation);
 
                             if (!SpellbookFrame.this.isVisible()) {
@@ -243,14 +243,14 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
     public void selectDictionary(String dictionary) {
         // if we select the currently selected dictionary we don't have to do nothing
-        if (dictionary.equalsIgnoreCase(dictDb.getSelectedDictionary())) {
+        if (dictionary.equalsIgnoreCase(databaseService.getSelectedDictionary())) {
             LOGGER.info("Dictionary " + dictionary + " is already selected");
             return;
         }
 
-        dictDb.setSelectedDictionary(dictionary);
+        databaseService.setSelectedDictionary(dictionary);
 
-        words = dictDb.getWordsFromSelectedDictionary();
+        words = databaseService.getWordsFromSelectedDictionary();
         wordsList.setListData(words.toArray());
 
         if (dictionary.equalsIgnoreCase("en_bg")) {
@@ -464,9 +464,9 @@ public class SpellbookFrame extends javax.swing.JFrame {
         int lastIndex = evt.getLastIndex();
 
         if (wordsList.isSelectedIndex(firstIndex)) {
-            wordTranslationTextArea.setText(dictDb.getTranslation(words.get(firstIndex)));
+            wordTranslationTextArea.setText(databaseService.getTranslation(words.get(firstIndex)));
         } else {
-            wordTranslationTextArea.setText(dictDb.getTranslation(words.get(lastIndex)));
+            wordTranslationTextArea.setText(databaseService.getTranslation(words.get(lastIndex)));
         }
 
         matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
@@ -481,9 +481,13 @@ public class SpellbookFrame extends javax.swing.JFrame {
             clear();
         }
 
+        String approximation = databaseService.getApproximation(searchString);
+
+        // if we have an exact match for the search string or the search string in lowercase
         if (words.contains(searchString) || words.contains(searchString.toLowerCase())) {
             int index = words.indexOf(searchString);
 
+            // if the index is negative the match was for the lowercase version
             if (index < 0) {
                 searchString = searchString.toLowerCase();
                 index = words.indexOf(searchString);
@@ -491,9 +495,17 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
             wordsList.setSelectedIndex(index);
             wordsList.ensureIndexIsVisible(index);
-            wordTranslationTextArea.setText(dictDb.getTranslation(searchString));
+            wordTranslationTextArea.setText(databaseService.getTranslation(searchString));
             matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
             matchLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
+        } else if (approximation != null) {
+            int index = words.indexOf(approximation);
+
+            wordsList.setSelectedIndex(index);
+            wordsList.ensureIndexIsVisible(index);
+            wordTranslationTextArea.setText(databaseService.getTranslation(approximation));
+            matchLabel.setIcon(IconManager.getImageIcon("bell2_gold.png", IconSize.SIZE24));
+            matchLabel.setToolTipText(TRANSLATOR.translate("PartialMatchFound(ToolTip)"));
         } else {
             matchLabel.setIcon(IconManager.getImageIcon("bell2_red.png", IconSize.SIZE24));
             matchLabel.setToolTipText(TRANSLATOR.translate("NoMatchFound(ToolTip)"));
