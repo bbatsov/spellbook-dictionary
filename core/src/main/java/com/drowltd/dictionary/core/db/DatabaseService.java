@@ -19,10 +19,10 @@ import java.util.Map;
  * Date: Sep 6, 2009
  * Time: 4:43:46 PM
  */
-public class DictDb {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DictDb.class);
+public class DatabaseService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseService.class);
 
-    private static DictDb instance;
+    private static DatabaseService instance;
 
     private Connection connection;
 
@@ -31,7 +31,7 @@ public class DictDb {
     // simple caching mechanism to avoid db operations
     private Map<String, List<String>> dictionaryCache = new HashMap<String, List<String>>();
 
-    private DictDb(String dictDbFile) throws DictionaryDbLockedException {
+    private DatabaseService(String dictDbFile) throws DictionaryDbLockedException {
         LOGGER.info("dictionary database: " + dictDbFile.replace(".data.db", ""));
 
         String url = "jdbc:h2:" + dictDbFile.replace(".data.db", "");
@@ -55,10 +55,10 @@ public class DictDb {
     }
 
     public static void init(String dictDbFile) throws DictionaryDbLockedException {
-        instance = new DictDb(dictDbFile);
+        instance = new DatabaseService(dictDbFile);
     }
 
-    public static DictDb getInstance() {
+    public static DatabaseService getInstance() {
         return instance;
     }
 
@@ -103,6 +103,24 @@ public class DictDb {
 
             resultSet.next();
             return resultSet.getString("TRANSLATION");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public String getApproximation(String searchKey) {
+        LOGGER.info("Getting approximation for " + searchKey);
+
+        try {
+            PreparedStatement ps = connection.prepareStatement("select word from " + selectedDictionary + " where word like '" + searchKey.replaceAll("'", "''") + "%' order by word asc");
+
+            final ResultSet resultSet = ps.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getString("WORD");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
