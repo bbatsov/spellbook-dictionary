@@ -8,12 +8,12 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.drowltd.dictionary.ui.desktop</groupId>
-    <artifactId>dictionary-desktop</artifactId>
+    <groupId>com.drowltd.dictionary.ui</groupId>
+    <artifactId>dictionary-ui</artifactId>
     <version>1.0</version>
 
-    <name>Spellbook Dictionary Desktop</name>
-    <description>The desktop UI of Spellbook, written in Swing</description>
+    <name>Spellbook Dictionary UI</name>
+    <description>The user interface of Spellbook, written in Swing</description>
 
     <build>
         <plugins>
