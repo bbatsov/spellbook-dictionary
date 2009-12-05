@@ -8,12 +8,11 @@
     <version>1.0</version>
 
     <name>Spellbook Dictionary</name>
-    <description>Spellbook Dictionary is multiplatfom dictionary with several UI</description>
+    <description>Spellbook Dictionary is multiplatfom dictionary written in Java</description>
 
     <modules>
         <module>core</module>
         <module>desktop</module>
-        <module>web</module>
         <module>utils</module>
     </modules>
 
