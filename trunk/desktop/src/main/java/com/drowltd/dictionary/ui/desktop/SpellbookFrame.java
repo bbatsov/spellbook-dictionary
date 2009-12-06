@@ -38,16 +38,24 @@ import org.slf4j.LoggerFactory;
  * @author bozhidar
  */
 public class SpellbookFrame extends javax.swing.JFrame {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellbookFrame.class);
+
     private static final Translator TRANSLATOR = new Translator("SpellbookForm");
+
     private static final Preferences PREFS = Preferences.userNodeForPackage(SpellbookApp.class);
+
     private DatabaseService databaseService;
+
     private List<String> words;
+
     private ClipboardIntegration clipboardIntegration;
+
     private String lastTransfer;
+
     private ScheduledExecutorService clipboardExecutorService;
+
     private TrayIcon trayIcon;
+
     private Dictionary selectedDictionary = Dictionary.EN_BG;
 
     /** Creates new form SpellbookFrame */
@@ -70,7 +78,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
         trayIcon = SpellbookTray.createTraySection(this);
 
         addWindowListener(new WindowAdapter() {
-
             @Override
             public void windowIconified(WindowEvent e) {
                 if (PREFS.getBoolean("MIN_TO_TRAY", false)) {
@@ -141,7 +148,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
             clipboardIntegration = new ClipboardIntegration();
 
             Runnable clipboardRunnable = new Runnable() {
-
                 @Override
                 public void run() {
                     String transferredText = clipboardIntegration.getClipboardContents().trim();
@@ -158,16 +164,33 @@ public class SpellbookFrame extends javax.swing.JFrame {
                         wordSearchField.selectAll();
                         lastTransfer = transferredText;
 
+                        String approximation;
+                        boolean match = false;
+
                         if (words.contains(searchString)) {
                             int index = words.indexOf(searchString);
+
                             wordsList.setSelectedIndex(index);
                             wordsList.ensureIndexIsVisible(index);
-                            final String translation = databaseService.getTranslation(selectedDictionary, searchString);
-                            wordTranslationTextArea.setText(translation);
 
-                            if (!SpellbookFrame.this.isVisible()) {
-                                trayIcon.displayMessage(searchString, translation, TrayIcon.MessageType.INFO);
-                            }
+                            match = true;
+
+                            matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
+                            matchLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
+                        } else if ((approximation = databaseService.getApproximation(selectedDictionary, searchString)) != null) {
+                            int index = words.indexOf(approximation);
+
+                            wordsList.setSelectedIndex(index);
+                            wordsList.ensureIndexIsVisible(index);
+                            
+                            match = true;
+                            
+                            matchLabel.setIcon(IconManager.getImageIcon("bell2_gold.png", IconSize.SIZE24));
+                            matchLabel.setToolTipText(TRANSLATOR.translate("PartialMatchFound(ToolTip)"));
+                        }
+
+                        if (match && !SpellbookFrame.this.isVisible()) {
+                            trayIcon.displayMessage(searchString, wordTranslationTextArea.getText(), TrayIcon.MessageType.INFO);
                         }
                     }
                 }
@@ -301,6 +324,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
         enBgDictMenuItem = new javax.swing.JMenuItem();
         bgEnDictMenuItem = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
         jMenu5 = new javax.swing.JMenu();
         aboutMenuItem = new javax.swing.JMenuItem();
 
@@ -437,7 +462,16 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu3);
 
-        jMenu4.setText(bundle.getString("Exams(Menu)")); // NOI18N
+        jMenu4.setText(bundle.getString("Tools(Menu)")); // NOI18N
+
+        jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/blackboard.png"))); // NOI18N
+        jMenuItem1.setText(bundle.getString("Exam(MenuItem)")); // NOI18N
+        jMenu4.add(jMenuItem1);
+
+        jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/spellcheck.png"))); // NOI18N
+        jMenuItem2.setText(bundle.getString("SpellCheck(MenuItem)")); // NOI18N
+        jMenu4.add(jMenuItem2);
+
         jMenuBar1.add(jMenu4);
 
         jMenu5.setText(bundle.getString("Help(Menu)")); // NOI18N
@@ -507,6 +541,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
             // so there is no need to obtain the translation explicitly here
             wordsList.setSelectedIndex(index);
             wordsList.ensureIndexIsVisible(index);
+
             matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
             matchLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
         } else if ((approximation  = databaseService.getApproximation(selectedDictionary, searchString)) != null) {
@@ -514,6 +549,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
             wordsList.setSelectedIndex(index);
             wordsList.ensureIndexIsVisible(index);
+
             matchLabel.setIcon(IconManager.getImageIcon("bell2_gold.png", IconSize.SIZE24));
             matchLabel.setToolTipText(TRANSLATOR.translate("PartialMatchFound(ToolTip)"));
         } else {
@@ -626,6 +662,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
