@@ -23,10 +23,12 @@ import java.util.Map;
  * @since  0.1
  */
 public class DatabaseService {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseService.class);
+
     private static DatabaseService instance;
+
     private Connection connection;
+
     // simple caching mechanism to avoid db operations
     private Map<Dictionary, List<String>> dictionaryCache = new HashMap<Dictionary, List<String>>();
 
@@ -152,7 +154,10 @@ public class DatabaseService {
             LOGGER.info("Getting approximation for " + searchKey);
 
             StringBuilder builder = new StringBuilder(searchKey);
+
             try {
+                // we start looking for approximate matches of the full search key, but if we fail - we start looking
+                // for shorter matches
                 do {
                     PreparedStatement ps = connection.prepareStatement("select word from " + dictionary + " where word like '" + builder.toString().replaceAll("'", "''") + "%' order by word asc");
 
@@ -168,6 +173,7 @@ public class DatabaseService {
                 e.printStackTrace();
             }
         }
+
         return null;
     }
 }
