@@ -18,8 +18,8 @@ import java.util.Arrays;
  * Time: 12:17:52 AM
  */
 public class Parser {
-    private static final String DICT_FILE = "/home/bozhidar/downloads/bg-en_dual/data/bg-en.dat";
-    private static final String OUT_FILE = "output_bg_en.txt";
+    private static final String DICT_FILE = "/home/bozhidar/downloads/bg-en_dual/data/en-bg.dat";
+    private static final String OUT_FILE = "output_en_bg.txt";
 
     public static void main(String[] args) throws IOException {
         RandomAccessFile file = new RandomAccessFile(DICT_FILE, "r");
