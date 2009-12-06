@@ -11,6 +11,7 @@
 package com.drowltd.dictionary.ui.desktop;
 
 import com.drowltd.dictionary.core.db.DatabaseService;
+import com.drowltd.dictionary.core.db.Dictionary;
 import com.drowltd.dictionary.core.exception.DictionaryDbLockedException;
 import com.drowltd.dictionary.core.i18n.Translator;
 import com.drowltd.dictionary.ui.desktop.IconManager.IconSize;
@@ -47,6 +48,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private String lastTransfer;
     private ScheduledExecutorService clipboardExecutorService;
     private TrayIcon trayIcon;
+    private Dictionary selectedDictionary = Dictionary.EN_BG;
 
     /** Creates new form SpellbookFrame */
     public SpellbookFrame() {
@@ -106,7 +108,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         databaseService = DatabaseService.getInstance();
 
-        words = databaseService.getWordsFromSelectedDictionary();
+        words = databaseService.getWordsFromDictionary(selectedDictionary);
 
         initComponents();
 
@@ -121,6 +123,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
     }
 
     private void clear() {
+        LOGGER.info("Clear action invoked");
+
         wordSearchField.setText(null);
         wordSearchField.requestFocus();
         wordsList.ensureIndexIsVisible(0);
@@ -158,7 +162,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
                             int index = words.indexOf(searchString);
                             wordsList.setSelectedIndex(index);
                             wordsList.ensureIndexIsVisible(index);
-                            final String translation = databaseService.getTranslation(searchString);
+                            final String translation = databaseService.getTranslation(selectedDictionary, searchString);
                             wordTranslationTextArea.setText(translation);
 
                             if (!SpellbookFrame.this.isVisible()) {
@@ -242,24 +246,29 @@ public class SpellbookFrame extends javax.swing.JFrame {
         clearButton.setFont(font);
     }
 
-    public void selectDictionary(String dictionary) {
+    public void selectDictionary(Dictionary dictionary) {
         // if we select the currently selected dictionary we don't have to do nothing
-        if (dictionary.equalsIgnoreCase(databaseService.getSelectedDictionary())) {
+        if (selectedDictionary == dictionary) {
             LOGGER.info("Dictionary " + dictionary + " is already selected");
             return;
         }
 
-        databaseService.setSelectedDictionary(dictionary);
+        // otherwise begin the switch to the new dictionary by cleaning everything in the UI
+        clear();
 
-        words = databaseService.getWordsFromSelectedDictionary();
+        selectedDictionary = dictionary;
+
+        words = databaseService.getWordsFromDictionary(dictionary);
         wordsList.setListData(words.toArray());
 
-        if (dictionary.equalsIgnoreCase("en_bg")) {
+        if (dictionary == Dictionary.EN_BG) {
             statusBar.setText(String.format(TRANSLATOR.translate("EnBgDictSize(Label)"), words.size()));
             statusBar.setIcon(IconManager.getImageIcon("en-bg.png", IconSize.SIZE24));
-        } else {
+        } else if (dictionary == Dictionary.BG_EN) {
             statusBar.setText(String.format(TRANSLATOR.translate("BgEnDictSize(Label)"), words.size()));
             statusBar.setIcon(IconManager.getImageIcon("bg-en.png", IconSize.SIZE24));
+        } else {
+            throw new IllegalArgumentException("Unknown dictionary " + dictionary);
         }
     }
 
@@ -465,9 +474,9 @@ public class SpellbookFrame extends javax.swing.JFrame {
         int lastIndex = evt.getLastIndex();
 
         if (wordsList.isSelectedIndex(firstIndex)) {
-            wordTranslationTextArea.setText(databaseService.getTranslation(words.get(firstIndex)));
+            wordTranslationTextArea.setText(databaseService.getTranslation(selectedDictionary, words.get(firstIndex)));
         } else {
-            wordTranslationTextArea.setText(databaseService.getTranslation(words.get(lastIndex)));
+            wordTranslationTextArea.setText(databaseService.getTranslation(selectedDictionary, words.get(lastIndex)));
         }
 
         matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
@@ -500,7 +509,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
             wordsList.ensureIndexIsVisible(index);
             matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
             matchLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
-        } else if ((approximation  = databaseService.getApproximation(searchString)) != null) {
+        } else if ((approximation  = databaseService.getApproximation(selectedDictionary, searchString)) != null) {
             int index = words.indexOf(approximation);
 
             wordsList.setSelectedIndex(index);
@@ -592,11 +601,11 @@ public class SpellbookFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_fontMenuItemActionPerformed
 
     private void enBgDictMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enBgDictMenuItemActionPerformed
-        selectDictionary("EN_BG");
+        selectDictionary(Dictionary.EN_BG);
     }//GEN-LAST:event_enBgDictMenuItemActionPerformed
 
     private void bgEnDictMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bgEnDictMenuItemActionPerformed
-        selectDictionary("BG_EN");
+        selectDictionary(Dictionary.BG_EN);
     }//GEN-LAST:event_bgEnDictMenuItemActionPerformed
 
     private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuItemActionPerformed
