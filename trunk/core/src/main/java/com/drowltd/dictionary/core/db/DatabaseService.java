@@ -15,19 +15,18 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * User: bozhidar
- * Date: Sep 6, 2009
- * Time: 4:43:46 PM
+ * A thin layer of abstraction on top of the database, that provides the basic
+ * database access services, like dictionary selection,
+ * word translation and word approximation.
+ *
+ * @author Bozhidar Batsov
+ * @since  0.1
  */
 public class DatabaseService {
     private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseService.class);
-
     private static DatabaseService instance;
-
     private Connection connection;
-
     private String selectedDictionary;
-
     // simple caching mechanism to avoid db operations
     private Map<String, List<String>> dictionaryCache = new HashMap<String, List<String>>();
 
@@ -54,6 +53,13 @@ public class DatabaseService {
         }
     }
 
+    /**
+     * Bootstraps the database service.
+     *
+     * @param dictDbFile the dictionary database file
+     *
+     * @throws DictionaryDbLockedException if another process is already using the db file
+     */
     public static void init(String dictDbFile) throws DictionaryDbLockedException {
         instance = new DatabaseService(dictDbFile);
     }
@@ -62,6 +68,12 @@ public class DatabaseService {
         return instance;
     }
 
+    /**
+     * Retrieves all words from a selected dictionary. The words from the different dictionaries
+     * are cached for future invocations of the method.
+     *
+     * @return a list of all words in the selected dictionary
+     */
     public List<String> getWordsFromSelectedDictionary() {
         LOGGER.info("Loading selected dictionary " + selectedDictionary);
 
@@ -93,45 +105,82 @@ public class DatabaseService {
         return words;
     }
 
+    /**
+     * Retrieve the translation for a word. Since the word to be translated is assumed to be in the
+     * selected dictionary an error will occur is the method is passed an non-existing word.
+     *
+     * @param word the word to be translated
+     *
+     * @return the translation of the word
+     */
     public String getTranslation(String word) {
-        LOGGER.info("Getting translation for " + word);
+        if (word != null && !word.isEmpty()) {
 
-        try {
-            PreparedStatement ps = connection.prepareStatement("select translation from " + selectedDictionary + " where word='" + word.replaceAll("'", "''") + "'");
+            LOGGER.info("Getting translation for " + word);
 
-            final ResultSet resultSet = ps.executeQuery();
+            try {
+                PreparedStatement ps = connection.prepareStatement("select translation from " + selectedDictionary + " where word='" + word.replaceAll("'", "''") + "'");
 
-            resultSet.next();
-            return resultSet.getString("TRANSLATION");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+                final ResultSet resultSet = ps.executeQuery();
 
-        return null;
-    }
-
-    public String getApproximation(String searchKey) {
-        LOGGER.info("Getting approximation for " + searchKey);
-
-        try {
-            PreparedStatement ps = connection.prepareStatement("select word from " + selectedDictionary + " where word like '" + searchKey.replaceAll("'", "''") + "%' order by word asc");
-
-            final ResultSet resultSet = ps.executeQuery();
-
-            if (resultSet.next()) {
-                return resultSet.getString("WORD");
+                // this method is only sensible for existing words
+                if (resultSet.next()) {
+                    return resultSet.getString("TRANSLATION");
+                } else {
+                    throw new IllegalArgumentException("Selected word for translation " + word + " is not present in the database");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
 
         return null;
     }
 
+    /**
+     * An auxilliary method to aid the exact search. It looks for the first word, that
+     * starts with the current search key
+     *
+     * @param searchKey the current search key(the content of the search text field)
+     * 
+     * @return the first word, starting with the search key
+     */
+    public String getApproximation(String searchKey) {
+        if (searchKey != null && !searchKey.isEmpty()) {
+
+            LOGGER.info("Getting approximation for " + searchKey);
+
+            try {
+                PreparedStatement ps = connection.prepareStatement("select word from " + selectedDictionary + " where word like '" + searchKey.replaceAll("'", "''") + "%' order by word asc");
+
+                final ResultSet resultSet = ps.executeQuery();
+
+                if (resultSet.next()) {
+                    return resultSet.getString("WORD");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        return null;
+    }
+
+    /**
+     * Retrieves the name of the currently selected dictionary.
+     *
+     * @return the name of the currently selected dictionary
+     */
     public String getSelectedDictionary() {
         return selectedDictionary;
     }
 
+    /**
+     * Changes the selected dictionary.
+     *
+     * @param selectedDictionary the name of the dictionary to be selected
+     */
     public void setSelectedDictionary(String selectedDictionary) {
         this.selectedDictionary = selectedDictionary;
     }

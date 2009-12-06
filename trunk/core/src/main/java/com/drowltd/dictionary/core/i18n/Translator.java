@@ -4,9 +4,10 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
- * User: bozhidar
- * Date: Sep 18, 2009
- * Time: 10:55:37 AM
+ * A simple wrapper around resource bundles, useful for translation purposes.
+ *
+ * @author Bozhidar Batsov
+ * @since 0.1
  */
 public class Translator {
     private ResourceBundle resourceBundle;
