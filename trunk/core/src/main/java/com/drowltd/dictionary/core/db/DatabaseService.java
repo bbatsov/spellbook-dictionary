@@ -23,12 +23,10 @@ import java.util.Map;
  * @since  0.1
  */
 public class DatabaseService {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseService.class);
-
     private static DatabaseService instance;
-
     private Connection connection;
-
     // simple caching mechanism to avoid db operations
     private Map<Dictionary, List<String>> dictionaryCache = new HashMap<Dictionary, List<String>>();
 
@@ -121,7 +119,7 @@ public class DatabaseService {
             LOGGER.info("Getting translation for " + word);
 
             try {
-                PreparedStatement ps = connection.prepareStatement("select translation from " +  dictionary + " where word='" + word.replaceAll("'", "''") + "'");
+                PreparedStatement ps = connection.prepareStatement("select translation from " + dictionary + " where word='" + word.replaceAll("'", "''") + "'");
 
                 final ResultSet resultSet = ps.executeQuery();
 
@@ -153,17 +151,22 @@ public class DatabaseService {
 
             LOGGER.info("Getting approximation for " + searchKey);
 
-            try {
-                PreparedStatement ps = connection.prepareStatement("select word from " + dictionary + " where word like '" + searchKey.replaceAll("'", "''") + "%' order by word asc");
+            StringBuilder builder = new StringBuilder(searchKey);
+            do {
+                try {
+                    PreparedStatement ps = connection.prepareStatement("select word from " + dictionary + " where word like '" + builder.toString().replaceAll("'", "''") + "%' order by word asc");
 
-                final ResultSet resultSet = ps.executeQuery();
+                    final ResultSet resultSet = ps.executeQuery();
 
-                if (resultSet.next()) {
-                    return resultSet.getString("WORD");
+                    if (resultSet.next()) {
+                        return resultSet.getString("WORD");
+                    }
+
+                    builder.deleteCharAt(builder.length() - 1);
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            } while (builder.length() > 0);
         }
 
         return null;
