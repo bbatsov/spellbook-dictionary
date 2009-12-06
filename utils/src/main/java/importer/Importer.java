@@ -17,25 +17,26 @@ public class Importer {
     private static final String DELIMITER = "<========>";
 
     public static void main(String[] args) {
-        String url = "jdbc:h2:/home/bozhidar/projects/DrowDictionary/ZDict/src/main/resources/db/dictionary";
+        String url = "jdbc:h2:/home/bozhidar/projects/db/dictionary";
         String user = "bozhidar";
         String password = "bozhidar";
+        String dict = "en_bg";
 
         try {
             Connection connection = DriverManager.getConnection(url, user, password);
 
-            PreparedStatement ps1 = connection.prepareStatement("drop table bg_en");
+            PreparedStatement ps1 = connection.prepareStatement("drop table " + dict);
 
             ps1.executeUpdate();
 
-            PreparedStatement ps = connection.prepareStatement("CREATE TABLE BG_EN(" +
+            PreparedStatement ps = connection.prepareStatement("CREATE TABLE " + dict + "(" +
                     "ID INT PRIMARY KEY," +
                     "WORD VARCHAR(255) UNIQUE," +
                     "TRANSLATION VARCHAR(20000)" +
                     ")");
 
             ps.executeUpdate();
-            File file = new File("output_bg_en.txt");
+            File file = new File("output_" + dict + ".txt");
 
             Scanner scanner = new Scanner(file);
 
@@ -63,7 +64,7 @@ public class Importer {
                 word = word.replaceAll("'", "''");
                 tr = tr.replaceAll("'", "''");
 
-                PreparedStatement ps2 = connection.prepareStatement("insert into BG_EN values(" + id++ + ", '" +
+                PreparedStatement ps2 = connection.prepareStatement("insert into " + dict + " values(" + id++ + ", '" +
                         word + "', '" + tr + "')");
 
                 ps2.executeUpdate();
