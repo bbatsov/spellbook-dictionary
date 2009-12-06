@@ -122,6 +122,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
     private void clear() {
         wordSearchField.setText(null);
+        wordSearchField.requestFocus();
         wordsList.ensureIndexIsVisible(0);
         wordsList.clearSelection();
         wordTranslationTextArea.setText(null);
@@ -476,12 +477,12 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private void wordSearchFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_wordSearchFieldKeyReleased
         String searchString = wordSearchField.getText();
 
-        // in case the user types backspaces
+        // in case the user types enough backspaces
         if (searchString.isEmpty()) {
             clear();
         }
 
-        String approximation = databaseService.getApproximation(searchString);
+        String approximation;
 
         // if we have an exact match for the search string or the search string in lowercase
         if (words.contains(searchString) || words.contains(searchString.toLowerCase())) {
@@ -493,17 +494,17 @@ public class SpellbookFrame extends javax.swing.JFrame {
                 index = words.indexOf(searchString);
             }
 
+            // invoking this method will trigger the list value changed listener,
+            // so there is no need to obtain the translation explicitly here
             wordsList.setSelectedIndex(index);
             wordsList.ensureIndexIsVisible(index);
-            wordTranslationTextArea.setText(databaseService.getTranslation(searchString));
             matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
             matchLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
-        } else if (approximation != null) {
+        } else if ((approximation  = databaseService.getApproximation(searchString)) != null) {
             int index = words.indexOf(approximation);
 
             wordsList.setSelectedIndex(index);
             wordsList.ensureIndexIsVisible(index);
-            wordTranslationTextArea.setText(databaseService.getTranslation(approximation));
             matchLabel.setIcon(IconManager.getImageIcon("bell2_gold.png", IconSize.SIZE24));
             matchLabel.setToolTipText(TRANSLATOR.translate("PartialMatchFound(ToolTip)"));
         } else {
