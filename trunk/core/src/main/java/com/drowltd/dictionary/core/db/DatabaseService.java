@@ -24,11 +24,13 @@ import java.util.Map;
  */
 public class DatabaseService {
     private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseService.class);
+
     private static DatabaseService instance;
+
     private Connection connection;
-    private String selectedDictionary;
+
     // simple caching mechanism to avoid db operations
-    private Map<String, List<String>> dictionaryCache = new HashMap<String, List<String>>();
+    private Map<Dictionary, List<String>> dictionaryCache = new HashMap<Dictionary, List<String>>();
 
     private DatabaseService(String dictDbFile) throws DictionaryDbLockedException {
         LOGGER.info("dictionary database: " + dictDbFile.replace(".data.db", ""));
@@ -36,9 +38,6 @@ public class DatabaseService {
         String url = "jdbc:h2:" + dictDbFile.replace(".data.db", "");
         String user = "bozhidar";
         String password = "bozhidar";
-
-        // by default use english-bulgarian dictionary
-        selectedDictionary = "EN_BG";
 
         try {
             connection = DriverManager.getConnection(url, user, password);
@@ -72,22 +71,24 @@ public class DatabaseService {
      * Retrieves all words from a selected dictionary. The words from the different dictionaries
      * are cached for future invocations of the method.
      *
+     * @param dictionary the target dictionary
+     *
      * @return a list of all words in the selected dictionary
      */
-    public List<String> getWordsFromSelectedDictionary() {
-        LOGGER.info("Loading selected dictionary " + selectedDictionary);
+    public List<String> getWordsFromDictionary(Dictionary dictionary) {
+        LOGGER.info("Loading selected dictionary " + dictionary);
 
-        LOGGER.info("Checking dictionary cache for " + selectedDictionary);
+        LOGGER.info("Checking dictionary cache for " + dictionary);
 
-        if (dictionaryCache.containsKey(selectedDictionary)) {
-            LOGGER.info("Dictionary " + selectedDictionary + " loaded from cache");
-            return dictionaryCache.get(selectedDictionary);
+        if (dictionaryCache.containsKey(dictionary)) {
+            LOGGER.info("Dictionary " + dictionary + " loaded from cache");
+            return dictionaryCache.get(dictionary);
         }
 
         final List<String> words = new ArrayList<String>();
 
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT word FROM " + selectedDictionary);
+            PreparedStatement ps = connection.prepareStatement("SELECT word FROM " + dictionary);
 
             final ResultSet rs = ps.executeQuery();
 
@@ -99,8 +100,8 @@ public class DatabaseService {
             e.printStackTrace();
         }
 
-        LOGGER.info("Caching " + selectedDictionary + " for future use");
-        dictionaryCache.put(selectedDictionary, words);
+        LOGGER.info("Caching " + dictionary + " for future use");
+        dictionaryCache.put(dictionary, words);
 
         return words;
     }
@@ -109,17 +110,18 @@ public class DatabaseService {
      * Retrieve the translation for a word. Since the word to be translated is assumed to be in the
      * selected dictionary an error will occur is the method is passed an non-existing word.
      *
+     * @param dictionary the source dictionary
      * @param word the word to be translated
      *
      * @return the translation of the word
      */
-    public String getTranslation(String word) {
+    public String getTranslation(Dictionary dictionary, String word) {
         if (word != null && !word.isEmpty()) {
 
             LOGGER.info("Getting translation for " + word);
 
             try {
-                PreparedStatement ps = connection.prepareStatement("select translation from " + selectedDictionary + " where word='" + word.replaceAll("'", "''") + "'");
+                PreparedStatement ps = connection.prepareStatement("select translation from " +  dictionary + " where word='" + word.replaceAll("'", "''") + "'");
 
                 final ResultSet resultSet = ps.executeQuery();
 
@@ -141,17 +143,18 @@ public class DatabaseService {
      * An auxilliary method to aid the exact search. It looks for the first word, that
      * starts with the current search key
      *
+     * @param dictionary the source dictionary
      * @param searchKey the current search key(the content of the search text field)
      * 
      * @return the first word, starting with the search key
      */
-    public String getApproximation(String searchKey) {
+    public String getApproximation(Dictionary dictionary, String searchKey) {
         if (searchKey != null && !searchKey.isEmpty()) {
 
             LOGGER.info("Getting approximation for " + searchKey);
 
             try {
-                PreparedStatement ps = connection.prepareStatement("select word from " + selectedDictionary + " where word like '" + searchKey.replaceAll("'", "''") + "%' order by word asc");
+                PreparedStatement ps = connection.prepareStatement("select word from " + dictionary + " where word like '" + searchKey.replaceAll("'", "''") + "%' order by word asc");
 
                 final ResultSet resultSet = ps.executeQuery();
 
@@ -161,27 +164,8 @@ public class DatabaseService {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-
         }
 
         return null;
-    }
-
-    /**
-     * Retrieves the name of the currently selected dictionary.
-     *
-     * @return the name of the currently selected dictionary
-     */
-    public String getSelectedDictionary() {
-        return selectedDictionary;
-    }
-
-    /**
-     * Changes the selected dictionary.
-     *
-     * @param selectedDictionary the name of the dictionary to be selected
-     */
-    public void setSelectedDictionary(String selectedDictionary) {
-        this.selectedDictionary = selectedDictionary;
     }
 }
