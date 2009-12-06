@@ -152,8 +152,8 @@ public class DatabaseService {
             LOGGER.info("Getting approximation for " + searchKey);
 
             StringBuilder builder = new StringBuilder(searchKey);
-            do {
-                try {
+            try {
+                do {
                     PreparedStatement ps = connection.prepareStatement("select word from " + dictionary + " where word like '" + builder.toString().replaceAll("'", "''") + "%' order by word asc");
 
                     final ResultSet resultSet = ps.executeQuery();
@@ -163,12 +163,11 @@ public class DatabaseService {
                     }
 
                     builder.deleteCharAt(builder.length() - 1);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            } while (builder.length() > 0);
+                } while (builder.length() > 0);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-
         return null;
     }
 }
