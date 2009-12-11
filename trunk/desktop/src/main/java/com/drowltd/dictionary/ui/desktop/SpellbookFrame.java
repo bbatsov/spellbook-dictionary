@@ -15,6 +15,7 @@ import com.drowltd.dictionary.core.db.Dictionary;
 import com.drowltd.dictionary.core.exception.DictionaryDbLockedException;
 import com.drowltd.dictionary.core.i18n.Translator;
 import com.drowltd.dictionary.ui.desktop.IconManager.IconSize;
+import com.drowltd.dictionary.ui.spellcheck.SpellCheckFrame;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
@@ -470,6 +471,11 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/spellcheck.png"))); // NOI18N
         jMenuItem2.setText(bundle.getString("SpellCheck(MenuItem)")); // NOI18N
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
         jMenu4.add(jMenuItem2);
 
         jMenuBar1.add(jMenu4);
@@ -648,6 +654,11 @@ public class SpellbookFrame extends javax.swing.JFrame {
         AboutDialog aboutDialog = new AboutDialog(this, true);
         aboutDialog.setVisible(true);
     }//GEN-LAST:event_aboutMenuItemActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        SpellCheckFrame.getInstance().setVisible(true);
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JMenuItem bgEnDictMenuItem;
