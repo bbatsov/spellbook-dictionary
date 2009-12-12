@@ -1,5 +1,6 @@
 package com.drowltd.dictionary.ui.spellcheck;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +40,7 @@ public class MisspelledWordsRegistry {
         return null;
     }
 
-    public void corrected(MisspelledWord misspelledWord) {
+    public synchronized  void corrected(MisspelledWord misspelledWord) {
         if (misspelled == null) {
             LOGGER.warn("corrected() is called before is initialized MisspelledWordsRegistry");
             return;
@@ -50,7 +51,7 @@ public class MisspelledWordsRegistry {
             throw new NullPointerException("misspelledWord is null");
         }
 
-        if (!misspelled.containsKey(misspelledWord.getWord())) {
+        if (!contains(misspelledWord.getWord())) {
             LOGGER.error("misspelledWord is not in the registry");
             return;
         }
@@ -59,14 +60,56 @@ public class MisspelledWordsRegistry {
         misspelled.remove(misspelledWord.getWord());
     }
 
+    public Collection<MisspelledWord> getMisspelled(){
+        return Collections.unmodifiableCollection(misspelled.values());
+    }
+
+    public void addMisspelled(MisspelledWord misspelledWord) {
+        if (misspelledWord == null) {
+            LOGGER.error("misspelledWord is null");
+            throw new NullPointerException("misspelledWord is null");
+        }
+
+        if(!contains(misspelledWord.getWord())){
+            misspelled.put(misspelledWord.getWord(), misspelledWord);
+        }
+
+    }
+
+    public void addOccurance(String mWord, int startIndex) {
+        if (mWord == null) {
+            LOGGER.error("word is null");
+            throw new NullPointerException("word is null");
+        }
+
+        if (startIndex < 0) {
+            LOGGER.error("startIndex < 0");
+            throw new IllegalArgumentException("startIndex < 0");
+        }
+
+        if (!contains(mWord)) {
+            return;
+        }
+
+        misspelled.get(mWord).addOccurance(mWord, startIndex);
+    }
+
+    public boolean contains(String word) {
+        return misspelled.keySet().contains(word);
+    }
+
+    public void clear() {
+        misspelled.clear();
+    }
+
     public void putAll(Map<String, ? extends MisspelledWord> misspelled) {
         if (misspelled == null) {
             LOGGER.error("misspelled is null");
             throw new NullPointerException("misspelled is null");
         }
 
-        this.misspelled.clear();
-        
+        clear();
+
         synchronized (misspelled) {
             this.misspelled.putAll(misspelled);
         }

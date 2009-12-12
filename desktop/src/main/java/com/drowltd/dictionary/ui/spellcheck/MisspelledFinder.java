@@ -24,11 +24,12 @@ public class MisspelledFinder {
     private static Logger LOGGER = LoggerFactory.getLogger(MisspelledFinder.class);
     private static final MisspelledFinder INSTANCE = new MisspelledFinder();
     private final Map<String, MisspelledWord> misspelled = new HashMap<String, MisspelledWord>();
+    private final MisspelledWordsRegistry registry = MisspelledWordsRegistry.getInstance();
     private SpellChecker spellChecker;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private Future<?> currentFTask;
     private Highlighter highlighter;
-    private final Highlighter.HighlightPainter painter = new UnderlineHighlighter.UnderlineHighlightPainter(Color.red);
+    private final Highlighter.HighlightPainter painter = new UnderlineHighlightPainter(Color.red);
 
     public static MisspelledFinder getInstance() {
         return INSTANCE != null ? INSTANCE : null;
@@ -77,19 +78,19 @@ public class MisspelledFinder {
     }
 
     private void addHighligths() {
-        if (highlighter == null || misspelled.isEmpty()) {
+        if (highlighter == null || registry.getMisspelled().isEmpty()) {
             return;
         }
 
         EventQueue.invokeLater(new Runnable() {
 
             @Override
-            public void run() {
-                synchronized (misspelled) {
-                    for (MisspelledWord misspelledWord : misspelled.values()) {
+            public void run() {  
+                synchronized (registry) {
+                    for (MisspelledWord misspelledWord : registry.getMisspelled()) {
                         for (MisspelledWord.Position position : misspelledWord.getOccurances()) {
                             try {
-                                highlighter.addHighlight(position.getStartIndex(), position.getEndIndex()+1, painter);
+                                highlighter.addHighlight(position.getStartIndex(), position.getEndIndex() + 1, painter);
                             } catch (BadLocationException ex) {
                                 LOGGER.error("start: " + position.getStartIndex() + " end:" + position.getEndIndex() + " " + ex.getMessage());
                             }
@@ -121,14 +122,14 @@ public class MisspelledFinder {
 
             LOGGER.info("search started");
 
-            misspelled.clear();
+            synchronized (registry) {
+                registry.clear();
 
-            Pattern p = Pattern.compile("\\w+");
-            Matcher m = p.matcher(text.getText());
+                Pattern p = Pattern.compile("\\w+");
+                Matcher m = p.matcher(text.getText());
 
-            int index = 0;
+                int index = 0;
 
-            synchronized (misspelled) {
                 while (m.find(index)) {
                     String mWord = m.group();
 
@@ -139,15 +140,15 @@ public class MisspelledFinder {
 
                         LOGGER.info("misspelled word found: " + mWord + " startIndex: " + (start + text.getOffset()) + " endIndex: " + (mWord.length() + start + text.getOffset()));
 
-                        if (misspelled.keySet().contains(mWord)) {
+                        if (registry.contains(mWord)) {
                             LOGGER.info("misspelled word already in the Factory, adding occurance");
 
-                            misspelled.get(mWord).addOccurance(mWord, start + text.getOffset());
+                            registry.addOccurance(mWord, start + text.getOffset());
 
                         } else {
                             LOGGER.info("misspelled word not in the Factory, adding");
 
-                            misspelled.put(mWord, new MisspelledWord(mWord, start + text.getOffset()));
+                            registry.addMisspelled(new MisspelledWord(mWord, start + text.getOffset()));
                         }
 
                     } else {
@@ -159,7 +160,6 @@ public class MisspelledFinder {
             }
 
             addHighligths();
-            MisspelledWordsRegistry.getInstance().putAll(misspelled);
 
             LOGGER.info("search ended");
         }
