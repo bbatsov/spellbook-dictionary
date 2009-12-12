@@ -1,3 +1,4 @@
+
 package com.drowltd.dictionary.ui.spellcheck;
 
 import java.awt.Color;
@@ -5,10 +6,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
-
 import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultHighlighter;
-import javax.swing.text.Highlighter;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.LayeredHighlighter;
 import javax.swing.text.Position;
@@ -18,39 +16,11 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Ivan Valchev
+ * @author iivalchev
  */
-public class UnderlineHighlighter extends DefaultHighlighter {
+    public class UnderlineHighlightPainter extends LayeredHighlighter.LayerPainter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UnderlineHighlighter.class);
-    // Shared painter used for default highlighting
-    private static final Highlighter.HighlightPainter sharedPainter = new UnderlineHighlightPainter(
-            null);
-    // Painter used for this highlighter
-    private Highlighter.HighlightPainter painter;
-
-    public UnderlineHighlighter(Color c) {
-        painter = (c == null ? sharedPainter : new UnderlineHighlightPainter(c));
-    }
-
-    // Convenience method to add a highlight with
-    // the default painter.
-    public Object addHighlight(int p0, int p1) throws BadLocationException {
-        return addHighlight(p0, p1, painter);
-    }
-
-    @Override
-    public void setDrawsLayeredHighlights(boolean newValue) {
-        // Illegal if false - we only support layered highlights
-        if (newValue == false) {
-            throw new IllegalArgumentException(
-                    "UnderlineHighlighter only draws layered highlights");
-        }
-        super.setDrawsLayeredHighlights(true);
-    }
-
-    // Painter for underlined highlights
-    public static class UnderlineHighlightPainter extends LayeredHighlighter.LayerPainter {
+        private static Logger LOGGER = LoggerFactory.getLogger("UnderlineHighlightPainter");
 
         private Color color; // The color for the underline
 
@@ -100,4 +70,3 @@ public class UnderlineHighlighter extends DefaultHighlighter {
             return alloc;
         }
     }
-}

@@ -114,14 +114,12 @@ public class SpellCheckFrame extends javax.swing.JFrame implements PropertyChang
     }//GEN-LAST:event_jTextPaneMouseClicked
 
     private void jTextPaneKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextPaneKeyReleased
-        if (isSearchTriggerer(evt)) {
 
             if (keyReleasedTimer.isRunning()) {
                 keyReleasedTimer.restart();
             } else {
                 keyReleasedTimer.start();
             }
-        }
     }//GEN-LAST:event_jTextPaneKeyReleased
     /**
      * @param args the command line arguments
@@ -244,22 +242,6 @@ public class SpellCheckFrame extends javax.swing.JFrame implements PropertyChang
             progressMonitor.setProgress(progress);
         }
 
-    }
-
-    //@todo rewrite
-    private boolean isSearchTriggerer(KeyEvent evt) {
-        if (evt == null) {
-            return false;
-        }
-
-        int keyCode = evt.getKeyCode();
-        return (keyCode == KeyEvent.VK_BACK_SPACE || keyCode == KeyEvent.VK_DELETE
-                || keyCode == KeyEvent.VK_SPACE || keyCode == KeyEvent.VK_TAB
-                || keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_RIGHT
-                || keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_DOWN
-                || keyCode == KeyEvent.VK_PAGE_UP || keyCode == KeyEvent.VK_PAGE_DOWN
-                || keyCode == KeyEvent.VK_HOME || keyCode == KeyEvent.VK_END
-                || keyCode == KeyEvent.VK_ENTER || (evt.isControlDown() && keyCode == KeyEvent.VK_V));
     }
 
     /**
