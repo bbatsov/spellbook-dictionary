@@ -15,7 +15,8 @@ public class MisspelledWordsRegistry {
 
     private static final MisspelledWordsRegistry INSTANCE = new MisspelledWordsRegistry();
     private static final Logger LOGGER = LoggerFactory.getLogger(MisspelledWordsRegistry.class);
-    private final Map<String, MisspelledWord> misspelled = Collections.synchronizedMap(new HashMap<String, MisspelledWord>());
+    
+    private final Map<String, MisspelledWord> misspelled = new HashMap<String, MisspelledWord>();
 
     public static MisspelledWordsRegistry getInstance() {
         return INSTANCE;
@@ -40,7 +41,7 @@ public class MisspelledWordsRegistry {
         return null;
     }
 
-    public synchronized  void corrected(MisspelledWord misspelledWord) {
+    public void corrected(MisspelledWord misspelledWord) {
         if (misspelled == null) {
             LOGGER.warn("corrected() is called before is initialized MisspelledWordsRegistry");
             return;
@@ -60,7 +61,7 @@ public class MisspelledWordsRegistry {
         misspelled.remove(misspelledWord.getWord());
     }
 
-    public Collection<MisspelledWord> getMisspelled(){
+    public Collection<MisspelledWord> getMisspelled() {
         return Collections.unmodifiableCollection(misspelled.values());
     }
 
@@ -70,7 +71,7 @@ public class MisspelledWordsRegistry {
             throw new NullPointerException("misspelledWord is null");
         }
 
-        if(!contains(misspelledWord.getWord())){
+        if (!contains(misspelledWord.getWord())) {
             misspelled.put(misspelledWord.getWord(), misspelledWord);
         }
 
@@ -108,9 +109,8 @@ public class MisspelledWordsRegistry {
             throw new NullPointerException("misspelled is null");
         }
 
-        clear();
-
         synchronized (misspelled) {
+            clear();
             this.misspelled.putAll(misspelled);
         }
     }

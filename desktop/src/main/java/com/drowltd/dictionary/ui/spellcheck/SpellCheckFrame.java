@@ -13,7 +13,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -30,7 +29,6 @@ import javax.swing.JViewport;
 import javax.swing.ProgressMonitor;
 import javax.swing.Timer;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.Highlighter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,10 +41,15 @@ public class SpellCheckFrame extends javax.swing.JFrame implements PropertyChang
     private static final SpellCheckFrame INSTANCE = new SpellCheckFrame();
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellCheckFrame.class);
     private static final Translator TRANSLATOR = new Translator("SpellbookForm");
+
+    private final MisspelledWordsRegistry registry = MisspelledWordsRegistry.getInstance();
     private SpellCheckPopupMenu popupMenu;
+    private SpellCheckHighlighter checkHighlighter;
+
     private SpellChecker spellChecker;
     private ProgressMonitor progressMonitor;
     private SpellCheckerLoadingWorker operation;
+    
     private Timer keyReleasedTimer;
     private Timer adjustmentValueTimer;
     private final int INTERVAL = 550;
@@ -115,11 +118,12 @@ public class SpellCheckFrame extends javax.swing.JFrame implements PropertyChang
 
     private void jTextPaneKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextPaneKeyReleased
 
-            if (keyReleasedTimer.isRunning()) {
-                keyReleasedTimer.restart();
-            } else {
-                keyReleasedTimer.start();
-            }
+        checkHighlighter.removeHighlight(jTextPane.getCaretPosition(), jTextPane.getCaretPosition());
+        if (keyReleasedTimer.isRunning()) {
+            keyReleasedTimer.restart();
+        } else {
+            keyReleasedTimer.start();
+        }
     }//GEN-LAST:event_jTextPaneKeyReleased
     /**
      * @param args the command line arguments
@@ -147,8 +151,7 @@ public class SpellCheckFrame extends javax.swing.JFrame implements PropertyChang
             @Override
             public void run() {
                 popupMenu = SpellCheckPopupMenu.init(SpellCheckFrame.getInstance());
-                MisspelledFinder.getInstance().setHighlighter(jTextPane.getHighlighter());
-
+                checkHighlighter = SpellCheckHighlighter.init(jTextPane.getHighlighter());
                 loadSpellChecker();
             }
         });
@@ -321,7 +324,7 @@ public class SpellCheckFrame extends javax.swing.JFrame implements PropertyChang
             int end = m.end();
             int start = end - (misspelled.length());
 
-            removeHighligth(start, end);
+            checkHighlighter.removeHighlight(start, end);
             editableText.replaceText(start, end, correction);
 
         } while (true);
@@ -330,30 +333,11 @@ public class SpellCheckFrame extends javax.swing.JFrame implements PropertyChang
             jTextPane.setCaretPosition(cursorPosition);
         }
 
-        MisspelledWordsRegistry.getInstance().corrected(misspelledWord);
+        synchronized (registry) {
+            registry.corrected(misspelledWord);
+        }
 
         MisspelledFinder.getInstance().findMisspelled(SpellCheckFrame.getInstance().getVisibleText());
-    }
-
-    private void removeHighligth(int start, int end) {
-        if(start < 0 || end < 0){
-            LOGGER.error("start < 0 || end < 0");
-            return;
-        }
-
-        if(end - start <= 0){
-            LOGGER.error("end - start <= 0");
-            return;
-        }
-
-        Highlighter highlighter = jTextPane.getHighlighter();
-
-        Highlighter.Highlight[] highlights = highlighter.getHighlights();
-        for (Highlighter.Highlight h : highlights) {
-            if (h.getStartOffset() == start && h.getEndOffset() == end) {
-                highlighter.removeHighlight(h);
-            }
-        }
     }
 
     JTextPane getjTextPane() {

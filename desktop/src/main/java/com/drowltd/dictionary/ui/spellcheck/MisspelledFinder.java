@@ -1,17 +1,11 @@
 package com.drowltd.dictionary.ui.spellcheck;
 
 import com.drowltd.dictionary.core.spellcheck.SpellChecker;
-import java.awt.Color;
-import java.awt.EventQueue;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Highlighter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,16 +17,15 @@ public class MisspelledFinder {
 
     private static Logger LOGGER = LoggerFactory.getLogger(MisspelledFinder.class);
     private static final MisspelledFinder INSTANCE = new MisspelledFinder();
-    private final Map<String, MisspelledWord> misspelled = new HashMap<String, MisspelledWord>();
+
     private final MisspelledWordsRegistry registry = MisspelledWordsRegistry.getInstance();
+    private final SpellCheckHighlighter checkHighlighter = SpellCheckHighlighter.getInstance();
     private SpellChecker spellChecker;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private Future<?> currentFTask;
-    private Highlighter highlighter;
-    private final Highlighter.HighlightPainter painter = new UnderlineHighlightPainter(Color.red);
 
     public static MisspelledFinder getInstance() {
-        return INSTANCE != null ? INSTANCE : null;
+        return INSTANCE;
     }
 
     private MisspelledFinder() {
@@ -66,39 +59,6 @@ public class MisspelledFinder {
         }
 
         this.spellChecker = spellChecker;
-    }
-
-    public void setHighlighter(Highlighter highlighter) {
-        if (highlighter == null) {
-            LOGGER.error("highlighter is null");
-            throw new NullPointerException("highlighter is null");
-        }
-
-        this.highlighter = highlighter;
-    }
-
-    private void addHighligths() {
-        if (highlighter == null || registry.getMisspelled().isEmpty()) {
-            return;
-        }
-
-        EventQueue.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {  
-                synchronized (registry) {
-                    for (MisspelledWord misspelledWord : registry.getMisspelled()) {
-                        for (MisspelledWord.Position position : misspelledWord.getOccurances()) {
-                            try {
-                                highlighter.addHighlight(position.getStartIndex(), position.getEndIndex() + 1, painter);
-                            } catch (BadLocationException ex) {
-                                LOGGER.error("start: " + position.getStartIndex() + " end:" + position.getEndIndex() + " " + ex.getMessage());
-                            }
-                        }
-                    }
-                }
-            }
-        });
     }
 
     private class SearchTask implements Runnable {
@@ -154,13 +114,13 @@ public class MisspelledFinder {
                     } else {
                         int indexOfWord = text.getText().indexOf(mWord, index);
                         index = indexOfWord + mWord.length();
-
+                        
+                        checkHighlighter.removeHighlight(indexOfWord, indexOfWord + mWord.length());
                     }
                 }
             }
 
-            addHighligths();
-
+            checkHighlighter.highlightMisspelled();
             LOGGER.info("search ended");
         }
 

@@ -1,7 +1,6 @@
 package com.drowltd.dictionary.ui.spellcheck;
 
 import com.drowltd.dictionary.core.spellcheck.SpellChecker;
-import com.drowltd.dictionary.ui.desktop.ClipboardIntegration;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -25,33 +24,35 @@ public class SpellCheckPopupMenu extends JPopupMenu {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellCheckPopupMenu.class);
     private static SpellCheckPopupMenu INSTANCE;
     private static final IntegerComparator comparator = new IntegerComparator();
-    
-    private ClipboardIntegration clipboard = new ClipboardIntegration();
+
+    private final MisspelledWordsRegistry registry = MisspelledWordsRegistry.getInstance();
     private final SpellCheckFrame spellCheckFrame;
     private SpellChecker spellChecker;
-    private final JTextPane invokerJTextPane;
     private MisspelledWord misspelledWord;
+    
+    private final JTextPane invokerJTextPane;
     private final JMenuItem noCorrectionsItem;
     private int cursorPosition = -1;
 
     public static SpellCheckPopupMenu init(SpellCheckFrame spellCheckFrame) {
-        if(spellCheckFrame == null){
+        if (spellCheckFrame == null) {
             LOGGER.error("spellCheckFrame is null");
             throw new NullPointerException("spellCheckFrame is null");
         }
-        
-        if (INSTANCE == null) {
-            INSTANCE = new SpellCheckPopupMenu(spellCheckFrame);
-        }
+
+        INSTANCE = new SpellCheckPopupMenu(spellCheckFrame);
         return INSTANCE;
     }
 
     public static SpellCheckPopupMenu getInstance() {
-        return INSTANCE != null ? INSTANCE : null;
+        if (INSTANCE == null) {
+            throw new NullPointerException("SpellCheckPopupMenu init() should be called first");
+        }
+        return INSTANCE;
     }
 
     private SpellCheckPopupMenu(SpellCheckFrame spellCheckFrame) {
-        
+
         this.noCorrectionsItem = new JMenuItem("no corrections");
         this.noCorrectionsItem.setEnabled(false);
 
@@ -73,7 +74,7 @@ public class SpellCheckPopupMenu extends JPopupMenu {
         //@todo fix should remove only collection items
         removeAll();
 
-        misspelledWord = MisspelledWordsRegistry.getInstance().getMisspelledWord(cordsToCursor(mouseEvent));
+        misspelledWord = registry.getMisspelledWord(cordsToCursor(mouseEvent));
         if (misspelledWord != null) {
             addCorrectionsItems();
         }
