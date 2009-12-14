@@ -28,6 +28,8 @@ import javax.swing.JTextPane;
 import javax.swing.JViewport;
 import javax.swing.ProgressMonitor;
 import javax.swing.Timer;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,16 +43,13 @@ public class SpellCheckFrame extends javax.swing.JFrame implements PropertyChang
     private static final SpellCheckFrame INSTANCE = new SpellCheckFrame();
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellCheckFrame.class);
     private static final Translator TRANSLATOR = new Translator("SpellbookForm");
-
     private final MisspelledWordsRegistry registry = MisspelledWordsRegistry.getInstance();
     private SpellCheckPopupMenu popupMenu;
     private SpellCheckHighlighter checkHighlighter;
-
     private SpellChecker spellChecker;
     private ProgressMonitor progressMonitor;
     private SpellCheckerLoadingWorker operation;
-    
-    private Timer keyReleasedTimer;
+    private Timer documentChangedTimer;
     private Timer adjustmentValueTimer;
     private final int INTERVAL = 550;
 
@@ -82,11 +81,6 @@ public class SpellCheckFrame extends javax.swing.JFrame implements PropertyChang
                 jTextPaneMouseClicked(evt);
             }
         });
-        jTextPane.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                jTextPaneKeyReleased(evt);
-            }
-        });
         jScrollPane.setViewportView(jTextPane);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -115,16 +109,6 @@ public class SpellCheckFrame extends javax.swing.JFrame implements PropertyChang
         }
         //popupMenu.show(evt);
     }//GEN-LAST:event_jTextPaneMouseClicked
-
-    private void jTextPaneKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextPaneKeyReleased
-
-        checkHighlighter.removeHighlight(jTextPane.getCaretPosition(), jTextPane.getCaretPosition());
-        if (keyReleasedTimer.isRunning()) {
-            keyReleasedTimer.restart();
-        } else {
-            keyReleasedTimer.start();
-        }
-    }//GEN-LAST:event_jTextPaneKeyReleased
     /**
      * @param args the command line arguments
      */
@@ -146,6 +130,24 @@ public class SpellCheckFrame extends javax.swing.JFrame implements PropertyChang
             }
         });
 
+        jTextPane.getDocument().addDocumentListener(new DocumentListener() {
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                triggerMisspelledSearch(documentChangedTimer, true);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                triggerMisspelledSearch(documentChangedTimer, true);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                triggerMisspelledSearch(documentChangedTimer, true);
+            }
+        });
+
         EventQueue.invokeLater(new Runnable() {
 
             @Override
@@ -156,11 +158,11 @@ public class SpellCheckFrame extends javax.swing.JFrame implements PropertyChang
             }
         });
 
-        keyReleasedTimer = new Timer(INTERVAL, new ActionListener() {
+        documentChangedTimer = new Timer(INTERVAL, new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                keyReleasedTimer.stop();
+                documentChangedTimer.stop();
                 MisspelledFinder.getInstance().findMisspelled(getVisibleText());
             }
         });
@@ -176,17 +178,29 @@ public class SpellCheckFrame extends javax.swing.JFrame implements PropertyChang
 
     }
 
-    private void jScrollPaneAdjustmentValueChanged(AdjustmentEvent e) {
-
-        if (e.getValueIsAdjusting() || keyReleasedTimer.isRunning()) {
+    private void triggerMisspelledSearch(Timer timer, boolean removeHighlightOnCaret) {
+        if (timer == null) {
             return;
         }
 
-        if (adjustmentValueTimer.isRunning()) {
-            adjustmentValueTimer.restart();
-        } else {
-            adjustmentValueTimer.start();
+        if (removeHighlightOnCaret) {
+            checkHighlighter.removeHighlight(jTextPane.getCaretPosition(), jTextPane.getCaretPosition());
         }
+
+        if (timer.isRunning()) {
+            timer.restart();
+        } else {
+            timer.start();
+        }
+    }
+
+    private void jScrollPaneAdjustmentValueChanged(AdjustmentEvent e) {
+
+        if (e.getValueIsAdjusting() || documentChangedTimer.isRunning() || jTextPane.getSelectedText() != null) {
+            return;
+        }
+
+        triggerMisspelledSearch(adjustmentValueTimer, false);
     }
 
     /**

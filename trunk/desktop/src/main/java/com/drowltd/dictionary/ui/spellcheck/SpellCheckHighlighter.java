@@ -26,7 +26,7 @@ public class SpellCheckHighlighter {
     private Highlighter highlighter;
     private final MisspelledWordsRegistry registry = MisspelledWordsRegistry.getInstance();
     private final javax.swing.text.Highlighter.HighlightPainter painter = new UnderlineHighlightPainter(Color.red);
-    
+
     public static SpellCheckHighlighter init(javax.swing.text.Highlighter highlighter) {
         if (highlighter == null) {
             LOGGER.error("highlighter is null");
@@ -58,6 +58,7 @@ public class SpellCheckHighlighter {
             @Override
             public void run() {
                 synchronized (registry) {
+                    removeAllHighlights();
                     for (MisspelledWord misspelledWord : registry.getMisspelled()) {
                         for (MisspelledWord.Position position : misspelledWord.getOccurances()) {
                             try {
@@ -86,9 +87,16 @@ public class SpellCheckHighlighter {
         Highlighter.Highlight[] highlights = highlighter.getHighlights();
         for (Highlighter.Highlight h : highlights) {
             if (h.getStartOffset() <= start && end <= h.getEndOffset()) {
-                LOGGER.info("removing highlight: "+h.getStartOffset()+" "+h.getEndOffset());
+                LOGGER.info("removing highlight: " + h.getStartOffset() + " " + h.getEndOffset());
                 highlighter.removeHighlight(h);
             }
+        }
+    }
+
+    public void removeAllHighlights() {
+        Highlighter.Highlight[] highlights = highlighter.getHighlights();
+        for (Highlighter.Highlight h : highlights) {
+            highlighter.removeHighlight(h);
         }
     }
 

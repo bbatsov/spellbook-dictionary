@@ -114,8 +114,6 @@ public class MisspelledFinder {
                     } else {
                         int indexOfWord = text.getText().indexOf(mWord, index);
                         index = indexOfWord + mWord.length();
-                        
-                        checkHighlighter.removeHighlight(indexOfWord, indexOfWord + mWord.length());
                     }
                 }
             }
