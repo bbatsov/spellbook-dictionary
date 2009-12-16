@@ -27,6 +27,8 @@ public class SpellbookTray {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellbookTray.class);
     private static final Translator TRANSLATOR = new Translator("SpellbookTray");
 
+    private static TrayIcon trayIcon;
+
     public static TrayIcon createTraySection(final JFrame appFrame) {
         //Check the SystemTray support
         if (!SystemTray.isSupported()) {
@@ -35,7 +37,7 @@ public class SpellbookTray {
         }
 
         final PopupMenu popup = new PopupMenu();
-        final TrayIcon trayIcon =
+        trayIcon =
                 new TrayIcon(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE48).getImage());
         trayIcon.setImageAutoSize(true);
         trayIcon.setToolTip("Spellbook Dictionary");
@@ -72,6 +74,10 @@ public class SpellbookTray {
                 }
 
                 appFrame.setVisible(!appFrame.isVisible());
+
+                if (appFrame.isVisible()) {
+                    appFrame.toFront();
+                }
             }
         });
 
@@ -96,5 +102,11 @@ public class SpellbookTray {
         });
 
         return trayIcon;
+    }
+
+    public static void destroyTrayIcon() {
+        final SystemTray tray = SystemTray.getSystemTray();
+
+        tray.remove(trayIcon);
     }
 }

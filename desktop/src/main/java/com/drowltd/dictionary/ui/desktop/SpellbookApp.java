@@ -21,11 +21,17 @@ public class SpellbookApp {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellbookApp.class);
 
     public static void main(final String[] args) {
+        init();
+    }
+
+    public static void init() {
         Preferences preferences = Preferences.userNodeForPackage(SpellbookApp.class);
 
         if (preferences.get("LANG", "EN").equals("BG")) {
             Locale.setDefault(new Locale("bg", "BG"));
             LOGGER.info("Selected locate is " + Locale.getDefault());
+        } else {
+            Locale.setDefault(Locale.ENGLISH);
         }
 
         try {
