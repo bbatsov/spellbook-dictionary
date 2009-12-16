@@ -1,5 +1,7 @@
 package com.drowltd.dictionary.core.i18n;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -11,6 +13,8 @@ import java.util.ResourceBundle;
  */
 public class Translator {
     private ResourceBundle resourceBundle;
+
+    private static List<Translator> translators = new ArrayList<Translator>();
 
     public Translator(final String resourceBundleName) {
         resourceBundle = ResourceBundle.getBundle("i18n/" + resourceBundleName, Locale.getDefault());
@@ -27,5 +31,10 @@ public class Translator {
     // TODO implement factory method with caching
     public static Translator getTranslator(final String resourceBundleName) {
         return null;
+    }
+
+    // TODO reinit translators
+    public static void reset() {
+
     }
 }

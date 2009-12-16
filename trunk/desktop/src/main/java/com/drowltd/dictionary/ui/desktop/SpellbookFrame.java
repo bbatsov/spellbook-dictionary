@@ -61,6 +61,23 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
     /** Creates new form SpellbookFrame */
     public SpellbookFrame() {
+        while (true) {
+            if (verifyDbPresence(PREFS)) {
+                break;
+            }
+        }
+
+        try {
+            DatabaseService.init(PREFS.get("PATH_TO_DB", ""));
+        } catch (DictionaryDbLockedException e) {
+            JOptionPane.showMessageDialog(null, TRANSLATOR.translate("AlreadyRunning(Message)"), "Warning", JOptionPane.WARNING_MESSAGE);
+            System.exit(0);
+        }
+
+        databaseService = DatabaseService.getInstance();
+
+        words = databaseService.getWordsFromDictionary(selectedDictionary);
+
         //dynamically determine an adequate frame size
         Toolkit toolkit = Toolkit.getDefaultToolkit();
 
@@ -100,23 +117,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
                 }
             }
         });
-
-        while (true) {
-            if (verifyDbPresence(PREFS)) {
-                break;
-            }
-        }
-
-        try {
-            DatabaseService.init(PREFS.get("PATH_TO_DB", ""));
-        } catch (DictionaryDbLockedException e) {
-            JOptionPane.showMessageDialog(null, TRANSLATOR.translate("AlreadyRunning(Message)"));
-            System.exit(0);
-        }
-
-        databaseService = DatabaseService.getInstance();
-
-        words = databaseService.getWordsFromDictionary(selectedDictionary);
 
         initComponents();
 
@@ -209,6 +209,13 @@ public class SpellbookFrame extends javax.swing.JFrame {
             LOGGER.info("Shutting down clipboard monitoring");
             clipboardExecutorService.shutdown();
         }
+    }
+
+    private void restart() {
+        // TODO add your handling code here:
+        this.dispose();
+        SpellbookTray.destroyTrayIcon();
+        SpellbookApp.init();
     }
 
     private void setDefaultFont() {
@@ -317,6 +324,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         statusBar = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
+        restartMenuItem = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         fontMenuItem = new javax.swing.JMenuItem();
@@ -407,6 +415,15 @@ public class SpellbookFrame extends javax.swing.JFrame {
         );
 
         jMenu1.setText(bundle.getString("File(Menu)")); // NOI18N
+
+        restartMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/refresh.png"))); // NOI18N
+        restartMenuItem.setText(bundle.getString("FileRestart(MenuItem)")); // NOI18N
+        restartMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                restartMenuItemActionPerformed(evt);
+            }
+        });
+        jMenu1.add(restartMenuItem);
 
         exitMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/exit.png"))); // NOI18N
         exitMenuItem.setText(bundle.getString("FileExit(MenuItem)")); // NOI18N
@@ -582,7 +599,12 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
             if (!oldLanguage.equals(newLanguage)) {
                 LOGGER.info("Language changed from " + oldLanguage + " to " + newLanguage);
-                JOptionPane.showMessageDialog(this, TRANSLATOR.translate("Restart(Message)"));
+                int selectedOption = JOptionPane.showConfirmDialog(this, TRANSLATOR.translate("Restart(Message)"), "Restart",
+                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+
+                if (selectedOption == JOptionPane.OK_OPTION) {
+                    restart();
+                }
             }
 
             final boolean minimizeToTrayEnabled = preferencesDialog.isMinimizeToTrayEnabled();
@@ -659,6 +681,10 @@ public class SpellbookFrame extends javax.swing.JFrame {
         SpellCheckFrame.getInstance().setVisible(true);
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
+    private void restartMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restartMenuItemActionPerformed
+        restart();
+    }//GEN-LAST:event_restartMenuItemActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JMenuItem bgEnDictMenuItem;
@@ -680,6 +706,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel matchLabel;
     private javax.swing.JMenuItem prefsMenuItem;
+    private javax.swing.JMenuItem restartMenuItem;
     private javax.swing.JLabel statusBar;
     private javax.swing.JTextField wordSearchField;
     private javax.swing.JTextArea wordTranslationTextArea;
