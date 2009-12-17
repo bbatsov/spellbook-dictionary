@@ -11,9 +11,9 @@
 package com.drowltd.dictionary.ui.desktop;
 
 import com.drowltd.dictionary.core.i18n.Translator;
+import com.drowltd.dictionary.core.preferences.PreferencesManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.prefs.Preferences;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -35,22 +35,22 @@ public class PreferencesDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
 
-        Preferences preferences = Preferences.userNodeForPackage(SpellbookApp.class);
+        PreferencesManager pm = PreferencesManager.getInstance();
 
-        selectedLanguage = SupportedLanguages.valueOf(preferences.get("LANG", "EN"));
+        selectedLanguage = SupportedLanguages.valueOf(pm.get("LANG", "EN"));
 
         // set the selected values from preferences
         languageComboBox.setSelectedIndex(selectedLanguage == SupportedLanguages.EN ? 0 : 1);
 
-        minimizeToTrayCheckBox.setSelected(preferences.getBoolean("MIN_TO_TRAY", false));
+        minimizeToTrayCheckBox.setSelected(pm.getBoolean("MIN_TO_TRAY", false));
 
-        minimizeToTrayOnCloseCheckBox.setSelected(preferences.getBoolean("CLOSE_TO_TRAY", false));
+        minimizeToTrayOnCloseCheckBox.setSelected(pm.getBoolean("CLOSE_TO_TRAY", false));
 
-        clipboardIntegrationCheckBox.setSelected(preferences.getBoolean("CLIPBOARD_INTEGRATION", false));
+        clipboardIntegrationCheckBox.setSelected(pm.getBoolean("CLIPBOARD_INTEGRATION", false));
 
         examWordsField.setDocument(new NumberDocument());
         // exam length in words
-        examWordsField.setText("" + preferences.getInt("EXAM_WORDS", 10));
+        examWordsField.setText("" + pm.getInt("EXAM_WORDS", 10));
 
         // build the look and feel section
         final LookAndFeelInfo[] lookAndFeelInfos = UIManager.getInstalledLookAndFeels();
@@ -63,7 +63,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
 
         lookAndFeelComboBox.setModel(new DefaultComboBoxModel(lookAndFeelNames));
 
-        lookAndFeelComboBox.setSelectedItem(preferences.get("LOOK_AND_FEEL", "System"));
+        lookAndFeelComboBox.setSelectedItem(pm.get("LOOK_AND_FEEL", "System"));
 
         lookAndFeelComboBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {

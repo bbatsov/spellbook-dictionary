@@ -11,10 +11,9 @@
 
 package com.drowltd.dictionary.ui.desktop;
 
+import com.drowltd.dictionary.core.preferences.PreferencesManager;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
-import java.util.prefs.Preferences;
-import javax.swing.JComponent;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
@@ -33,25 +32,25 @@ public class FontChooserDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
 
-        Preferences preferences = Preferences.userNodeForPackage(SpellbookApp.class);
+        PreferencesManager pm = PreferencesManager.getInstance();
 
         String[] availableFonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
         fontList.setListData(availableFonts);
 
         // select the current font
-        String selectedFontName = preferences.get("FONT_NAME", "Serif");
+        String selectedFontName = pm.get("FONT_NAME", "Serif");
         fontList.setSelectedValue(selectedFontName, true);
 
         fontList.addListSelectionListener(new SelectionUpdater());
 
         fontSizeList.setListData(new Integer[]{8, 10, 12, 14, 16, 18});
 
-        int currentFontSize = preferences.getInt("FONT_SIZE", 12);
+        int currentFontSize = pm.getInt("FONT_SIZE", 12);
         fontSizeList.setSelectedValue(currentFontSize, true);
 
         fontSizeList.addListSelectionListener(new SelectionUpdater());
 
-        int currentFontStyle = preferences.getInt("FONT_STYLE", Font.PLAIN);
+        int currentFontStyle = pm.getInt("FONT_STYLE", Font.PLAIN);
 
         if ((currentFontStyle & Font.BOLD) == Font.BOLD) {
             boldCheckBox.setSelected(true);
