@@ -594,6 +594,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
     private void prefsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prefsMenuItemActionPerformed
         PreferencesDialog preferencesDialog = new PreferencesDialog(this, true);
+        preferencesDialog.setLocationRelativeTo(this);
 
         if (preferencesDialog.showDialog()) {
             String oldLanguage = PM.get("LANG", "EN");
@@ -655,6 +656,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
     private void fontMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fontMenuItemActionPerformed
         FontChooserDialog fontChooserDialog = new FontChooserDialog(this, true);
+        fontChooserDialog.setLocationRelativeTo(this);
 
         if (fontChooserDialog.showDialog()) {
             final Font selectedFont = fontChooserDialog.getSelectedFont();
@@ -677,6 +679,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
     private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuItemActionPerformed
         AboutDialog aboutDialog = new AboutDialog(this, true);
+        aboutDialog.setLocationRelativeTo(this);
         aboutDialog.setVisible(true);
     }//GEN-LAST:event_aboutMenuItemActionPerformed
 
