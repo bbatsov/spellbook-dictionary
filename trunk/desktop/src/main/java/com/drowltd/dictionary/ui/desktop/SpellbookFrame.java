@@ -160,6 +160,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
                     if (!transferredText.equalsIgnoreCase(lastTransfer)) {
                         LOGGER.info("'" + transferredText + "' received from clipboard");
                         String searchString = transferredText.split("\\W")[0].toLowerCase();
+                        String foundWord ="";
                         LOGGER.info("Search string from clipboard is " + searchString);
                         wordSearchField.setText(searchString);
                         wordSearchField.selectAll();
@@ -169,7 +170,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
                         boolean match = false;
 
                         if (words.contains(searchString)) {
-                            int index = words.indexOf(searchString);
+                            foundWord = searchString;
+                            int index = words.indexOf(foundWord);
 
                             wordsList.setSelectedIndex(index);
                             wordsList.ensureIndexIsVisible(index);
@@ -179,7 +181,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
                             matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
                             matchLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
                         } else if ((approximation = databaseService.getApproximation(selectedDictionary, searchString)) != null) {
-                            int index = words.indexOf(approximation);
+                            foundWord = approximation;
+                            int index = words.indexOf(foundWord);
 
                             wordsList.setSelectedIndex(index);
                             wordsList.ensureIndexIsVisible(index);
@@ -191,7 +194,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
                         }
 
                         if (match && !SpellbookFrame.this.isVisible()) {
-                            trayIcon.displayMessage(searchString, wordTranslationTextArea.getText(), TrayIcon.MessageType.INFO);
+                            trayIcon.displayMessage(foundWord, wordTranslationTextArea.getText(), TrayIcon.MessageType.INFO);
                         }
                     }
                 }
