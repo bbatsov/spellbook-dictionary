@@ -1,5 +1,6 @@
 package com.drowltd.dictionary.ui.desktop;
 
+import com.drowltd.dictionary.core.preferences.PreferencesManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,7 +10,6 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 import java.awt.EventQueue;
 import java.util.Locale;
-import java.util.prefs.Preferences;
 
 /**
  * User: bozhidar
@@ -25,9 +25,11 @@ public class SpellbookApp {
     }
 
     public static void init() {
-        Preferences preferences = Preferences.userNodeForPackage(SpellbookApp.class);
+        PreferencesManager.init(SpellbookApp.class);
 
-        if (preferences.get("LANG", "EN").equals("BG")) {
+        PreferencesManager pm = PreferencesManager.getInstance();
+
+        if (pm.get("LANG", "EN").equals("BG")) {
             Locale.setDefault(new Locale("bg", "BG"));
             LOGGER.info("Selected locate is " + Locale.getDefault());
         } else {
@@ -35,7 +37,7 @@ public class SpellbookApp {
         }
 
         try {
-            String selectedLookAndFeel = preferences.get("LOOK_AND_FEEL", "System");
+            String selectedLookAndFeel = pm.get("LOOK_AND_FEEL", "System");
 
             if (selectedLookAndFeel.equals("System")) {
                 // Set System L&F

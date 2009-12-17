@@ -53,14 +53,18 @@ public class DatabaseService {
     }
 
     /**
-     * Bootstraps the database service.
+     * Bootstraps the database service. The method can be executed only once.
      *
      * @param dictDbFile the dictionary database file
      *
      * @throws DictionaryDbLockedException if another process is already using the db file
      */
     public static void init(String dictDbFile) throws DictionaryDbLockedException {
-        instance = new DatabaseService(dictDbFile);
+        if (instance == null) {
+            instance = new DatabaseService(dictDbFile);
+        } else {
+            LOGGER.info("Database service is already initialized");
+        }
     }
 
     public static DatabaseService getInstance() {

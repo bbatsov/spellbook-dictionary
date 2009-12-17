@@ -14,6 +14,7 @@ import com.drowltd.dictionary.core.db.DatabaseService;
 import com.drowltd.dictionary.core.db.Dictionary;
 import com.drowltd.dictionary.core.exception.DictionaryDbLockedException;
 import com.drowltd.dictionary.core.i18n.Translator;
+import com.drowltd.dictionary.core.preferences.PreferencesManager;
 import com.drowltd.dictionary.ui.desktop.IconManager.IconSize;
 import com.drowltd.dictionary.ui.spellcheck.SpellCheckFrame;
 import java.awt.Dimension;
@@ -27,7 +28,6 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -43,7 +43,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
     private static final Translator TRANSLATOR = new Translator("SpellbookForm");
 
-    private static final Preferences PREFS = Preferences.userNodeForPackage(SpellbookApp.class);
+    private static final PreferencesManager PM = PreferencesManager.getInstance();
 
     private DatabaseService databaseService;
 
@@ -62,13 +62,13 @@ public class SpellbookFrame extends javax.swing.JFrame {
     /** Creates new form SpellbookFrame */
     public SpellbookFrame() {
         while (true) {
-            if (verifyDbPresence(PREFS)) {
+            if (verifyDbPresence()) {
                 break;
             }
         }
 
         try {
-            DatabaseService.init(PREFS.get("PATH_TO_DB", ""));
+            DatabaseService.init(PM.get("PATH_TO_DB", ""));
         } catch (DictionaryDbLockedException e) {
             JOptionPane.showMessageDialog(null, TRANSLATOR.translate("AlreadyRunning(Message)"), "Warning", JOptionPane.WARNING_MESSAGE);
             System.exit(0);
@@ -98,7 +98,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowIconified(WindowEvent e) {
-                if (PREFS.getBoolean("MIN_TO_TRAY", false)) {
+                if (PM.getBoolean("MIN_TO_TRAY", false)) {
                     LOGGER.info("Minimizing Spellbook to tray");
                     setVisible(false);
                 }
@@ -111,7 +111,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
             @Override
             public void windowClosing(WindowEvent e) {
-                if (PREFS.getBoolean("CLOSE_TO_TRAY", false)) {
+                if (PM.getBoolean("CLOSE_TO_TRAY", false)) {
                     LOGGER.info("Minimizing Spellbook to tray on window close");
                     setVisible(false);
                 }
@@ -125,7 +125,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         setDefaultFont();
 
-        if (PREFS.getBoolean("CLIPBOARD_INTEGRATION", false)) {
+        if (PM.getBoolean("CLIPBOARD_INTEGRATION", false)) {
             activateClipboardMonitoring();
         }
     }
@@ -222,7 +222,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
     }
 
     private void setDefaultFont() {
-        if (PREFS.get("FONT_NAME", "").isEmpty()) {
+        if (PM.get("FONT_NAME", "").isEmpty()) {
             // dirty fix for windows - it seem that the default font there is too small, so we set
             // a more appropriate one
             String osName = System.getProperty("os.name");
@@ -231,16 +231,16 @@ public class SpellbookFrame extends javax.swing.JFrame {
                 wordTranslationTextArea.setFont(new Font("Arial", Font.PLAIN, 14));
             }
         } else {
-            String fontName = PREFS.get("FONT_NAME", "SansSerif");
-            int fontSize = PREFS.getInt("FONT_SIZE", 14);
-            int fontStyle = PREFS.getInt("FONT_STYLE", Font.PLAIN);
+            String fontName = PM.get("FONT_NAME", "SansSerif");
+            int fontSize = PM.getInt("FONT_SIZE", 14);
+            int fontStyle = PM.getInt("FONT_STYLE", Font.PLAIN);
 
             setSelectedFont(new Font(fontName, fontStyle, fontSize));
         }
     }
 
-    private boolean verifyDbPresence(Preferences prefs) {
-        final String dbPath = prefs.get("PATH_TO_DB", "");
+    private boolean verifyDbPresence() {
+        final String dbPath = PM.get("PATH_TO_DB", "");
 
         File file = new File(dbPath);
 
@@ -258,7 +258,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
                 String selectedDbPath = fileChooser.getSelectedFile().getPath();
 
                 if (selectedDbPath.endsWith("dictionary.data.db")) {
-                    prefs.put("PATH_TO_DB", selectedDbPath);
+                    PM.put("PATH_TO_DB", selectedDbPath);
                     return true;
                 } else {
                     return false;
@@ -596,9 +596,9 @@ public class SpellbookFrame extends javax.swing.JFrame {
         PreferencesDialog preferencesDialog = new PreferencesDialog(this, true);
 
         if (preferencesDialog.showDialog()) {
-            String oldLanguage = PREFS.get("LANG", "EN");
+            String oldLanguage = PM.get("LANG", "EN");
             final String newLanguage = preferencesDialog.getSelectedLanguage().toString();
-            PREFS.put("LANG", newLanguage);
+            PM.put("LANG", newLanguage);
 
             if (!oldLanguage.equals(newLanguage)) {
                 LOGGER.info("Language changed from " + oldLanguage + " to " + newLanguage);
@@ -618,7 +618,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
                 LOGGER.info("Minimize to tray is disabled");
             }
 
-            PREFS.putBoolean("MIN_TO_TRAY", minimizeToTrayEnabled);
+            PM.putBoolean("MIN_TO_TRAY", minimizeToTrayEnabled);
 
             boolean minimizeToTrayOnCloseEnabled = preferencesDialog.isMinimizeToTrayOnCloseEnabled();
 
@@ -629,7 +629,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
                 LOGGER.info("Minimize to tray on close is disabled");
             }
 
-            PREFS.putBoolean("CLOSE_TO_TRAY", minimizeToTrayOnCloseEnabled);
+            PM.putBoolean("CLOSE_TO_TRAY", minimizeToTrayOnCloseEnabled);
 
             final boolean clipboardIntegrationEnabled = preferencesDialog.isClipboardIntegrationEnabled();
 
@@ -641,14 +641,14 @@ public class SpellbookFrame extends javax.swing.JFrame {
                 LOGGER.info("Clipboard integration is disabled");
             }
 
-            PREFS.putBoolean("CLIPBOARD_INTEGRATION", clipboardIntegrationEnabled);
+            PM.putBoolean("CLIPBOARD_INTEGRATION", clipboardIntegrationEnabled);
 
-            PREFS.putInt("EXAM_WORDS", preferencesDialog.getExamWords());
+            PM.putInt("EXAM_WORDS", preferencesDialog.getExamWords());
 
             String selectedLookAndFeel = preferencesDialog.getSelectedLookAndFeel();
 
-            if (!selectedLookAndFeel.equals(PREFS.get("LOOK_AND_FEEL", "System"))) {
-                PREFS.put("LOOK_AND_FEEL", selectedLookAndFeel);
+            if (!selectedLookAndFeel.equals(PM.get("LOOK_AND_FEEL", "System"))) {
+                PM.put("LOOK_AND_FEEL", selectedLookAndFeel);
             }
         }
     }//GEN-LAST:event_prefsMenuItemActionPerformed
@@ -659,9 +659,9 @@ public class SpellbookFrame extends javax.swing.JFrame {
         if (fontChooserDialog.showDialog()) {
             final Font selectedFont = fontChooserDialog.getSelectedFont();
 
-            PREFS.put("FONT_NAME", selectedFont.getFontName());
-            PREFS.putInt("FONT_SIZE", selectedFont.getSize());
-            PREFS.putInt("FONT_STYLE", selectedFont.getStyle());
+            PM.put("FONT_NAME", selectedFont.getFontName());
+            PM.putInt("FONT_SIZE", selectedFont.getSize());
+            PM.putInt("FONT_STYLE", selectedFont.getStyle());
 
             setSelectedFont(selectedFont);
         }
