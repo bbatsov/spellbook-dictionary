@@ -1,8 +1,8 @@
 package com.drowltd.dictionary.core.i18n;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 /**
@@ -12,11 +12,13 @@ import java.util.ResourceBundle;
  * @since 0.1
  */
 public class Translator {
+    private String resourceBundleName;
     private ResourceBundle resourceBundle;
 
-    private static List<Translator> translators = new ArrayList<Translator>();
+    private static Map<String, Translator> translators = new HashMap<String, Translator>();
 
-    public Translator(final String resourceBundleName) {
+    private Translator(final String resourceBundleName) {
+        this.resourceBundleName = resourceBundleName;
         resourceBundle = ResourceBundle.getBundle("i18n/" + resourceBundleName, Locale.getDefault());
 
         if (resourceBundle == null) {
@@ -28,13 +30,39 @@ public class Translator {
         return resourceBundle.getString(resourceKey);
     }
 
-    // TODO implement factory method with caching
-    public static Translator getTranslator(final String resourceBundleName) {
-        return null;
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Translator other = (Translator) obj;
+        if (this.resourceBundle != other.resourceBundle && (this.resourceBundle == null || !this.resourceBundle.equals(other.resourceBundle))) {
+            return false;
+        }
+        return true;
     }
 
-    // TODO reinit translators
-    public static void reset() {
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 41 * hash + (this.resourceBundle != null ? this.resourceBundle.hashCode() : 0);
+        return hash;
+    }
 
+    public static Translator getTranslator(final String resourceBundleName) {
+        if (translators.containsKey(resourceBundleName)) {
+            return translators.get(resourceBundleName);
+        } else {
+            Translator t = new Translator(resourceBundleName);
+            translators.put(resourceBundleName, t);
+            return t;
+        }
+    }
+
+    public void reset() {
+        resourceBundle = ResourceBundle.getBundle("i18n/" + resourceBundleName, Locale.getDefault());
     }
 }

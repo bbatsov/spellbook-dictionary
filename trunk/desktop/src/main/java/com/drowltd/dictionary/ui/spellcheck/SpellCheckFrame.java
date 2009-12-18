@@ -42,7 +42,7 @@ public class SpellCheckFrame extends javax.swing.JFrame implements PropertyChang
 
     private static final SpellCheckFrame INSTANCE = new SpellCheckFrame();
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellCheckFrame.class);
-    private static final Translator TRANSLATOR = new Translator("SpellbookForm");
+    private static final Translator TRANSLATOR = Translator.getTranslator("SpellbookForm");
     private final MisspelledWordsRegistry registry = MisspelledWordsRegistry.getInstance();
     private SpellCheckPopupMenu popupMenu;
     private SpellCheckHighlighter checkHighlighter;

@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
 public class SpellbookFrame extends javax.swing.JFrame {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellbookFrame.class);
 
-    private static final Translator TRANSLATOR = new Translator("SpellbookForm");
+    private static final Translator TRANSLATOR = Translator.getTranslator("SpellbookForm");
 
     private static final PreferencesManager PM = PreferencesManager.getInstance();
 
@@ -61,6 +61,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
     /** Creates new form SpellbookFrame */
     public SpellbookFrame() {
+        TRANSLATOR.reset();
+
         while (true) {
             if (verifyDbPresence()) {
                 break;
@@ -215,7 +217,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
     }
 
     private void restart() {
-        // TODO add your handling code here:
         this.dispose();
         SpellbookTray.destroyTrayIcon();
         SpellbookApp.init();

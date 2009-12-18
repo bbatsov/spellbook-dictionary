@@ -25,11 +25,13 @@ import org.slf4j.LoggerFactory;
  */
 public class SpellbookTray {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellbookTray.class);
-    private static final Translator TRANSLATOR = new Translator("SpellbookTray");
+    private static final Translator TRANSLATOR = Translator.getTranslator("SpellbookTray");
 
     private static TrayIcon trayIcon;
 
     public static TrayIcon createTraySection(final JFrame appFrame) {
+        TRANSLATOR.reset();
+
         //Check the SystemTray support
         if (!SystemTray.isSupported()) {
             LOGGER.info("SystemTray is not supported");
