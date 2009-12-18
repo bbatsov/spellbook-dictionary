@@ -26,13 +26,16 @@ import javax.swing.UnsupportedLookAndFeelException;
  */
 public class PreferencesDialog extends javax.swing.JDialog {
 
-    private static final Translator TRANSLATOR = new Translator("PreferencesForm");
+    private static final Translator TRANSLATOR = Translator.getTranslator("PreferencesForm");
     private SupportedLanguages selectedLanguage;
     private boolean ok;
 
     /** Creates new form PreferencesDialog */
     public PreferencesDialog(final java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+
+        TRANSLATOR.reset();
+        
         initComponents();
 
         PreferencesManager pm = PreferencesManager.getInstance();
@@ -66,6 +69,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
         lookAndFeelComboBox.setSelectedItem(pm.get("LOOK_AND_FEEL", "System"));
 
         lookAndFeelComboBox.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 String selectedLookAndFeel = (String) lookAndFeelComboBox.getSelectedItem();
 
