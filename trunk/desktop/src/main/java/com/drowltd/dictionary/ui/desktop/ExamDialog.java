@@ -33,6 +33,8 @@ public class ExamDialog extends javax.swing.JDialog {
     private boolean answerPressed = false;
     private Dictionary selectedDictionary = Dictionary.BG_EN;
     private ExamSettingsDialog examSettingsDialog = new ExamSettingsDialog(null, rootPaneCheckingEnabled);
+    private int totalWords;
+    private int correctWords;
 
     /** Creates new form ExamDialog */
     public ExamDialog(java.awt.Frame parent, boolean modal) {
@@ -372,13 +374,17 @@ public class ExamDialog extends javax.swing.JDialog {
         if ((fromLanguageComboBox.getSelectedItem() == "English") && (toLanguageComboBox.getSelectedItem() == "Bulgarian")) {
             selectedDictionary = Dictionary.EN_BG;
         }
-
+        if ((fromLanguageComboBox.getSelectedItem() == "Bulgarian") && (toLanguageComboBox.getSelectedItem() == "English")) {
+            selectedDictionary = Dictionary.BG_EN;
+        }
         answer = new Answers(selectedDictionary);
+        totalWords = 0;
+        correctWords = 0;
         dbCalling();
 
         editability(false);
 
-        if (ExamSettingsDialog.isOpen() == true) {
+        if (ExamSettingsDialog.isOpen()) {
             examWords = ExamSettingsDialog.getWordsCount();
             examWordsCopy = ExamSettingsDialog.getWordsCount();
             PREFS.putInt("EXAM_WORDS", examWords);
@@ -392,13 +398,13 @@ public class ExamDialog extends javax.swing.JDialog {
             timerStatusLabel.setText("Timer: Initialized");
         } else {
             startButton.setText("Next");
+            timerStatusLabel.setText("Timer: Not Initialized");
         }
 
         secondsBackup = seconds;
-        wordsProgressBar.setMaximum(maximumWordsProgressBar);
         maximumWordsProgressBar = examWords;
-        wordsProgressBar.setString("0/" + examWords);
-
+        wordsProgressBar.setMaximum(maximumWordsProgressBar - 1);
+        wordsProgressBar.setString("1/" + examWords);
     }//GEN-LAST:event_startButtonActionPerformed
 
     private void stopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopButtonActionPerformed
@@ -409,7 +415,7 @@ public class ExamDialog extends javax.swing.JDialog {
         swingTimer.stop();
         PREFS.put("DIFF_LABEL", difficultyLabel.getText());
         if (timerStatusLabel.getText().contains("Stopped")) {
-            if (ExamSettingsDialog.returnTimerStatus() == true) {
+            if (ExamSettingsDialog.returnTimerStatus()) {
                 PREFS.put("TIMER_STATUS", "Timer: Initialized");
             } else {
                 PREFS.put("TIMER_STATUS", "Timer: Not Initialized");
@@ -497,10 +503,10 @@ public class ExamDialog extends javax.swing.JDialog {
     private javax.swing.JProgressBar wordsProgressBar;
     // End of variables declaration//GEN-END:variables
 
-    public void dbCalling() {
+    private void dbCalling() {
 
         translateField.setText(answer.getExamWord(selectedDictionary));
-
+        totalWords++;
     }
 
     private void answered() {
@@ -508,7 +514,7 @@ public class ExamDialog extends javax.swing.JDialog {
         System.out.println("Answered");
         examWords--;
         displayTranslation();
-        if (examWords == 0) {
+        if (examWords == 1) {
             stopExam();
             JOptionPane.showMessageDialog(rootPane, "The exam is over");
             examWords = examWordsCopy;
@@ -522,7 +528,7 @@ public class ExamDialog extends javax.swing.JDialog {
     private void displayTranslation() {
         answer.possibleAnswers();
 
-        String str = (examWordsCopy - examWords) + "/ " + examWordsCopy;
+        String str = (examWordsCopy - examWords + 1) + "/ " + examWordsCopy;
         wordsProgressBar.setString(str);
         wordsProgressBar.setValue(maximumWordsProgressBar - examWords);
         System.out.println(maximumWordsProgressBar - examWords + "value");
@@ -533,7 +539,7 @@ public class ExamDialog extends javax.swing.JDialog {
 
             feedbackField.setText("Your answer is correct!");
             answerIconLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconManager.IconSize.SIZE24));
-
+            correctWords++;
         } else {
 
 
@@ -618,7 +624,7 @@ public class ExamDialog extends javax.swing.JDialog {
     }
 
     public void showExamDialog() {
-        if (PREFS.getBoolean("RETURN_TIMER_STATUS", false) == true) {
+        if (PREFS.getBoolean("RETURN_TIMER_STATUS", false)) {
             seconds = PREFS.getInt("SECONDS", WIDTH);
 
         }
@@ -631,7 +637,7 @@ public class ExamDialog extends javax.swing.JDialog {
         setVisible(true);
     }
 
-    public void editability(Boolean a) {
+    private void editability(Boolean a) {
 
         fromLanguageComboBox.setEnabled(a);
         toLanguageComboBox.setEnabled(a);
@@ -641,7 +647,7 @@ public class ExamDialog extends javax.swing.JDialog {
         answerButton.setEnabled(!a);
     }
 
-    public void timerRunButton() {
+    private void timerRunButton() {
         seconds = ExamSettingsDialog.returnTimeSeconds();
         if (seconds == 0) {
             seconds = PREFS.getInt("SECONDS", WIDTH);
@@ -654,10 +660,12 @@ public class ExamDialog extends javax.swing.JDialog {
 
     }
 
-    public void stopExam() {
+    private void stopExam() {
         swingTimer.stop();
         timerProgressBar.setValue(0);
-        timerStatusLabel.setText("Timer: Stopped");
+        if (!timerStatusLabel.getText().equalsIgnoreCase("Timer: Not Initialized")) {
+            timerStatusLabel.setText("Timer: Stopped");
+        }
         timerProgressBar.setString("Timer");
         wordsProgressBar.setValue(0);
         wordsProgressBar.setString("Words");
@@ -665,6 +673,14 @@ public class ExamDialog extends javax.swing.JDialog {
         editability(true);
         translateField.setText(null);
         answerField.setText(null);
+        startButton.setText("Start");
+        examWords = PREFS.getInt("EXAM_WORDS", examWords);
+        examResult();
+    }
+
+    private void examResult() {
+        feedbackField.setText("Your score is : " + correctWords + "/" + totalWords + "\n" + "Correct words : " + correctWords + "\n" + "Wrong words : " + (totalWords - correctWords));
+
     }
 }
 
