@@ -25,7 +25,6 @@ public class Answers {
     private int examWordIndex;
     private Random random = new Random();
     private String translation;
-    private Dictionary dictionary;
 
     public  Answers (Dictionary selectedDictionary){
          dictDb = DatabaseService.getInstance();
@@ -48,10 +47,9 @@ public class Answers {
     public void possibleAnswers() {
 
         answers = new ArrayList<String>();
-        translation.toLowerCase();
+        translation = translation.toLowerCase();
 
         String t = translation.replaceAll("\\b(n|a|v|(attr)|(adv)|[0-9]+)\\b\\s?", "");
-       // t = t.replaceAll("\\(([^()]*)\\)", "$1");
         String[] s = Pattern.compile("\\s*[,|;|.|\\n]\\s*").split(t, 0);
         for (int i = 0; i < s.length; i++) {
             if (s[i].isEmpty()) {
