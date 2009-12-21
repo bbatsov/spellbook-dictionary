@@ -10,9 +10,6 @@
  */
 package com.drowltd.dictionary.ui.desktop;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import javax.swing.ButtonGroup;
 
