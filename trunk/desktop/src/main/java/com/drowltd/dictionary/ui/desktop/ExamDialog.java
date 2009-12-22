@@ -11,6 +11,7 @@
 package com.drowltd.dictionary.ui.desktop;
 
 import com.drowltd.dictionary.core.db.*;
+import com.drowltd.dictionary.core.i18n.Translator;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.prefs.Preferences;
@@ -35,24 +36,21 @@ public class ExamDialog extends javax.swing.JDialog {
     private ExamSettingsDialog examSettingsDialog = new ExamSettingsDialog(null, rootPaneCheckingEnabled);
     private int totalWords;
     private int correctWords;
+    private static final Translator TRANSLATOR = Translator.getTranslator("ExamDialog");
 
     /** Creates new form ExamDialog */
     public ExamDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+
+        TRANSLATOR.reset();
         initComponents();
-        
 
         System.out.println("asdasdasd " + PREFS.getBoolean("RETURN_TIMER_STATUS", modal) + "  " + PREFS.getInt("SECONDS", WIDTH));
 
-        setTitle("Spellbook Exam");
         setIconImage(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE16).getImage());
         setLocationRelativeTo(parent);
 
-        fromLanguageComboBox.addItem("Bulgarian");
-        fromLanguageComboBox.addItem("English");
-        toLanguageComboBox.addItem("English");
-        toLanguageComboBox.addItem("Bulgarian");
-        
+
     }
 
     /** This method is called from within the constructor to
@@ -88,8 +86,12 @@ public class ExamDialog extends javax.swing.JDialog {
         timerStatusLabel = new javax.swing.JLabel();
         timerIconLabel = new javax.swing.JLabel();
         answerIconLabel = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("i18n/ExamDialog"); // NOI18N
+        setTitle(bundle.getString("Exam(Title)")); // NOI18N
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosed(java.awt.event.WindowEvent evt) {
@@ -105,11 +107,14 @@ public class ExamDialog extends javax.swing.JDialog {
             }
         });
 
-        jLabel1.setText("Select the languages for your exam:");
+        toLanguageComboBox.addItem(bundle.getString("English(Item)"));
+        toLanguageComboBox.addItem(bundle.getString("Bulgarian(Item)"));
 
-        jLabel2.setText("From:");
+        jLabel1.setText(bundle.getString("Languages(Label)")); // NOI18N
 
-        jLabel3.setText("To:");
+        jLabel2.setText(bundle.getString("From(Label)")); // NOI18N
+
+        jLabel3.setText(bundle.getString("To(Label)")); // NOI18N
 
         jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/48x48/preferences.png"))); // NOI18N
         jLabel6.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -118,7 +123,7 @@ public class ExamDialog extends javax.swing.JDialog {
             }
         });
 
-        settingsButton.setText("Settings");
+        settingsButton.setText(bundle.getString("Settings(Button)")); // NOI18N
         settingsButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 settingsButtonActionPerformed(evt);
@@ -168,10 +173,13 @@ public class ExamDialog extends javax.swing.JDialog {
                 .addGap(18, 18, 18))
         );
 
+        fromLanguageComboBox.addItem(bundle.getString("Bulgarian(Item)"));
+        fromLanguageComboBox.addItem(bundle.getString("English(Item)"));
+
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         startButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/media_play_green.png"))); // NOI18N
-        startButton.setText("Start");
+        startButton.setText(bundle.getString("Start(Button)")); // NOI18N
         startButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 startButtonActionPerformed(evt);
@@ -186,12 +194,12 @@ public class ExamDialog extends javax.swing.JDialog {
             }
         });
 
-        jLabel8.setText("Enter you answer here:");
+        jLabel8.setText(bundle.getString("OverAnswerField(Label)")); // NOI18N
 
-        jLabel9.setText("Translate this word:");
+        jLabel9.setText(bundle.getString("OverTranslateField(Label)")); // NOI18N
 
         stopButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/media_stop_red.png"))); // NOI18N
-        stopButton.setText("Stop");
+        stopButton.setText(bundle.getString("Stop(Button)")); // NOI18N
         stopButton.setEnabled(false);
         stopButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -202,20 +210,20 @@ public class ExamDialog extends javax.swing.JDialog {
         feedbackField.setBackground(new java.awt.Color(240, 240, 240));
         feedbackField.setColumns(20);
         feedbackField.setEditable(false);
-        feedbackField.setFont(new java.awt.Font("Tahoma", 0, 11));
+        feedbackField.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         feedbackField.setRows(4);
-        feedbackField.setText("To start the exam press \"Run\"\nTo stop press \"Stop\"");
+        feedbackField.setText(bundle.getString("Feedback(Field)")); // NOI18N
         jScrollPane1.setViewportView(feedbackField);
 
         timerProgressBar.setForeground(new java.awt.Color(51, 255, 51));
-        timerProgressBar.setToolTipText("Timer");
-        timerProgressBar.setString("Timer");
+        timerProgressBar.setToolTipText(bundle.getString("Timer(String)")); // NOI18N
+        timerProgressBar.setString(bundle.getString("Timer(String)")); // NOI18N
         timerProgressBar.setStringPainted(true);
 
-        difficultyLabel.setText("Difficulty:");
+        difficultyLabel.setText("k");
 
         answerButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/check2.png"))); // NOI18N
-        answerButton.setText("Answer");
+        answerButton.setText(bundle.getString("Answer(Button)")); // NOI18N
         answerButton.setEnabled(false);
         answerButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -224,14 +232,17 @@ public class ExamDialog extends javax.swing.JDialog {
         });
 
         wordsProgressBar.setForeground(new java.awt.Color(102, 102, 255));
-        wordsProgressBar.setString("Words");
+        wordsProgressBar.setToolTipText(bundle.getString("Words(String)")); // NOI18N
+        wordsProgressBar.setString(bundle.getString("Words(String)")); // NOI18N
         wordsProgressBar.setStringPainted(true);
-
-        timerStatusLabel.setText("Timer :");
 
         timerIconLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/48x48/stopwatch.png"))); // NOI18N
 
         answerIconLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/bell2_grey.png"))); // NOI18N
+
+        jLabel4.setText(bundle.getString("Difficulty(Label)")); // NOI18N
+
+        jLabel5.setText(bundle.getString("Timer(Label)")); // NOI18N
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -244,12 +255,12 @@ public class ExamDialog extends javax.swing.JDialog {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(answerField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 222, Short.MAX_VALUE)
-                            .addComponent(translateField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 222, Short.MAX_VALUE)
+                            .addComponent(answerField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE)
+                            .addComponent(translateField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE)
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGap(35, 35, 35)
                                 .addComponent(startButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
                                 .addComponent(stopButton, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(12, 12, 12))
                             .addGroup(jPanel3Layout.createSequentialGroup()
@@ -266,14 +277,18 @@ public class ExamDialog extends javax.swing.JDialog {
                                 .addComponent(timerIconLabel)
                                 .addGap(18, 18, 18)
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel5))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(timerStatusLabel)
                                     .addComponent(difficultyLabel))))
                         .addContainerGap())
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(timerProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 437, Short.MAX_VALUE)
+                        .addComponent(timerProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE)
                         .addContainerGap())
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(wordsProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 437, Short.MAX_VALUE)
+                        .addComponent(wordsProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE)
                         .addContainerGap())))
         );
 
@@ -294,9 +309,13 @@ public class ExamDialog extends javax.swing.JDialog {
                         .addComponent(jLabel9))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(21, 21, 21)
-                        .addComponent(difficultyLabel)
-                        .addGap(18, 18, 18)
-                        .addComponent(timerStatusLabel)))
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(difficultyLabel)
+                            .addComponent(jLabel4))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(timerStatusLabel)
+                            .addComponent(jLabel5))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel3Layout.createSequentialGroup()
@@ -326,7 +345,7 @@ public class ExamDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(settingsPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 461, Short.MAX_VALUE))
+                    .addComponent(settingsPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -343,12 +362,13 @@ public class ExamDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
-        if ((fromLanguageComboBox.getSelectedItem() == "English") && (toLanguageComboBox.getSelectedItem() == "Bulgarian")) {
+        if ((fromLanguageComboBox.getSelectedIndex() == 2) && (toLanguageComboBox.getSelectedIndex() == 2)) {
             selectedDictionary = Dictionary.EN_BG;
         }
-        if ((fromLanguageComboBox.getSelectedItem() == "Bulgarian") && (toLanguageComboBox.getSelectedItem() == "English")) {
+        if ((fromLanguageComboBox.getSelectedIndex() == 1) && (toLanguageComboBox.getSelectedIndex() == 1)) {
             selectedDictionary = Dictionary.BG_EN;
         }
+
         answer = new Answers(selectedDictionary);
         totalWords = 0;
         correctWords = 0;
@@ -365,12 +385,13 @@ public class ExamDialog extends javax.swing.JDialog {
         System.out.println("Seconds: " + seconds + " Seconds Backup: " + secondsBackup);
         System.out.println("Exam Words Left: " + examWords);
 
-        if (timerStatusLabel.getText().equals("Timer: Initialized") || timerStatusLabel.getText().equals("Timer: Stopped")) {
+        if (timerStatusLabel.getText().equals(TRANSLATOR.translate("Initialized(Label)")) || timerStatusLabel.getText().equals(TRANSLATOR.translate("Stopped(Label)"))) {
             timerRunButton();
-            timerStatusLabel.setText("Timer: Initialized");
+            timerStatusLabel.setText(TRANSLATOR.translate("Initialized(Label)"));
+            timerIconLabel.setIcon(IconManager.getImageIcon("stopwatch_run.png", IconManager.IconSize.SIZE48));
         } else {
-            startButton.setText("Next");
-            timerStatusLabel.setText("Timer: Not Initialized");
+            timerStatusLabel.setText(TRANSLATOR.translate("NotInitialized(Label)"));
+            timerIconLabel.setIcon(IconManager.getImageIcon("stopwatch_stop.png", IconManager.IconSize.SIZE48));
         }
 
         secondsBackup = seconds;
@@ -386,11 +407,11 @@ public class ExamDialog extends javax.swing.JDialog {
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
         swingTimer.stop();
         PREFS.put("DIFF_LABEL", difficultyLabel.getText());
-        if (timerStatusLabel.getText().contains("Stopped")) {
+        if (timerStatusLabel.getText().contains(TRANSLATOR.translate("Stopped(Label)"))) {
             if (ExamSettingsDialog.returnTimerStatus()) {
-                PREFS.put("TIMER_STATUS", "Timer: Initialized");
+                PREFS.put("TIMER_STATUS", TRANSLATOR.translate("Initialized(Label)"));
             } else {
-                PREFS.put("TIMER_STATUS", "Timer: Not Initialized");
+                PREFS.put("TIMER_STATUS", TRANSLATOR.translate("NotInitialized(Label)"));
             }
         } else {
             PREFS.put("TIMER_STATUS", timerStatusLabel.getText());
@@ -415,6 +436,7 @@ public class ExamDialog extends javax.swing.JDialog {
 
     private void fromLanguageComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_fromLanguageComboBoxItemStateChanged
         if (fromLanguageComboBox.getSelectedIndex() == toLanguageComboBox.getSelectedIndex()) {
+
             System.out.println("CHECK IF IT'S WORKING");
         }
 
@@ -423,11 +445,9 @@ public class ExamDialog extends javax.swing.JDialog {
     private void jLabel6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel6MouseClicked
         examSettingsDialog.showExamSettingsDialog();
     }//GEN-LAST:event_jLabel6MouseClicked
-
     /**
      * @param args the command line arguments
      */
-   
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton answerButton;
     private javax.swing.JTextField answerField;
@@ -438,6 +458,8 @@ public class ExamDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
@@ -463,13 +485,12 @@ public class ExamDialog extends javax.swing.JDialog {
 
     private void answered() {
 
-        System.out.println("Answered");
         examWords--;
         displayTranslation();
         if (examWords == 1) {
             totalWords += 1;
             stopExam();
-            JOptionPane.showMessageDialog(rootPane, "The exam is over");
+            JOptionPane.showMessageDialog(rootPane, TRANSLATOR.translate("EndOfExam(Message)"));
             examWords = examWordsCopy;
         } else {
             dbCalling();
@@ -490,14 +511,14 @@ public class ExamDialog extends javax.swing.JDialog {
 
             wordsProgressBar.setForeground(new java.awt.Color(51, 255, 51));
 
-            feedbackField.setText("Your answer is correct!");
+            feedbackField.setText(TRANSLATOR.translate("CorrectAnser(String)"));
             answerIconLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconManager.IconSize.SIZE24));
             correctWords++;
         } else {
 
 
             wordsProgressBar.setForeground(new java.awt.Color(204, 0, 0));
-            feedbackField.setText("Your answer is wrong!");
+            feedbackField.setText(TRANSLATOR.translate("WrongAnser(String)"));
             answerIconLabel.setIcon(IconManager.getImageIcon("bell2_red.png", IconManager.IconSize.SIZE24));
         }
 
@@ -554,7 +575,7 @@ public class ExamDialog extends javax.swing.JDialog {
             } else {
                 stopExam();
                 wordsProgressBar.setValue(maximumWordsProgressBar);
-                JOptionPane.showMessageDialog(rootPane, "The exam is over");
+                JOptionPane.showMessageDialog(rootPane, TRANSLATOR.translate("EndOfExam(Message)"));
 
 
             }
@@ -563,16 +584,15 @@ public class ExamDialog extends javax.swing.JDialog {
     });
 
     public static void diffLabelChange(String diff) {
-        difficultyLabel.setText("Difficulty: " + diff);
+        difficultyLabel.setText(diff);
     }
 
     public static void timerFieldLabel(String status) {
-        timerStatusLabel.setText("Timer: " + status);
-        if (status.matches("Not Initialized")) {
+        timerStatusLabel.setText(status);
+        if (status.matches(TRANSLATOR.translate("NotInitialized(Label)"))) {
             stopButton.setEnabled(false);
         } else {
             stopButton.setEnabled(true);
-            startButton.setText("Start");
         }
     }
 
@@ -583,8 +603,9 @@ public class ExamDialog extends javax.swing.JDialog {
 
         }
 
-        difficultyLabel.setText(PREFS.get("DIFF_LABEL", "Difficulty: Easy"));
-        timerStatusLabel.setText(PREFS.get("TIMER_STATUS", "Timer: Not Initialized"));
+        difficultyLabel.setText(PREFS.get("DIFF_LABEL", "Easy"));
+
+        timerStatusLabel.setText(PREFS.get("TIMER_STATUS", TRANSLATOR.translate("NotInitialized(Label)")));
 
         examWords = PREFS.getInt("EXAM_WORDS", 10);
         examWordsCopy = examWords;
@@ -617,24 +638,25 @@ public class ExamDialog extends javax.swing.JDialog {
     private void stopExam() {
         swingTimer.stop();
         timerProgressBar.setValue(0);
-        if (!timerStatusLabel.getText().equalsIgnoreCase("Timer: Not Initialized")) {
-            timerStatusLabel.setText("Timer: Stopped");
+        if (!timerStatusLabel.getText().equalsIgnoreCase(TRANSLATOR.translate("NotInitialized(Label)"))) {
+            timerStatusLabel.setText(TRANSLATOR.translate("Stopped(Label)"));
+            timerIconLabel.setIcon(IconManager.getImageIcon("stopwatch_stop.png", IconManager.IconSize.SIZE48));
         }
-        timerProgressBar.setString("Timer");
+        timerProgressBar.setString(TRANSLATOR.translate("Timer(String)"));
         wordsProgressBar.setValue(0);
-        wordsProgressBar.setString("Words");
+        wordsProgressBar.setString(TRANSLATOR.translate("Words(String)"));
         answerIconLabel.setIcon(IconManager.getImageIcon("bell2_grey.png", IconManager.IconSize.SIZE24));
         editability(true);
         translateField.setText(null);
         answerField.setText(null);
-        startButton.setText("Start");
+        // startButton.setText(TRANSLATOR.translate("Start(Button)"));
         examWords = PREFS.getInt("EXAM_WORDS", examWords);
         examResult();
     }
 
     private void examResult() {
 
-        feedbackField.setText("Your score is : " + correctWords + "/" + totalWords + "\n" + "Correct words : " + correctWords + "\n" + "Wrong words : " + (totalWords - correctWords));
+        feedbackField.setText(TRANSLATOR.translate("YourScore(String)") + correctWords + "/" + totalWords + "\n" + TRANSLATOR.translate("CorrectWords(String)") + correctWords + "\n" + TRANSLATOR.translate("WrongWords(String)") + (totalWords - correctWords));
 
     }
 }

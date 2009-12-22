@@ -10,6 +10,7 @@
  */
 package com.drowltd.dictionary.ui.desktop;
 
+import com.drowltd.dictionary.core.i18n.Translator;
 import java.util.prefs.Preferences;
 import javax.swing.ButtonGroup;
 
@@ -25,13 +26,14 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
     private static int wordCount;
     private static boolean isOpen = false;
     private static String difficulty;
+    private static final Translator TRANSLATOR = Translator.getTranslator("ExamSettingsDialog");
 
     /** Creates new form ExamSettingsDialog */
     public ExamSettingsDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-        initComponents();
+        TRANSLATOR.reset();
 
-        
+        initComponents();
 
         ButtonGroup difficultyGroup = new ButtonGroup();
 
@@ -41,7 +43,6 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
 
         
 
-        setTitle("Spellbook Exam Settings");
        
 
     }
@@ -70,12 +71,14 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
         cancelButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("i18n/ExamSettingsDialog"); // NOI18N
+        setTitle(bundle.getString("Title")); // NOI18N
         setResizable(false);
 
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel2.setForeground(new java.awt.Color(204, 204, 204));
 
-        jLabel7.setText("Words to be used by examing:");
+        jLabel7.setText(bundle.getString("WordsByExam(Label)")); // NOI18N
 
         wordCountField.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -88,18 +91,18 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
 
         jPanel4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jLabel4.setText("Choose the difficulty of the exam:");
+        jLabel4.setText(bundle.getString("ChooseDifficulty(Label)")); // NOI18N
 
-        easyRadioButton.setText("Easy");
+        easyRadioButton.setText(bundle.getString("Easy(Label)")); // NOI18N
         easyRadioButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 easyRadioButtonActionPerformed(evt);
             }
         });
 
-        mediumRadioButton.setText("Medium");
+        mediumRadioButton.setText(bundle.getString("Medium(Label)")); // NOI18N
 
-        hardRadioButton.setText("Hard");
+        hardRadioButton.setText(bundle.getString("Hard(Label)")); // NOI18N
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -132,9 +135,9 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
 
         jPanel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        forTimeCheckBox.setText("With Coundown for the answer");
+        forTimeCheckBox.setText(bundle.getString("Countdown(Label)")); // NOI18N
 
-        jLabel5.setText("Time depends on selected difficulty");
+        jLabel5.setText(bundle.getString("TimeDependancy(Label)")); // NOI18N
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -238,9 +241,9 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
 
             levelChoice();      //seconds != 0
             setDifficultyLabels();
-            ExamDialog.timerFieldLabel("Initialized");
+            ExamDialog.timerFieldLabel(TRANSLATOR.translate("Initialized(Label)"));
         } else {
-           ExamDialog.timerFieldLabel("Not Initialized");
+           ExamDialog.timerFieldLabel(TRANSLATOR.translate("NotInitialized(Label)"));
            seconds = 0;
         }
 
@@ -272,7 +275,7 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
     /**
      * @param args the command line arguments
      */
-
+   
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
     private javax.swing.JRadioButton easyRadioButton;
