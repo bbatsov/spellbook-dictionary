@@ -50,6 +50,7 @@ public class ExamDialog extends javax.swing.JDialog {
         setIconImage(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE16).getImage());
         setLocationRelativeTo(parent);
 
+        
 
     }
 
@@ -100,12 +101,6 @@ public class ExamDialog extends javax.swing.JDialog {
         });
 
         settingsPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        fromLanguageComboBox.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                fromLanguageComboBoxItemStateChanged(evt);
-            }
-        });
 
         toLanguageComboBox.addItem(bundle.getString("English(Item)"));
         toLanguageComboBox.addItem(bundle.getString("Bulgarian(Item)"));
@@ -210,7 +205,7 @@ public class ExamDialog extends javax.swing.JDialog {
         feedbackField.setBackground(new java.awt.Color(240, 240, 240));
         feedbackField.setColumns(20);
         feedbackField.setEditable(false);
-        feedbackField.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        feedbackField.setFont(new java.awt.Font("Tahoma", 0, 11));
         feedbackField.setRows(4);
         feedbackField.setText(bundle.getString("Feedback(Field)")); // NOI18N
         jScrollPane1.setViewportView(feedbackField);
@@ -345,7 +340,7 @@ public class ExamDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(settingsPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE))
+                    .addComponent(settingsPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -433,14 +428,6 @@ public class ExamDialog extends javax.swing.JDialog {
         seconds = 0;
         answerPressed = true;
     }//GEN-LAST:event_answerButtonActionPerformed
-
-    private void fromLanguageComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_fromLanguageComboBoxItemStateChanged
-        if (fromLanguageComboBox.getSelectedIndex() == toLanguageComboBox.getSelectedIndex()) {
-
-            System.out.println("CHECK IF IT'S WORKING");
-        }
-
-    }//GEN-LAST:event_fromLanguageComboBoxItemStateChanged
 
     private void jLabel6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel6MouseClicked
         examSettingsDialog.showExamSettingsDialog();
