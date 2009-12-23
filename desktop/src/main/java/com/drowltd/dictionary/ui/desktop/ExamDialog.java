@@ -14,6 +14,7 @@ import com.drowltd.dictionary.core.db.*;
 import com.drowltd.dictionary.core.i18n.Translator;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.prefs.Preferences;
 import javax.swing.JOptionPane;
 
@@ -37,14 +38,16 @@ public class ExamDialog extends javax.swing.JDialog {
     private int totalWords;
     private int correctWords;
     private static final Translator TRANSLATOR = Translator.getTranslator("ExamDialog");
+    private static ArrayList<String> wrongWords = new ArrayList<String>();
+    private static ArrayList<String> correctTranslation = new ArrayList<String>();
 
     /** Creates new form ExamDialog */
     public ExamDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-
+        
         TRANSLATOR.reset();
         initComponents();
-
+        showWrongWordsButton.setVisible(false);
         System.out.println("asdasdasd " + PREFS.getBoolean("RETURN_TIMER_STATUS", modal) + "  " + PREFS.getInt("SECONDS", WIDTH));
 
         setIconImage(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE16).getImage());
@@ -89,6 +92,7 @@ public class ExamDialog extends javax.swing.JDialog {
         answerIconLabel = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
+        showWrongWordsButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("i18n/ExamDialog"); // NOI18N
@@ -250,6 +254,13 @@ public class ExamDialog extends javax.swing.JDialog {
 
         jLabel5.setText(bundle.getString("Timer(Label)")); // NOI18N
 
+        showWrongWordsButton.setText("See wrong words");
+        showWrongWordsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showWrongWordsButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -257,45 +268,49 @@ public class ExamDialog extends javax.swing.JDialog {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel9)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel9)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(answerField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE)
+                                .addComponent(translateField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE)
+                                .addGroup(jPanel3Layout.createSequentialGroup()
+                                    .addGap(35, 35, 35)
+                                    .addComponent(startButton)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
+                                    .addComponent(stopButton, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(12, 12, 12))
+                                .addGroup(jPanel3Layout.createSequentialGroup()
+                                    .addComponent(answerIconLabel)
+                                    .addGap(36, 36, 36)
+                                    .addComponent(answerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(34, 34, 34)))
+                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel3Layout.createSequentialGroup()
+                                    .addGap(15, 15, 15)
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel3Layout.createSequentialGroup()
+                                    .addGap(19, 19, 19)
+                                    .addComponent(timerIconLabel)
+                                    .addGap(18, 18, 18)
+                                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel4)
+                                        .addComponent(jLabel5))
+                                    .addGap(18, 18, 18)
+                                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(timerStatusLabel)
+                                        .addComponent(difficultyLabel))))
+                            .addContainerGap())
+                        .addGroup(jPanel3Layout.createSequentialGroup()
+                            .addComponent(timerProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE)
+                            .addContainerGap())
+                        .addGroup(jPanel3Layout.createSequentialGroup()
+                            .addComponent(wordsProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE)
+                            .addContainerGap()))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(answerField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE)
-                            .addComponent(translateField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGap(35, 35, 35)
-                                .addComponent(startButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
-                                .addComponent(stopButton, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(12, 12, 12))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(answerIconLabel)
-                                .addGap(36, 36, 36)
-                                .addComponent(answerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(34, 34, 34)))
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGap(15, 15, 15)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGap(19, 19, 19)
-                                .addComponent(timerIconLabel)
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel4)
-                                    .addComponent(jLabel5))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(timerStatusLabel)
-                                    .addComponent(difficultyLabel))))
-                        .addContainerGap())
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(timerProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(wordsProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE)
-                        .addContainerGap())))
+                        .addComponent(showWrongWordsButton)
+                        .addGap(58, 58, 58))))
         );
 
         jPanel3Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {startButton, stopButton});
@@ -336,7 +351,9 @@ public class ExamDialog extends javax.swing.JDialog {
                             .addComponent(answerButton))
                         .addGap(1, 1, 1))
                     .addComponent(jScrollPane1))
-                .addGap(34, 34, 34)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(showWrongWordsButton)
+                .addGap(5, 5, 5)
                 .addComponent(timerProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30)
                 .addComponent(wordsProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -351,7 +368,7 @@ public class ExamDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(settingsPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(settingsPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -450,6 +467,11 @@ public class ExamDialog extends javax.swing.JDialog {
         }
             
     }//GEN-LAST:event_fromLanguageComboBoxPopupMenuWillBecomeInvisible
+
+    private void showWrongWordsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showWrongWordsButtonActionPerformed
+        WrongWordsDialog wrongWordsDialog = new WrongWordsDialog(null, rootPaneCheckingEnabled);
+        wrongWordsDialog.setVisible(true);
+    }//GEN-LAST:event_showWrongWordsButtonActionPerformed
     /**
      * @param args the command line arguments
      */
@@ -472,6 +494,7 @@ public class ExamDialog extends javax.swing.JDialog {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton settingsButton;
     private javax.swing.JPanel settingsPanel;
+    private javax.swing.JButton showWrongWordsButton;
     private static javax.swing.JButton startButton;
     private static javax.swing.JButton stopButton;
     private javax.swing.JLabel timerIconLabel;
@@ -520,11 +543,11 @@ public class ExamDialog extends javax.swing.JDialog {
             answerIconLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconManager.IconSize.SIZE24));
             correctWords++;
         } else {
-
-
             wordsProgressBar.setForeground(new java.awt.Color(204, 0, 0));
             feedbackField.setText(TRANSLATOR.translate("WrongAnser(String)"));
             answerIconLabel.setIcon(IconManager.getImageIcon("bell2_red.png", IconManager.IconSize.SIZE24));
+            wrongWords.add(answer.examWord());
+            correctTranslation.add(answer.getTranslation());
         }
 
     }
@@ -662,7 +685,15 @@ public class ExamDialog extends javax.swing.JDialog {
     private void examResult() {
 
         feedbackField.setText(TRANSLATOR.translate("YourScore(String)") + correctWords + "/" + totalWords + "\n" + TRANSLATOR.translate("CorrectWords(String)") + correctWords + "\n" + TRANSLATOR.translate("WrongWords(String)") + (totalWords - correctWords));
+        showWrongWordsButton.setVisible(true);
+    }
 
+    public static ArrayList<String> getWrongWords(){
+        return wrongWords;
+    }
+
+    public static ArrayList<String> getCorrectTranslation(){
+        return correctTranslation;
     }
 }
 

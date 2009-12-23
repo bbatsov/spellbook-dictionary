@@ -24,13 +24,15 @@ public class Answers {
     private List<String> answers;
     private int examWordIndex;
     private Random random = new Random();
+
+
     private String translation;
 
-    public  Answers (Dictionary selectedDictionary){
-         dictDb = DatabaseService.getInstance();
-         words = dictDb.getWordsFromDictionary(selectedDictionary);         
+    public Answers(Dictionary selectedDictionary) {
+        dictDb = DatabaseService.getInstance();
+        words = dictDb.getWordsFromDictionary(selectedDictionary);
     }
-    
+
     public String getExamWord(Dictionary selectedDic) {
         examWordIndex = random.nextInt(words.size());
         while (dictDb.getTranslation(selectedDic, words.get(examWordIndex)).contains("גז.")) {
@@ -42,6 +44,10 @@ public class Answers {
 
     public String examWord() {
         return words.get(examWordIndex);
+    }
+
+     public String getTranslation() {
+        return translation;
     }
 
     public void possibleAnswers() {
@@ -96,13 +102,15 @@ public class Answers {
         } else {
             answers.add(s);
         }
-         Set<String> set = new LinkedHashSet<String>(answers);
-         answers = new ArrayList<String>(set);
+        Set<String> set = new LinkedHashSet<String>(answers);
+        answers = new ArrayList<String>(set);
     }
-
 
     public boolean isCorrect(String guess) {
         for (String i : answers) {
+            if (i.isEmpty()) {
+                continue;
+            }
             if (i.equalsIgnoreCase(guess)) {
                 System.out.println("Right guess");
                 return true;
