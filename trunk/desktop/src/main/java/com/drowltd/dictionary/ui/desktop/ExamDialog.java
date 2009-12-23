@@ -102,6 +102,16 @@ public class ExamDialog extends javax.swing.JDialog {
 
         settingsPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
+        fromLanguageComboBox.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+                fromLanguageComboBoxPopupMenuWillBecomeInvisible(evt);
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+        });
+
         toLanguageComboBox.addItem(bundle.getString("English(Item)"));
         toLanguageComboBox.addItem(bundle.getString("Bulgarian(Item)"));
 
@@ -168,8 +178,9 @@ public class ExamDialog extends javax.swing.JDialog {
                 .addGap(18, 18, 18))
         );
 
-        fromLanguageComboBox.addItem(bundle.getString("Bulgarian(Item)"));
         fromLanguageComboBox.addItem(bundle.getString("English(Item)"));
+        fromLanguageComboBox.addItem(bundle.getString("Bulgarian(Item)"));
+        fromLanguageComboBox.setSelectedIndex(1);
 
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -357,10 +368,10 @@ public class ExamDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
-        if ((fromLanguageComboBox.getSelectedIndex() == 2) && (toLanguageComboBox.getSelectedIndex() == 2)) {
+        if ((fromLanguageComboBox.getSelectedIndex() == 0) && (toLanguageComboBox.getSelectedIndex() == 1)) {   //English Index = 0; Bulgarian = 1;
             selectedDictionary = Dictionary.EN_BG;
         }
-        if ((fromLanguageComboBox.getSelectedIndex() == 1) && (toLanguageComboBox.getSelectedIndex() == 1)) {
+        if ((fromLanguageComboBox.getSelectedIndex() == 1) && (toLanguageComboBox.getSelectedIndex() == 0)) {
             selectedDictionary = Dictionary.BG_EN;
         }
 
@@ -432,6 +443,13 @@ public class ExamDialog extends javax.swing.JDialog {
     private void jLabel6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel6MouseClicked
         examSettingsDialog.showExamSettingsDialog();
     }//GEN-LAST:event_jLabel6MouseClicked
+
+    private void fromLanguageComboBoxPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_fromLanguageComboBoxPopupMenuWillBecomeInvisible
+        if( fromLanguageComboBox.getSelectedItem() == toLanguageComboBox.getSelectedItem()){
+            
+        }
+            
+    }//GEN-LAST:event_fromLanguageComboBoxPopupMenuWillBecomeInvisible
     /**
      * @param args the command line arguments
      */
@@ -498,7 +516,7 @@ public class ExamDialog extends javax.swing.JDialog {
 
             wordsProgressBar.setForeground(new java.awt.Color(51, 255, 51));
 
-            feedbackField.setText(TRANSLATOR.translate("CorrectAnser(String)"));
+            feedbackField.setText(TRANSLATOR.translate("CorrectAnswer(String)"));
             answerIconLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconManager.IconSize.SIZE24));
             correctWords++;
         } else {
