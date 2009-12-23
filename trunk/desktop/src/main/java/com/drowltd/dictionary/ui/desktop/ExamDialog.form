@@ -118,9 +118,6 @@
       </Layout>
       <SubComponents>
         <Component class="javax.swing.JComboBox" name="fromLanguageComboBox">
-          <Events>
-            <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="fromLanguageComboBoxItemStateChanged"/>
-          </Events>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="fromLanguageComboBox.addItem(bundle.getString(&quot;Bulgarian(Item)&quot;));&#xa;fromLanguageComboBox.addItem(bundle.getString(&quot;English(Item)&quot;));"/>
           </AuxValues>
