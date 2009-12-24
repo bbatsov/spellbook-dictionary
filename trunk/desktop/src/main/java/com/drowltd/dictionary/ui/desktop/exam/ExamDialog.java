@@ -1,5 +1,6 @@
 package com.drowltd.dictionary.ui.desktop.exam;
 
+import com.drowltd.dictionary.core.exam.ExamService;
 import com.drowltd.dictionary.core.db.*;
 import com.drowltd.dictionary.core.i18n.Translator;
 import com.drowltd.dictionary.core.preferences.PreferencesManager;
@@ -16,7 +17,7 @@ import javax.swing.Timer;
  */
 public class ExamDialog extends javax.swing.JDialog {
 
-    private Answers answer;
+    private ExamService answer;
     private static final PreferencesManager PM = PreferencesManager.getInstance();
     private int seconds = 0;
     private int secondsBackup = 0;
@@ -395,7 +396,7 @@ public class ExamDialog extends javax.swing.JDialog {
         }
         wrongWords.clear();
         correctTranslation.clear();
-        answer = new Answers(selectedDictionary);
+        answer = new ExamService(selectedDictionary);
         totalWords = 0;
         correctWords = 0;
         dbCalling();
@@ -524,7 +525,8 @@ public class ExamDialog extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     private void dbCalling() {
-        translateField.setText(answer.getExamWord(selectedDictionary));
+        answer.getExamWord(selectedDictionary);
+        translateField.setText(answer.examWord());
         totalWords++;
     }
 
@@ -636,7 +638,7 @@ public class ExamDialog extends javax.swing.JDialog {
     }
 
     public void showExamDialog() {
-        answer = new Answers(selectedDictionary);
+        answer = new ExamService(selectedDictionary);
         if (PM.getBoolean("RETURN_TIMER_STATUS", false)) {
             seconds = PM.getInt("SECONDS", WIDTH);
 
@@ -699,7 +701,8 @@ public class ExamDialog extends javax.swing.JDialog {
     private void examResult() {
 
         feedbackField.setText(TRANSLATOR.translate("YourScore(String)") + correctWords + "/" + totalWords + "\n" + TRANSLATOR.translate("CorrectWords(String)") + correctWords + "\n" + TRANSLATOR.translate("WrongWords(String)") + (totalWords - correctWords));
-        showWrongWordsButton.setVisible(true);
+        showWrongWordsButton.setVisible(true);       
+        
     }
 
     public static ArrayList<String> getWrongWords() {
