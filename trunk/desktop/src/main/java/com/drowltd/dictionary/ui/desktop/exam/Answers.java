@@ -35,7 +35,7 @@ public class Answers {
 
     public String getExamWord(Dictionary selectedDic) {
         examWordIndex = random.nextInt(words.size());
-        while (dictDb.getTranslation(selectedDic, words.get(examWordIndex)).contains(".")) {
+        while (dictDb.getTranslation(selectedDic, words.get(examWordIndex)).contains("\u0432\u0436.")) {
             examWordIndex = random.nextInt(words.size());
         }
         translation = dictDb.getTranslation(selectedDic, words.get(examWordIndex));
@@ -107,11 +107,11 @@ public class Answers {
     }
 
     public boolean isCorrect(String guess) {
-        for (String i : answers) {
-            if (i.isEmpty()) {
+        for (String possibleAnswers : answers) {
+            if (possibleAnswers.isEmpty()) {
                 continue;
             }
-            if (i.equalsIgnoreCase(guess)) {
+            if (possibleAnswers.equalsIgnoreCase(guess)) {
                 System.out.println("Right guess");
                 return true;
             }

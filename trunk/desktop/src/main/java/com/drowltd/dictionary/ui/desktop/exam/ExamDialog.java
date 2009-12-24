@@ -12,13 +12,12 @@ import javax.swing.Timer;
 
 /**
  *
- * @author Miroslava
+ * @author Franky
  */
 public class ExamDialog extends javax.swing.JDialog {
+
     private Answers answer;
-
     private static final PreferencesManager PM = PreferencesManager.getInstance();
-
     private int seconds = 0;
     private int secondsBackup = 0;
     private int examWords;
@@ -39,7 +38,7 @@ public class ExamDialog extends javax.swing.JDialog {
     /** Creates new form ExamDialog */
     public ExamDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-        
+
         TRANSLATOR.reset();
         initComponents();
         showWrongWordsButton.setVisible(false);
@@ -394,7 +393,8 @@ public class ExamDialog extends javax.swing.JDialog {
         if ((fromLanguageComboBox.getSelectedIndex() == 1) && (toLanguageComboBox.getSelectedIndex() == 0)) {
             selectedDictionary = Dictionary.BG_EN;
         }
-
+        wrongWords.clear();
+        correctTranslation.clear();
         answer = new Answers(selectedDictionary);
         totalWords = 0;
         correctWords = 0;
@@ -466,10 +466,10 @@ public class ExamDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_jLabel6MouseClicked
 
     private void fromLanguageComboBoxPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_fromLanguageComboBoxPopupMenuWillBecomeInvisible
-        if( fromLanguageComboBox.getSelectedItem() == toLanguageComboBox.getSelectedItem()){
+        if (fromLanguageComboBox.getSelectedItem() == toLanguageComboBox.getSelectedItem()) {
             toLanguageComboBox.setSelectedIndex(fromWordsIndex);
         }
-            
+
     }//GEN-LAST:event_fromLanguageComboBoxPopupMenuWillBecomeInvisible
 
     private void showWrongWordsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showWrongWordsButtonActionPerformed
@@ -530,13 +530,13 @@ public class ExamDialog extends javax.swing.JDialog {
 
     private void answered() {
         examWords--;
-        
+
         displayTranslation();
 
         if (examWords == 1) {
             totalWords += 1;
             stopExam();
-            
+
             examWords = examWordsCopy;
         } else {
             dbCalling();
@@ -571,9 +571,7 @@ public class ExamDialog extends javax.swing.JDialog {
         }
 
     }
-
     private boolean flagLast = false;
-
     private Timer swingTimer = new javax.swing.Timer(1 * 1000, new ActionListener() {
 
         @Override
@@ -684,8 +682,8 @@ public class ExamDialog extends javax.swing.JDialog {
     }
 
     private void stopExam() {
-        JOptionPane.showMessageDialog(rootPane, TRANSLATOR.translate("EndOfExam(Message)"));
         swingTimer.stop();
+        JOptionPane.showMessageDialog(rootPane, TRANSLATOR.translate("EndOfExam(Message)"));        
         timerProgressBar.setValue(0);
         if (!timerStatusLabel.getText().equalsIgnoreCase(TRANSLATOR.translate("NotInitialized(Label)"))) {
             timerStatusLabel.setText(TRANSLATOR.translate("Stopped(Label)"));
@@ -700,6 +698,8 @@ public class ExamDialog extends javax.swing.JDialog {
         answerField.setText(null);
         // startButton.setText(TRANSLATOR.translate("Start(Button)"));
         examWords = PM.getInt("EXAM_WORDS", examWords);
+        wrongWords.add(answer.examWord());
+        correctTranslation.add(answer.getTranslation());
         examResult();
     }
 
@@ -709,11 +709,11 @@ public class ExamDialog extends javax.swing.JDialog {
         showWrongWordsButton.setVisible(true);
     }
 
-    public static ArrayList<String> getWrongWords(){
+    public static ArrayList<String> getWrongWords() {
         return wrongWords;
     }
 
-    public static ArrayList<String> getCorrectTranslation(){
+    public static ArrayList<String> getCorrectTranslation() {
         return correctTranslation;
     }
 }
