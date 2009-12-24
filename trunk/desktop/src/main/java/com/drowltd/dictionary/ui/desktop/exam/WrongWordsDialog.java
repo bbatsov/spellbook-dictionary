@@ -48,7 +48,8 @@ public class WrongWordsDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        wrongWordsList.setBorder(javax.swing.BorderFactory.createTitledBorder("Wrong Words"));
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("i18n/WrongWordsDialog"); // NOI18N
+        wrongWordsList.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("WrongWords(String)"))); // NOI18N
         wrongWordsList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
                 wrongWordsListValueChanged(evt);
@@ -58,7 +59,7 @@ public class WrongWordsDialog extends javax.swing.JDialog {
 
         correctTranslationTextArea.setColumns(20);
         correctTranslationTextArea.setRows(5);
-        correctTranslationTextArea.setBorder(javax.swing.BorderFactory.createTitledBorder("Correct Translation"));
+        correctTranslationTextArea.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("CorrectTranslation(String)"))); // NOI18N
         jScrollPane2.setViewportView(correctTranslationTextArea);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
