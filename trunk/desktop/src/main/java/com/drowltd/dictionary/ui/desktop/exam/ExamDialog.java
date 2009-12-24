@@ -31,6 +31,7 @@ public class ExamDialog extends javax.swing.JDialog {
     private int correctWords;
     private int fromWordsIndex;
     private int toWordsIndex;
+    private boolean timerUsed;
     private static final Translator TRANSLATOR = Translator.getTranslator("ExamDialog");
     private static ArrayList<String> wrongWords = new ArrayList<String>();
     private static ArrayList<String> correctTranslation = new ArrayList<String>();
@@ -42,7 +43,6 @@ public class ExamDialog extends javax.swing.JDialog {
         TRANSLATOR.reset();
         initComponents();
         showWrongWordsButton.setVisible(false);
-        System.out.println("asdasdasd " + PM.getBoolean("RETURN_TIMER_STATUS", modal) + "  " + PM.getInt("SECONDS", WIDTH));
 
         setIconImage(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE16).getImage());
         setLocationRelativeTo(parent);
@@ -408,11 +408,10 @@ public class ExamDialog extends javax.swing.JDialog {
             PM.putInt("EXAM_WORDS", examWords);
         }
 
-        System.out.println("Seconds: " + seconds + " Seconds Backup: " + secondsBackup);
-        System.out.println("Exam Words Left: " + examWords);
 
         if (timerStatusLabel.getText().equals(TRANSLATOR.translate("Initialized(Label)")) || timerStatusLabel.getText().equals(TRANSLATOR.translate("Stopped(Label)"))) {
             timerRunButton();
+            timerUsed = true;
             timerStatusLabel.setText(TRANSLATOR.translate("Initialized(Label)"));
             timerIconLabel.setIcon(IconManager.getImageIcon("stopwatch_run.png", IconManager.IconSize.SIZE48));
         } else {
@@ -434,8 +433,9 @@ public class ExamDialog extends javax.swing.JDialog {
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
         swingTimer.stop();
         PM.put("DIFF_LABEL", difficultyLabel.getText());
+        PM.putBoolean("TIMER_USED", timerUsed);
         if (timerStatusLabel.getText().contains(TRANSLATOR.translate("Stopped(Label)"))) {
-            if (ExamSettingsDialog.returnTimerStatus()) {
+            if (ExamSettingsDialog.returnTimerStatus() || PM.getBoolean("TIMER_USED", timerUsed)) {
                 PM.put("TIMER_STATUS", TRANSLATOR.translate("Initialized(Label)"));
             } else {
                 PM.put("TIMER_STATUS", TRANSLATOR.translate("NotInitialized(Label)"));
@@ -451,13 +451,13 @@ public class ExamDialog extends javax.swing.JDialog {
 
     private void answerFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_answerFieldActionPerformed
         answered();
-        seconds = 0;
+        seconds = secondsBackup;
         answerPressed = true;
     }//GEN-LAST:event_answerFieldActionPerformed
 
     private void answerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_answerButtonActionPerformed
         answered();
-        seconds = 0;
+        seconds = secondsBackup;
         answerPressed = true;
     }//GEN-LAST:event_answerButtonActionPerformed
 
@@ -552,8 +552,6 @@ public class ExamDialog extends javax.swing.JDialog {
         String str = (examWordsCopy - examWords + 1) + "/ " + examWordsCopy;
         wordsProgressBar.setString(str);
         wordsProgressBar.setValue(maximumWordsProgressBar - examWords);
-        System.out.println(maximumWordsProgressBar - examWords + "value");
-        System.out.println("displayTranslation " + examWordsCopy + " " + examWords);
 
         if (answer.isCorrect(answerField.getText())) {
 
@@ -580,9 +578,7 @@ public class ExamDialog extends javax.swing.JDialog {
             if (examWords != 0) {
                 if (flagLast) {
                     seconds = secondsBackup;
-                    System.out.println("FlagLast is false");
                     flagLast = false;
-                    System.out.println("Words left: " + examWords + "backup " + examWordsCopy);
 
                 }
 
@@ -593,7 +589,6 @@ public class ExamDialog extends javax.swing.JDialog {
                     seconds--;
                     timerProgressBar.setValue(maximumSecondsProgressBar - seconds);
 
-                    System.out.println(seconds);
 
 
                 } else if (seconds < 10 && seconds >= 0) {
@@ -608,11 +603,9 @@ public class ExamDialog extends javax.swing.JDialog {
                     seconds--;
                     timerProgressBar.setValue(maximumSecondsProgressBar - seconds);
 
-                    System.out.println(seconds);
 
                     if (seconds == -1) {
                         if (!answerPressed) {
-                            System.out.println("Answered!Prekyswame!");
                             answered();
                         }
                         flagLast = true;
