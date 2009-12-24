@@ -1,33 +1,24 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
- * ExamDialog.java
- *
- * Created on 2009-11-24, 23:31:23
- */
 package com.drowltd.dictionary.ui.desktop.exam;
 
 import com.drowltd.dictionary.core.db.*;
 import com.drowltd.dictionary.core.i18n.Translator;
+import com.drowltd.dictionary.core.preferences.PreferencesManager;
 import com.drowltd.dictionary.ui.desktop.IconManager;
-import com.drowltd.dictionary.ui.desktop.SpellbookApp;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.prefs.Preferences;
 import javax.swing.JOptionPane;
+import javax.swing.Timer;
 
 /**
  *
  * @author Miroslava
  */
 public class ExamDialog extends javax.swing.JDialog {
-
     private Answers answer;
-    private static final Preferences PREFS = Preferences.userNodeForPackage(SpellbookApp.class);
+
+    private static final PreferencesManager PM = PreferencesManager.getInstance();
+
     private int seconds = 0;
     private int secondsBackup = 0;
     private int examWords;
@@ -52,13 +43,10 @@ public class ExamDialog extends javax.swing.JDialog {
         TRANSLATOR.reset();
         initComponents();
         showWrongWordsButton.setVisible(false);
-        System.out.println("asdasdasd " + PREFS.getBoolean("RETURN_TIMER_STATUS", modal) + "  " + PREFS.getInt("SECONDS", WIDTH));
+        System.out.println("asdasdasd " + PM.getBoolean("RETURN_TIMER_STATUS", modal) + "  " + PM.getInt("SECONDS", WIDTH));
 
         setIconImage(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE16).getImage());
         setLocationRelativeTo(parent);
-
-        
-
     }
 
     /** This method is called from within the constructor to
@@ -417,7 +405,7 @@ public class ExamDialog extends javax.swing.JDialog {
         if (ExamSettingsDialog.isOpen()) {
             examWords = ExamSettingsDialog.getWordsCount();
             examWordsCopy = ExamSettingsDialog.getWordsCount();
-            PREFS.putInt("EXAM_WORDS", examWords);
+            PM.putInt("EXAM_WORDS", examWords);
         }
 
         System.out.println("Seconds: " + seconds + " Seconds Backup: " + secondsBackup);
@@ -445,15 +433,15 @@ public class ExamDialog extends javax.swing.JDialog {
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
         swingTimer.stop();
-        PREFS.put("DIFF_LABEL", difficultyLabel.getText());
+        PM.put("DIFF_LABEL", difficultyLabel.getText());
         if (timerStatusLabel.getText().contains(TRANSLATOR.translate("Stopped(Label)"))) {
             if (ExamSettingsDialog.returnTimerStatus()) {
-                PREFS.put("TIMER_STATUS", TRANSLATOR.translate("Initialized(Label)"));
+                PM.put("TIMER_STATUS", TRANSLATOR.translate("Initialized(Label)"));
             } else {
-                PREFS.put("TIMER_STATUS", TRANSLATOR.translate("NotInitialized(Label)"));
+                PM.put("TIMER_STATUS", TRANSLATOR.translate("NotInitialized(Label)"));
             }
         } else {
-            PREFS.put("TIMER_STATUS", timerStatusLabel.getText());
+            PM.put("TIMER_STATUS", timerStatusLabel.getText());
         }
     }//GEN-LAST:event_formWindowClosed
 
@@ -479,7 +467,6 @@ public class ExamDialog extends javax.swing.JDialog {
 
     private void fromLanguageComboBoxPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_fromLanguageComboBoxPopupMenuWillBecomeInvisible
         if( fromLanguageComboBox.getSelectedItem() == toLanguageComboBox.getSelectedItem()){
-
             toLanguageComboBox.setSelectedIndex(fromWordsIndex);
         }
             
@@ -537,15 +524,15 @@ public class ExamDialog extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     private void dbCalling() {
-
         translateField.setText(answer.getExamWord(selectedDictionary));
         totalWords++;
     }
 
     private void answered() {
-
         examWords--;
+        
         displayTranslation();
+
         if (examWords == 1) {
             totalWords += 1;
             stopExam();
@@ -554,6 +541,7 @@ public class ExamDialog extends javax.swing.JDialog {
         } else {
             dbCalling();
         }
+
         answerField.setText(null);
 
     }
@@ -566,6 +554,7 @@ public class ExamDialog extends javax.swing.JDialog {
         wordsProgressBar.setValue(maximumWordsProgressBar - examWords);
         System.out.println(maximumWordsProgressBar - examWords + "value");
         System.out.println("displayTranslation " + examWordsCopy + " " + examWords);
+
         if (answer.isCorrect(answerField.getText())) {
 
             wordsProgressBar.setForeground(new java.awt.Color(51, 255, 51));
@@ -582,8 +571,10 @@ public class ExamDialog extends javax.swing.JDialog {
         }
 
     }
+
     private boolean flagLast = false;
-    javax.swing.Timer swingTimer = new javax.swing.Timer(1 * 1000, new ActionListener() {
+
+    private Timer swingTimer = new javax.swing.Timer(1 * 1000, new ActionListener() {
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -655,16 +646,16 @@ public class ExamDialog extends javax.swing.JDialog {
 
     public void showExamDialog() {
         answer = new Answers(selectedDictionary);
-        if (PREFS.getBoolean("RETURN_TIMER_STATUS", false)) {
-            seconds = PREFS.getInt("SECONDS", WIDTH);
+        if (PM.getBoolean("RETURN_TIMER_STATUS", false)) {
+            seconds = PM.getInt("SECONDS", WIDTH);
 
         }
 
-        difficultyLabel.setText(PREFS.get("DIFF_LABEL", TRANSLATOR.translate("Easy(Label)")));
+        difficultyLabel.setText(PM.get("DIFF_LABEL", TRANSLATOR.translate("Easy(Label)")));
 
-        timerStatusLabel.setText(PREFS.get("TIMER_STATUS", TRANSLATOR.translate("NotInitialized(Label)")));
+        timerStatusLabel.setText(PM.get("TIMER_STATUS", TRANSLATOR.translate("NotInitialized(Label)")));
 
-        examWords = PREFS.getInt("EXAM_WORDS", 10);
+        examWords = PM.getInt("EXAM_WORDS", 10);
         examWordsCopy = examWords;
         setVisible(true);
     }
@@ -682,9 +673,9 @@ public class ExamDialog extends javax.swing.JDialog {
     private void timerRunButton() {
         seconds = ExamSettingsDialog.returnTimeSeconds();
         if (seconds == 0) {
-            seconds = PREFS.getInt("SECONDS", WIDTH);
+            seconds = PM.getInt("SECONDS", WIDTH);
         } else {
-            PREFS.putInt("SECONDS", seconds);
+            PM.putInt("SECONDS", seconds);
         }
         swingTimer.start();
         maximumSecondsProgressBar = seconds;
@@ -708,7 +699,7 @@ public class ExamDialog extends javax.swing.JDialog {
         translateField.setText(null);
         answerField.setText(null);
         // startButton.setText(TRANSLATOR.translate("Start(Button)"));
-        examWords = PREFS.getInt("EXAM_WORDS", examWords);
+        examWords = PM.getInt("EXAM_WORDS", examWords);
         examResult();
     }
 

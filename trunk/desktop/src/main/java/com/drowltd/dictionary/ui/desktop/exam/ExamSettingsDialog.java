@@ -11,8 +11,7 @@
 package com.drowltd.dictionary.ui.desktop.exam;
 
 import com.drowltd.dictionary.core.i18n.Translator;
-import com.drowltd.dictionary.ui.desktop.SpellbookApp;
-import java.util.prefs.Preferences;
+import com.drowltd.dictionary.core.preferences.PreferencesManager;
 import javax.swing.ButtonGroup;
 
 /**
@@ -21,7 +20,7 @@ import javax.swing.ButtonGroup;
  */
 public class ExamSettingsDialog extends javax.swing.JDialog {
 
-    Preferences PREFS = Preferences.userNodeForPackage(SpellbookApp.class);
+    private static final PreferencesManager PM = PreferencesManager.getInstance();
 
     private static int seconds;
     private static int wordCount;
@@ -250,7 +249,7 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
 
         isOpen = true;
         setWordsCount();
-        prefsPutCheckbox();
+        PMPutCheckbox();
         setDifficultyLabels();
         ExamDialog.diffLabelChange(difficulty);
         setVisible(false);
@@ -316,7 +315,7 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
 
     public void setWordsCount() {
         wordCount = Integer.parseInt(wordCountField.getText());
-        PREFS.putInt("WORDS", wordCount);
+        PM.putInt("WORDS", wordCount);
         
     }
 
@@ -336,14 +335,14 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
   
     }
      public int setWordsCountUnknown() {
-        return PREFS.getInt("WORDS", 10);
+        return PM.getInt("WORDS", 10);
     }
 
-    public void prefsPutCheckbox () {
-        PREFS.putBoolean("EASY_CHECKBOX", easyRadioButton.isSelected());
-        PREFS.putBoolean("MEDIUM_CHECKBOX", mediumRadioButton.isSelected());
-        PREFS.putBoolean("HARD_CHECBOX", hardRadioButton.isSelected());
-        PREFS.putBoolean("TIMER_CHECKBOX", forTimeCheckBox.isSelected());
+    public void PMPutCheckbox () {
+        PM.putBoolean("EASY_CHECKBOX", easyRadioButton.isSelected());
+        PM.putBoolean("MEDIUM_CHECKBOX", mediumRadioButton.isSelected());
+        PM.putBoolean("HARD_CHECBOX", hardRadioButton.isSelected());
+        PM.putBoolean("TIMER_CHECKBOX", forTimeCheckBox.isSelected());
     }
 
     public static boolean returnTimerStatus () {
@@ -352,11 +351,11 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
     }
 
     public void showExamSettingsDialog() {              // Thanks to Kiril Kamburov (:
-        wordCountField.setText("" + PREFS.getInt("WORDS", 10));
-        forTimeCheckBox.setSelected(PREFS.getBoolean("TIMER_CHECKBOX", false));
-        easyRadioButton.setSelected(PREFS.getBoolean("EASY_CHECKBOX", true));
-        mediumRadioButton.setSelected(PREFS.getBoolean("MEDIUM_CHECKBOX", false));
-        hardRadioButton.setSelected(PREFS.getBoolean("HARD_CHECBOX", false));
+        wordCountField.setText("" + PM.getInt("WORDS", 10));
+        forTimeCheckBox.setSelected(PM.getBoolean("TIMER_CHECKBOX", false));
+        easyRadioButton.setSelected(PM.getBoolean("EASY_CHECKBOX", true));
+        mediumRadioButton.setSelected(PM.getBoolean("MEDIUM_CHECKBOX", false));
+        hardRadioButton.setSelected(PM.getBoolean("HARD_CHECBOX", false));
 
         setVisible(true);
 
