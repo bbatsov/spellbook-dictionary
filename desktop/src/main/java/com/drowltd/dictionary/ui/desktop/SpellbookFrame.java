@@ -29,9 +29,14 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.UnsupportedLookAndFeelException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,24 +45,16 @@ import org.slf4j.LoggerFactory;
  * @author bozhidar
  */
 public class SpellbookFrame extends javax.swing.JFrame {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellbookFrame.class);
-
     private static final Translator TRANSLATOR = Translator.getTranslator("SpellbookForm");
-
     private static final PreferencesManager PM = PreferencesManager.getInstance();
-
     private DatabaseService databaseService;
-
     private List<String> words;
-
     private ClipboardIntegration clipboardIntegration;
-
     private String lastTransfer;
-
     private ScheduledExecutorService clipboardExecutorService;
-
     private TrayIcon trayIcon;
-
     private Dictionary selectedDictionary = Dictionary.EN_BG;
 
     /** Creates new form SpellbookFrame */
@@ -99,6 +96,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         trayIcon = SpellbookTray.createTraySection(this);
 
         addWindowListener(new WindowAdapter() {
+
             @Override
             public void windowIconified(WindowEvent e) {
                 if (PM.getBoolean("MIN_TO_TRAY", false)) {
@@ -152,6 +150,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
             clipboardIntegration = new ClipboardIntegration();
 
             Runnable clipboardRunnable = new Runnable() {
+
                 @Override
                 public void run() {
                     String transferredText = clipboardIntegration.getClipboardContents().trim();
@@ -163,7 +162,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
                     if (!transferredText.equalsIgnoreCase(lastTransfer)) {
                         LOGGER.info("'" + transferredText + "' received from clipboard");
                         String searchString = transferredText.split("\\W")[0].toLowerCase();
-                        String foundWord ="";
+                        String foundWord = "";
                         LOGGER.info("Search string from clipboard is " + searchString);
                         wordSearchField.setText(searchString);
                         wordSearchField.selectAll();
@@ -189,9 +188,9 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
                             wordsList.setSelectedIndex(index);
                             wordsList.ensureIndexIsVisible(index);
-                            
+
                             match = true;
-                            
+
                             matchLabel.setIcon(IconManager.getImageIcon("bell2_gold.png", IconSize.SIZE24));
                             matchLabel.setToolTipText(TRANSLATOR.translate("PartialMatchFound(ToolTip)"));
                         }
@@ -577,7 +576,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
             matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
             matchLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
-        } else if ((approximation  = databaseService.getApproximation(selectedDictionary, searchString)) != null) {
+        } else if ((approximation = databaseService.getApproximation(selectedDictionary, searchString)) != null) {
             int index = words.indexOf(approximation);
 
             wordsList.setSelectedIndex(index);
@@ -658,6 +657,43 @@ public class SpellbookFrame extends javax.swing.JFrame {
             if (!selectedLookAndFeel.equals(PM.get("LOOK_AND_FEEL", "System"))) {
                 PM.put("LOOK_AND_FEEL", selectedLookAndFeel);
             }
+        } else {
+            // we need to restore the old look and feel manually since it was changed on selection
+            LookAndFeelInfo[] lookAndFeelInfos = UIManager.getInstalledLookAndFeels();
+
+            String selectedLookAndFeel = PM.get("LOOK_AND_FEEL", "System");
+
+            if (selectedLookAndFeel.equals("System")) {
+                try {
+                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                } catch (ClassNotFoundException ex) {
+                    java.util.logging.Logger.getLogger(SpellbookFrame.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (InstantiationException ex) {
+                    java.util.logging.Logger.getLogger(SpellbookFrame.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IllegalAccessException ex) {
+                    java.util.logging.Logger.getLogger(SpellbookFrame.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (UnsupportedLookAndFeelException ex) {
+                    java.util.logging.Logger.getLogger(SpellbookFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                for (LookAndFeelInfo lookAndFeelInfo : lookAndFeelInfos) {
+                    if (lookAndFeelInfo.getName().equals(selectedLookAndFeel)) {
+                        try {
+                            UIManager.setLookAndFeel(lookAndFeelInfo.getClassName());
+                        } catch (ClassNotFoundException e1) {
+                            e1.printStackTrace();
+                        } catch (InstantiationException e1) {
+                            e1.printStackTrace();
+                        } catch (IllegalAccessException e1) {
+                            e1.printStackTrace();
+                        } catch (UnsupportedLookAndFeelException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                }
+            }
+
+            SwingUtilities.updateComponentTreeUI(this);
         }
     }//GEN-LAST:event_prefsMenuItemActionPerformed
 
@@ -699,10 +735,9 @@ public class SpellbookFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_restartMenuItemActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        ExamDialog examDialog  = new ExamDialog (this, true);
+        ExamDialog examDialog = new ExamDialog(this, true);
         examDialog.showExamDialog();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JMenuItem bgEnDictMenuItem;
