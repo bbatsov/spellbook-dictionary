@@ -8,10 +8,12 @@
  *
  * Created on 2009-11-24, 23:31:23
  */
-package com.drowltd.dictionary.ui.desktop;
+package com.drowltd.dictionary.ui.desktop.exam;
 
 import com.drowltd.dictionary.core.db.*;
 import com.drowltd.dictionary.core.i18n.Translator;
+import com.drowltd.dictionary.ui.desktop.IconManager;
+import com.drowltd.dictionary.ui.desktop.SpellbookApp;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -107,12 +109,12 @@ public class ExamDialog extends javax.swing.JDialog {
         settingsPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         fromLanguageComboBox.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
-            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
             }
             public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
                 fromLanguageComboBoxPopupMenuWillBecomeInvisible(evt);
             }
-            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
             }
         });
 

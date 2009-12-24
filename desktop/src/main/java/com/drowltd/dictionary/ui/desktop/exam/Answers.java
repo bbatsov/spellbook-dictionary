@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.drowltd.dictionary.ui.desktop;
+package com.drowltd.dictionary.ui.desktop.exam;
 
 import com.drowltd.dictionary.core.db.DatabaseService;
 import com.drowltd.dictionary.core.db.Dictionary;
@@ -35,7 +35,7 @@ public class Answers {
 
     public String getExamWord(Dictionary selectedDic) {
         examWordIndex = random.nextInt(words.size());
-        while (dictDb.getTranslation(selectedDic, words.get(examWordIndex)).contains("גז.")) {
+        while (dictDb.getTranslation(selectedDic, words.get(examWordIndex)).contains(".")) {
             examWordIndex = random.nextInt(words.size());
         }
         translation = dictDb.getTranslation(selectedDic, words.get(examWordIndex));

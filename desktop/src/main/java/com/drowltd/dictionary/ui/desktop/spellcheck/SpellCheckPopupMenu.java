@@ -1,4 +1,4 @@
-package com.drowltd.dictionary.ui.spellcheck;
+package com.drowltd.dictionary.ui.desktop.spellcheck;
 
 import com.drowltd.dictionary.core.spellcheck.SpellChecker;
 import java.awt.event.ActionEvent;

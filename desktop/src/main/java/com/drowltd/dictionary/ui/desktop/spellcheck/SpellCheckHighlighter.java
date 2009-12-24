@@ -1,4 +1,4 @@
-package com.drowltd.dictionary.ui.spellcheck;
+package com.drowltd.dictionary.ui.desktop.spellcheck;
 
 import java.awt.Color;
 import java.awt.EventQueue;

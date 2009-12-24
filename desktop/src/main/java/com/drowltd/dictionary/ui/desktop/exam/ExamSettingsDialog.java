@@ -8,9 +8,10 @@
  *
  * Created on 2009-11-30, 17:46:36
  */
-package com.drowltd.dictionary.ui.desktop;
+package com.drowltd.dictionary.ui.desktop.exam;
 
 import com.drowltd.dictionary.core.i18n.Translator;
+import com.drowltd.dictionary.ui.desktop.SpellbookApp;
 import java.util.prefs.Preferences;
 import javax.swing.ButtonGroup;
 

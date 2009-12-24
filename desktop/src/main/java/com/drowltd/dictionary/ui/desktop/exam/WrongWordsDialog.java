@@ -8,7 +8,7 @@
  *
  * Created on 2009-12-24, 0:09:40
  */
-package com.drowltd.dictionary.ui.desktop;
+package com.drowltd.dictionary.ui.desktop.exam;
 
 import java.awt.Font;
 import java.util.ArrayList;
