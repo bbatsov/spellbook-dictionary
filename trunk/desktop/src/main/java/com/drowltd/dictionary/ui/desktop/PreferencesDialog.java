@@ -14,6 +14,7 @@ import com.drowltd.dictionary.core.i18n.Translator;
 import com.drowltd.dictionary.core.preferences.PreferencesManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.logging.Level;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -35,7 +36,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
         super(parent, modal);
 
         TRANSLATOR.reset();
-        
+
         initComponents();
 
         PreferencesManager pm = PreferencesManager.getInstance();
@@ -69,22 +70,37 @@ public class PreferencesDialog extends javax.swing.JDialog {
         lookAndFeelComboBox.setSelectedItem(pm.get("LOOK_AND_FEEL", "System"));
 
         lookAndFeelComboBox.addActionListener(new ActionListener() {
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 String selectedLookAndFeel = (String) lookAndFeelComboBox.getSelectedItem();
 
-                for (LookAndFeelInfo lookAndFeelInfo : lookAndFeelInfos) {
-                    if (lookAndFeelInfo.getName().equals(selectedLookAndFeel)) {
-                        try {
-                            UIManager.setLookAndFeel(lookAndFeelInfo.getClassName());
-                        } catch (ClassNotFoundException e1) {
-                            e1.printStackTrace();
-                        } catch (InstantiationException e1) {
-                            e1.printStackTrace();
-                        } catch (IllegalAccessException e1) {
-                            e1.printStackTrace();
-                        } catch (UnsupportedLookAndFeelException e1) {
-                            e1.printStackTrace();
+                if (selectedLookAndFeel.equals("System")) {
+                    try {
+                        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                    } catch (ClassNotFoundException ex) {
+                        java.util.logging.Logger.getLogger(SpellbookFrame.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (InstantiationException ex) {
+                        java.util.logging.Logger.getLogger(SpellbookFrame.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IllegalAccessException ex) {
+                        java.util.logging.Logger.getLogger(SpellbookFrame.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (UnsupportedLookAndFeelException ex) {
+                        java.util.logging.Logger.getLogger(SpellbookFrame.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else {
+                    for (LookAndFeelInfo lookAndFeelInfo : lookAndFeelInfos) {
+                        if (lookAndFeelInfo.getName().equals(selectedLookAndFeel)) {
+                            try {
+                                UIManager.setLookAndFeel(lookAndFeelInfo.getClassName());
+                            } catch (ClassNotFoundException e1) {
+                                e1.printStackTrace();
+                            } catch (InstantiationException e1) {
+                                e1.printStackTrace();
+                            } catch (IllegalAccessException e1) {
+                                e1.printStackTrace();
+                            } catch (UnsupportedLookAndFeelException e1) {
+                                e1.printStackTrace();
+                            }
                         }
                     }
                 }
@@ -292,7 +308,6 @@ public class PreferencesDialog extends javax.swing.JDialog {
         ok = false;
         setVisible(false);
     }//GEN-LAST:event_cancelButtonActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
     private javax.swing.JCheckBox clipboardIntegrationCheckBox;
