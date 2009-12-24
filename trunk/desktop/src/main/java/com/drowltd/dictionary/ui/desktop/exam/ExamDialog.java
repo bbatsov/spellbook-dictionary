@@ -39,6 +39,8 @@ public class ExamDialog extends javax.swing.JDialog {
     private ExamSettingsDialog examSettingsDialog = new ExamSettingsDialog(null, rootPaneCheckingEnabled);
     private int totalWords;
     private int correctWords;
+    private int fromWordsIndex;
+    private int toWordsIndex;
     private static final Translator TRANSLATOR = Translator.getTranslator("ExamDialog");
     private static ArrayList<String> wrongWords = new ArrayList<String>();
     private static ArrayList<String> correctTranslation = new ArrayList<String>();
@@ -109,17 +111,28 @@ public class ExamDialog extends javax.swing.JDialog {
         settingsPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         fromLanguageComboBox.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
-            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
             }
             public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
                 fromLanguageComboBoxPopupMenuWillBecomeInvisible(evt);
             }
-            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+                fromLanguageComboBoxPopupMenuWillBecomeVisible(evt);
             }
         });
 
         toLanguageComboBox.addItem(bundle.getString("English(Item)"));
         toLanguageComboBox.addItem(bundle.getString("Bulgarian(Item)"));
+        toLanguageComboBox.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+                toLanguageComboBoxPopupMenuWillBecomeInvisible(evt);
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+                toLanguageComboBoxPopupMenuWillBecomeVisible(evt);
+            }
+        });
 
         jLabel1.setText(bundle.getString("Languages(Label)")); // NOI18N
 
@@ -370,7 +383,7 @@ public class ExamDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(settingsPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE))
+                    .addComponent(settingsPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -465,7 +478,8 @@ public class ExamDialog extends javax.swing.JDialog {
 
     private void fromLanguageComboBoxPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_fromLanguageComboBoxPopupMenuWillBecomeInvisible
         if( fromLanguageComboBox.getSelectedItem() == toLanguageComboBox.getSelectedItem()){
-            
+
+            toLanguageComboBox.setSelectedIndex(fromWordsIndex);
         }
             
     }//GEN-LAST:event_fromLanguageComboBoxPopupMenuWillBecomeInvisible
@@ -474,6 +488,20 @@ public class ExamDialog extends javax.swing.JDialog {
         WrongWordsDialog wrongWordsDialog = new WrongWordsDialog(null, rootPaneCheckingEnabled);
         wrongWordsDialog.setVisible(true);
     }//GEN-LAST:event_showWrongWordsButtonActionPerformed
+
+    private void fromLanguageComboBoxPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_fromLanguageComboBoxPopupMenuWillBecomeVisible
+        fromWordsIndex = fromLanguageComboBox.getSelectedIndex();
+    }//GEN-LAST:event_fromLanguageComboBoxPopupMenuWillBecomeVisible
+
+    private void toLanguageComboBoxPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_toLanguageComboBoxPopupMenuWillBecomeInvisible
+        if (toLanguageComboBox.getSelectedItem() == fromLanguageComboBox.getSelectedItem()) {
+            fromLanguageComboBox.setSelectedIndex(toWordsIndex);
+        }
+    }//GEN-LAST:event_toLanguageComboBoxPopupMenuWillBecomeInvisible
+
+    private void toLanguageComboBoxPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_toLanguageComboBoxPopupMenuWillBecomeVisible
+        toWordsIndex = toLanguageComboBox.getSelectedIndex();
+    }//GEN-LAST:event_toLanguageComboBoxPopupMenuWillBecomeVisible
     /**
      * @param args the command line arguments
      */
