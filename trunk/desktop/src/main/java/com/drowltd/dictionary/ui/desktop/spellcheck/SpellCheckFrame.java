@@ -3,7 +3,7 @@
  *
  * Created on Nov 25, 2009, 6:53:41 PM
  */
-package com.drowltd.dictionary.ui.spellcheck;
+package com.drowltd.dictionary.ui.desktop.spellcheck;
 
 import com.drowltd.dictionary.core.i18n.Translator;
 import com.drowltd.dictionary.core.spellcheck.SpellChecker;
