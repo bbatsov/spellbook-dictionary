@@ -325,13 +325,13 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
     }
      public void setDifficultyLabels() {
         if (easyRadioButton.isSelected()) {
-            difficulty = "Easy";
+            difficulty = TRANSLATOR.translate("Easy(Label)");
         } else
         if (mediumRadioButton.isSelected()) {
-            difficulty = "Medium";
+            difficulty = TRANSLATOR.translate("Medium(Label)");
         } else
         if (hardRadioButton.isSelected()) {
-            difficulty = "Hard";
+            difficulty = TRANSLATOR.translate("Hard(Label)");
         } 
   
     }

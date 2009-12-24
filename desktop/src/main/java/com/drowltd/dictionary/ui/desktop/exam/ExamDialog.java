@@ -436,6 +436,7 @@ public class ExamDialog extends javax.swing.JDialog {
         maximumWordsProgressBar = examWords;
         wordsProgressBar.setMaximum(maximumWordsProgressBar - 1);
         wordsProgressBar.setString("1/" + examWords);
+        showWrongWordsButton.setVisible(false);
     }//GEN-LAST:event_startButtonActionPerformed
 
     private void stopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopButtonActionPerformed
@@ -548,7 +549,7 @@ public class ExamDialog extends javax.swing.JDialog {
         if (examWords == 1) {
             totalWords += 1;
             stopExam();
-            JOptionPane.showMessageDialog(rootPane, TRANSLATOR.translate("EndOfExam(Message)"));
+            
             examWords = examWordsCopy;
         } else {
             dbCalling();
@@ -633,8 +634,6 @@ public class ExamDialog extends javax.swing.JDialog {
             } else {
                 stopExam();
                 wordsProgressBar.setValue(maximumWordsProgressBar);
-                JOptionPane.showMessageDialog(rootPane, TRANSLATOR.translate("EndOfExam(Message)"));
-
 
             }
 
@@ -661,7 +660,7 @@ public class ExamDialog extends javax.swing.JDialog {
 
         }
 
-        difficultyLabel.setText(PREFS.get("DIFF_LABEL", "Easy"));
+        difficultyLabel.setText(PREFS.get("DIFF_LABEL", TRANSLATOR.translate("Easy(Label)")));
 
         timerStatusLabel.setText(PREFS.get("TIMER_STATUS", TRANSLATOR.translate("NotInitialized(Label)")));
 
@@ -694,6 +693,7 @@ public class ExamDialog extends javax.swing.JDialog {
     }
 
     private void stopExam() {
+        JOptionPane.showMessageDialog(rootPane, TRANSLATOR.translate("EndOfExam(Message)"));
         swingTimer.stop();
         timerProgressBar.setValue(0);
         if (!timerStatusLabel.getText().equalsIgnoreCase(TRANSLATOR.translate("NotInitialized(Label)"))) {
