@@ -17,7 +17,7 @@ import com.drowltd.dictionary.core.exception.DictionaryDbLockedException;
 import com.drowltd.dictionary.core.i18n.Translator;
 import com.drowltd.dictionary.core.preferences.PreferencesManager;
 import com.drowltd.dictionary.ui.desktop.IconManager.IconSize;
-import com.drowltd.dictionary.ui.spellcheck.SpellCheckFrame;
+import com.drowltd.dictionary.ui.desktop.spellcheck.SpellCheckFrame;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
