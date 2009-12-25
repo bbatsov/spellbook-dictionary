@@ -25,7 +25,6 @@ public class ExamDialog extends javax.swing.JDialog {
     private int examWordsCopy;
     private int maximumSecondsProgressBar = 0;
     private int maximumWordsProgressBar = 0;
-    private boolean answerPressed = false;
     private Dictionary selectedDictionary = Dictionary.BG_EN;
     private ExamSettingsDialog examSettingsDialog = new ExamSettingsDialog(null, rootPaneCheckingEnabled);
     private int totalWords;
@@ -455,13 +454,11 @@ public class ExamDialog extends javax.swing.JDialog {
     private void answerFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_answerFieldActionPerformed
         answered();
         seconds = secondsBackup;
-        answerPressed = true;
     }//GEN-LAST:event_answerFieldActionPerformed
 
     private void answerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_answerButtonActionPerformed
         answered();
         seconds = secondsBackup;
-        answerPressed = true;
     }//GEN-LAST:event_answerButtonActionPerformed
 
     private void jLabel6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel6MouseClicked
@@ -537,8 +534,7 @@ public class ExamDialog extends javax.swing.JDialog {
 
         displayTranslation();
 
-        if (examWords == 1) {
-            totalWords += 1;
+        if (examWords == 0) {
             stopExam();
 
             examWords = examWordsCopy;
@@ -578,7 +574,7 @@ public class ExamDialog extends javax.swing.JDialog {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-
+            
             if (examWords != 0) {
                 if (flagLast) {
                     seconds = secondsBackup;
@@ -609,15 +605,15 @@ public class ExamDialog extends javax.swing.JDialog {
 
 
                     if (seconds == -1) {
-                        if (!answerPressed) {
+                        
                             answered();
-                        }
+                        
                         flagLast = true;
-                        answerPressed = false;
-                        //examWords--;
                     }
                 }
             } else {
+                wrongWords.add(answer.examWord());
+                correctTranslation.add(answer.getTranslation());
                 stopExam();
                 wordsProgressBar.setValue(maximumWordsProgressBar);
 
