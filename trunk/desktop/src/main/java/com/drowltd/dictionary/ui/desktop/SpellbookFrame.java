@@ -17,7 +17,7 @@ import com.drowltd.dictionary.core.exception.DictionaryDbLockedException;
 import com.drowltd.dictionary.core.i18n.Translator;
 import com.drowltd.dictionary.core.preferences.PreferencesManager;
 import com.drowltd.dictionary.ui.desktop.IconManager.IconSize;
-import com.drowltd.dictionary.ui.desktop.spellcheck.SpellCheckFrame;
+import com.drowltd.dictionary.ui.spellcheck.SpellCheckFrame;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
@@ -43,6 +43,7 @@ import org.slf4j.LoggerFactory;
 /**
  *
  * @author bozhidar
+ * @since 0.1
  */
 public class SpellbookFrame extends javax.swing.JFrame {
 
@@ -55,7 +56,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private String lastTransfer;
     private ScheduledExecutorService clipboardExecutorService;
     private TrayIcon trayIcon;
-    private Dictionary selectedDictionary = Dictionary.EN_BG;
+    private Dictionary selectedDictionary = Dictionary.getSelectedDictionary();
 
     /** Creates new form SpellbookFrame */
     public SpellbookFrame() {
@@ -292,6 +293,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         clear();
 
         selectedDictionary = dictionary;
+        Dictionary.setSelectedDictionary(selectedDictionary);
 
         words = databaseService.getWordsFromDictionary(dictionary);
         wordsList.setListData(words.toArray());
