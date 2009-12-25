@@ -1,32 +1,39 @@
 package com.drowltd.dictionary.core.spellcheck;
 
+import com.drowltd.dictionary.core.db.Dictionary;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author iivalchev
+ * @since 0.2
  *
  * Implementation of the Peter Norvig Toy Spelling corrector
  * by <a href="http://raelcunha.com/spell-correct.php">Rael Cunha</a>.
  *
  */
-public class SpellChecker {
-    public static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
+public final class SpellChecker {
 
-    private Map<String, Integer> nWords;
-
-    public Map<String, Integer> getnWords() {
-        return nWords;
-    }
+    private static Logger LOGGER = LoggerFactory.getLogger(SpellChecker.class);
+    private static SpellChecker instance;
+    private final String alphabet;
+    private final Map<String, Integer> nWords;
 
     /**
      *
      * @param the Map<String, Integer> containing the words
      */
     public SpellChecker(Map<String, Integer> nWords) {
+        this(nWords, Dictionary.getSelectedDictionary().getAlphabet());
+
+    }
+
+    public SpellChecker(Map<String, Integer> nWords, String alphabet) {
         if (nWords == null) {
             throw new NullPointerException("nWords is null");
         }
@@ -36,6 +43,14 @@ public class SpellChecker {
         }
 
         this.nWords = nWords;
+
+        if (alphabet == null || alphabet.isEmpty()) {
+            LOGGER.error("alphabet is null || empty");
+            throw new IllegalArgumentException("alphabet is null || empty");
+        }
+        this.alphabet = alphabet;
+
+        setInstance(this);
     }
 
     private final ArrayList<String> edits(String word) {
@@ -50,13 +65,13 @@ public class SpellChecker {
         }
         // Alternation
         for (int i = 0; i < word.length(); ++i) {
-            for (char c = ALPHABET.charAt(0); c <= ALPHABET.charAt(ALPHABET.length()-1); ++c) {
+            for (char c = alphabet.charAt(0); c <= alphabet.charAt(alphabet.length() - 1); ++c) {
                 result.add(word.substring(0, i) + String.valueOf(c) + word.substring(i + 1));
             }
         }
         // Insertion
         for (int i = 0; i <= word.length(); ++i) {
-            for (char c = ALPHABET.charAt(0); c <= ALPHABET.charAt(ALPHABET.length()-1); ++c) {
+            for (char c = alphabet.charAt(0); c <= alphabet.charAt(alphabet.length() - 1); ++c) {
                 result.add(word.substring(0, i) + String.valueOf(c) + word.substring(i));
             }
         }
@@ -90,9 +105,6 @@ public class SpellChecker {
         }
 
         String wordInLowerCase = word.toLowerCase();
-//
-//        Map<Integer, String> wordMap = new HashMap<Integer, String>();
-//        wordMap.put(0, wordInLowerCase);
 
         if (nWords.containsKey(wordInLowerCase)) {
             return Collections.emptyMap();
@@ -120,5 +132,19 @@ public class SpellChecker {
             return candidates;
         }
         return Collections.emptyMap();
+    }
+
+    public synchronized static SpellChecker getInstance() {
+        if (instance == null) {
+            LOGGER.error("instance is null");
+            throw new IllegalStateException("instance is null");
+        }
+        return instance;
+    }
+
+    private synchronized static void setInstance(SpellChecker instance) {
+        if (instance != null) {
+            SpellChecker.instance = instance;
+        }
     }
 }
