@@ -428,6 +428,8 @@ public class ExamDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_startButtonActionPerformed
 
     private void stopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopButtonActionPerformed
+        wrongWords.add(answer.examWord());
+        correctTranslation.add(answer.getTranslation());
         stopExam();
     }//GEN-LAST:event_stopButtonActionPerformed
 
@@ -693,8 +695,6 @@ public class ExamDialog extends javax.swing.JDialog {
         answerField.setText(null);
         // startButton.setText(TRANSLATOR.translate("Start(Button)"));
         examWords = PM.getInt("EXAM_WORDS", examWords);
-        wrongWords.add(answer.examWord());
-        correctTranslation.add(answer.getTranslation());
         examResult();
     }
 
