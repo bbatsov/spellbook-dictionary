@@ -1,17 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
- * ExamSettingsDialog.java
- *
- * Created on 2009-11-30, 17:46:36
- */
 package com.drowltd.dictionary.ui.desktop.exam;
 
 import com.drowltd.dictionary.core.i18n.Translator;
 import com.drowltd.dictionary.core.preferences.PreferencesManager;
+import com.drowltd.dictionary.ui.desktop.NumberDocument;
 import javax.swing.ButtonGroup;
 
 /**
@@ -35,16 +26,14 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
 
         initComponents();
 
+        // accept only numbers
+        wordCountField.setDocument(new NumberDocument());
+
         ButtonGroup difficultyGroup = new ButtonGroup();
 
         difficultyGroup.add(easyRadioButton);
         difficultyGroup.add(mediumRadioButton);
         difficultyGroup.add(hardRadioButton);
-
-        
-
-       
-
     }
 
     /** This method is called from within the constructor to
