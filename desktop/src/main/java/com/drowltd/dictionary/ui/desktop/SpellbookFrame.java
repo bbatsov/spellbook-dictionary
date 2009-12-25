@@ -37,6 +37,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.text.DefaultEditorKit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -333,6 +334,10 @@ public class SpellbookFrame extends javax.swing.JFrame {
         restartMenuItem = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
+        cutMenuItem = new javax.swing.JMenuItem(new DefaultEditorKit.CutAction());
+        copyMenuItem = new javax.swing.JMenuItem(new DefaultEditorKit.CopyAction());
+        pasteMenuItem = new javax.swing.JMenuItem(new DefaultEditorKit.PasteAction());
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
         fontMenuItem = new javax.swing.JMenuItem();
         prefsMenuItem = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
@@ -370,6 +375,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         });
 
         wordTranslationTextArea.setColumns(20);
+        wordTranslationTextArea.setEditable(false);
         wordTranslationTextArea.setRows(5);
         jScrollPane2.setViewportView(wordTranslationTextArea);
 
@@ -443,6 +449,16 @@ public class SpellbookFrame extends javax.swing.JFrame {
         jMenuBar1.add(jMenu1);
 
         jMenu2.setText(bundle.getString("Edit(Menu)")); // NOI18N
+
+        cutMenuItem.setText("Cut");
+        jMenu2.add(cutMenuItem);
+
+        copyMenuItem.setText("Copy");
+        jMenu2.add(copyMenuItem);
+
+        pasteMenuItem.setText("Paste");
+        jMenu2.add(pasteMenuItem);
+        jMenu2.add(jSeparator1);
 
         fontMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/font.png"))); // NOI18N
         fontMenuItem.setText(bundle.getString("EditFont(MenuItem)")); // NOI18N
@@ -739,6 +755,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JMenuItem bgEnDictMenuItem;
     private javax.swing.JButton clearButton;
+    private javax.swing.JMenuItem copyMenuItem;
+    private javax.swing.JMenuItem cutMenuItem;
     private javax.swing.JLabel drowLabel;
     private javax.swing.JMenuItem enBgDictMenuItem;
     private javax.swing.JMenuItem examMenuItem;
@@ -753,7 +771,9 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JLabel matchLabel;
+    private javax.swing.JMenuItem pasteMenuItem;
     private javax.swing.JMenuItem prefsMenuItem;
     private javax.swing.JMenuItem restartMenuItem;
     private javax.swing.JMenuItem spellcheckMenuItem;
