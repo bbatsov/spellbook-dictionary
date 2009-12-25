@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,14 +24,13 @@ import java.util.Map;
  * @since  0.1
  */
 public class DatabaseService {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseService.class);
-
     private static DatabaseService instance;
-
     private Connection connection;
-
     // simple caching mechanism to avoid db operations
     private Map<Dictionary, List<String>> dictionaryCache = new HashMap<Dictionary, List<String>>();
+    private Map<Dictionary, Map<String, Integer>> spellCheckerCache = new HashMap<Dictionary, Map<String, Integer>>();
 
     private DatabaseService(String dictDbFile) throws DictionaryDbLockedException {
         LOGGER.info("dictionary database: " + dictDbFile.replace(".data.db", ""));
@@ -179,5 +179,49 @@ public class DatabaseService {
         }
 
         return null;
+    }
+
+    public Map<String, Integer> getRatings(Dictionary dictionary) {
+
+        if(dictionary == null){
+            LOGGER.error("dictionary is null");
+            throw new NullPointerException("dictionary is null");
+        }
+
+        if(spellCheckerCache.containsKey(dictionary)){
+            LOGGER.info("Word ratings for " + dictionary + " loaded from cache");
+            return spellCheckerCache.get(dictionary);
+        }
+
+        Map<String, Integer> nWords = new HashMap<String, Integer>();
+
+        try {
+            PreparedStatement ps1 = connection.prepareStatement("SELECT word, rating FROM " + dictionary);
+            LOGGER.info("SELECT WORD, RATING FROM " + dictionary);
+            final ResultSet resultSet1 = ps1.executeQuery();
+
+            while (resultSet1.next()) {
+                nWords.put(resultSet1.getString("WORD"), resultSet1.getInt("RATING"));
+            }
+
+            PreparedStatement ps2 = connection.prepareStatement("SELECT word, rating FROM " + dictionary.getRatingsTable());
+            LOGGER.info("SELECT WORD, RATING FROM " + dictionary.getRatingsTable());
+            final ResultSet resultSet2 = ps2.executeQuery();
+
+            while (resultSet2.next()) {
+                nWords.put(resultSet2.getString("WORD"), resultSet2.getInt("RATING"));
+            }
+
+        } catch (SQLException ex) {
+            java.util.logging.Logger.getLogger(DatabaseService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if(nWords.isEmpty()){
+            throw new IllegalStateException("ratings from db are not imported");
+        }
+
+        spellCheckerCache.put(dictionary, nWords);
+
+        return nWords;
     }
 }
