@@ -1,13 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
- * WrongWords.java
- *
- * Created on 2009-12-24, 0:09:40
- */
 package com.drowltd.dictionary.ui.desktop.exam;
 
 import java.awt.Font;
@@ -18,14 +8,14 @@ import java.util.ArrayList;
  * @author Franky
  */
 public class WrongWordsDialog extends javax.swing.JDialog {
-
-    ArrayList<String> wrongWords;
-    ArrayList<String> correctTranslation;
+    private ArrayList<String> wrongWords;
+    private ArrayList<String> correctTranslation;
 
     /** Creates new form WrongWords */
     public WrongWordsDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+
         wrongWords = ExamDialog.getWrongWords();
         correctTranslation = ExamDialog.getCorrectTranslation();
         wrongWordsList.setListData(wrongWords.toArray());
@@ -104,15 +94,10 @@ public class WrongWordsDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void wrongWordsListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_wrongWordsListValueChanged
-        int firstIndex = evt.getFirstIndex();
-        int lastIndex = evt.getLastIndex();
-        correctTranslationTextArea.setFont(new Font("Serif", Font.ITALIC, 16));
-        if (wrongWordsList.isSelectedIndex(firstIndex)) {
-            correctTranslationTextArea.setText(correctTranslation.get(firstIndex));
-        } else {
-           correctTranslationTextArea.setText(correctTranslation.get(lastIndex));
-        }
+        int selectedIndex = wrongWordsList.getSelectedIndex();
 
+        correctTranslationTextArea.setFont(new Font("Serif", Font.ITALIC, 16));
+        correctTranslationTextArea.setText(correctTranslation.get(selectedIndex));
     }//GEN-LAST:event_wrongWordsListValueChanged
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea correctTranslationTextArea;
