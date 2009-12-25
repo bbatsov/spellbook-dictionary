@@ -337,8 +337,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
         enBgDictMenuItem = new javax.swing.JMenuItem();
         bgEnDictMenuItem = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
+        examMenuItem = new javax.swing.JMenuItem();
+        spellcheckMenuItem = new javax.swing.JMenuItem();
         jMenu5 = new javax.swing.JMenu();
         aboutMenuItem = new javax.swing.JMenuItem();
 
@@ -486,23 +486,23 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         jMenu4.setText(bundle.getString("Tools(Menu)")); // NOI18N
 
-        jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/blackboard.png"))); // NOI18N
-        jMenuItem1.setText(bundle.getString("Exam(MenuItem)")); // NOI18N
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        examMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/blackboard.png"))); // NOI18N
+        examMenuItem.setText(bundle.getString("Exam(MenuItem)")); // NOI18N
+        examMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                examMenuItemActionPerformed(evt);
             }
         });
-        jMenu4.add(jMenuItem1);
+        jMenu4.add(examMenuItem);
 
-        jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/spellcheck.png"))); // NOI18N
-        jMenuItem2.setText(bundle.getString("SpellCheck(MenuItem)")); // NOI18N
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+        spellcheckMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/spellcheck.png"))); // NOI18N
+        spellcheckMenuItem.setText(bundle.getString("SpellCheck(MenuItem)")); // NOI18N
+        spellcheckMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
+                spellcheckMenuItemActionPerformed(evt);
             }
         });
-        jMenu4.add(jMenuItem2);
+        jMenu4.add(spellcheckMenuItem);
 
         jMenuBar1.add(jMenu4);
 
@@ -536,14 +536,9 @@ public class SpellbookFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void wordsListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_wordsListValueChanged
-        int firstIndex = evt.getFirstIndex();
-        int lastIndex = evt.getLastIndex();
+        int selectedIndex = wordsList.getSelectedIndex();
 
-        if (wordsList.isSelectedIndex(firstIndex)) {
-            wordTranslationTextArea.setText(databaseService.getTranslation(selectedDictionary, words.get(firstIndex)));
-        } else {
-            wordTranslationTextArea.setText(databaseService.getTranslation(selectedDictionary, words.get(lastIndex)));
-        }
+        wordTranslationTextArea.setText(databaseService.getTranslation(selectedDictionary, words.get(selectedIndex)));
 
         matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
         matchLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
@@ -726,24 +721,25 @@ public class SpellbookFrame extends javax.swing.JFrame {
         aboutDialog.setVisible(true);
     }//GEN-LAST:event_aboutMenuItemActionPerformed
 
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+    private void spellcheckMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_spellcheckMenuItemActionPerformed
         SpellCheckFrame.getInstance().setVisible(true);
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
+    }//GEN-LAST:event_spellcheckMenuItemActionPerformed
 
     private void restartMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restartMenuItemActionPerformed
         restart();
     }//GEN-LAST:event_restartMenuItemActionPerformed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void examMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_examMenuItemActionPerformed
         ExamDialog examDialog = new ExamDialog(this, true);
         examDialog.showExamDialog();
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }//GEN-LAST:event_examMenuItemActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JMenuItem bgEnDictMenuItem;
     private javax.swing.JButton clearButton;
     private javax.swing.JLabel drowLabel;
     private javax.swing.JMenuItem enBgDictMenuItem;
+    private javax.swing.JMenuItem examMenuItem;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenuItem fontMenuItem;
     private javax.swing.JMenu jMenu1;
@@ -752,14 +748,13 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel matchLabel;
     private javax.swing.JMenuItem prefsMenuItem;
     private javax.swing.JMenuItem restartMenuItem;
+    private javax.swing.JMenuItem spellcheckMenuItem;
     private javax.swing.JLabel statusBar;
     private javax.swing.JTextField wordSearchField;
     private javax.swing.JTextArea wordTranslationTextArea;
