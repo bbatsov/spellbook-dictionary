@@ -12,9 +12,13 @@ import java.awt.EventQueue;
 import java.util.Locale;
 
 /**
- * User: bozhidar
- * Date: Sep 5, 2009
- * Time: 1:26:50 PM
+ * The entry point in Spellbook. Here the preferences manager get initialized, some 
+ * important settings are take into account(such as the initial look and feel and language)
+ * and the application's main frame is created and displayed.
+ * 
+ * @author Bozhidar Batsov
+ * @since 0.1
+ *
  */
 public class SpellbookApp {
 
