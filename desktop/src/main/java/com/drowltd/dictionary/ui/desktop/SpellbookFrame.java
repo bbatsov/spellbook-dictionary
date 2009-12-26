@@ -123,6 +123,12 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         initComponents();
 
+        // add the context popup
+        ContextMenuMouseListener contextMenuMouseListener = new ContextMenuMouseListener();
+
+        wordSearchField.addMouseListener(contextMenuMouseListener);
+        wordTranslationTextArea.addMouseListener(contextMenuMouseListener);
+
         statusBar.setText(String.format(TRANSLATOR.translate("EnBgDictSize(Label)"), words.size()));
         statusBar.setIcon(IconManager.getImageIcon("en-bg.png", IconSize.SIZE24));
 
@@ -450,12 +456,15 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         jMenu2.setText(bundle.getString("Edit(Menu)")); // NOI18N
 
+        cutMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/cut.png"))); // NOI18N
         cutMenuItem.setText("Cut");
         jMenu2.add(cutMenuItem);
 
+        copyMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/copy.png"))); // NOI18N
         copyMenuItem.setText("Copy");
         jMenu2.add(copyMenuItem);
 
+        pasteMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/paste.png"))); // NOI18N
         pasteMenuItem.setText("Paste");
         jMenu2.add(pasteMenuItem);
         jMenu2.add(jSeparator1);
