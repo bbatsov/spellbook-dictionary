@@ -52,16 +52,10 @@ public class FontChooserDialog extends javax.swing.JDialog {
 
         int currentFontStyle = pm.getInt("FONT_STYLE", Font.PLAIN);
 
-        if ((currentFontStyle & Font.BOLD) == Font.BOLD) {
-            boldCheckBox.setSelected(true);
-        }
 
-        if ((currentFontStyle & Font.ITALIC) == Font.ITALIC) {
-            italicCheckBox.setSelected(true);
-        }
+        fontStyleList.setListData(new String[]{"Regular", "Bold", "Italic"});
+        fontStyleList.addListSelectionListener(new SelectionUpdater());
 
-        boldCheckBox.addChangeListener(new SelectionUpdater());
-        italicCheckBox.addChangeListener(new SelectionUpdater());
 
         previewText.setFont(generateFont());
     }
@@ -72,8 +66,9 @@ public class FontChooserDialog extends javax.swing.JDialog {
         Integer sizeInt = (Integer) fontSizeList.getSelectedValue();
 
         selectedFont = new Font(fontName,
-                (italicCheckBox.isSelected() ? Font.ITALIC : Font.PLAIN)
-                        | (boldCheckBox.isSelected() ? Font.BOLD : Font.PLAIN),
+                (fontStyleList.isSelectedIndex(2) ? Font.ITALIC : Font.PLAIN)
+                        | (fontStyleList.isSelectedIndex(1) ? Font.BOLD : Font.PLAIN)
+                        | (fontStyleList.isSelectedIndex(0) ? Font.PLAIN : Font.PLAIN),
                 sizeInt);
 
         return selectedFont;
@@ -106,12 +101,13 @@ public class FontChooserDialog extends javax.swing.JDialog {
         jScrollPane2 = new javax.swing.JScrollPane();
         fontSizeList = new javax.swing.JList();
         jLabel3 = new javax.swing.JLabel();
-        boldCheckBox = new javax.swing.JCheckBox();
-        italicCheckBox = new javax.swing.JCheckBox();
         previewText = new javax.swing.JTextField();
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        fontStyleList = new javax.swing.JList();
+        jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("i18n/FontChooserForm"); // NOI18N
@@ -137,10 +133,6 @@ public class FontChooserDialog extends javax.swing.JDialog {
 
         jLabel3.setText(bundle.getString("Preview(Label)")); // NOI18N
 
-        boldCheckBox.setText(bundle.getString("Bold(Label)")); // NOI18N
-
-        italicCheckBox.setText(bundle.getString("Italic(Label)")); // NOI18N
-
         previewText.setText(bundle.getString("PreviewText(Label)")); // NOI18N
 
         okButton.setText("OK");
@@ -159,61 +151,67 @@ public class FontChooserDialog extends javax.swing.JDialog {
 
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/48x48/font.png"))); // NOI18N
 
+        fontStyleList.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane3.setViewportView(fontStyleList);
+
+        jLabel5.setText(bundle.getString("Style(Label)")); // NOI18N
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(okButton)
                         .addGap(18, 18, 18)
-                        .addComponent(cancelButton))
+                        .addComponent(cancelButton)
+                        .addGap(262, 262, 262)
+                        .addComponent(jLabel4))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(24, 24, 24)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addGap(83, 83, 83)
-                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(italicCheckBox)
-                                            .addComponent(boldCheckBox)))
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jLabel4))))
-                            .addComponent(jLabel2)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5))
                         .addGap(18, 18, 18)
-                        .addComponent(previewText)))
-                .addContainerGap(38, Short.MAX_VALUE))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(previewText, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
 
         jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {cancelButton, okButton});
 
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel4)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jLabel2))
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel5))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(boldCheckBox)
-                        .addGap(18, 18, 18)
-                        .addComponent(italicCheckBox)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 103, Short.MAX_VALUE)
-                        .addComponent(jLabel4))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE))
                 .addGap(30, 30, 30)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -221,7 +219,7 @@ public class FontChooserDialog extends javax.swing.JDialog {
                 .addGap(26, 26, 26)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(okButton)
-                    .addComponent(cancelButton))
+                            .addComponent(cancelButton))))
                 .addContainerGap())
         );
 
@@ -229,7 +227,9 @@ public class FontChooserDialog extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -262,18 +262,19 @@ public class FontChooserDialog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox boldCheckBox;
     private javax.swing.JButton cancelButton;
     private javax.swing.JList fontList;
     private javax.swing.JList fontSizeList;
-    private javax.swing.JCheckBox italicCheckBox;
+    private javax.swing.JList fontStyleList;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JButton okButton;
     private javax.swing.JTextField previewText;
     // End of variables declaration//GEN-END:variables

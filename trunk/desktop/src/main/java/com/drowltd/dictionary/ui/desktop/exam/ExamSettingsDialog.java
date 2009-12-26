@@ -107,7 +107,7 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(hardRadioButton))
                     .addComponent(jLabel4))
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -137,7 +137,7 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(forTimeCheckBox)
                     .addComponent(jLabel5))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(11, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -201,7 +201,7 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(33, Short.MAX_VALUE)
+                .addContainerGap(38, Short.MAX_VALUE)
                 .addComponent(okButton)
                 .addGap(37, 37, 37)
                 .addComponent(cancelButton)
@@ -229,11 +229,13 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
        if (forTimeCheckBox.isSelected()) {
 
             levelChoice();      //seconds != 0
+            ExamDialog.setTimerProgressbarVisible();
             setDifficultyLabels();
             ExamDialog.timerFieldLabel(TRANSLATOR.translate("Initialized(Label)"));
         } else {
            ExamDialog.timerFieldLabel(TRANSLATOR.translate("NotInitialized(Label)"));
            seconds = 0;
+           ExamDialog.setTimerProgressbarInvisible();
         }
 
         isOpen = true;
