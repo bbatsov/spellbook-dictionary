@@ -32,7 +32,7 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                  <Component id="settingsPanel" alignment="0" max="32767" attributes="3"/>
+                  <Component id="settingsPanel" alignment="0" pref="455" max="32767" attributes="3"/>
                   <Component id="jPanel3" alignment="0" pref="455" max="32767" attributes="3"/>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
@@ -205,14 +205,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="timerIconLabel" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="42" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" attributes="0">
-                                  <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Component id="timerStatusLabel" min="-2" pref="112" max="-2" attributes="0"/>
-                              </Group>
-                              <Component id="timerProgressBar" min="-2" pref="340" max="-2" attributes="1"/>
-                          </Group>
+                          <Component id="timerProgressBar" min="-2" pref="340" max="-2" attributes="1"/>
                       </Group>
                       <Group type="103" alignment="0" groupAlignment="1" attributes="0">
                           <Group type="102" attributes="0">
@@ -298,11 +291,7 @@
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="timerStatusLabel" min="-2" pref="14" max="-2" attributes="1"/>
-                              <Component id="jLabel5" alignment="0" min="-2" max="-2" attributes="1"/>
-                          </Group>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
                           <Component id="timerProgressBar" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Component id="timerIconLabel" min="-2" max="-2" attributes="0"/>
@@ -432,11 +421,6 @@
             <Property name="stringPainted" type="boolean" value="true"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JLabel" name="timerStatusLabel">
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="10"/>
-          </AuxValues>
-        </Component>
         <Component class="javax.swing.JLabel" name="timerIconLabel">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
@@ -455,13 +439,6 @@
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="i18n/ExamDialog.properties" key="Difficulty(Label)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-            </Property>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JLabel" name="jLabel5">
-          <Properties>
-            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="i18n/ExamDialog.properties" key="Timer(Label)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
         </Component>

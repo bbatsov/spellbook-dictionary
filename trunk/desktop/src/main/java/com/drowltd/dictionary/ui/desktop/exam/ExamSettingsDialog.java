@@ -29,7 +29,7 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
 
 
 
-        setLocationRelativeTo(parent);
+        //setLocationRelativeTo(SpellbookFrame);
 
         initComponents();
 
@@ -237,9 +237,9 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
 
             levelChoice();      //seconds != 0
             ExamDialog.setTimerProgressbarVisible();
-            ExamDialog.timerFieldLabel(TRANSLATOR.translate("Initialized(Label)"));
+            ExamDialog.setEnumTimerStatus(ExamDialog.TimerStatus.STARTED);
         } else {
-           ExamDialog.timerFieldLabel(TRANSLATOR.translate("NotInitialized(Label)"));
+           ExamDialog.setEnumTimerStatus(ExamDialog.TimerStatus.DISABLED);
            levelChoice();
            seconds = 0;
            ExamDialog.setTimerProgressbarInvisible();
