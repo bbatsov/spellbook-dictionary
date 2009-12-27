@@ -38,22 +38,24 @@ public class ExamDialog extends javax.swing.JDialog {
     private static ArrayList<String> wrongWords = new ArrayList<String>();
     private static ArrayList<String> correctTranslation = new ArrayList<String>();
 
+    public enum TimerStatus { PAUSED, STARTED, STOPPED, DISABLED }
+
+    private static TimerStatus enumTimerStatus = TimerStatus.DISABLED;
+
     /** Creates new form ExamDialog */
     public ExamDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
 
         TRANSLATOR.reset();
         initComponents();
-        //showWrongWordsButton.setEnabled(false);
         pauseButton.setEnabled(false);
 
         setIconImage(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE16).getImage());
         setLocationRelativeTo(parent);
 
-        // Next two lines can be used directly even with more languages
+        //   Next two lines can be used directly even with more languages
         fromLanguageComboBox.setSelectedIndex(PM.getInt("FROM_LANGUAGE_LAST_SELECTED", fromLanguageComboBox.getSelectedIndex()));
         toLanguageComboBox.setSelectedIndex(PM.getInt("TO_LANGUAGE_LAST_SELECTED", toLanguageComboBox.getSelectedIndex()));
-
 
 
     }
@@ -86,11 +88,9 @@ public class ExamDialog extends javax.swing.JDialog {
         difficultyLabel = new javax.swing.JLabel();
         answerButton = new javax.swing.JButton();
         wordsProgressBar = new javax.swing.JProgressBar();
-        timerStatusLabel = new javax.swing.JLabel();
         timerIconLabel = new javax.swing.JLabel();
         answerIconLabel = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
         showWrongWordsButton = new javax.swing.JButton();
         pauseButton = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
@@ -260,8 +260,6 @@ public class ExamDialog extends javax.swing.JDialog {
 
         jLabel4.setText(bundle.getString("Difficulty(Label)")); // NOI18N
 
-        jLabel5.setText(bundle.getString("Timer(Label)")); // NOI18N
-
         showWrongWordsButton.setText(bundle.getString("ShowWords(Button)")); // NOI18N
         showWrongWordsButton.setEnabled(false);
         showWrongWordsButton.addActionListener(new java.awt.event.ActionListener() {
@@ -294,12 +292,7 @@ public class ExamDialog extends javax.swing.JDialog {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(timerIconLabel)
                         .addGap(42, 42, 42)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(timerStatusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(timerProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(timerProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addGroup(jPanel3Layout.createSequentialGroup()
                             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -369,10 +362,7 @@ public class ExamDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(timerStatusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(20, 20, 20)
                         .addComponent(timerProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(timerIconLabel))
                 .addGap(22, 22, 22))
@@ -387,7 +377,7 @@ public class ExamDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(settingsPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(settingsPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 455, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 455, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -428,13 +418,13 @@ public class ExamDialog extends javax.swing.JDialog {
         }
 
 
-        if (timerStatusLabel.getText().equals(TRANSLATOR.translate("Initialized(Label)")) || timerStatusLabel.getText().equals(TRANSLATOR.translate("Stopped(Label)"))) {
+        if (enumTimerStatus.equals(TimerStatus.STARTED) || enumTimerStatus.equals(TimerStatus.STOPPED)) {
             timerRunButton();
             timerUsed = true;
-            timerStatusLabel.setText(TRANSLATOR.translate("Initialized(Label)"));
+            enumTimerStatus = TimerStatus.STARTED;
             timerIconLabel.setIcon(IconManager.getImageIcon("stopwatch_run.png", IconManager.IconSize.SIZE48));
         } else {
-            timerStatusLabel.setText(TRANSLATOR.translate("NotInitialized(Label)"));
+            enumTimerStatus = TimerStatus.DISABLED;
             timerIconLabel.setIcon(IconManager.getImageIcon("stopwatch_stop.png", IconManager.IconSize.SIZE48));
             pauseButton.setEnabled(false);
         }
@@ -461,15 +451,16 @@ public class ExamDialog extends javax.swing.JDialog {
         PM.put("DIFF_LABEL", difficultyLabel.getText());
         PM.put("DIFFICULTY", difficulty.name());
         PM.putBoolean("TIMER_USED", timerUsed);
-        if (timerStatusLabel.getText().contains(TRANSLATOR.translate("Stopped(Label)"))) {
+        if (enumTimerStatus.equals(TimerStatus.STOPPED)) {
             if (ExamSettingsDialog.returnTimerStatus() || PM.getBoolean("TIMER_USED", timerUsed)) {
-                PM.put("TIMER_STATUS", TRANSLATOR.translate("Initialized(Label)"));
+                enumTimerStatus = TimerStatus.STARTED;
+                PM.put("A_TIMER_STATUS", enumTimerStatus.name() );
             } else {
-                PM.put("TIMER_STATUS", TRANSLATOR.translate("NotInitialized(Label)"));
+                enumTimerStatus = TimerStatus.DISABLED;
+                PM.put("A_TIMER_STATUS", enumTimerStatus.name());
             }
-        } else {
-            PM.put("TIMER_STATUS", timerStatusLabel.getText());
-        }
+        } else { enumTimerStatus = TimerStatus.DISABLED;
+                PM.put("A_TIMER_STATUS", enumTimerStatus.name()); }
 
         PM.putBoolean("TIMER_PROGRESSBAR_VISIBILITY", timerProgressBar.isVisible());
         PM.putInt("FROM_LANGUAGE_LAST_SELECTED", fromLanguageComboBox.getSelectedIndex());
@@ -547,7 +538,6 @@ public class ExamDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
@@ -561,7 +551,6 @@ public class ExamDialog extends javax.swing.JDialog {
     private static javax.swing.JButton stopButton;
     private javax.swing.JLabel timerIconLabel;
     private static javax.swing.JProgressBar timerProgressBar;
-    private static javax.swing.JLabel timerStatusLabel;
     private javax.swing.JComboBox toLanguageComboBox;
     private javax.swing.JTextField translateField;
     private javax.swing.JProgressBar wordsProgressBar;
@@ -674,15 +663,6 @@ public class ExamDialog extends javax.swing.JDialog {
         difficultyLabel.setText(diff);
     }
 
-    public static void timerFieldLabel(String status) {
-        timerStatusLabel.setText(status);
-        if (status.matches(TRANSLATOR.translate("NotInitialized(Label)"))) {
-            stopButton.setEnabled(false);
-        } else {
-            stopButton.setEnabled(true);
-        }
-    }
-
     public void showExamDialog() {
         difficulty = difficulty.valueOf(PM.get("DIFFICULTY", difficulty.name()));
         if (PM.getBoolean("RETURN_TIMER_STATUS", false)) {
@@ -694,7 +674,7 @@ public class ExamDialog extends javax.swing.JDialog {
 
         difficultyLabel.setText(PM.get("DIFF_LABEL", TRANSLATOR.translate("Easy(Label)")));
 
-        timerStatusLabel.setText(PM.get("TIMER_STATUS", TRANSLATOR.translate("NotInitialized(Label)")));
+        enumTimerStatus = enumTimerStatus.valueOf(PM.get("A_TIMER_STATUS", enumTimerStatus.name()));
 
         examWords = PM.getInt("EXAM_WORDS", 10);
         examWordsCopy = examWords;
@@ -731,8 +711,8 @@ public class ExamDialog extends javax.swing.JDialog {
         swingTimer.stop();
         JOptionPane.showMessageDialog(rootPane, TRANSLATOR.translate("EndOfExam(Message)"));
         timerProgressBar.setValue(0);
-        if (!timerStatusLabel.getText().equalsIgnoreCase(TRANSLATOR.translate("NotInitialized(Label)"))) {
-            timerStatusLabel.setText(TRANSLATOR.translate("Stopped(Label)"));
+        if (!enumTimerStatus.equals(TimerStatus.DISABLED)) {
+            enumTimerStatus = TimerStatus.STOPPED;
             timerIconLabel.setIcon(IconManager.getImageIcon("stopwatch_stop.png", IconManager.IconSize.SIZE48));
         }
         timerProgressBar.setString(TRANSLATOR.translate("Timer(String)"));
@@ -749,7 +729,7 @@ public class ExamDialog extends javax.swing.JDialog {
 
     private void examResult() {
 
-        feedbackField.setText(TRANSLATOR.translate("YourScore(String)") + correctWords + "/" + totalWords + "; " + TRANSLATOR.translate("CorrectWords(String)") + correctWords + "; " + TRANSLATOR.translate("WrongWords(String)") + (totalWords - correctWords) + "; ");
+        feedbackField.setText(TRANSLATOR.translate("YourScore(String)") + " " + correctWords + "/" + totalWords + "; " + TRANSLATOR.translate("CorrectWords(String)") + " " + correctWords + "; " + TRANSLATOR.translate("WrongWords(String)") + " " + (totalWords - correctWords) + "; ");
 
     }
 
@@ -776,6 +756,11 @@ public class ExamDialog extends javax.swing.JDialog {
     public static void setDifficulty(Difficulty d) {
         difficulty = d;
     }
+
+    public static void setEnumTimerStatus(TimerStatus timerStatus) {
+        enumTimerStatus = timerStatus;
+    }
+
 }
 
 
