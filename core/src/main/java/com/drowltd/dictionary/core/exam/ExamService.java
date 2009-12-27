@@ -27,9 +27,9 @@ public class ExamService {
     private Random random = new Random();
     private String translation;
 
-    public ExamService(Dictionary selectedDictionary) {
+    public ExamService(Dictionary selectedDictionary, Difficulty selectedDifficulty) {
         dictDb = DatabaseService.getInstance();
-        words = dictDb.getWordsFromDictionary(selectedDictionary);
+        words = dictDb.getDifficultyWords(selectedDictionary, selectedDifficulty);
     }
 
     /**
@@ -47,7 +47,7 @@ public class ExamService {
         translation = dictDb.getTranslation(selectedDic, words.get(examWordIndex));
     }
 
-     /**
+    /**
      * Returns a word from the selected dictionary
      *
      * @return selected word from the getExamWord method
@@ -57,16 +57,16 @@ public class ExamService {
         return words.get(examWordIndex);
     }
 
-     /**
+    /**
      *
      * @return the translation of the selected word
      *
      */
-     public String getTranslation() {
+    public String getTranslation() {
         return translation;
     }
 
-     /**
+    /**
      *
      * Splits the whole translation of a word into all possible answers
      *
@@ -99,7 +99,7 @@ public class ExamService {
         }
     }
 
-     /**
+    /**
      *
      * Removes all forward slashes and gives all possible combinations for correct answer
      *
@@ -142,7 +142,7 @@ public class ExamService {
 
             if (!(last.isEmpty())) {
 
-                 //Combines the new last string with every other string
+                //Combines the new last string with every other string
                 for (int j = 0; j < slash.length; j++) {
                     answers.add(slash[j] + " " + last);
                 }

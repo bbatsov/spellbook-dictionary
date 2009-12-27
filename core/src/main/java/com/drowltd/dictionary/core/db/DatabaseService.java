@@ -1,5 +1,6 @@
 package com.drowltd.dictionary.core.db;
 
+import com.drowltd.dictionary.core.exam.Difficulty;
 import com.drowltd.dictionary.core.exception.DictionaryDbLockedException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -31,6 +32,7 @@ public class DatabaseService {
     // simple caching mechanism to avoid db operations
     private Map<Dictionary, List<String>> dictionaryCache = new HashMap<Dictionary, List<String>>();
     private Map<Dictionary, Map<String, Integer>> spellCheckerCache = new HashMap<Dictionary, Map<String, Integer>>();
+    private Map<Dictionary, Map<Difficulty, ArrayList<String>>> examCache = new HashMap<Dictionary, Map<Difficulty, ArrayList<String>>>();
 
     private DatabaseService(String dictDbFile) throws DictionaryDbLockedException {
         LOGGER.info("dictionary database: " + dictDbFile.replace(".data.db", ""));
@@ -183,12 +185,12 @@ public class DatabaseService {
 
     public Map<String, Integer> getRatings(Dictionary dictionary) {
 
-        if(dictionary == null){
+        if (dictionary == null) {
             LOGGER.error("dictionary is null");
             throw new NullPointerException("dictionary is null");
         }
 
-        if(spellCheckerCache.containsKey(dictionary)){
+        if (spellCheckerCache.containsKey(dictionary)) {
             LOGGER.info("Word ratings for " + dictionary + " loaded from cache");
             return spellCheckerCache.get(dictionary);
         }
@@ -216,12 +218,78 @@ public class DatabaseService {
             java.util.logging.Logger.getLogger(DatabaseService.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        if(nWords.isEmpty()){
+        if (nWords.isEmpty()) {
             throw new IllegalStateException("ratings from db are not imported");
         }
 
         spellCheckerCache.put(dictionary, nWords);
 
         return nWords;
+    }
+
+    public ArrayList<String> getDifficultyWords(Dictionary dictionary, Difficulty difficulty) {
+
+        if (dictionary == null) {
+            LOGGER.error("dictionary is null");
+            throw new NullPointerException("dictionary is null");
+        }
+
+        if (examCache.containsKey(dictionary)) {
+            LOGGER.info("Word ratings for " + dictionary + " for difficulty " + difficulty + " loaded from cache");
+
+            if (dictionary.equals(Dictionary.BG_EN)) {
+                return examCache.get(dictionary).get(Difficulty.HARD);
+            }
+
+            return examCache.get(dictionary).get(difficulty);
+        }
+
+        ArrayList<String> easyWords = new ArrayList<String>();
+        ArrayList<String> mediumWords = new ArrayList<String>();
+        ArrayList<String> hardWords = new ArrayList<String>();
+        Map<Difficulty, ArrayList<String>> difficultyWords = new HashMap<Difficulty, ArrayList<String>>();
+
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT word, rating FROM " + dictionary);
+            LOGGER.info("SELECT WORD, RATING FROM " + dictionary + " for difficulty " + difficulty);
+            final ResultSet resultSet = ps.executeQuery();
+
+            while (resultSet.next()) {
+
+                if (resultSet.getInt("RATING") > 30) {
+                    easyWords.add(resultSet.getString("WORD"));
+                } else if (resultSet.getInt("RATING") >= 10 && resultSet.getInt("RATING") <= 30) {
+                    mediumWords.add(resultSet.getString("WORD"));
+                } else {
+                    hardWords.add(resultSet.getString("WORD"));
+                }
+            }
+        } catch (SQLException ex) {
+            java.util.logging.Logger.getLogger(DatabaseService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        difficultyWords.put(Difficulty.EASY, easyWords);
+        difficultyWords.put(Difficulty.MEDIUM, mediumWords);
+        difficultyWords.put(Difficulty.HARD, hardWords);
+
+        LOGGER.info("Caching difficulty of " + dictionary + " for future use");
+        examCache.put(dictionary, difficultyWords);
+
+        if (difficulty.equals(Difficulty.HARD) || dictionary.equals(Dictionary.BG_EN)) {
+            LOGGER.info("Returning hard words");
+            return hardWords;
+        }
+
+        if (difficulty.equals(Difficulty.EASY)) {
+            LOGGER.info("Returning easy words");
+            return easyWords;
+        }
+
+        if (difficulty.equals(Difficulty.MEDIUM)) {
+            LOGGER.info("Returning medium words");
+            return mediumWords;
+        }
+
+        return null;
     }
 }
