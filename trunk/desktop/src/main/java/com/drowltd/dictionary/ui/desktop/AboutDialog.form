@@ -28,7 +28,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Component id="nameAndLogoPanel" alignment="0" max="32767" attributes="0"/>
           <Group type="102" alignment="1" attributes="0">
-              <EmptySpace pref="55" max="32767" attributes="0"/>
+              <EmptySpace pref="69" max="32767" attributes="0"/>
               <Component id="creditsButton" linkSize="1" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="licenseButton" linkSize="1" min="-2" max="-2" attributes="0"/>
@@ -38,7 +38,7 @@
           </Group>
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane1" pref="315" max="32767" attributes="0"/>
+              <Component id="jScrollPane1" pref="329" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>

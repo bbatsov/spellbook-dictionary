@@ -203,6 +203,7 @@ public class AboutDialog extends javax.swing.JDialog {
         infoTextPane.setText("<html>\n  <head>\n\n  </head>\n  <body>\n    <p style=\"margin-top: 0\"; style=\"text-align:center\">\n"
                 + "\t\n\t <a href=\"mailto:bozhidar@drowltd.com?subject=Spellbook\">Божидар Бацов</a> <br />"
                 + "\n\t <a href=\"mailto:mireflame@gmail.com?subject=Spellbook\">Мирослава Станчева</a> <br />"
+                + "\n\t <a href=\"mailto:george.angelow@gmail.com?subject=Spellbook\">Георги Ангелов</a> <br />"
                 + "\n\t <a href=\"mailto:nikolay@dimitrovi.net?subject=Spellbook\">Николай Димитров</a> <br />"
                 + "\n\t <a \nhref=\"mailto:frankeys89@gmail.com?subject=Spellbook\">Иван Спасов</a> <br />"
                 + "\n\t <a href=\"mailto:bmeshkova@gmail.com?subject=Spellbook\">Биляна Мешкова</a> <br />"
