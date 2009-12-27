@@ -40,9 +40,13 @@ public class ExamService {
      */
     public void getExamWord(Dictionary selectedDic) {
         examWordIndex = random.nextInt(words.size());
-
-        while (dictDb.getTranslation(selectedDic, words.get(examWordIndex)).contains("\u0432\u0436.")) {
+        examWordIndex = 0;
+        /*while (dictDb.getTranslation(selectedDic, words.get(examWordIndex)).contains("\u0432\u0436.")) {
             examWordIndex = random.nextInt(words.size());
+        }*/
+
+        while (!words.get(examWordIndex).equals("bow")){
+            examWordIndex++;
         }
         translation = dictDb.getTranslation(selectedDic, words.get(examWordIndex));
     }
@@ -90,7 +94,7 @@ public class ExamService {
 
             if (s[i].contains("(")) {
                 //removes the parenthesis and everything inside them
-                slash(s[i].replaceAll("\\(([^()]*)\\)", ""));
+                slash(s[i].replaceAll("\\(([^()]*)\\)?", ""));
                 //removes the parenthesis only
                 slash(s[i].replaceAll("\\(([^()]*)\\)", "$1"));
             } else {
