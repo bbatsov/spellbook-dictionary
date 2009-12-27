@@ -458,15 +458,15 @@ public class SpellbookFrame extends javax.swing.JFrame {
         jMenu2.setText(bundle.getString("Edit(Menu)")); // NOI18N
 
         cutMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/cut.png"))); // NOI18N
-        cutMenuItem.setText("Cut");
+        cutMenuItem.setText(bundle.getString("EditCut(MenuItem)")); // NOI18N
         jMenu2.add(cutMenuItem);
 
         copyMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/copy.png"))); // NOI18N
-        copyMenuItem.setText("Copy");
+        copyMenuItem.setText(bundle.getString("EditCopy(MenuItem)")); // NOI18N
         jMenu2.add(copyMenuItem);
 
         pasteMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/paste.png"))); // NOI18N
-        pasteMenuItem.setText("Paste");
+        pasteMenuItem.setText(bundle.getString("EditPaste(MenuItem)")); // NOI18N
         jMenu2.add(pasteMenuItem);
         jMenu2.add(jSeparator1);
 
