@@ -201,14 +201,15 @@ public class AboutDialog extends javax.swing.JDialog {
 
     private void creditsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_creditsButtonActionPerformed
         infoTextPane.setText("<html>\n  <head>\n\n  </head>\n  <body>\n    <p style=\"margin-top: 0\"; style=\"text-align:center\">\n"
-                + "\t\n\t <a href=\"mailto:bozhidar@drowltd.com?subject=Spellbook\">Божидар Бацов</a> <br />"
-                + "\n\t <a href=\"mailto:mireflame@gmail.com?subject=Spellbook\">Мирослава Станчева</a> <br />"
-                + "\n\t <a href=\"mailto:george.angelow@gmail.com?subject=Spellbook\">Георги Ангелов</a> <br />"
-                + "\n\t <a href=\"mailto:nikolay@dimitrovi.net?subject=Spellbook\">Николай Димитров</a> <br />"
-                + "\n\t <a \nhref=\"mailto:frankeys89@gmail.com?subject=Spellbook\">Иван Спасов</a> <br />"
-                + "\n\t <a href=\"mailto:bmeshkova@gmail.com?subject=Spellbook\">Биляна Мешкова</a> <br />"
-                + "\n\t <a \nhref=\"mailto:cvetie@abv.bg?subject=Spellbook\">Цветелина Николова</a> <br />"
-                + "\n\t <a href=\"mailto:strannika@gmail.com?subject=Spellbook\">Александър Вълчев</a> <br />"
+                + "\t\n\t <a href=\"mailto:bozhidar@drowltd.com?subject=Spellbook\">Bozhidar Batsov</a> <br />"
+                + "\n\t <a href=\"mailto:iivalchev@gmail.com?subject=Spellbook\">Ivan Valchev</a> <br />"
+                + "\n\t <a href=\"mailto:mireflame@gmail.com?subject=Spellbook\">Miroslava Stancheva</a> <br />"
+                + "\n\t <a href=\"mailto:nikolay@dimitrovi.net?subject=Spellbook\">Nikolay Dimitrov</a> <br />"
+                + "\n\t <a \nhref=\"mailto:frankeys89@gmail.com?subject=Spellbook\">Ivan Spasov</a> <br />"
+                + "\n\t <a \nhref=\"mailto:george.angelow@gmail.com?subject=Spellbook\">George Angelow</a> <br />"
+                + "\n\t <a href=\"mailto:bmeshkova@gmail.com?subject=Spellbook\">Bilyana Meshkova</a> <br />"
+                + "\n\t <a \nhref=\"mailto:cvetie@abv.bg?subject=Spellbook\">Tsvetelina Nikolova</a> <br />"
+                + "\n\t <a href=\"mailto:strannika@gmail.com?subject=Spellbook\">Alexander Valchev</a> <br />"
                 + "\n\t   \n\t</p>\n\t\n  </body>\n</html>\n");
     }//GEN-LAST:event_creditsButtonActionPerformed
 
