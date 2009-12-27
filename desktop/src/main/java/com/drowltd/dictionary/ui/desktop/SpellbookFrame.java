@@ -86,7 +86,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
         Dimension screenSize = toolkit.getScreenSize();
 
         setSize(screenSize.width / 2, screenSize.height / 2);
-        setLocationByPlatform(true);
+        // center on screen
+        setLocationRelativeTo(null);
 
         //set the frame title
         setTitle(TRANSLATOR.translate("ApplicationName(Title)"));
