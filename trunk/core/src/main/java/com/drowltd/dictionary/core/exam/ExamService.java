@@ -40,14 +40,11 @@ public class ExamService {
      */
     public void getExamWord(Dictionary selectedDic) {
         examWordIndex = random.nextInt(words.size());
-        examWordIndex = 0;
-        /*while (dictDb.getTranslation(selectedDic, words.get(examWordIndex)).contains("\u0432\u0436.")) {
-            examWordIndex = random.nextInt(words.size());
-        }*/
 
-        while (!words.get(examWordIndex).equals("bow")){
-            examWordIndex++;
+        while (dictDb.getTranslation(selectedDic, words.get(examWordIndex)).contains("\u0432\u0436.")) {
+            examWordIndex = random.nextInt(words.size());
         }
+        
         translation = dictDb.getTranslation(selectedDic, words.get(examWordIndex));
     }
 
