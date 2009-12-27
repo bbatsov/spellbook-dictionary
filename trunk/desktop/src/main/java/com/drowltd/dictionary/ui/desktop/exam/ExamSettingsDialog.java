@@ -1,9 +1,10 @@
-package com.drowltd.dictionary.ui.desktop.exam;
+    package com.drowltd.dictionary.ui.desktop.exam;
 
 import com.drowltd.dictionary.core.exam.Difficulty;
 import com.drowltd.dictionary.core.i18n.Translator;
 import com.drowltd.dictionary.core.preferences.PreferencesManager;
 import com.drowltd.dictionary.ui.desktop.NumberDocument;
+import com.drowltd.dictionary.ui.desktop.*;
 import javax.swing.ButtonGroup;
 
 /**
@@ -22,9 +23,13 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
     private static final Translator TRANSLATOR = Translator.getTranslator("ExamSettingsDialog");
 
     /** Creates new form ExamSettingsDialog */
-    public ExamSettingsDialog(java.awt.Frame parent, boolean modal) {
+    public ExamSettingsDialog(com.drowltd.dictionary.ui.desktop.exam.ExamDialog parent, boolean modal) {
         super(parent, modal);
         TRANSLATOR.reset();
+
+
+
+        setLocationRelativeTo(parent);
 
         initComponents();
 
