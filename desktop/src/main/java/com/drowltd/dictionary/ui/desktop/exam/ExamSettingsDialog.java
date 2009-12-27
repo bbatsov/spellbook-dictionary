@@ -1,5 +1,6 @@
 package com.drowltd.dictionary.ui.desktop.exam;
 
+import com.drowltd.dictionary.core.exam.Difficulty;
 import com.drowltd.dictionary.core.i18n.Translator;
 import com.drowltd.dictionary.core.preferences.PreferencesManager;
 import com.drowltd.dictionary.ui.desktop.NumberDocument;
@@ -16,7 +17,8 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
     private static int seconds;
     private static int wordCount;
     private static boolean isOpen = false;
-    private static String difficulty;
+    private static String difficultyLabelText;
+    private static Difficulty difficulty;
     private static final Translator TRANSLATOR = Translator.getTranslator("ExamSettingsDialog");
 
     /** Creates new form ExamSettingsDialog */
@@ -230,10 +232,10 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
 
             levelChoice();      //seconds != 0
             ExamDialog.setTimerProgressbarVisible();
-            setDifficultyLabels();
             ExamDialog.timerFieldLabel(TRANSLATOR.translate("Initialized(Label)"));
         } else {
            ExamDialog.timerFieldLabel(TRANSLATOR.translate("NotInitialized(Label)"));
+           levelChoice();
            seconds = 0;
            ExamDialog.setTimerProgressbarInvisible();
         }
@@ -242,7 +244,8 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
         setWordsCount();
         PMPutCheckbox();
         setDifficultyLabels();
-        ExamDialog.diffLabelChange(difficulty);
+        ExamDialog.diffLabelChange(difficultyLabelText);
+        ExamDialog.setDifficulty(difficulty);
         setVisible(false);
     }//GEN-LAST:event_okButtonActionPerformed
 
@@ -284,14 +287,20 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     public void levelChoice() {
+
         if (easyRadioButton.isSelected()) {
             seconds = 45;
+            difficulty = Difficulty.EASY;
         }
+
         if (mediumRadioButton.isSelected()) {
             seconds = 30;
+            difficulty = Difficulty.MEDIUM;
         }
+
         if (hardRadioButton.isSelected()) {
             seconds = 15;
+            difficulty = Difficulty.HARD;
         }
         
     }
@@ -300,7 +309,7 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
         return seconds;
     }
 
-    public static String getDifficulty() {
+    public static Difficulty getDifficulty() {
         return difficulty;
     }
 
@@ -314,14 +323,15 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
         return wordCount;
     }
      public void setDifficultyLabels() {
+
         if (easyRadioButton.isSelected()) {
-            difficulty = TRANSLATOR.translate("Easy(Label)");
+            difficultyLabelText = TRANSLATOR.translate("Easy(Label)");
         } else
         if (mediumRadioButton.isSelected()) {
-            difficulty = TRANSLATOR.translate("Medium(Label)");
+            difficultyLabelText = TRANSLATOR.translate("Medium(Label)");
         } else
         if (hardRadioButton.isSelected()) {
-            difficulty = TRANSLATOR.translate("Hard(Label)");
+            difficultyLabelText = TRANSLATOR.translate("Hard(Label)");
         } 
   
     }

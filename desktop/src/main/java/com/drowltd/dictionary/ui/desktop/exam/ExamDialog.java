@@ -2,6 +2,7 @@ package com.drowltd.dictionary.ui.desktop.exam;
 
 import com.drowltd.dictionary.core.exam.ExamService;
 import com.drowltd.dictionary.core.db.*;
+import com.drowltd.dictionary.core.exam.Difficulty;
 import com.drowltd.dictionary.core.i18n.Translator;
 import com.drowltd.dictionary.core.preferences.PreferencesManager;
 import com.drowltd.dictionary.ui.desktop.IconManager;
@@ -25,7 +26,8 @@ public class ExamDialog extends javax.swing.JDialog {
     private int examWordsCopy;
     private int maximumSecondsProgressBar = 0;
     private int maximumWordsProgressBar = 0;
-    private Dictionary selectedDictionary = Dictionary.BG_EN;
+    private Dictionary selectedDictionary = Dictionary.EN_BG;
+    private static Difficulty difficulty = Difficulty.EASY;
     private ExamSettingsDialog examSettingsDialog = new ExamSettingsDialog(null, rootPaneCheckingEnabled);
     private int totalWords;
     private int correctWords;
@@ -48,7 +50,7 @@ public class ExamDialog extends javax.swing.JDialog {
         setIconImage(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE16).getImage());
         setLocationRelativeTo(parent);
 
-        
+
 
     }
 
@@ -408,7 +410,7 @@ public class ExamDialog extends javax.swing.JDialog {
         }
         wrongWords.clear();
         correctTranslation.clear();
-        answer = new ExamService(selectedDictionary);
+        answer = new ExamService(selectedDictionary, difficulty);
         totalWords = 0;
         correctWords = 0;
         dbCalling();
@@ -439,7 +441,7 @@ public class ExamDialog extends javax.swing.JDialog {
         wordsProgressBar.setString("1/" + examWords);
         wordsProgressBar.setValue(1);
         feedbackField.setText(TRANSLATOR.translate("ExamStarted(Label)"));
-        
+
     }//GEN-LAST:event_startButtonActionPerformed
 
     private void stopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopButtonActionPerformed
@@ -453,6 +455,7 @@ public class ExamDialog extends javax.swing.JDialog {
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
         swingTimer.stop();
         PM.put("DIFF_LABEL", difficultyLabel.getText());
+        PM.put("DIFFICULTY", difficulty.name());
         PM.putBoolean("TIMER_USED", timerUsed);
         if (timerStatusLabel.getText().contains(TRANSLATOR.translate("Stopped(Label)"))) {
             if (ExamSettingsDialog.returnTimerStatus() || PM.getBoolean("TIMER_USED", timerUsed)) {
@@ -513,15 +516,15 @@ public class ExamDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_toLanguageComboBoxPopupMenuWillBecomeVisible
 
     private void pauseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pauseButtonActionPerformed
-       if (pauseButton.getText().equals(TRANSLATOR.translate("Pause(Button)"))) {
-           swingTimer.stop();
-           pauseButton.setText(TRANSLATOR.translate("Continue(Button)"));
-           answerButton.setEnabled(false);
-       } else if (pauseButton.getText().equals(TRANSLATOR.translate("Continue(Button)"))) {
-           swingTimer.start();
-           pauseButton.setText(TRANSLATOR.translate("Pause(Button)"));
-           answerButton.setEnabled(true);
-       }
+        if (pauseButton.getText().equals(TRANSLATOR.translate("Pause(Button)"))) {
+            swingTimer.stop();
+            pauseButton.setText(TRANSLATOR.translate("Continue(Button)"));
+            answerButton.setEnabled(false);
+        } else if (pauseButton.getText().equals(TRANSLATOR.translate("Continue(Button)"))) {
+            swingTimer.start();
+            pauseButton.setText(TRANSLATOR.translate("Pause(Button)"));
+            answerButton.setEnabled(true);
+        }
 
 
     }//GEN-LAST:event_pauseButtonActionPerformed
@@ -566,10 +569,10 @@ public class ExamDialog extends javax.swing.JDialog {
     }
 
     private void answered() {
-       
-examWords--;
+
+        examWords--;
         displayTranslation();
- 
+
         if (examWords == 0) {
             stopExam();
 
@@ -585,10 +588,10 @@ examWords--;
     private void displayTranslation() {
         answer.possibleAnswers();
         String str;
-        if (examWords == 0){
+        if (examWords == 0) {
             str = (examWordsCopy - examWords) + "/ " + examWordsCopy;
-        }else{
-        str = (examWordsCopy - examWords + 1) + "/ " + examWordsCopy;
+        } else {
+            str = (examWordsCopy - examWords + 1) + "/ " + examWordsCopy;
         }
         wordsProgressBar.setString(str);
         wordsProgressBar.setValue(maximumWordsProgressBar - examWords + 1);
@@ -613,7 +616,7 @@ examWords--;
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            
+
             if (examWords != 0) {
                 if (flagLast) {
                     seconds = secondsBackup;
@@ -644,8 +647,8 @@ examWords--;
 
 
                     if (seconds == -1) {
-                        
-                            answered();
+
+                        answered();
 
                         flagLast = true;
 
@@ -676,7 +679,7 @@ examWords--;
     }
 
     public void showExamDialog() {
-        answer = new ExamService(selectedDictionary);
+        difficulty = difficulty.valueOf(PM.get("DIFFICULTY", difficulty.name()));
         if (PM.getBoolean("RETURN_TIMER_STATUS", false)) {
             seconds = PM.getInt("SECONDS", WIDTH);
 
@@ -721,7 +724,7 @@ examWords--;
 
     private void stopExam() {
         swingTimer.stop();
-        JOptionPane.showMessageDialog(rootPane, TRANSLATOR.translate("EndOfExam(Message)"));        
+        JOptionPane.showMessageDialog(rootPane, TRANSLATOR.translate("EndOfExam(Message)"));
         timerProgressBar.setValue(0);
         if (!timerStatusLabel.getText().equalsIgnoreCase(TRANSLATOR.translate("NotInitialized(Label)"))) {
             timerStatusLabel.setText(TRANSLATOR.translate("Stopped(Label)"));
@@ -736,13 +739,13 @@ examWords--;
         answerField.setText(null);
         examWords = PM.getInt("EXAM_WORDS", examWords);
         examResult();
-       
+
     }
 
     private void examResult() {
 
-        feedbackField.setText(TRANSLATOR.translate("YourScore(String)") + correctWords + "/" + totalWords + "; " +  TRANSLATOR.translate("CorrectWords(String)") + correctWords + "; " + TRANSLATOR.translate("WrongWords(String)") + (totalWords - correctWords) + "; ");
-        
+        feedbackField.setText(TRANSLATOR.translate("YourScore(String)") + correctWords + "/" + totalWords + "; " + TRANSLATOR.translate("CorrectWords(String)") + correctWords + "; " + TRANSLATOR.translate("WrongWords(String)") + (totalWords - correctWords) + "; ");
+
     }
 
     public static ArrayList<String> getWrongWords() {
@@ -757,7 +760,7 @@ examWords--;
         timerProgressBar.setVisible(true);
         stopButton.setEnabled(false);
         feedbackField.setText(TRANSLATOR.translate("Feedback(Field)"));
-}
+    }
 
     public static void setTimerProgressbarInvisible() {
         timerProgressBar.setVisible(false);
@@ -765,6 +768,9 @@ examWords--;
         feedbackField.setText(TRANSLATOR.translate("Feedback(Field)"));
     }
 
+    public static void setDifficulty(Difficulty d) {
+        difficulty = d;
+    }
 }
 
 
