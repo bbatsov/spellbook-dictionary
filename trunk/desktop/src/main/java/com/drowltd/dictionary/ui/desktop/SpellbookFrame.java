@@ -433,9 +433,11 @@ public class SpellbookFrame extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        jMenu1.setMnemonic('f');
         jMenu1.setText(bundle.getString("File(Menu)")); // NOI18N
 
         restartMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/refresh.png"))); // NOI18N
+        restartMenuItem.setMnemonic('r');
         restartMenuItem.setText(bundle.getString("FileRestart(MenuItem)")); // NOI18N
         restartMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -445,6 +447,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         jMenu1.add(restartMenuItem);
 
         exitMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/exit.png"))); // NOI18N
+        exitMenuItem.setMnemonic('x');
         exitMenuItem.setText(bundle.getString("FileExit(MenuItem)")); // NOI18N
         exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -455,22 +458,27 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu1);
 
+        jMenu2.setMnemonic('e');
         jMenu2.setText(bundle.getString("Edit(Menu)")); // NOI18N
 
         cutMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/cut.png"))); // NOI18N
+        cutMenuItem.setMnemonic('t');
         cutMenuItem.setText(bundle.getString("EditCut(MenuItem)")); // NOI18N
         jMenu2.add(cutMenuItem);
 
         copyMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/copy.png"))); // NOI18N
+        copyMenuItem.setMnemonic('c');
         copyMenuItem.setText(bundle.getString("EditCopy(MenuItem)")); // NOI18N
         jMenu2.add(copyMenuItem);
 
         pasteMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/paste.png"))); // NOI18N
+        pasteMenuItem.setMnemonic('p');
         pasteMenuItem.setText(bundle.getString("EditPaste(MenuItem)")); // NOI18N
         jMenu2.add(pasteMenuItem);
         jMenu2.add(jSeparator1);
 
         fontMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/font.png"))); // NOI18N
+        fontMenuItem.setMnemonic('f');
         fontMenuItem.setText(bundle.getString("EditFont(MenuItem)")); // NOI18N
         fontMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -480,6 +488,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         jMenu2.add(fontMenuItem);
 
         prefsMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/preferences.png"))); // NOI18N
+        prefsMenuItem.setMnemonic('e');
         prefsMenuItem.setText(bundle.getString("EditPreferences(MenuItem)")); // NOI18N
         prefsMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -490,9 +499,11 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu2);
 
+        jMenu3.setMnemonic('d');
         jMenu3.setText(bundle.getString("Dictionaries(Menu)")); // NOI18N
 
         enBgDictMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/en-bg.png"))); // NOI18N
+        enBgDictMenuItem.setMnemonic('e');
         enBgDictMenuItem.setText(bundle.getString("DictionariesEnBg(MenuItem)")); // NOI18N
         enBgDictMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -502,6 +513,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         jMenu3.add(enBgDictMenuItem);
 
         bgEnDictMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/bg-en.png"))); // NOI18N
+        bgEnDictMenuItem.setMnemonic('b');
         bgEnDictMenuItem.setText(bundle.getString("DictionariesBgEn(MenuItem)")); // NOI18N
         bgEnDictMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -512,9 +524,11 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu3);
 
+        jMenu4.setMnemonic('t');
         jMenu4.setText(bundle.getString("Tools(Menu)")); // NOI18N
 
         examMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/blackboard.png"))); // NOI18N
+        examMenuItem.setMnemonic('e');
         examMenuItem.setText(bundle.getString("Exam(MenuItem)")); // NOI18N
         examMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -524,6 +538,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         jMenu4.add(examMenuItem);
 
         spellcheckMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/spellcheck.png"))); // NOI18N
+        spellcheckMenuItem.setMnemonic('s');
         spellcheckMenuItem.setText(bundle.getString("SpellCheck(MenuItem)")); // NOI18N
         spellcheckMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -534,9 +549,11 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu4);
 
+        jMenu5.setMnemonic('h');
         jMenu5.setText(bundle.getString("Help(Menu)")); // NOI18N
 
         aboutMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/about.png"))); // NOI18N
+        aboutMenuItem.setMnemonic('a');
         aboutMenuItem.setText(bundle.getString("HelpAbout(MenuItem)")); // NOI18N
         aboutMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
