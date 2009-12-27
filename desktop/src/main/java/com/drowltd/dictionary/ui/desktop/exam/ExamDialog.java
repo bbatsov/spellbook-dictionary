@@ -50,6 +50,10 @@ public class ExamDialog extends javax.swing.JDialog {
         setIconImage(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE16).getImage());
         setLocationRelativeTo(parent);
 
+        // Next two lines can be used directly even with more languages
+        fromLanguageComboBox.setSelectedIndex(PM.getInt("FROM_LANGUAGE_LAST_SELECTED", fromLanguageComboBox.getSelectedIndex()));
+        toLanguageComboBox.setSelectedIndex(PM.getInt("TO_LANGUAGE_LAST_SELECTED", toLanguageComboBox.getSelectedIndex()));
+
 
 
     }
@@ -468,7 +472,8 @@ public class ExamDialog extends javax.swing.JDialog {
         }
 
         PM.putBoolean("TIMER_PROGRESSBAR_VISIBILITY", timerProgressBar.isVisible());
-
+        PM.putInt("FROM_LANGUAGE_LAST_SELECTED", fromLanguageComboBox.getSelectedIndex());
+        PM.putInt("TO_LANGUAGE_LAST_SELECTED", toLanguageComboBox.getSelectedIndex());
     }//GEN-LAST:event_formWindowClosed
 
     private void settingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_settingsButtonActionPerformed
