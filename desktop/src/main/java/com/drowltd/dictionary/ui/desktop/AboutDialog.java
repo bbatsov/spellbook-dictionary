@@ -1,15 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
- * AboutDialog.java
- *
- * Created on Nov 7, 2009, 5:03:23 PM
- */
 package com.drowltd.dictionary.ui.desktop;
 
+import com.drowltd.dictionary.core.i18n.Translator;
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.*;
@@ -22,10 +13,14 @@ import javax.swing.event.HyperlinkEvent;
  * @author Aleksandar Vulchev
  */
 public class AboutDialog extends javax.swing.JDialog {
+    private static final Translator TRANSLATOR = Translator.getTranslator("Team");
 
     /** Creates new form AboutDialog */
     public AboutDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+
+        TRANSLATOR.reset();
+
         initComponents();
 
         /** Checks whether desktop is supported and enable button that launch browser */
@@ -200,17 +195,28 @@ public class AboutDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_licenseButtonActionPerformed
 
     private void creditsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_creditsButtonActionPerformed
-        infoTextPane.setText("<html>\n  <head>\n\n  </head>\n  <body>\n    <p style=\"margin-top: 0\"; style=\"text-align:center\">\n"
-                + "\t\n\t <a href=\"mailto:bozhidar@drowltd.com?subject=Spellbook\">Bozhidar Batsov</a> <br />"
-                + "\n\t <a href=\"mailto:iivalchev@gmail.com?subject=Spellbook\">Ivan Valchev</a> <br />"
-                + "\n\t <a href=\"mailto:mireflame@gmail.com?subject=Spellbook\">Miroslava Stancheva</a> <br />"
-                + "\n\t <a href=\"mailto:nikolay@dimitrovi.net?subject=Spellbook\">Nikolay Dimitrov</a> <br />"
-                + "\n\t <a \nhref=\"mailto:frankeys89@gmail.com?subject=Spellbook\">Ivan Spasov</a> <br />"
-                + "\n\t <a \nhref=\"mailto:george.angelow@gmail.com?subject=Spellbook\">George Angelow</a> <br />"
-                + "\n\t <a href=\"mailto:bmeshkova@gmail.com?subject=Spellbook\">Bilyana Meshkova</a> <br />"
-                + "\n\t <a \nhref=\"mailto:cvetie@abv.bg?subject=Spellbook\">Tsvetelina Nikolova</a> <br />"
-                + "\n\t <a href=\"mailto:strannika@gmail.com?subject=Spellbook\">Alexander Valchev</a> <br />"
-                + "\n\t   \n\t</p>\n\t\n  </body>\n</html>\n");
+        String team = String.format("<html>\n  <head>\n\n  </head>\n  <body>\n    <p style=\"margin-top: 0\"; style=\"text-align:center\">\n"
+                + "\t\n\t <a href=\"mailto:bozhidar@drowltd.com?subject=Spellbook\">%s</a> <br />"
+                + "\n\t <a href=\"mailto:iivalchev@gmail.com?subject=Spellbook\">%s</a> <br />"
+                + "\n\t <a href=\"mailto:mireflame@gmail.com?subject=Spellbook\">%s</a> <br />"
+                + "\n\t <a href=\"mailto:nikolay@dimitrovi.net?subject=Spellbook\">%s</a> <br />"
+                + "\n\t <a \nhref=\"mailto:frankeys89@gmail.com?subject=Spellbook\">%s</a> <br />"
+                + "\n\t <a \nhref=\"mailto:george.angelow@gmail.com?subject=Spellbook\">%s</a> <br />"
+                + "\n\t <a href=\"mailto:bmeshkova@gmail.com?subject=Spellbook\">%s</a> <br />"
+                + "\n\t <a \nhref=\"mailto:cvetie@abv.bg?subject=Spellbook\">%s</a> <br />"
+                + "\n\t <a href=\"mailto:strannika@gmail.com?subject=Spellbook\">%s</a> <br />"
+                + "\n\t   \n\t</p>\n\t\n  </body>\n</html>\n", 
+                TRANSLATOR.translate("BozhidarBatsov"),
+                TRANSLATOR.translate("IvanValchev"),
+                TRANSLATOR.translate("MiroslavaStancheva"),
+                TRANSLATOR.translate("NikolayDimitrov"),
+                TRANSLATOR.translate("IvanSpasov"),
+                TRANSLATOR.translate("GeorgiAngelov"),
+                TRANSLATOR.translate("BilyanaMeshkova"),
+                TRANSLATOR.translate("TsvetelinaNikolova"),
+                TRANSLATOR.translate("AlexanderValchev"));
+
+        infoTextPane.setText(team);
     }//GEN-LAST:event_creditsButtonActionPerformed
 
     private void infoTextPaneHyperlinkUpdate(javax.swing.event.HyperlinkEvent evt) {//GEN-FIRST:event_infoTextPaneHyperlinkUpdate
