@@ -101,6 +101,7 @@ public class SpellCheckPopupMenu extends JPopupMenu {
         if (misspelledWord == null) {
             return;
         }
+        
         final Map<Integer, String> corrections = spellChecker.correct(misspelledWord.getWord());
 
         if (corrections.isEmpty()) {

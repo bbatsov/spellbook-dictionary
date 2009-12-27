@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  * @author iivalchev
  * @since 0.2
  */
-public class SpellCheckFrame extends javax.swing.JFrame {
+public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager.StatusObserver {
 
     private static final SpellCheckFrame INSTANCE = new SpellCheckFrame();
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellCheckFrame.class);
@@ -71,6 +71,7 @@ public class SpellCheckFrame extends javax.swing.JFrame {
         jScrollPane = new javax.swing.JScrollPane();
         jTextPane = new javax.swing.JTextPane();
         jStatusLabel = new javax.swing.JLabel();
+        jLanguageLabel = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jCloseMenuItem = new javax.swing.JMenuItem();
@@ -95,7 +96,8 @@ public class SpellCheckFrame extends javax.swing.JFrame {
         });
         jScrollPane.setViewportView(jTextPane);
 
-        jStatusLabel.setText("Done");
+        jLanguageLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLanguageLabel.setText("l");
 
         jMenu1.setText("File");
 
@@ -111,6 +113,7 @@ public class SpellCheckFrame extends javax.swing.JFrame {
 
         jMenu2.setText("Edit");
 
+        jUndoMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.CTRL_MASK));
         jUndoMenuItem.setText("Undo");
         jUndoMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -180,9 +183,11 @@ public class SpellCheckFrame extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 523, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jStatusLabel)
+            .addComponent(jScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 556, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(jStatusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 334, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
+                .addComponent(jLanguageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -190,7 +195,9 @@ public class SpellCheckFrame extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(jScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 478, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jStatusLabel))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLanguageLabel, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jStatusLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         pack();
@@ -248,6 +255,7 @@ public class SpellCheckFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem jCutMenuItem;
     private javax.swing.JMenu jDictionaryMenu;
     private javax.swing.JMenuItem jEnMenuItem;
+    private javax.swing.JLabel jLanguageLabel;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
@@ -321,7 +329,8 @@ public class SpellCheckFrame extends javax.swing.JFrame {
             }
         });
 
-        setStatusMessage("Language: "+selectedDictionary.getLanguage());
+        StatusManager.getInstance().addObserver(this);
+        setLanguageStatus("Language: "+selectedDictionary.getLanguage());
 
     }
 
@@ -367,16 +376,16 @@ public class SpellCheckFrame extends javax.swing.JFrame {
             selectedDictionary = dictionary;
             loadSpellChecker();
             triggerMisspelledSearch(documentChangedTimer, true);
-            setStatusMessage("Language: "+dictionary.getLanguage());
+            setLanguageStatus("Language: "+dictionary.getLanguage());
         }
     }
 
-    public void setStatusMessage(String message) {
+    public void setLanguageStatus(String message){
         if (message == null || message.isEmpty()) {
             return;
         }
 
-        jStatusLabel.setText(message);
+        jLanguageLabel.setText(message);
     }
 
     /**
@@ -465,11 +474,24 @@ public class SpellCheckFrame extends javax.swing.JFrame {
             jTextPane.setCaretPosition(cursorPosition);
         }
 
+        StatusManager.getInstance().setStatus(misspelledWord.getWord()+" corrected with "+correction);
+
         MisspelledFinder.getInstance().findMisspelled(SpellCheckFrame.getInstance().getVisibleText());
     }
 
     JTextPane getjTextPane() {
         return jTextPane;
+    }
+
+    @Override
+    public void setStatus(final String message) {
+        EventQueue.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                jStatusLabel.setText(message);
+            }
+        });
     }
 
     /**
