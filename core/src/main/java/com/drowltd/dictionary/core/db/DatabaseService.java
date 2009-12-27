@@ -275,17 +275,17 @@ public class DatabaseService {
         LOGGER.info("Caching difficulty of " + dictionary + " for future use");
         examCache.put(dictionary, difficultyWords);
 
-        if (difficulty.equals(Difficulty.HARD) || dictionary.equals(Dictionary.BG_EN)) {
+        if (difficulty == Difficulty.HARD || dictionary == Dictionary.BG_EN) {
             LOGGER.info("Returning hard words");
             return hardWords;
         }
 
-        if (difficulty.equals(Difficulty.EASY)) {
+        if (difficulty == Difficulty.EASY) {
             LOGGER.info("Returning easy words");
             return easyWords;
         }
 
-        if (difficulty.equals(Difficulty.MEDIUM)) {
+        if (difficulty == Difficulty.MEDIUM) {
             LOGGER.info("Returning medium words");
             return mediumWords;
         }
