@@ -418,7 +418,7 @@ public class ExamDialog extends javax.swing.JDialog {
         }
 
 
-        if (enumTimerStatus.equals(TimerStatus.STARTED) || enumTimerStatus.equals(TimerStatus.STOPPED)) {
+        if (enumTimerStatus == TimerStatus.STARTED || enumTimerStatus == TimerStatus.STOPPED) {
             timerRunButton();
             timerUsed = true;
             enumTimerStatus = TimerStatus.STARTED;
@@ -451,7 +451,7 @@ public class ExamDialog extends javax.swing.JDialog {
         PM.put("DIFF_LABEL", difficultyLabel.getText());
         PM.put("DIFFICULTY", difficulty.name());
         PM.putBoolean("TIMER_USED", timerUsed);
-        if (enumTimerStatus.equals(TimerStatus.STOPPED)) {
+        if (enumTimerStatus == TimerStatus.STOPPED) {
             if (ExamSettingsDialog.returnTimerStatus() || PM.getBoolean("TIMER_USED", timerUsed)) {
                 enumTimerStatus = TimerStatus.STARTED;
                 PM.put("A_TIMER_STATUS", enumTimerStatus.name() );
@@ -677,7 +677,7 @@ public class ExamDialog extends javax.swing.JDialog {
 
         difficultyLabel.setText(PM.get("DIFF_LABEL", TRANSLATOR.translate("Easy(Label)")));
 
-        enumTimerStatus = enumTimerStatus.valueOf(PM.get("A_TIMER_STATUS", enumTimerStatus.name()));
+        enumTimerStatus = enumTimerStatus.valueOf(PM.get("A_TIMER_STATUS", TimerStatus.DISABLED.toString()));
 
         examWords = PM.getInt("EXAM_WORDS", 10);
         examWordsCopy = examWords;
