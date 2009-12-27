@@ -64,6 +64,25 @@ public class SpellbookTray {
             return null;
         }
 
+        // clicking the tray icon message generates a action event we need to handle
+        trayIcon.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                LOGGER.info("Tray balloon message clicked");
+
+                if (appFrame.getState() == JFrame.ICONIFIED) {
+                    LOGGER.info("App is iconified");
+                    appFrame.setState(JFrame.NORMAL);
+                }
+
+                if (!appFrame.isVisible()) {
+                    appFrame.setVisible(true);
+                    appFrame.toFront();
+                }
+            }
+        });
+
         trayIcon.addMouseListener(new MouseAdapter() {
 
             @Override
