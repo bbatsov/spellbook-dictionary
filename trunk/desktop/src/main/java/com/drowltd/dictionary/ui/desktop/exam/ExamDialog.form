@@ -32,7 +32,7 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                  <Component id="settingsPanel" alignment="0" pref="455" max="32767" attributes="3"/>
+                  <Component id="settingsPanel" alignment="0" max="32767" attributes="3"/>
                   <Component id="jPanel3" alignment="0" pref="455" max="32767" attributes="3"/>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
@@ -506,6 +506,9 @@
               <ResourceString bundle="i18n/ExamDialog.properties" key="Feedback(Field)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="10"/>
+          </AuxValues>
         </Component>
       </SubComponents>
     </Container>

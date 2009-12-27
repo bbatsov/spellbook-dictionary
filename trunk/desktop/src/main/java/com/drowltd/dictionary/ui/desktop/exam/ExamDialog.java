@@ -48,7 +48,7 @@ public class ExamDialog extends javax.swing.JDialog {
         setIconImage(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE16).getImage());
         setLocationRelativeTo(parent);
 
-        timerProgressBar.setVisible(PM.getBoolean("TIMER_PROGRESSBAR_VISIBILITY", true));
+        
 
     }
 
@@ -381,7 +381,7 @@ public class ExamDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(settingsPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 455, Short.MAX_VALUE)
+                    .addComponent(settingsPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 455, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -424,7 +424,6 @@ public class ExamDialog extends javax.swing.JDialog {
 
         if (timerStatusLabel.getText().equals(TRANSLATOR.translate("Initialized(Label)")) || timerStatusLabel.getText().equals(TRANSLATOR.translate("Stopped(Label)"))) {
             timerRunButton();
-           // pauseButton.setEnabled(true);
             timerUsed = true;
             timerStatusLabel.setText(TRANSLATOR.translate("Initialized(Label)"));
             timerIconLabel.setIcon(IconManager.getImageIcon("stopwatch_run.png", IconManager.IconSize.SIZE48));
@@ -439,6 +438,7 @@ public class ExamDialog extends javax.swing.JDialog {
         wordsProgressBar.setMaximum(maximumWordsProgressBar);
         wordsProgressBar.setString("1/" + examWords);
         wordsProgressBar.setValue(1);
+        feedbackField.setText(TRANSLATOR.translate("ExamStarted(Label)"));
         
     }//GEN-LAST:event_startButtonActionPerformed
 
@@ -447,7 +447,6 @@ public class ExamDialog extends javax.swing.JDialog {
         correctTranslation.add(answer.getTranslation());
         stopExam();
         pauseButton.setText(TRANSLATOR.translate("Pause(Button)"));
-       // pauseButton.setEnabled(false);
 
     }//GEN-LAST:event_stopButtonActionPerformed
 
@@ -534,7 +533,7 @@ public class ExamDialog extends javax.swing.JDialog {
     private javax.swing.JTextField answerField;
     private javax.swing.JLabel answerIconLabel;
     private static javax.swing.JLabel difficultyLabel;
-    private javax.swing.JLabel feedbackField;
+    private static javax.swing.JLabel feedbackField;
     private javax.swing.JComboBox fromLanguageComboBox;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -683,6 +682,8 @@ examWords--;
 
         }
 
+        timerProgressBar.setVisible(PM.getBoolean("TIMER_PROGRESSBAR_VISIBILITY", true));
+
         difficultyLabel.setText(PM.get("DIFF_LABEL", TRANSLATOR.translate("Easy(Label)")));
 
         timerStatusLabel.setText(PM.get("TIMER_STATUS", TRANSLATOR.translate("NotInitialized(Label)")));
@@ -735,7 +736,7 @@ examWords--;
         answerField.setText(null);
         examWords = PM.getInt("EXAM_WORDS", examWords);
         examResult();
-        feedbackField.setText(TRANSLATOR.translate("Feedback(Field)"));
+       
     }
 
     private void examResult() {
@@ -755,11 +756,13 @@ examWords--;
     public static void setTimerProgressbarVisible() {
         timerProgressBar.setVisible(true);
         stopButton.setEnabled(false);
+        feedbackField.setText(TRANSLATOR.translate("Feedback(Field)"));
 }
 
     public static void setTimerProgressbarInvisible() {
         timerProgressBar.setVisible(false);
         pauseButton.setEnabled(false);
+        feedbackField.setText(TRANSLATOR.translate("Feedback(Field)"));
     }
 
 }
