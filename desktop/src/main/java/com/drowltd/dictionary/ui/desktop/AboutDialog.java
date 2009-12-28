@@ -13,13 +13,16 @@ import javax.swing.event.HyperlinkEvent;
  * @author Aleksandar Vulchev
  */
 public class AboutDialog extends javax.swing.JDialog {
+
     private static final Translator TRANSLATOR = Translator.getTranslator("Team");
+    private static final Translator TRANSLATOR_TEXT = Translator.getTranslator("AboutDialog");
 
     /** Creates new form AboutDialog */
     public AboutDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
 
         TRANSLATOR.reset();
+        TRANSLATOR_TEXT.reset();
 
         initComponents();
 
@@ -88,13 +91,13 @@ public class AboutDialog extends javax.swing.JDialog {
         spellbookLabel.setForeground(new java.awt.Color(0, 0, 102));
         spellbookLabel.setText("Spellbook");
 
-        dictionaryLabel.setFont(new java.awt.Font("All Times New Roman", 0, 24));
+        dictionaryLabel.setFont(new java.awt.Font("All Times New Roman", 0, 24)); // NOI18N
         dictionaryLabel.setForeground(new java.awt.Color(0, 0, 102));
-        dictionaryLabel.setText("Dictionary");
+        dictionaryLabel.setText(bundle.getString("Dictionary(Label)")); // NOI18N
 
-        versionLabel.setFont(new java.awt.Font("All Times New Roman", 2, 14));
+        versionLabel.setFont(new java.awt.Font("All Times New Roman", 2, 14)); // NOI18N
         versionLabel.setForeground(new java.awt.Color(0, 0, 102));
-        versionLabel.setText("Version 0.1");
+        versionLabel.setText(bundle.getString("Version(Label)")); // NOI18N
 
         javax.swing.GroupLayout nameAndLogoPanelLayout = new javax.swing.GroupLayout(nameAndLogoPanel);
         nameAndLogoPanel.setLayout(nameAndLogoPanelLayout);
@@ -109,7 +112,7 @@ public class AboutDialog extends javax.swing.JDialog {
                     .addGroup(nameAndLogoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                         .addComponent(versionLabel)
                         .addComponent(dictionaryLabel)))
-                .addGap(36, 36, 36))
+                .addGap(50, 50, 50))
         );
         nameAndLogoPanelLayout.setVerticalGroup(
             nameAndLogoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -132,8 +135,13 @@ public class AboutDialog extends javax.swing.JDialog {
         infoTextPane.setBorder(null);
         infoTextPane.setContentType("text/html");
         infoTextPane.setEditable(false);
-        infoTextPane.setFont(new java.awt.Font("All Times New Roman", 0, 11));
-        infoTextPane.setText("<html>\n  <head>\n\n  </head>\n  <body>\n    <p style=\"margin-top: 0\"; style=\"text-align:center\">\n      \t\n\tA platform independent dictionary written in Java.<br />\n\tThis program is free software licensed under GPL v3.<br />\n\tCopyright 2009 Drow Ltd. & Contributors\n    </p>\n  </body>\n</html>\n");
+        infoTextPane.setFont(new java.awt.Font("All Times New Roman", 0, 11)); // NOI18N
+        String text = String.format("<html>\n  <head>\n\n  </head>\n  <body>\n    <p style=\"margin-top: 0\"; style=\"text-align:center\">\n      \t\n\t%s<br />\n\t%s<br />\n\t%s\n    </p>\n  </body>\n</html>\n",
+            TRANSLATOR_TEXT.translate("Multiplatform"),
+            TRANSLATOR_TEXT.translate("License"),
+            TRANSLATOR_TEXT.translate("Copyright"));
+        infoTextPane.setText(text);
+        infoTextPane.setCaret(null);
         infoTextPane.addHyperlinkListener(new javax.swing.event.HyperlinkListener() {
             public void hyperlinkUpdate(javax.swing.event.HyperlinkEvent evt) {
                 infoTextPaneHyperlinkUpdate(evt);
@@ -145,23 +153,20 @@ public class AboutDialog extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(nameAndLogoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 335, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(55, Short.MAX_VALUE)
+            .addComponent(nameAndLogoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 349, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(56, 56, 56)
                 .addComponent(creditsButton)
                 .addGap(18, 18, 18)
                 .addComponent(licenseButton)
                 .addGap(18, 18, 18)
                 .addComponent(closeButton)
-                .addGap(43, 43, 43))
+                .addContainerGap(64, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 315, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 329, Short.MAX_VALUE)
                 .addContainerGap())
         );
-
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {closeButton, creditsButton, licenseButton});
-
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -196,25 +201,39 @@ public class AboutDialog extends javax.swing.JDialog {
 
     private void creditsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_creditsButtonActionPerformed
         String team = String.format("<html>\n  <head>\n\n  </head>\n  <body>\n    <p style=\"margin-top: 0\"; style=\"text-align:center\">\n"
-                + "\t\n\t <a href=\"mailto:bozhidar@drowltd.com?subject=Spellbook\">%s</a> <br />"
+                + "\n\t %s <br />"
+                + "\n\t <a href=\"mailto:bozhidar@drowltd.com?subject=Spellbook\">%s</a> <br />"
+                + "\n\t %s <br />"
                 + "\n\t <a href=\"mailto:iivalchev@gmail.com?subject=Spellbook\">%s</a> <br />"
-                + "\n\t <a href=\"mailto:mireflame@gmail.com?subject=Spellbook\">%s</a> <br />"
-                + "\n\t <a href=\"mailto:nikolay@dimitrovi.net?subject=Spellbook\">%s</a> <br />"
+                + "\n\t %s <br />"
                 + "\n\t <a \nhref=\"mailto:frankeys89@gmail.com?subject=Spellbook\">%s</a> <br />"
+                + "\n\t <a href=\"mailto:mireflame@gmail.com?subject=Spellbook\">%s</a> <br />"
                 + "\n\t <a \nhref=\"mailto:george.angelow@gmail.com?subject=Spellbook\">%s</a> <br />"
                 + "\n\t <a href=\"mailto:bmeshkova@gmail.com?subject=Spellbook\">%s</a> <br />"
                 + "\n\t <a \nhref=\"mailto:cvetie@abv.bg?subject=Spellbook\">%s</a> <br />"
+                + "\n\t <a href=\"mailto:nikolay@dimitrovi.net?subject=Spellbook\">%s</a> <br />"
+                + "\n\t %s <br />"
                 + "\n\t <a href=\"mailto:strannika@gmail.com?subject=Spellbook\">%s</a> <br />"
-                + "\n\t   \n\t</p>\n\t\n  </body>\n</html>\n", 
-                TRANSLATOR.translate("BozhidarBatsov"),
-                TRANSLATOR.translate("IvanValchev"),
-                TRANSLATOR.translate("MiroslavaStancheva"),
-                TRANSLATOR.translate("NikolayDimitrov"),
-                TRANSLATOR.translate("IvanSpasov"),
-                TRANSLATOR.translate("GeorgiAngelov"),
-                TRANSLATOR.translate("BilyanaMeshkova"),
-                TRANSLATOR.translate("TsvetelinaNikolova"),
-                TRANSLATOR.translate("AlexanderValchev"));
+                + "\n\t   \n\t</p>\n\t\n  </body>\n</html>\n",
+                TRANSLATOR.translate("ProjectLead"),
+
+                    TRANSLATOR.translate("BozhidarBatsov"),
+
+                TRANSLATOR.translate("CoreUiSpellcheck"),
+
+                    TRANSLATOR.translate("IvanValchev"),
+
+                TRANSLATOR.translate("ExamModul"),
+
+                    TRANSLATOR.translate("IvanSpasov"),
+                    TRANSLATOR.translate("MiroslavaStancheva"),
+                    TRANSLATOR.translate("GeorgiAngelov"),
+                    TRANSLATOR.translate("BilyanaMeshkova"),
+                    TRANSLATOR.translate("TsvetelinaNikolova"),
+                    TRANSLATOR.translate("NikolayDimitrov"),
+
+                TRANSLATOR.translate("AboutDialog"),
+                    TRANSLATOR.translate("AlexanderValchev"));
 
         infoTextPane.setText(team);
     }//GEN-LAST:event_creditsButtonActionPerformed
