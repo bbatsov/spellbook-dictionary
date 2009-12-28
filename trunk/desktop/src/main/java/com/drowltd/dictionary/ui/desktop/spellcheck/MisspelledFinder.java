@@ -1,6 +1,14 @@
 package com.drowltd.dictionary.ui.desktop.spellcheck;
 
+import com.drowltd.dictionary.core.db.Dictionary;
 import com.drowltd.dictionary.core.spellcheck.SpellChecker;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -16,9 +24,11 @@ import org.slf4j.LoggerFactory;
  */
 public class MisspelledFinder {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(MisspelledFinder.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MisspelledFinder.class);
     private static final MisspelledFinder INSTANCE = new MisspelledFinder();
     private final MisspelledWordsRegistry registry = MisspelledWordsRegistry.getInstance();
+
+    private final Map<Dictionary, Set<String>> userMisspelledMap = new HashMap<Dictionary, Set<String>>();
     private final SpellCheckHighlighter checkHighlighter = SpellCheckHighlighter.getInstance();
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private Future<?> currentFTask;
@@ -28,9 +38,15 @@ public class MisspelledFinder {
     }
 
     private MisspelledFinder() {
+        userMisspelledMap.put(Dictionary.EN_BG, Collections.synchronizedSet(new HashSet<String>()));
+        userMisspelledMap.put(Dictionary.BG_EN, Collections.synchronizedSet(new HashSet<String>()));
     }
 
-    public synchronized void findMisspelled(SpellCheckFrame.VisibleText text) {
+    public void addUserMisspelled(String misspelled) {
+        userMisspelledMap.get(SpellChecker.getInstance().getDictionary()).add(misspelled);
+    }
+
+    public synchronized void findMisspelled(SpellCheckFrame.VisibleText text, boolean clearRegistry) {
         if (text == null) {
             LOGGER.error("text is null");
             return;
@@ -43,15 +59,16 @@ public class MisspelledFinder {
             }
         }
         LOGGER.info("Starting execution of new search");
-        currentFTask = executor.submit(new SearchTask(text, SpellChecker.getInstance()));
+        currentFTask = executor.submit(new SearchTask(text, SpellChecker.getInstance(), clearRegistry));
     }
 
     private class SearchTask implements Runnable {
 
-        private SpellCheckFrame.VisibleText text;
-        private SpellChecker spellChecker;
+        private final SpellCheckFrame.VisibleText text;
+        private final SpellChecker spellChecker;
+        private final boolean clearRegistry;
 
-        public SearchTask(SpellCheckFrame.VisibleText text, SpellChecker spellChecker) {
+        public SearchTask(SpellCheckFrame.VisibleText text, SpellChecker spellChecker, boolean clearRegistry) {
             if (text == null) {
                 LOGGER.error("text is null");
                 throw new NullPointerException("text is null");
@@ -64,6 +81,7 @@ public class MisspelledFinder {
 
             this.text = text;
             this.spellChecker = spellChecker;
+            this.clearRegistry = clearRegistry;
         }
 
         @Override
@@ -72,7 +90,9 @@ public class MisspelledFinder {
             LOGGER.info("search started");
 
             synchronized (registry) {
-                registry.clear();
+                if (clearRegistry) {
+                    registry.clear();
+                }
 
                 Pattern p = Pattern.compile("\\pL+");
                 Matcher m = p.matcher(text.getText());
@@ -117,9 +137,14 @@ public class MisspelledFinder {
             if (spellChecker == null || word == null) {
                 return false;
             }
-            if(word.length() == 1){
+            if (word.length() == 1) {
                 return false;
             }
+
+            if (userMisspelledMap.get(SpellChecker.getInstance().getDictionary()).contains(word)) {
+                return false;
+            }
+            
             return !spellChecker.checkWord(word.toLowerCase());
         }
     }
