@@ -33,13 +33,13 @@ public class ExamResult extends javax.swing.JDialog {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        correctWrodsLabel = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        wrongWrodsLabel = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        uspLabel = new javax.swing.JLabel();
+        okResultButton = new javax.swing.JButton();
+        correctWordsLabel = new javax.swing.JLabel();
+        correctWrodsResultLabel = new javax.swing.JLabel();
+        wrongWordsLabel = new javax.swing.JLabel();
+        wrongWrodsResultLabel = new javax.swing.JLabel();
+        successRateLabel = new javax.swing.JLabel();
+        successRateResultLabel = new javax.swing.JLabel();
         endLabel = new javax.swing.JLabel();
         seeWrongWords = new javax.swing.JButton();
         iconLabel = new javax.swing.JLabel();
@@ -48,24 +48,22 @@ public class ExamResult extends javax.swing.JDialog {
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("i18n/ExamResult"); // NOI18N
         setTitle(bundle.getString("ExamResult(Title)")); // NOI18N
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-
-        jButton1.setText("OK");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        okResultButton.setText("OK");
+        okResultButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                okResultButtonActionPerformed(evt);
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        correctWordsLabel.setFont(new java.awt.Font("Tahoma", 1, 11));
         java.util.ResourceBundle bundle1 = java.util.ResourceBundle.getBundle("i18n/ExamDialog"); // NOI18N
-        jLabel1.setText(bundle1.getString("CorrectWords(String)")); // NOI18N
+        correctWordsLabel.setText(bundle1.getString("CorrectWords(String)")); // NOI18N
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel2.setText(bundle1.getString("WrongWords(String)")); // NOI18N
+        wrongWordsLabel.setFont(new java.awt.Font("Tahoma", 1, 11));
+        wrongWordsLabel.setText(bundle1.getString("WrongWords(String)")); // NOI18N
 
-        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel3.setText(bundle.getString("Success(Label)")); // NOI18N
+        successRateLabel.setFont(new java.awt.Font("Tahoma", 1, 11));
+        successRateLabel.setText(bundle.getString("Success(Label)")); // NOI18N
 
         endLabel.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         endLabel.setAlignmentY(0.0F);
@@ -83,29 +81,32 @@ public class ExamResult extends javax.swing.JDialog {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(23, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(seeWrongWords)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton1))
-                    .addComponent(endLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(endLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(30, 30, 30)
+                                .addComponent(okResultButton)
+                                .addGap(35, 35, 35)
+                                .addComponent(seeWrongWords))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(wrongWrodsLabel)
-                                    .addComponent(correctWrodsLabel)
-                                    .addComponent(uspLabel)))
-                            .addComponent(jLabel3))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 83, Short.MAX_VALUE)
-                        .addComponent(iconLabel)))
-                .addContainerGap(24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(wrongWordsLabel)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(correctWordsLabel)
+                                        .addGap(30, 30, 30)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(wrongWrodsResultLabel)
+                                            .addComponent(correctWrodsResultLabel)
+                                            .addComponent(successRateResultLabel)))
+                                    .addComponent(successRateLabel))
+                                .addGap(35, 35, 35)
+                                .addComponent(iconLabel)))
+                        .addGap(27, 27, 27))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -114,46 +115,48 @@ public class ExamResult extends javax.swing.JDialog {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(29, 29, 29)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(correctWrodsLabel))
+                            .addComponent(correctWordsLabel)
+                            .addComponent(correctWrodsResultLabel))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2)
-                            .addComponent(wrongWrodsLabel))
+                            .addComponent(wrongWordsLabel)
+                            .addComponent(wrongWrodsResultLabel))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel3)
-                            .addComponent(uspLabel))
+                            .addComponent(successRateLabel)
+                            .addComponent(successRateResultLabel))
                         .addGap(35, 35, 35))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(iconLabel)
-                        .addGap(44, 44, 44)))
+                        .addGap(46, 46, 46)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(endLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(seeWrongWords)
-                    .addComponent(jButton1))
-                .addContainerGap())
+                    .addComponent(okResultButton)
+                    .addComponent(seeWrongWords))
+                .addGap(32, 32, 32))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void okResultButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okResultButtonActionPerformed
         setVisible(false);
-    }//GEN-LAST:event_jButton1ActionPerformed
+        ExamDialog.setFeedbackFieldDefault();
+    }//GEN-LAST:event_okResultButtonActionPerformed
 
     private void seeWrongWordsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_seeWrongWordsActionPerformed
 
@@ -164,28 +167,28 @@ public class ExamResult extends javax.swing.JDialog {
      * @param args the command line arguments
      */
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel correctWrodsLabel;
+    private javax.swing.JLabel correctWordsLabel;
+    private javax.swing.JLabel correctWrodsResultLabel;
     private javax.swing.JLabel endLabel;
     private javax.swing.JLabel iconLabel;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JButton okResultButton;
     private javax.swing.JButton seeWrongWords;
-    private javax.swing.JLabel uspLabel;
-    private javax.swing.JLabel wrongWrodsLabel;
+    private javax.swing.JLabel successRateLabel;
+    private javax.swing.JLabel successRateResultLabel;
+    private javax.swing.JLabel wrongWordsLabel;
+    private javax.swing.JLabel wrongWrodsResultLabel;
     // End of variables declaration//GEN-END:variables
 
-    public void showExamResult(int correctWords, int wrongWords) {
+    public void showExamResult(int correctWords, int totalWords) {
 
-        int uspeh = ((correctWords * 100) / wrongWords);
-        uspLabel.setText(Integer.toString(uspeh) + "%");
+        int uspeh = ((correctWords * 100) / totalWords);
+        
+        correctWrodsResultLabel.setText(Integer.toString(correctWords));
+        wrongWrodsResultLabel.setText(Integer.toString(totalWords - correctWords));
+        successRateResultLabel.setText(Integer.toString(uspeh) + "%");
 
-        wrongWrodsLabel.setText(Integer.toString(wrongWords - correctWords));
-        correctWrodsLabel.setText(Integer.toString(correctWords));
-
-        if (uspeh < 60) {
+        if (uspeh > 60) {
             endLabel.setText(TRANSLATOR.translate("Passed(Label)"));
             iconLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconManager.IconSize.SIZE48));
         } else {
