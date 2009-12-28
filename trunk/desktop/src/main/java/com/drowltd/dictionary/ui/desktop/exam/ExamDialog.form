@@ -32,7 +32,7 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                  <Component id="settingsPanel" alignment="0" max="32767" attributes="3"/>
+                  <Component id="settingsPanel" alignment="0" pref="455" max="32767" attributes="3"/>
                   <Component id="jPanel3" alignment="0" pref="455" max="32767" attributes="3"/>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
@@ -214,8 +214,9 @@
                                   <Group type="103" alignment="0" groupAlignment="1" attributes="0">
                                       <Group type="102" alignment="0" attributes="0">
                                           <Component id="answerIconLabel" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
+                                          <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
                                           <Component id="answerButton" min="-2" pref="193" max="-2" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
                                       </Group>
                                       <Component id="answerField" alignment="0" pref="292" max="32767" attributes="1"/>
                                       <Component id="translateField" alignment="0" pref="292" max="32767" attributes="1"/>
@@ -240,11 +241,11 @@
                                       <Component id="difficultyLabel" min="-2" pref="42" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
-                                      <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
                                       <Component id="showWrongWordsButton" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
-                              <EmptySpace min="-2" pref="160" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="164" max="-2" attributes="0"/>
                           </Group>
                           <Component id="wordsProgressBar" alignment="0" min="-2" pref="430" max="-2" attributes="1"/>
                       </Group>
@@ -277,8 +278,8 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="answerIconLabel" min="-2" max="-2" attributes="0"/>
                               <Group type="103" alignment="0" groupAlignment="3" attributes="0">
-                                  <Component id="answerButton" linkSize="11" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="showWrongWordsButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="answerButton" linkSize="11" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
