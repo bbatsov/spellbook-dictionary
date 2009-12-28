@@ -35,6 +35,8 @@ public class ExamDialog extends javax.swing.JDialog {
     private int fromWordsIndex;
     private int toWordsIndex;
     private boolean timerUsed;
+    private String diffLabelText;
+    private static Difficulty enumDiff = Difficulty.EASY;
     private static final Translator TRANSLATOR = Translator.getTranslator("ExamDialog");
     private static ArrayList<String> wrongWords = new ArrayList<String>();
     private static ArrayList<String> correctTranslation = new ArrayList<String>();
@@ -434,6 +436,7 @@ public class ExamDialog extends javax.swing.JDialog {
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
         swingTimer.stop();
+        PM.put("A_DIFFICULTY", enumDiff.name());
         PM.put("DIFF_LABEL", difficultyLabel.getText());
         PM.put("DIFFICULTY", difficulty.name());
         PM.putBoolean("TIMER_USED", timerUsed);
@@ -630,9 +633,7 @@ public class ExamDialog extends javax.swing.JDialog {
         }
     });
 
-    public static void diffLabelChange(String diff) {
-        difficultyLabel.setText(diff);
-    }
+   
 
     public void showExamDialog() {
         difficulty = difficulty.valueOf(PM.get("DIFFICULTY", difficulty.name()));
@@ -645,12 +646,33 @@ public class ExamDialog extends javax.swing.JDialog {
 
         timerIconLabel.setVisible(PM.getBoolean("TIMER_ICON_VISIBILITY", false));
 
-        difficultyLabel.setText(PM.get("DIFF_LABEL", TRANSLATOR.translate("Easy(Label)")));
+        diffLabelText = PM.get("A_DIFFICULTY", enumDiff.name());
+        diffLabelChange(diffLabelText);
 
         enumTimerStatus = enumTimerStatus.valueOf(PM.get("A_TIMER_STATUS", enumTimerStatus.DISABLED.toString()));
         examWords = PM.getInt("EXAM_WORDS", 10);
         examWordsCopy = examWords;
         setVisible(true);
+    }
+
+     /* This method handels the text in GUI, which is related to difficulty
+      * Maybe using String isn't the best way for handling the problem, but
+      * there going to be made some optimization
+      */
+     public static void diffLabelChange(String diff) {
+
+        if (diff.equals("EASY")) {
+            difficultyLabel.setText(TRANSLATOR.translate("Easy(Label)"));
+            enumDiff = Difficulty.EASY;
+        }
+        if (diff.equals("MEDIUM")){
+            difficultyLabel.setText(TRANSLATOR.translate("Medium(Label)"));
+            enumDiff = Difficulty.MEDIUM;
+        }
+        if (diff.equals("HARD")) {
+            difficultyLabel.setText(TRANSLATOR.translate("Hard(Label)"));
+            enumDiff = Difficulty.HARD;
+        }
     }
 
     private void editability(Boolean a) {
@@ -716,14 +738,14 @@ public class ExamDialog extends javax.swing.JDialog {
         timerProgressBar.setVisible(true);
         stopButton.setEnabled(false);
         timerIconLabel.setVisible(true);
-        feedbackField.setText(TRANSLATOR.translate("Feedback(Field)"));
+       // feedbackField.setText(TRANSLATOR.translate("Feedback(Field)"));
     }
 
     public static void setTimerProgressbarInvisible() {
         timerProgressBar.setVisible(false);
         pauseButton.setEnabled(false);
         timerIconLabel.setVisible(false);
-        feedbackField.setText(TRANSLATOR.translate("Feedback(Field)"));
+      //  feedbackField.setText(TRANSLATOR.translate("Feedback(Field)"));
     }
 
     public static void setDifficulty(Difficulty d) {
@@ -732,6 +754,11 @@ public class ExamDialog extends javax.swing.JDialog {
 
     public static void setEnumTimerStatus(TimerStatus timerStatus) {
         enumTimerStatus = timerStatus;
+    }
+
+    public static void setFeedbackFieldDefault() {
+
+        feedbackField.setText(TRANSLATOR.translate("Feedback(Field)"));
     }
 }
 

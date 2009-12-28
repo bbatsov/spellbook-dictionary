@@ -238,8 +238,10 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
             levelChoice();      //seconds != 0
             ExamDialog.setTimerProgressbarVisible();
             ExamDialog.setEnumTimerStatus(ExamDialog.TimerStatus.STARTED);
+            ExamDialog.setFeedbackFieldDefault();
         } else {
            ExamDialog.setEnumTimerStatus(ExamDialog.TimerStatus.DISABLED);
+           ExamDialog.setFeedbackFieldDefault();
            levelChoice();
            seconds = 0;
            ExamDialog.setTimerProgressbarInvisible();
@@ -330,13 +332,13 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
      public void setDifficultyLabels() {
 
         if (easyRadioButton.isSelected()) {
-            difficultyLabelText = TRANSLATOR.translate("Easy(Label)");
+            difficultyLabelText = Difficulty.EASY.toString();
         } else
         if (mediumRadioButton.isSelected()) {
-            difficultyLabelText = TRANSLATOR.translate("Medium(Label)");
+            difficultyLabelText = Difficulty.MEDIUM.toString();
         } else
         if (hardRadioButton.isSelected()) {
-            difficultyLabelText = TRANSLATOR.translate("Hard(Label)");
+            difficultyLabelText = Difficulty.HARD.toString();
         } 
   
     }
