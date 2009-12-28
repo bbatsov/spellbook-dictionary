@@ -38,8 +38,10 @@ public class ExamDialog extends javax.swing.JDialog {
     private static ArrayList<String> wrongWords = new ArrayList<String>();
     private static ArrayList<String> correctTranslation = new ArrayList<String>();
 
-    public enum TimerStatus { PAUSED, STARTED, STOPPED, DISABLED }
+    public enum TimerStatus {
 
+        PAUSED, STARTED, STOPPED, DISABLED
+    }
     private static TimerStatus enumTimerStatus = TimerStatus.DISABLED;
 
     /** Creates new form ExamDialog */
@@ -396,7 +398,6 @@ public class ExamDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
-
         if ((fromLanguageComboBox.getSelectedIndex() == 0) && (toLanguageComboBox.getSelectedIndex() == 1)) {   //English Index = 0; Bulgarian = 1;
             selectedDictionary = Dictionary.EN_BG;
         }
@@ -452,17 +453,7 @@ public class ExamDialog extends javax.swing.JDialog {
         PM.put("DIFF_LABEL", difficultyLabel.getText());
         PM.put("DIFFICULTY", difficulty.name());
         PM.putBoolean("TIMER_USED", timerUsed);
-        if (enumTimerStatus == TimerStatus.STOPPED) {
-            if (ExamSettingsDialog.returnTimerStatus() || PM.getBoolean("TIMER_USED", timerUsed)) {
-                enumTimerStatus = TimerStatus.STARTED;
-                PM.put("A_TIMER_STATUS", enumTimerStatus.name() );
-            } else {
-                enumTimerStatus = TimerStatus.DISABLED;
-                PM.put("A_TIMER_STATUS", enumTimerStatus.name());
-            }
-        } else { enumTimerStatus = TimerStatus.DISABLED;
-                PM.put("A_TIMER_STATUS", enumTimerStatus.name()); }
-
+        PM.put("A_TIMER_STATUS", enumTimerStatus.name());
         PM.putBoolean("TIMER_PROGRESSBAR_VISIBILITY", timerProgressBar.isVisible());
         PM.putBoolean("TIMER_ICON_VISIBILITY", timerIconLabel.isVisible());
         PM.putInt("FROM_LANGUAGE_LAST_SELECTED", fromLanguageComboBox.getSelectedIndex());
@@ -678,8 +669,7 @@ public class ExamDialog extends javax.swing.JDialog {
 
         difficultyLabel.setText(PM.get("DIFF_LABEL", TRANSLATOR.translate("Easy(Label)")));
 
-        enumTimerStatus = enumTimerStatus.valueOf(PM.get("A_TIMER_STATUS", TimerStatus.DISABLED.toString()));
-
+        enumTimerStatus = enumTimerStatus.valueOf(PM.get("A_TIMER_STATUS", enumTimerStatus.DISABLED.toString()));
         examWords = PM.getInt("EXAM_WORDS", 10);
         examWordsCopy = examWords;
         setVisible(true);
@@ -766,7 +756,6 @@ public class ExamDialog extends javax.swing.JDialog {
     public static void setEnumTimerStatus(TimerStatus timerStatus) {
         enumTimerStatus = timerStatus;
     }
-
 }
 
 
