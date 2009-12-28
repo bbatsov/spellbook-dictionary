@@ -1,5 +1,6 @@
 package com.drowltd.dictionary.ui.desktop.spellcheck;
 
+import com.drowltd.dictionary.core.db.DatabaseService;
 import com.drowltd.dictionary.core.spellcheck.SpellChecker;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,6 +10,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextPane;
@@ -25,13 +27,11 @@ public class SpellCheckPopupMenu extends JPopupMenu {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellCheckPopupMenu.class);
     private static SpellCheckPopupMenu INSTANCE;
     private static final IntegerComparator comparator = new IntegerComparator();
-    
     private final MisspelledWordsRegistry registry = MisspelledWordsRegistry.getInstance();
     private final SpellCheckFrame spellCheckFrame;
     private MisspelledWord misspelledWord;
     private final JTextPane invokerTextPane;
     private final JMenuItem noCorrectionsItem;
-    private final List<CorrectionItem> correctionItems = new LinkedList<CorrectionItem>();
     private final List<JMenuItem> commonItems = new LinkedList<JMenuItem>();
     private int cursorPosition = -1;
 
@@ -101,7 +101,7 @@ public class SpellCheckPopupMenu extends JPopupMenu {
         if (misspelledWord == null) {
             return;
         }
-        
+
         final Map<Integer, String> corrections = spellChecker.correct(misspelledWord.getWord());
 
         if (corrections.isEmpty()) {
@@ -115,9 +115,22 @@ public class SpellCheckPopupMenu extends JPopupMenu {
         for (Integer i : keyList) {
             final CorrectionItem correctionItem = new CorrectionItem(corrections.get(i));
             add(correctionItem);
-            correctionItems.add(correctionItem);
         }
 
+        add(new JPopupMenu.Separator());
+
+        JMenuItem addToDictionary = new JMenuItem("Add to Dictionary");
+        addToDictionary.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DatabaseService.getInstance().addMisspelled(misspelledWord.getWordInLowerCase(), SpellChecker.getInstance().getDictionary());
+                MisspelledFinder.getInstance().addUserMisspelled(misspelledWord.getWordInLowerCase());
+                MisspelledFinder.getInstance().findMisspelled(spellCheckFrame.getVisibleText(), true);
+            }
+        });
+
+        add(addToDictionary);
         add(new JPopupMenu.Separator());
 
     }
@@ -131,6 +144,7 @@ public class SpellCheckPopupMenu extends JPopupMenu {
     private final void initCommonItems() {
 
         JMenuItem cutItem = new JMenuItem("Cut");
+        cutItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/cut.png")));
         cutItem.addActionListener(new ActionListener() {
 
             @Override
@@ -141,6 +155,7 @@ public class SpellCheckPopupMenu extends JPopupMenu {
         commonItems.add(cutItem);
 
         JMenuItem copyItem = new JMenuItem("Copy");
+        copyItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/copy.png")));
         copyItem.addActionListener(new ActionListener() {
 
             @Override
@@ -151,6 +166,7 @@ public class SpellCheckPopupMenu extends JPopupMenu {
         commonItems.add(copyItem);
 
         JMenuItem pasteItem = new JMenuItem("Paste");
+        pasteItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/paste.png")));
         pasteItem.addActionListener(new ActionListener() {
 
             @Override

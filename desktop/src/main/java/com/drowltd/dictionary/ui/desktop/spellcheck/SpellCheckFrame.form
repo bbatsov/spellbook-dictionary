@@ -9,12 +9,15 @@
             <Property name="text" type="java.lang.String" value="File"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="jCloseMenuItem">
+            <MenuItem class="javax.swing.JMenuItem" name="jExitMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Close"/>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/icons/16x16/exit.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Exit"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCloseMenuItemActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jExitMenuItemActionPerformed"/>
               </Events>
             </MenuItem>
           </SubComponents>
@@ -47,6 +50,9 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jCutMenuItem">
               <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/icons/16x16/cut.png"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Cut"/>
               </Properties>
               <Events>
@@ -55,6 +61,9 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jCopyMenuItem">
               <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/icons/16x16/copy.png"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Copy"/>
               </Properties>
               <Events>
@@ -63,6 +72,9 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jPasteMenuItem">
               <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/icons/16x16/paste.png"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Paste"/>
               </Properties>
               <Events>

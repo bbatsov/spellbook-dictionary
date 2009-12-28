@@ -74,7 +74,7 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
         jLanguageLabel = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
-        jCloseMenuItem = new javax.swing.JMenuItem();
+        jExitMenuItem = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jUndoMenuItem = new javax.swing.JMenuItem();
         jRedoMenuItem = new javax.swing.JMenuItem();
@@ -101,13 +101,14 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
 
         jMenu1.setText("File");
 
-        jCloseMenuItem.setText("Close");
-        jCloseMenuItem.addActionListener(new java.awt.event.ActionListener() {
+        jExitMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/exit.png"))); // NOI18N
+        jExitMenuItem.setText("Exit");
+        jExitMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCloseMenuItemActionPerformed(evt);
+                jExitMenuItemActionPerformed(evt);
             }
         });
-        jMenu1.add(jCloseMenuItem);
+        jMenu1.add(jExitMenuItem);
 
         jMenuBar1.add(jMenu1);
 
@@ -131,6 +132,7 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
         jMenu2.add(jRedoMenuItem);
         jMenu2.add(jSeparator1);
 
+        jCutMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/cut.png"))); // NOI18N
         jCutMenuItem.setText("Cut");
         jCutMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -139,6 +141,7 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
         });
         jMenu2.add(jCutMenuItem);
 
+        jCopyMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/copy.png"))); // NOI18N
         jCopyMenuItem.setText("Copy");
         jCopyMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -147,6 +150,7 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
         });
         jMenu2.add(jCopyMenuItem);
 
+        jPasteMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/paste.png"))); // NOI18N
         jPasteMenuItem.setText("Paste");
         jPasteMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -242,19 +246,19 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
         jTextPane.paste();
     }//GEN-LAST:event_jPasteMenuItemActionPerformed
 
-    private void jCloseMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCloseMenuItemActionPerformed
+    private void jExitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jExitMenuItemActionPerformed
         this.setVisible(false);
-    }//GEN-LAST:event_jCloseMenuItemActionPerformed
+    }//GEN-LAST:event_jExitMenuItemActionPerformed
     /**
      * @param args the command line arguments
      */
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem jBgMenuItem;
-    private javax.swing.JMenuItem jCloseMenuItem;
     private javax.swing.JMenuItem jCopyMenuItem;
     private javax.swing.JMenuItem jCutMenuItem;
     private javax.swing.JMenu jDictionaryMenu;
     private javax.swing.JMenuItem jEnMenuItem;
+    private javax.swing.JMenuItem jExitMenuItem;
     private javax.swing.JLabel jLanguageLabel;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
@@ -316,7 +320,7 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
             @Override
             public void actionPerformed(ActionEvent e) {
                 documentChangedTimer.stop();
-                MisspelledFinder.getInstance().findMisspelled(getVisibleText());
+                MisspelledFinder.getInstance().findMisspelled(getVisibleText(), true);
             }
         });
 
@@ -325,7 +329,7 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
             @Override
             public void actionPerformed(ActionEvent e) {
                 adjustmentValueTimer.stop();
-                MisspelledFinder.getInstance().findMisspelled(getVisibleText());
+                MisspelledFinder.getInstance().findMisspelled(getVisibleText(), false);
             }
         });
 
@@ -364,7 +368,7 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
      */
     private void loadSpellChecker() {
         final Map<String, Integer> ratingsMap = DatabaseService.getInstance().getRatings(selectedDictionary);
-        new SpellChecker(ratingsMap, selectedDictionary.getAlphabet());
+        new SpellChecker(ratingsMap, selectedDictionary);
     }
 
     private void setSelectedDictionary(Dictionary dictionary) {
@@ -476,7 +480,7 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
 
         StatusManager.getInstance().setStatus(misspelledWord.getWord()+" corrected with "+correction);
 
-        MisspelledFinder.getInstance().findMisspelled(SpellCheckFrame.getInstance().getVisibleText());
+        MisspelledFinder.getInstance().findMisspelled(SpellCheckFrame.getInstance().getVisibleText(),true);
     }
 
     JTextPane getjTextPane() {
@@ -492,6 +496,10 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
                 jStatusLabel.setText(message);
             }
         });
+    }
+
+    public Dictionary getSelectedDictionary() {
+        return selectedDictionary;
     }
 
     /**
