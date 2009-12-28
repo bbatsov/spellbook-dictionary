@@ -227,6 +227,25 @@ public class DatabaseService {
         return nWords;
     }
 
+    public void addMisspelled(String misspelled, Dictionary dictionary){
+        if(misspelled == null || misspelled.isEmpty()){
+            LOGGER.error("misspelled is null or empty");
+            throw new IllegalArgumentException("misspelled is null or empty");
+        }
+
+        if(dictionary == null){
+            LOGGER.error("dictionary is null");
+            throw new NullPointerException("dictionary is null");
+        }
+        try {
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO " + dictionary.getRatingsTable()+" (WORD, RATING) VALUES('"+misspelled+"',"+1+")");
+            ps.execute();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+
     public ArrayList<String> getDifficultyWords(Dictionary dictionary, Difficulty difficulty) {
 
         if (dictionary == null) {
