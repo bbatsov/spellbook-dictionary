@@ -19,9 +19,9 @@ import org.slf4j.LoggerFactory;
  */
 public final class SpellChecker {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(SpellChecker.class);
-    private static SpellChecker instance;
-    private final String alphabet;
+    private static final Logger LOGGER = LoggerFactory.getLogger(SpellChecker.class);
+    private static SpellChecker INSTANCE;
+    private final Dictionary dictionary;
     private final Map<String, Integer> nWords;
 
     /**
@@ -29,11 +29,11 @@ public final class SpellChecker {
      * @param the Map<String, Integer> containing the words
      */
     public SpellChecker(Map<String, Integer> nWords) {
-        this(nWords, Dictionary.getSelectedDictionary().getAlphabet());
+        this(nWords, Dictionary.getSelectedDictionary());
 
     }
 
-    public SpellChecker(Map<String, Integer> nWords, String alphabet) {
+    public SpellChecker(Map<String, Integer> nWords, Dictionary dictionary) {
         if (nWords == null) {
             throw new NullPointerException("nWords is null");
         }
@@ -44,16 +44,20 @@ public final class SpellChecker {
 
         this.nWords = nWords;
 
-        if (alphabet == null || alphabet.isEmpty()) {
-            LOGGER.error("alphabet is null || empty");
-            throw new IllegalArgumentException("alphabet is null || empty");
+        if (dictionary == null) {
+            LOGGER.error("dictionary is null");
+            throw new NullPointerException("dictionary is null");
         }
-        this.alphabet = alphabet;
 
+        this.dictionary = dictionary;
+ 
         setInstance(this);
     }
 
     private final ArrayList<String> edits(String word) {
+
+        String alphabet = dictionary.getAlphabet();
+
         ArrayList<String> result = new ArrayList<String>();
         // Deletion
         for (int i = 0; i < word.length(); ++i) {
@@ -134,17 +138,21 @@ public final class SpellChecker {
         return Collections.emptyMap();
     }
 
+    public Dictionary getDictionary() {
+        return dictionary;
+    }
+
     public synchronized static SpellChecker getInstance() {
-        if (instance == null) {
+        if (INSTANCE == null) {
             LOGGER.error("instance is null");
             throw new IllegalStateException("instance is null");
         }
-        return instance;
+        return INSTANCE;
     }
 
     private synchronized static void setInstance(SpellChecker instance) {
         if (instance != null) {
-            SpellChecker.instance = instance;
+            SpellChecker.INSTANCE = instance;
         }
     }
 }
