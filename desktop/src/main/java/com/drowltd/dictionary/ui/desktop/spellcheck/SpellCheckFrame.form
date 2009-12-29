@@ -144,10 +144,12 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Component id="jScrollPane" alignment="1" pref="556" max="32767" attributes="0"/>
-          <Group type="102" alignment="1" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
               <Component id="jStatusLabel" min="-2" pref="334" max="-2" attributes="0"/>
-              <EmptySpace pref="37" max="32767" attributes="0"/>
-              <Component id="jLanguageLabel" min="-2" pref="173" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="116" max="-2" attributes="0"/>
+              <Component id="jLanguageLabel" pref="88" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="jIconLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -157,9 +159,12 @@
           <Group type="102" alignment="1" attributes="0">
               <Component id="jScrollPane" pref="478" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jLanguageLabel" alignment="1" min="-2" max="-2" attributes="0"/>
-                  <Component id="jStatusLabel" alignment="1" min="-2" pref="17" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Component id="jStatusLabel" min="-2" pref="17" max="-2" attributes="0"/>
+                  <Group type="103" alignment="1" groupAlignment="3" attributes="0">
+                      <Component id="jIconLabel" alignment="3" min="-2" pref="17" max="-2" attributes="0"/>
+                      <Component id="jLanguageLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
               </Group>
           </Group>
       </Group>
@@ -192,6 +197,8 @@
         <Property name="horizontalAlignment" type="int" value="4"/>
         <Property name="text" type="java.lang.String" value="l"/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jIconLabel">
     </Component>
   </SubComponents>
 </Form>
