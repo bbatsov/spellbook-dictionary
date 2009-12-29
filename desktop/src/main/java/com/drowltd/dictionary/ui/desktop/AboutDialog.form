@@ -29,12 +29,12 @@
           <Component id="nameAndLogoPanel" alignment="0" pref="349" max="32767" attributes="0"/>
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="56" max="-2" attributes="0"/>
-              <Component id="creditsButton" min="-2" max="-2" attributes="0"/>
+              <Component id="creditsButton" linkSize="1" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Component id="licenseButton" min="-2" max="-2" attributes="0"/>
+              <Component id="licenseButton" linkSize="1" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Component id="closeButton" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="64" max="32767" attributes="0"/>
+              <Component id="closeButton" linkSize="1" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="56" max="32767" attributes="0"/>
           </Group>
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
@@ -63,7 +63,9 @@
   <SubComponents>
     <Component class="javax.swing.JButton" name="creditsButton">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Credits"/>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="i18n/AboutDialog.properties" key="Credits(Button)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="creditsButtonActionPerformed"/>
@@ -71,7 +73,9 @@
     </Component>
     <Component class="javax.swing.JButton" name="licenseButton">
       <Properties>
-        <Property name="text" type="java.lang.String" value="License"/>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="i18n/AboutDialog.properties" key="License(Button)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
       <Events>
@@ -80,7 +84,9 @@
     </Component>
     <Component class="javax.swing.JButton" name="closeButton">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Close"/>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="i18n/AboutDialog.properties" key="Close(Button)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="closeButtonActionPerformed"/>
