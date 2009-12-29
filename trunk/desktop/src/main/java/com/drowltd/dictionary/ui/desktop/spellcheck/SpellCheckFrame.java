@@ -9,6 +9,7 @@ import com.drowltd.dictionary.core.db.DatabaseService;
 import com.drowltd.dictionary.core.db.Dictionary;
 import com.drowltd.dictionary.core.spellcheck.SpellChecker;
 import com.drowltd.dictionary.ui.desktop.IconManager;
+import com.sun.java.swing.plaf.nimbus.SliderPainter;
 import java.awt.EventQueue;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -70,7 +71,6 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
         jTextPane = new javax.swing.JTextPane();
         jStatusLabel = new javax.swing.JLabel();
         jLanguageLabel = new javax.swing.JLabel();
-        jIconLabel = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jExitMenuItem = new javax.swing.JMenuItem();
@@ -97,6 +97,11 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
 
         jLanguageLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLanguageLabel.setText("l");
+        jLanguageLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLanguageLabelMouseClicked(evt);
+            }
+        });
 
         jMenu1.setText("File");
 
@@ -193,10 +198,8 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
             .addComponent(jScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 556, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jStatusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 334, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(116, 116, 116)
+                .addGap(122, 122, 122)
                 .addComponent(jLanguageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jIconLabel)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -206,9 +209,7 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jStatusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jIconLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLanguageLabel))))
+                    .addComponent(jLanguageLabel)))
         );
 
         pack();
@@ -256,6 +257,14 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
     private void jExitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jExitMenuItemActionPerformed
         this.setVisible(false);
     }//GEN-LAST:event_jExitMenuItemActionPerformed
+
+    private void jLanguageLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLanguageLabelMouseClicked
+        if (selectedDictionary.equals(Dictionary.BG_EN)) {
+            setSelectedDictionary(Dictionary.EN_BG);
+        } else {
+            setSelectedDictionary(Dictionary.BG_EN);
+        }
+    }//GEN-LAST:event_jLanguageLabelMouseClicked
     /**
      * @param args the command line arguments
      */
@@ -266,7 +275,6 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
     private javax.swing.JMenu jDictionaryMenu;
     private javax.swing.JMenuItem jEnMenuItem;
     private javax.swing.JMenuItem jExitMenuItem;
-    private javax.swing.JLabel jIconLabel;
     private javax.swing.JLabel jLanguageLabel;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
@@ -402,12 +410,12 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
 
         //@todo NEXT introduce Language Enum to hold lang specific data
         if (message.equals("English")) {
-            jIconLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/flag_great_britain.png")));
+            jLanguageLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/flag_great_britain.png")));
             return;
         }
 
         if (message.equals("Bulgarian")) {
-            jIconLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/flag_bulgaria.png")));
+            jLanguageLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/flag_bulgaria.png")));
             return;
         }
 
