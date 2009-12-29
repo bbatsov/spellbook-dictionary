@@ -146,10 +146,8 @@
           <Component id="jScrollPane" alignment="1" pref="556" max="32767" attributes="0"/>
           <Group type="102" alignment="0" attributes="0">
               <Component id="jStatusLabel" min="-2" pref="334" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="116" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="122" max="-2" attributes="0"/>
               <Component id="jLanguageLabel" pref="88" max="32767" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="jIconLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -161,10 +159,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
                   <Component id="jStatusLabel" min="-2" pref="17" max="-2" attributes="0"/>
-                  <Group type="103" alignment="1" groupAlignment="3" attributes="0">
-                      <Component id="jIconLabel" alignment="3" min="-2" pref="17" max="-2" attributes="0"/>
-                      <Component id="jLanguageLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
+                  <Component id="jLanguageLabel" min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
       </Group>
@@ -197,8 +192,9 @@
         <Property name="horizontalAlignment" type="int" value="4"/>
         <Property name="text" type="java.lang.String" value="l"/>
       </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="jIconLabel">
+      <Events>
+        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jLanguageLabelMouseClicked"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>
