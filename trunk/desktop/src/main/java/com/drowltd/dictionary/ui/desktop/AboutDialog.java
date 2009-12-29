@@ -60,14 +60,14 @@ public class AboutDialog extends javax.swing.JDialog {
         setTitle(bundle.getString("About(Title)")); // NOI18N
         setResizable(false);
 
-        creditsButton.setText("Credits");
+        creditsButton.setText(bundle.getString("Credits(Button)")); // NOI18N
         creditsButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 creditsButtonActionPerformed(evt);
             }
         });
 
-        licenseButton.setText("License");
+        licenseButton.setText(bundle.getString("License(Button)")); // NOI18N
         licenseButton.setEnabled(false);
         licenseButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -75,7 +75,7 @@ public class AboutDialog extends javax.swing.JDialog {
             }
         });
 
-        closeButton.setText("Close");
+        closeButton.setText(bundle.getString("Close(Button)")); // NOI18N
         closeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 closeButtonActionPerformed(evt);
@@ -91,11 +91,11 @@ public class AboutDialog extends javax.swing.JDialog {
         spellbookLabel.setForeground(new java.awt.Color(0, 0, 102));
         spellbookLabel.setText("Spellbook");
 
-        dictionaryLabel.setFont(new java.awt.Font("All Times New Roman", 0, 24)); // NOI18N
+        dictionaryLabel.setFont(new java.awt.Font("All Times New Roman", 0, 24));
         dictionaryLabel.setForeground(new java.awt.Color(0, 0, 102));
         dictionaryLabel.setText(bundle.getString("Dictionary(Label)")); // NOI18N
 
-        versionLabel.setFont(new java.awt.Font("All Times New Roman", 2, 14)); // NOI18N
+        versionLabel.setFont(new java.awt.Font("All Times New Roman", 2, 14));
         versionLabel.setForeground(new java.awt.Color(0, 0, 102));
         versionLabel.setText(bundle.getString("Version(Label)")); // NOI18N
 
@@ -135,7 +135,7 @@ public class AboutDialog extends javax.swing.JDialog {
         infoTextPane.setBorder(null);
         infoTextPane.setContentType("text/html");
         infoTextPane.setEditable(false);
-        infoTextPane.setFont(new java.awt.Font("All Times New Roman", 0, 11)); // NOI18N
+        infoTextPane.setFont(new java.awt.Font("All Times New Roman", 0, 11));
         String text = String.format("<html>\n  <head>\n\n  </head>\n  <body>\n    <p style=\"margin-top: 0\"; style=\"text-align:center\">\n      \t\n\t%s<br />\n\t%s<br />\n\t%s\n    </p>\n  </body>\n</html>\n",
             TRANSLATOR_TEXT.translate("Multiplatform"),
             TRANSLATOR_TEXT.translate("License"),
@@ -161,12 +161,15 @@ public class AboutDialog extends javax.swing.JDialog {
                 .addComponent(licenseButton)
                 .addGap(18, 18, 18)
                 .addComponent(closeButton)
-                .addContainerGap(64, Short.MAX_VALUE))
+                .addContainerGap(56, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 329, Short.MAX_VALUE)
                 .addContainerGap())
         );
+
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {closeButton, creditsButton, licenseButton});
+
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
