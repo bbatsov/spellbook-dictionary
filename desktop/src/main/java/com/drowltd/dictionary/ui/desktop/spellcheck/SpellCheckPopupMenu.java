@@ -106,6 +106,7 @@ public class SpellCheckPopupMenu extends JPopupMenu {
 
         if (corrections.isEmpty()) {
             add(noCorrectionsItem);
+            addToDictionoray();
             return;
         }
 
@@ -117,21 +118,7 @@ public class SpellCheckPopupMenu extends JPopupMenu {
             add(correctionItem);
         }
 
-        add(new JPopupMenu.Separator());
-
-        JMenuItem addToDictionary = new JMenuItem("Add to Dictionary");
-        addToDictionary.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                DatabaseService.getInstance().addMisspelled(misspelledWord.getWordInLowerCase(), SpellChecker.getInstance().getDictionary());
-                MisspelledFinder.getInstance().addUserMisspelled(misspelledWord.getWordInLowerCase());
-                MisspelledFinder.getInstance().findMisspelled(spellCheckFrame.getVisibleText(), true);
-            }
-        });
-
-        add(addToDictionary);
-        add(new JPopupMenu.Separator());
+        addToDictionoray();
 
     }
 
@@ -139,6 +126,12 @@ public class SpellCheckPopupMenu extends JPopupMenu {
         for (JMenuItem item : commonItems) {
             add(item);
         }
+    }
+
+    private void addToDictionoray() {
+        add(new JPopupMenu.Separator());
+        add(new AddToDictItem(misspelledWord.getWordInLowerCase()));
+        add(new JPopupMenu.Separator());
     }
 
     private final void initCommonItems() {
@@ -179,9 +172,7 @@ public class SpellCheckPopupMenu extends JPopupMenu {
 
     private class CorrectionItem extends JMenuItem {
 
-        private String correction;
-
-        public CorrectionItem(String correction) {
+        public CorrectionItem(final String correction) {
             if (correction == null) {
                 LOGGER.error("correction is null");
                 throw new NullPointerException("correction is null");
@@ -192,16 +183,38 @@ public class SpellCheckPopupMenu extends JPopupMenu {
                 throw new IllegalArgumentException("correction is empty");
             }
 
-            this.correction = correction;
             this.setText(correction);
             this.addActionListener(new ActionListener() {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    spellCheckFrame.correct(CorrectionItem.this.correction, misspelledWord, cursorPosition);
+                    spellCheckFrame.correct(correction, misspelledWord, cursorPosition);
                     synchronized (registry) {
                         registry.corrected(misspelledWord);
                     }
+                }
+            });
+        }
+    }
+
+    private class AddToDictItem extends JMenuItem {
+
+        public AddToDictItem(final String misspelled) {
+            if (misspelled == null || misspelled.isEmpty()) {
+                LOGGER.error("misspelled == null || misspelled.isEmpty()");
+                throw new IllegalArgumentException("misspelled == null || misspelled.isEmpty()");
+            }
+
+            this.setText("Add to Dictionary");
+
+            this.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    DatabaseService.getInstance().addMisspelled(misspelled, SpellChecker.getInstance().getDictionary());
+                    MisspelledFinder.getInstance().addUserMisspelled(misspelled);
+                    MisspelledFinder.getInstance().findMisspelled(SpellCheckPopupMenu.this.spellCheckFrame.getVisibleText(), true);
+                    StatusManager.getInstance().setStatus(misspelled + " added to dictionary");
                 }
             });
         }
