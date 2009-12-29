@@ -39,7 +39,6 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
 
     private static final SpellCheckFrame INSTANCE = new SpellCheckFrame();
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellCheckFrame.class);
-
     private Dictionary selectedDictionary = Dictionary.getSelectedDictionary();
     private UndoManager undoManager = new UndoManager();
     private SpellCheckPopupMenu popupMenu;
@@ -71,6 +70,7 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
         jTextPane = new javax.swing.JTextPane();
         jStatusLabel = new javax.swing.JLabel();
         jLanguageLabel = new javax.swing.JLabel();
+        jIconLabel = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jExitMenuItem = new javax.swing.JMenuItem();
@@ -191,10 +191,12 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 556, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addComponent(jStatusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 334, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
-                .addComponent(jLanguageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(116, 116, 116)
+                .addComponent(jLanguageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jIconLabel)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -202,9 +204,11 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(jScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 478, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLanguageLabel, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jStatusLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jStatusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jIconLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLanguageLabel))))
         );
 
         pack();
@@ -226,13 +230,13 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
     }//GEN-LAST:event_jBgMenuItemActionPerformed
 
     private void jUndoMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jUndoMenuItemActionPerformed
-        if(undoManager.canUndo()){
+        if (undoManager.canUndo()) {
             undoManager.undo();
         }
     }//GEN-LAST:event_jUndoMenuItemActionPerformed
 
     private void jRedoMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRedoMenuItemActionPerformed
-        if(undoManager.canRedo()){
+        if (undoManager.canRedo()) {
             undoManager.redo();
         }
     }//GEN-LAST:event_jRedoMenuItemActionPerformed
@@ -262,6 +266,7 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
     private javax.swing.JMenu jDictionaryMenu;
     private javax.swing.JMenuItem jEnMenuItem;
     private javax.swing.JMenuItem jExitMenuItem;
+    private javax.swing.JLabel jIconLabel;
     private javax.swing.JLabel jLanguageLabel;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
@@ -339,7 +344,7 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
         });
 
         StatusManager.getInstance().addObserver(this);
-        setLanguageStatus("Language: "+selectedDictionary.getLanguage());
+        setLanguageStatus(selectedDictionary.getLanguage());
 
     }
 
@@ -385,16 +390,27 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
             selectedDictionary = dictionary;
             loadSpellChecker();
             triggerMisspelledSearch(documentChangedTimer, true);
-            setLanguageStatus("Language: "+dictionary.getLanguage());
+            setLanguageStatus(dictionary.getLanguage());
         }
     }
 
-    public void setLanguageStatus(String message){
+    public void setLanguageStatus(String message) {
         if (message == null || message.isEmpty()) {
             return;
         }
-
         jLanguageLabel.setText(message);
+
+        //@todo NEXT introduce Language Enum to hold lang specific data
+        if (message.equals("English")) {
+            jIconLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/flag_great_britain.png")));
+            return;
+        }
+
+        if (message.equals("Bulgarian")) {
+            jIconLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/flag_bulgaria.png")));
+            return;
+        }
+
     }
 
     /**
@@ -483,9 +499,9 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
             jTextPane.setCaretPosition(cursorPosition);
         }
 
-        StatusManager.getInstance().setStatus(misspelledWord.getWord()+" corrected with "+correction);
+        StatusManager.getInstance().setStatus(misspelledWord.getWord() + " corrected with " + correction);
 
-        MisspelledFinder.getInstance().findMisspelled(SpellCheckFrame.getInstance().getVisibleText(),true);
+        MisspelledFinder.getInstance().findMisspelled(SpellCheckFrame.getInstance().getVisibleText(), true);
     }
 
     JTextPane getjTextPane() {

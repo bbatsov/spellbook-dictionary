@@ -13,8 +13,8 @@ import org.slf4j.LoggerFactory;
 public class MisspelledWord {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MisspelledWord.class);
-    private String word;
-    private String wordInLowerCase;
+    private final String word;
+    private final String wordInLowerCase;
     private final Set<Position> occurances = new HashSet<Position>();
 
     public MisspelledWord(String word, int startIndex) {

@@ -74,6 +74,7 @@ public class SpellCheckHighlighter {
         });
     }
 
+    //@todo Introduce Parameter Object
     public void removeHighlight(int start, int end) {
         if (start < 0 || end < 0) {
             LOGGER.error("start < 0 || end < 0");
