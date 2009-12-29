@@ -114,6 +114,7 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
         jMenu2.setText("Edit");
 
         jUndoMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.CTRL_MASK));
+        jUndoMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/undo.png"))); // NOI18N
         jUndoMenuItem.setText("Undo");
         jUndoMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -122,6 +123,7 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
         });
         jMenu2.add(jUndoMenuItem);
 
+        jRedoMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/redo.png"))); // NOI18N
         jRedoMenuItem.setText("Redo");
         jRedoMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -162,6 +164,7 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
 
         jDictionaryMenu.setText("Languages");
 
+        jEnMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/flag_great_britain.png"))); // NOI18N
         jEnMenuItem.setText("English");
         jEnMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -170,6 +173,7 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
         });
         jDictionaryMenu.add(jEnMenuItem);
 
+        jBgMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/flag_bulgaria.png"))); // NOI18N
         jBgMenuItem.setText("Bulgarian");
         jBgMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

@@ -32,6 +32,9 @@
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="Ctrl+Z"/>
                 </Property>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/icons/16x16/undo.png"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Undo"/>
               </Properties>
               <Events>
@@ -40,6 +43,9 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jRedoMenuItem">
               <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/icons/16x16/redo.png"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Redo"/>
               </Properties>
               <Events>
@@ -90,6 +96,9 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="jEnMenuItem">
               <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/icons/16x16/flag_great_britain.png"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="English"/>
               </Properties>
               <Events>
@@ -98,6 +107,9 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jBgMenuItem">
               <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/icons/16x16/flag_bulgaria.png"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Bulgarian"/>
               </Properties>
               <Events>
