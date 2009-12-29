@@ -1,5 +1,6 @@
 package com.drowltd.dictionary.ui.desktop.exam;
 
+import com.drowltd.dictionary.ui.desktop.IconManager;
 import java.awt.Font;
 import java.util.ArrayList;
 
@@ -15,6 +16,9 @@ public class WrongWordsDialog extends javax.swing.JDialog {
     public WrongWordsDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+
+        setLocationRelativeTo(parent);
+        setIconImage(IconManager.getImageIcon("teacher.png", IconManager.IconSize.SIZE16).getImage());
 
         wrongWords = ExamDialog.getWrongWords();
         correctTranslation = ExamDialog.getCorrectTranslation();
@@ -37,6 +41,7 @@ public class WrongWordsDialog extends javax.swing.JDialog {
         correctTranslationTextArea = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Wrong Words");
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("i18n/WrongWordsDialog"); // NOI18N
         wrongWordsList.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("WrongWords(String)"))); // NOI18N
