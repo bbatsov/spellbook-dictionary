@@ -7,8 +7,8 @@ package com.drowltd.dictionary.ui.desktop.spellcheck;
 
 import com.drowltd.dictionary.core.db.DatabaseService;
 import com.drowltd.dictionary.core.db.Dictionary;
-import com.drowltd.dictionary.core.i18n.Translator;
 import com.drowltd.dictionary.core.spellcheck.SpellChecker;
+import com.drowltd.dictionary.ui.desktop.IconManager;
 import java.awt.EventQueue;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -39,7 +39,6 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
 
     private static final SpellCheckFrame INSTANCE = new SpellCheckFrame();
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellCheckFrame.class);
-    private static final Translator TRANSLATOR = Translator.getTranslator("SpellbookForm");
 
     private Dictionary selectedDictionary = Dictionary.getSelectedDictionary();
     private UndoManager undoManager = new UndoManager();
@@ -86,7 +85,7 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
         jEnMenuItem = new javax.swing.JMenuItem();
         jBgMenuItem = new javax.swing.JMenuItem();
 
-        setTitle("Spell Check");
+        setTitle("SpellBook SpellChecker");
 
         jTextPane.setBackground(java.awt.Color.white);
         jTextPane.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -276,6 +275,8 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
      * Custom initializations.
      */
     private void init() {
+
+        setIconImage(IconManager.getImageIcon("spellcheck.png", IconManager.IconSize.SIZE16).getImage());
 
         jScrollPane.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
 
