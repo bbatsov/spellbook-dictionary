@@ -170,7 +170,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
                     if (!transferredText.equalsIgnoreCase(lastTransfer)) {
                         LOGGER.info("'" + transferredText + "' received from clipboard");
-                        String searchString = transferredText.split("\\W")[0].toLowerCase();
+                        String searchString = transferredText.split("\\PL")[0].toLowerCase();
                         String foundWord = "";
                         LOGGER.info("Search string from clipboard is " + searchString);
                         wordSearchField.setText(searchString);
