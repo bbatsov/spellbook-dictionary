@@ -674,6 +674,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
                 setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
             } else {
                 LOGGER.info("Minimize to tray on close is disabled");
+                setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             }
 
             PM.putBoolean("CLOSE_TO_TRAY", minimizeToTrayOnCloseEnabled);
