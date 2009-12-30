@@ -582,6 +582,9 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
     private void wordsListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_wordsListValueChanged
         int selectedIndex = wordsList.getSelectedIndex();
+        if(selectedIndex < 0){
+            return;
+        }
 
         wordTranslationTextArea.setText(databaseService.getTranslation(selectedDictionary, words.get(selectedIndex)));
 
