@@ -5,7 +5,9 @@ import com.drowltd.dictionary.core.i18n.Translator;
 import com.drowltd.dictionary.core.preferences.PreferencesManager;
 import com.drowltd.dictionary.ui.desktop.NumberDocument;
 import com.drowltd.dictionary.ui.desktop.*;
+import java.security.acl.Owner;
 import javax.swing.ButtonGroup;
+import javax.swing.JDialog;
 
 /**
  *
@@ -29,8 +31,6 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
 
 
 
-        //setLocationRelativeTo(SpellbookFrame);
-
         initComponents();
 
         // accept only numbers
@@ -41,6 +41,8 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
         difficultyGroup.add(easyRadioButton);
         difficultyGroup.add(mediumRadioButton);
         difficultyGroup.add(hardRadioButton);
+
+
     }
 
     /** This method is called from within the constructor to
@@ -365,6 +367,7 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
         mediumRadioButton.setSelected(PM.getBoolean("MEDIUM_CHECKBOX", false));
         hardRadioButton.setSelected(PM.getBoolean("HARD_CHECBOX", false));
 
+        
         setVisible(true);
 
     }
