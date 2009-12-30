@@ -29,7 +29,8 @@ public class ExamDialog extends javax.swing.JDialog {
     private int maximumWordsProgressBar = 0;
     private Dictionary selectedDictionary = Dictionary.EN_BG;
     private static Difficulty difficulty = Difficulty.EASY;
-    private ExamSettingsDialog examSettingsDialog = new ExamSettingsDialog(null, rootPaneCheckingEnabled);
+    private ExamSettingsDialog examSettingsDialog = new ExamSettingsDialog(this, rootPaneCheckingEnabled);
+    
     private int totalWords;
     private int correctWords;
     private int fromWordsIndex;
@@ -80,7 +81,7 @@ public class ExamDialog extends javax.swing.JDialog {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
+        settingsIconLabel = new javax.swing.JLabel();
         settingsButton = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         startButton = new javax.swing.JButton();
@@ -142,10 +143,10 @@ public class ExamDialog extends javax.swing.JDialog {
 
         jLabel3.setText(bundle.getString("To(Label)")); // NOI18N
 
-        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/48x48/preferences.png"))); // NOI18N
-        jLabel6.addMouseListener(new java.awt.event.MouseAdapter() {
+        settingsIconLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/48x48/preferences.png"))); // NOI18N
+        settingsIconLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel6MouseClicked(evt);
+                settingsIconLabelMouseClicked(evt);
             }
         });
 
@@ -175,7 +176,7 @@ public class ExamDialog extends javax.swing.JDialog {
                         .addGap(64, 64, 64)
                         .addComponent(settingsButton)
                         .addGap(58, 58, 58)
-                        .addComponent(jLabel6)))
+                        .addComponent(settingsIconLabel)))
                 .addGap(38, 38, 38))
         );
         settingsPanelLayout.setVerticalGroup(
@@ -186,7 +187,7 @@ public class ExamDialog extends javax.swing.JDialog {
                 .addGap(18, 18, 18)
                 .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jLabel6)
+                        .addComponent(settingsIconLabel)
                         .addGroup(settingsPanelLayout.createSequentialGroup()
                             .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jLabel2)
@@ -448,7 +449,9 @@ public class ExamDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_formWindowClosed
 
     private void settingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_settingsButtonActionPerformed
+        examSettingsDialog.setLocationRelativeTo(this);
         examSettingsDialog.showExamSettingsDialog();
+        
     }//GEN-LAST:event_settingsButtonActionPerformed
 
     private void answerFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_answerFieldActionPerformed
@@ -461,9 +464,10 @@ public class ExamDialog extends javax.swing.JDialog {
         seconds = secondsBackup;
     }//GEN-LAST:event_answerButtonActionPerformed
 
-    private void jLabel6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel6MouseClicked
+    private void settingsIconLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_settingsIconLabelMouseClicked
+        examSettingsDialog.setLocationRelativeTo(this);
         examSettingsDialog.showExamSettingsDialog();
-    }//GEN-LAST:event_jLabel6MouseClicked
+    }//GEN-LAST:event_settingsIconLabelMouseClicked
 
     private void fromLanguageComboBoxPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_fromLanguageComboBoxPopupMenuWillBecomeInvisible
         if (fromLanguageComboBox.getSelectedItem() == toLanguageComboBox.getSelectedItem()) {
@@ -513,13 +517,13 @@ public class ExamDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel3;
     private static javax.swing.JButton pauseButton;
     private javax.swing.JButton settingsButton;
+    private javax.swing.JLabel settingsIconLabel;
     private javax.swing.JPanel settingsPanel;
     private static javax.swing.JButton startButton;
     private static javax.swing.JButton stopButton;
@@ -722,6 +726,7 @@ public class ExamDialog extends javax.swing.JDialog {
     private void examResult() {
 
         ExamResult examResultDialog = new ExamResult(null, rootPaneCheckingEnabled);
+        examResultDialog.setLocationRelativeTo(this);
         examResultDialog.showExamResult(correctWords, totalWords);
 
     }
