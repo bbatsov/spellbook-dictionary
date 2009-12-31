@@ -20,6 +20,7 @@ import com.drowltd.dictionary.ui.desktop.IconManager.IconSize;
 import com.drowltd.dictionary.ui.desktop.spellcheck.SpellCheckFrame;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.WindowAdapter;
@@ -587,7 +588,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         }
 
         wordTranslationTextArea.setText(databaseService.getTranslation(selectedDictionary, words.get(selectedIndex)));
-
+        wordTranslationTextArea.setCaretPosition(0);
         matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
         matchLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
     }//GEN-LAST:event_wordsListValueChanged
