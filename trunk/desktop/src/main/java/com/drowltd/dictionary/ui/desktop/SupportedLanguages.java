@@ -1,9 +1,10 @@
 package com.drowltd.dictionary.ui.desktop;
 
 /**
- * User: bozhidar
- * Date: Oct 16, 2009
- * Time: 1:25:39 AM
+ * Supported user interface languages
+ *
+ * @author Bozhidar Batsov
+ * @since 0.2
  */
 public enum SupportedLanguages {
     EN, BG

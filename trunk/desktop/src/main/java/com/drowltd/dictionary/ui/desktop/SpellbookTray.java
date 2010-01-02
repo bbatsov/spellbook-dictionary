@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.drowltd.dictionary.ui.desktop;
 
 import com.drowltd.dictionary.core.i18n.Translator;

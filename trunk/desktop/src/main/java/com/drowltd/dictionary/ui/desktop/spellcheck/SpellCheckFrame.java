@@ -1,15 +1,9 @@
-/*
- * SpellCheckFrame.java
- *
- * Created on Nov 25, 2009, 6:53:41 PM
- */
 package com.drowltd.dictionary.ui.desktop.spellcheck;
 
 import com.drowltd.dictionary.core.db.DatabaseService;
 import com.drowltd.dictionary.core.db.Dictionary;
 import com.drowltd.dictionary.core.spellcheck.SpellChecker;
 import com.drowltd.dictionary.ui.desktop.IconManager;
-import com.sun.java.swing.plaf.nimbus.SliderPainter;
 import java.awt.EventQueue;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
