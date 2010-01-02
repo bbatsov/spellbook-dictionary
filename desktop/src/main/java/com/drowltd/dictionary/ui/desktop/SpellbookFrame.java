@@ -1,13 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
- * SpellbookFrame.java
- *
- * Created on Nov 5, 2009, 11:34:18 PM
- */
 package com.drowltd.dictionary.ui.desktop;
 
 import com.drowltd.dictionary.ui.desktop.exam.ExamDialog;
@@ -20,7 +10,6 @@ import com.drowltd.dictionary.ui.desktop.IconManager.IconSize;
 import com.drowltd.dictionary.ui.desktop.spellcheck.SpellCheckFrame;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.WindowAdapter;

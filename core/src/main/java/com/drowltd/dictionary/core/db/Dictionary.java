@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.drowltd.dictionary.core.db;
 
 /**
@@ -10,8 +6,8 @@ package com.drowltd.dictionary.core.db;
  * @since 0.1
  */
 public enum Dictionary {
-
     EN_BG(Dictionary.EN_ALPHABET, Dictionary.EN_RATINGS_TABLE, Dictionary.EN_LANGUAGE), BG_EN(Dictionary.BG_ALPHABET, Dictionary.BG_RATINGS_TABLE, Dictionary.BG_LANGUAGE);
+
     private static Dictionary selectedDictionary = EN_BG;
     private static final String EN_ALPHABET = "abcdefghijklmnopqrstuvwxyz";
     private static final String BG_ALPHABET = "абвгдежзийклмнопрстуфхцчшщъьюя";
@@ -19,6 +15,7 @@ public enum Dictionary {
     private static final String BG_RATINGS_TABLE = "SPELLCHECK_BG";
     private static final String EN_LANGUAGE = "English";
     private static final String BG_LANGUAGE = "Bulgarian";
+
     private String alphabet;
     private String ratingsTable;
     private String language;
@@ -47,8 +44,9 @@ public enum Dictionary {
 
     public static synchronized void setSelectedDictionary(Dictionary selectedDictionary) {
         if (selectedDictionary == null) {
-            throw new NullPointerException("selectedDictionary is null");
+            throw new IllegalArgumentException("selectedDictionary is null");
         }
+
         Dictionary.selectedDictionary = selectedDictionary;
     }
 }
