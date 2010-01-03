@@ -5,7 +5,7 @@
     <groupId>com.drowltd.dictionary</groupId>
     <artifactId>dictionary</artifactId>
     <packaging>pom</packaging>
-    <version>1.0</version>
+    <version>0.3-SNAPSHOT</version>
 
     <name>Spellbook Dictionary</name>
     <description>Spellbook Dictionary is multiplatfom dictionary written in Java</description>
