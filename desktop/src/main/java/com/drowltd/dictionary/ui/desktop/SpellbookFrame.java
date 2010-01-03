@@ -32,8 +32,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Spellbook's main application frame.
  *
- * @author bozhidar
+ * @author Bozhidar Batsov
  * @since 0.1
  */
 public class SpellbookFrame extends javax.swing.JFrame {
@@ -344,6 +345,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         examMenuItem = new javax.swing.JMenuItem();
         spellcheckMenuItem = new javax.swing.JMenuItem();
         jMenu5 = new javax.swing.JMenu();
+        helpContentsMenuItem = new javax.swing.JMenuItem();
         aboutMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -541,6 +543,10 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         jMenu5.setMnemonic('h');
         jMenu5.setText(bundle.getString("Help(Menu)")); // NOI18N
+
+        helpContentsMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/help2.png"))); // NOI18N
+        helpContentsMenuItem.setText(bundle.getString("HelpContents(MenuItem)")); // NOI18N
+        jMenu5.add(helpContentsMenuItem);
 
         aboutMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/about.png"))); // NOI18N
         aboutMenuItem.setMnemonic('a');
@@ -783,6 +789,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem examMenuItem;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenuItem fontMenuItem;
+    private javax.swing.JMenuItem helpContentsMenuItem;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
