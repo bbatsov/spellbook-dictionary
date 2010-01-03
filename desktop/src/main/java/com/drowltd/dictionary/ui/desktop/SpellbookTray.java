@@ -15,8 +15,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * A thin layer of abstraction on top the application's tray icon. Here is
+ * the handling of all events associated with it.
  *
- * @author bozhidar
+ * @author Bozhidar Batsov
+ * @since 0.2
  */
 public class SpellbookTray {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellbookTray.class);
