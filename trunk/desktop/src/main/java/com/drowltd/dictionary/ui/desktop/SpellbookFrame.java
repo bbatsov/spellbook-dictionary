@@ -195,7 +195,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
                             matchLabel.setToolTipText(TRANSLATOR.translate("PartialMatchFound(ToolTip)"));
                         }
 
-                        if (match && !SpellbookFrame.this.isVisible()) {
+                        if (match && !SpellbookFrame.this.isVisible() && PM.getBoolean("TRAY_POPUP", false)) {
                             trayIcon.displayMessage(foundWord, wordTranslationTextArea.getText(), TrayIcon.MessageType.INFO);
                         }
                     }
@@ -690,7 +690,15 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
             PM.putBoolean("CLIPBOARD_INTEGRATION", clipboardIntegrationEnabled);
 
-            PM.putInt("EXAM_WORDS", preferencesDialog.getExamWords());
+            final boolean trayPopupEnabled = preferencesDialog.isTrayPopupEnabled();
+
+            if (trayPopupEnabled) {
+                LOGGER.info("Tray popup is enabled");
+            } else {
+                LOGGER.info("Tray popup is disabled");
+            }
+
+            PM.putBoolean("TRAY_POPUP", trayPopupEnabled);
 
             String selectedLookAndFeel = preferencesDialog.getSelectedLookAndFeel();
 
