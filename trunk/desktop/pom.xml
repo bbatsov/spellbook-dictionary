@@ -4,13 +4,12 @@
     <parent>
         <artifactId>dictionary</artifactId>
         <groupId>com.drowltd.dictionary</groupId>
-        <version>1.0</version>
+        <version>0.3-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.drowltd.dictionary.ui</groupId>
     <artifactId>dictionary-ui</artifactId>
-    <version>1.0</version>
 
     <name>Spellbook Dictionary UI</name>
     <description>The user interface of Spellbook, written in Swing</description>
