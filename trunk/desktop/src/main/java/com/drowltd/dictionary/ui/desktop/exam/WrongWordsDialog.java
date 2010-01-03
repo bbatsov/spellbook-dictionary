@@ -1,7 +1,6 @@
 package com.drowltd.dictionary.ui.desktop.exam;
 
 import com.drowltd.dictionary.ui.desktop.IconManager;
-import java.awt.Font;
 import java.util.ArrayList;
 
 /**
@@ -113,7 +112,6 @@ public class WrongWordsDialog extends javax.swing.JDialog {
     private void wrongWordsListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_wrongWordsListValueChanged
         int selectedIndex = wrongWordsList.getSelectedIndex();
 
-        correctTranslationTextArea.setFont(new Font("Serif", Font.ITALIC, 16));
         correctTranslationTextArea.setText(correctTranslation.get(selectedIndex));
     }//GEN-LAST:event_wrongWordsListValueChanged
 
