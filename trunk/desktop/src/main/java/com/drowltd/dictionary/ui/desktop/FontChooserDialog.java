@@ -1,14 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
- * FontChooserDialog.java
- *
- * Created on Nov 7, 2009, 5:03:10 PM
- */
-
 package com.drowltd.dictionary.ui.desktop;
 
 import com.drowltd.dictionary.core.preferences.PreferencesManager;
@@ -50,12 +39,8 @@ public class FontChooserDialog extends javax.swing.JDialog {
 
         fontSizeList.addListSelectionListener(new SelectionUpdater());
 
-        int currentFontStyle = pm.getInt("FONT_STYLE", Font.PLAIN);
-
-
         fontStyleList.setListData(new String[]{"Regular", "Bold", "Italic"});
         fontStyleList.addListSelectionListener(new SelectionUpdater());
-
 
         previewText.setFont(generateFont());
     }

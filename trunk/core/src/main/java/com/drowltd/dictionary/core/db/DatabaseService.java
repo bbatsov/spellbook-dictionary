@@ -183,6 +183,30 @@ public class DatabaseService {
         return null;
     }
 
+    /**
+     * Adds a new word into a dictionary.
+     *
+     * @param word to be added
+     * @param translation of the word
+     * @param dictionary in which the word will be added
+     * @return true if the word was added, false if it already existed in the
+     * dictionary
+     */
+    public boolean addWord(String word, String translation, Dictionary dictionary) {
+        return true;
+    }
+
+    /**
+     * Updates a word into a dictionary.
+     *
+     * @param word
+     * @param translation
+     * @param dictionary
+     */
+    public void updateWord(String word, String translation, Dictionary dictionary) {
+
+    }
+
     public Map<String, Integer> getRatings(Dictionary dictionary) {
 
         if (dictionary == null) {
