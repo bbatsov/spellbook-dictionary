@@ -34,7 +34,7 @@
             <dependency>
                 <groupId>com.drowltd.dictionary</groupId>
                 <artifactId>dictionary-core</artifactId>
-                <version>1.0</version>
+                <version>0.3-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.h2database</groupId>

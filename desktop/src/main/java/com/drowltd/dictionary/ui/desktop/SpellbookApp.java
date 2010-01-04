@@ -1,6 +1,7 @@
 package com.drowltd.dictionary.ui.desktop;
 
 import com.drowltd.dictionary.core.preferences.PreferencesManager;
+import com.drowltd.dictionary.core.exception.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +30,9 @@ public class SpellbookApp {
     }
 
     public static void init() {
+        // install the default exception handler
+        Thread.setDefaultUncaughtExceptionHandler(new SpellbookDefaultExceptionHandler());
+
         PreferencesManager.init(SpellbookApp.class);
 
         PreferencesManager pm = PreferencesManager.getInstance();
