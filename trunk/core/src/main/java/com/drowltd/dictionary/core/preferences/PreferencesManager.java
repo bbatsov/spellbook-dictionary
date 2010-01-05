@@ -5,6 +5,7 @@
 
 package com.drowltd.dictionary.core.preferences;
 
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,5 +59,9 @@ public class PreferencesManager {
 
     public void putBoolean(String key, boolean value) {
         preferences.putBoolean(key, value);
+    }
+
+    public void clear() throws BackingStoreException {
+        preferences.clear();
     }
 }
