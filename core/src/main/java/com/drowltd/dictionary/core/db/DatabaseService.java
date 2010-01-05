@@ -193,6 +193,32 @@ public class DatabaseService {
      * dictionary
      */
     public boolean addWord(String word, String translation, Dictionary dictionary) {
+        List<String> wordsInDictionary = dictionaryCache.get(dictionary);
+
+        if (wordsInDictionary == null) {
+            throw new IllegalStateException("current active dictionary not in dictionary cache");
+        }
+
+        if (wordsInDictionary.contains(word)) {
+            // the dictionary already contains this word
+            return false;
+        }
+
+        wordsInDictionary.add(word);
+
+        // don't forget to copy the word rating if available
+
+        try {
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO " + dictionary + " (word, translation) values(?, ?)");
+
+            ps.setString(1, word);
+            ps.setString(2, translation);
+
+            ps.executeUpdate();
+        } catch (SQLException ex) {
+            java.util.logging.Logger.getLogger(DatabaseService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         return true;
     }
 
@@ -204,7 +230,27 @@ public class DatabaseService {
      * @param dictionary
      */
     public void updateWord(String word, String translation, Dictionary dictionary) {
+        List<String> wordsInDictionary = dictionaryCache.get(dictionary);
 
+        if (wordsInDictionary == null) {
+            throw new IllegalStateException("current active dictionary not in dictionary cache");
+        }
+
+        if (!wordsInDictionary.contains(word)) {
+            // the dictionary already contains this word
+            throw new IllegalArgumentException(word + " does not exist in " + dictionary);
+        }
+
+        try {
+            PreparedStatement ps = connection.prepareStatement("UPDATE " + dictionary + " SET translation=? where word=?");
+
+            ps.setString(1, translation);
+            ps.setString(2, word);
+
+            ps.executeUpdate();
+        } catch (SQLException ex) {
+            java.util.logging.Logger.getLogger(DatabaseService.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public Map<String, Integer> getRatings(Dictionary dictionary) {

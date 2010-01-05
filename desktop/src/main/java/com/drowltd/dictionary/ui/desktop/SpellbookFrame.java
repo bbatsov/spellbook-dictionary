@@ -54,10 +54,11 @@ public class SpellbookFrame extends javax.swing.JFrame {
     public SpellbookFrame() {
         TRANSLATOR.reset();
 
-        while (true) {
-            if (verifyDbPresence()) {
-                break;
-            }
+        // check the presence of the dictionary database
+        if (!verifyDbPresence()) {
+            JOptionPane.showMessageDialog(null, TRANSLATOR.translate("NoDbSelected(Message)"), 
+                    TRANSLATOR.translate("Error(Title)"), JOptionPane.ERROR_MESSAGE);
+            System.exit(-1);
         }
 
         try {
@@ -332,6 +333,9 @@ public class SpellbookFrame extends javax.swing.JFrame {
         restartMenuItem = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
+        jSeparator2 = new javax.swing.JPopupMenu.Separator();
         cutMenuItem = new javax.swing.JMenuItem(new DefaultEditorKit.CutAction());
         copyMenuItem = new javax.swing.JMenuItem(new DefaultEditorKit.CopyAction());
         pasteMenuItem = new javax.swing.JMenuItem(new DefaultEditorKit.PasteAction());
@@ -452,6 +456,15 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         jMenu2.setMnemonic('e');
         jMenu2.setText(bundle.getString("Edit(Menu)")); // NOI18N
+
+        jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/add2.png"))); // NOI18N
+        jMenuItem1.setText(bundle.getString("EditAddWord(MenuItem)")); // NOI18N
+        jMenu2.add(jMenuItem1);
+
+        jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/edit.png"))); // NOI18N
+        jMenuItem2.setText(bundle.getString("EditUpdateWord(MenuItem)")); // NOI18N
+        jMenu2.add(jMenuItem2);
+        jMenu2.add(jSeparator2);
 
         cutMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/cut.png"))); // NOI18N
         cutMenuItem.setMnemonic('t');
@@ -804,10 +817,13 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JLabel matchLabel;
     private javax.swing.JMenuItem pasteMenuItem;
     private javax.swing.JMenuItem prefsMenuItem;
