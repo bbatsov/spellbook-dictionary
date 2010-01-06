@@ -45,6 +45,6 @@ public class SpellbookDefaultExceptionHandler implements Thread.UncaughtExceptio
     }
 
     private void logException(Thread t, Throwable e) {
-
+        e.printStackTrace();
     }
 }
