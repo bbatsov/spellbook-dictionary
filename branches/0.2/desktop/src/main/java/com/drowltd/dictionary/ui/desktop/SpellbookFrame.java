@@ -64,10 +64,11 @@ public class SpellbookFrame extends javax.swing.JFrame {
     public SpellbookFrame() {
         TRANSLATOR.reset();
 
-        while (true) {
-            if (verifyDbPresence()) {
-                break;
-            }
+        // check the presence of the dictionary database
+        if (!verifyDbPresence()) {
+            JOptionPane.showMessageDialog(null, TRANSLATOR.translate("NoDbSelected(Message)"),
+                    TRANSLATOR.translate("Error(Title)"), JOptionPane.ERROR_MESSAGE);
+            System.exit(-1);
         }
 
         try {
