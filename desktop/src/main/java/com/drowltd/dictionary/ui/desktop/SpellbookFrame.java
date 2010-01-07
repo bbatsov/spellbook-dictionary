@@ -47,8 +47,11 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private ClipboardIntegration clipboardIntegration;
     private String lastTransfer;
     private ScheduledExecutorService clipboardExecutorService;
+    private ScheduledExecutorService memoryUsageExecutorService;
     private TrayIcon trayIcon;
     private Dictionary selectedDictionary = Dictionary.getSelectedDictionary();
+
+    private static final int BYTES_IN_ONE_MEGABYTE = 1024 * 1024;
 
     /** Creates new form SpellbookFrame */
     public SpellbookFrame() {
@@ -130,6 +133,41 @@ public class SpellbookFrame extends javax.swing.JFrame {
         if (PM.getBoolean("CLIPBOARD_INTEGRATION", false)) {
             activateClipboardMonitoring();
         }
+
+        if (PM.getBoolean("SHOW_MEMORY_USAGE", false)) {
+            showMemoryUsage();
+        } else {
+            hideMemoryUsage();
+        }
+    }
+
+    private void showMemoryUsage() {
+        memoryLabel.setVisible(true);
+        memoryProgressBar.setVisible(true);
+
+        if (memoryUsageExecutorService == null) {
+            Runnable memoryRunnable = new Runnable() {
+
+                @Override
+                public void run() {
+                    final Runtime runtime = Runtime.getRuntime();
+                    final long freeMemory = runtime.freeMemory();
+                    final long totalMemory = runtime.totalMemory();
+                    memoryProgressBar.setMaximum((int) totalMemory);
+                    memoryProgressBar.setValue((int) (totalMemory - freeMemory));
+
+                    memoryProgressBar.setString((int) (totalMemory - freeMemory) / BYTES_IN_ONE_MEGABYTE + "M of " + totalMemory / BYTES_IN_ONE_MEGABYTE + "M");
+                }
+            };
+
+            memoryUsageExecutorService = Executors.newSingleThreadScheduledExecutor();
+            memoryUsageExecutorService.scheduleAtFixedRate(memoryRunnable, 0, 10, TimeUnit.SECONDS);
+        }
+    }
+
+    private void hideMemoryUsage() {
+         memoryLabel.setVisible(false);
+         memoryProgressBar.setVisible(false);
     }
 
     private void clear() {
@@ -328,6 +366,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
         matchLabel = new javax.swing.JLabel();
         drowLabel = new javax.swing.JLabel();
         statusBar = new javax.swing.JLabel();
+        memoryProgressBar = new javax.swing.JProgressBar();
+        memoryLabel = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         restartMenuItem = new javax.swing.JMenuItem();
@@ -388,6 +428,10 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         statusBar.setText("Status");
 
+        memoryProgressBar.setStringPainted(true);
+
+        memoryLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/memory.png"))); // NOI18N
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -408,7 +452,12 @@ public class SpellbookFrame extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(drowLabel))
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 512, Short.MAX_VALUE)))
-                    .addComponent(statusBar))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(statusBar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 493, Short.MAX_VALUE)
+                        .addComponent(memoryLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(memoryProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -422,10 +471,14 @@ public class SpellbookFrame extends javax.swing.JFrame {
                     .addComponent(drowLabel))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 378, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 378, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(statusBar)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(statusBar)
+                        .addComponent(memoryLabel))
+                    .addComponent(memoryProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -583,7 +636,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -713,6 +766,16 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
             PM.putBoolean("TRAY_POPUP", trayPopupEnabled);
 
+            final boolean showMemoryUsageEnabled = preferencesDialog.isShowMemoryUsageEnabled();
+
+            if (showMemoryUsageEnabled) {
+                showMemoryUsage();
+            } else {
+                hideMemoryUsage();
+            }
+
+            PM.putBoolean("SHOW_MEMORY_USAGE", showMemoryUsageEnabled);
+
             String selectedLookAndFeel = preferencesDialog.getSelectedLookAndFeel();
 
             if (!selectedLookAndFeel.equals(PM.get("LOOK_AND_FEEL", "System"))) {
@@ -825,6 +888,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JLabel matchLabel;
+    private javax.swing.JLabel memoryLabel;
+    private javax.swing.JProgressBar memoryProgressBar;
     private javax.swing.JMenuItem pasteMenuItem;
     private javax.swing.JMenuItem prefsMenuItem;
     private javax.swing.JMenuItem restartMenuItem;
