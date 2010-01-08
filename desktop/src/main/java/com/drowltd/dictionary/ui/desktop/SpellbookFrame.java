@@ -15,6 +15,7 @@ import java.awt.TrayIcon;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -128,6 +129,9 @@ public class SpellbookFrame extends javax.swing.JFrame {
         statusBar.setText(String.format(TRANSLATOR.translate("EnBgDictSize(Label)"), words.size()));
         statusBar.setIcon(IconManager.getImageIcon("en-bg.png", IconSize.SIZE24));
 
+        // update word menu item is initially disabled
+        updateWordMenuItem.setEnabled(false);
+
         setDefaultFont();
 
         if (PM.getBoolean("CLIPBOARD_INTEGRATION", false)) {
@@ -177,6 +181,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         wordSearchField.requestFocus();
         wordsList.ensureIndexIsVisible(0);
         wordsList.clearSelection();
+        updateWordMenuItem.setEnabled(false);
         wordTranslationTextArea.setText(null);
         matchLabel.setIcon(IconManager.getImageIcon("bell2_red.png", IconSize.SIZE24));
     }
@@ -335,7 +340,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         Dictionary.setSelectedDictionary(selectedDictionary);
 
         words = databaseService.getWordsFromDictionary(dictionary);
-        wordsList.setListData(words.toArray());
+        wordsList.setModel(new WordsListModel(words));
 
         if (dictionary == Dictionary.EN_BG) {
             statusBar.setText(String.format(TRANSLATOR.translate("EnBgDictSize(Label)"), words.size()));
@@ -374,8 +379,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
         restartMenuItem = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
+        addWordMenuItem = new javax.swing.JMenuItem();
+        updateWordMenuItem = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         cutMenuItem = new javax.swing.JMenuItem(new DefaultEditorKit.CutAction());
         copyMenuItem = new javax.swing.JMenuItem(new DefaultEditorKit.CopyAction());
@@ -511,13 +516,23 @@ public class SpellbookFrame extends javax.swing.JFrame {
         jMenu2.setMnemonic('e');
         jMenu2.setText(bundle.getString("Edit(Menu)")); // NOI18N
 
-        jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/add2.png"))); // NOI18N
-        jMenuItem1.setText(bundle.getString("EditAddWord(MenuItem)")); // NOI18N
-        jMenu2.add(jMenuItem1);
+        addWordMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/add2.png"))); // NOI18N
+        addWordMenuItem.setText(bundle.getString("EditAddWord(MenuItem)")); // NOI18N
+        addWordMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addWordMenuItemActionPerformed(evt);
+            }
+        });
+        jMenu2.add(addWordMenuItem);
 
-        jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/edit.png"))); // NOI18N
-        jMenuItem2.setText(bundle.getString("EditUpdateWord(MenuItem)")); // NOI18N
-        jMenu2.add(jMenuItem2);
+        updateWordMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/edit.png"))); // NOI18N
+        updateWordMenuItem.setText(bundle.getString("EditUpdateWord(MenuItem)")); // NOI18N
+        updateWordMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateWordMenuItemActionPerformed(evt);
+            }
+        });
+        jMenu2.add(updateWordMenuItem);
         jMenu2.add(jSeparator2);
 
         cutMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/cut.png"))); // NOI18N
@@ -644,15 +659,16 @@ public class SpellbookFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void wordsListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_wordsListValueChanged
-        int selectedIndex = wordsList.getSelectedIndex();
-        if(selectedIndex < 0){
-            return;
-        }
+        if (!wordsList.isSelectionEmpty()) {
+            int selectedIndex = wordsList.getSelectedIndex();
 
-        wordTranslationTextArea.setText(databaseService.getTranslation(selectedDictionary, words.get(selectedIndex)));
-        wordTranslationTextArea.setCaretPosition(0);
-        matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
-        matchLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
+            wordTranslationTextArea.setText(databaseService.getTranslation(selectedDictionary, words.get(selectedIndex)));
+            wordTranslationTextArea.setCaretPosition(0);
+            matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
+            matchLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
+            
+            updateWordMenuItem.setEnabled(true);
+        }
     }//GEN-LAST:event_wordsListValueChanged
 
     private void wordSearchFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_wordSearchFieldKeyReleased
@@ -863,8 +879,43 @@ public class SpellbookFrame extends javax.swing.JFrame {
         ExamDialog examDialog = new ExamDialog(this, true);
         examDialog.showExamDialog();
     }//GEN-LAST:event_examMenuItemActionPerformed
+
+    private void addWordMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addWordMenuItemActionPerformed
+        AddUpdateWordDialog addUpdateWordDialog = new AddUpdateWordDialog(this, true);
+
+        addUpdateWordDialog.setDictionary(selectedDictionary);
+        addUpdateWordDialog.setVisible(true);
+
+        if (addUpdateWordDialog.getReturnStatus() == AddUpdateWordDialog.RET_OK) {
+            // save word
+            words.add(addUpdateWordDialog.getWord());
+            // TODO calculate insertion index
+            wordsList.setModel(new WordsListModel(words));
+        }
+    }//GEN-LAST:event_addWordMenuItemActionPerformed
+
+    private void updateWordMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateWordMenuItemActionPerformed
+        AddUpdateWordDialog addUpdateWordDialog = new AddUpdateWordDialog(this, true);
+
+        addUpdateWordDialog.setDictionary(selectedDictionary);
+
+        if (wordsList.isSelectionEmpty()) {
+            throw new IllegalStateException("No word selected");
+        }
+
+        addUpdateWordDialog.setWord((String) wordsList.getSelectedValue());
+        addUpdateWordDialog.setTranslation(wordTranslationTextArea.getText());
+
+        addUpdateWordDialog.setVisible(true);
+
+        if (addUpdateWordDialog.getReturnStatus() == AddUpdateWordDialog.RET_OK) {
+            // update word
+        }
+    }//GEN-LAST:event_updateWordMenuItemActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
+    private javax.swing.JMenuItem addWordMenuItem;
     private javax.swing.JMenuItem bgEnDictMenuItem;
     private javax.swing.JButton clearButton;
     private javax.swing.JMenuItem copyMenuItem;
@@ -881,8 +932,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -896,6 +945,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem restartMenuItem;
     private javax.swing.JMenuItem spellcheckMenuItem;
     private javax.swing.JLabel statusBar;
+    private javax.swing.JMenuItem updateWordMenuItem;
     private javax.swing.JTextField wordSearchField;
     private javax.swing.JTextArea wordTranslationTextArea;
     private javax.swing.JList wordsList;
