@@ -234,7 +234,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
                             matchLabel.setToolTipText(TRANSLATOR.translate("PartialMatchFound(ToolTip)"));
                         }
 
-                        if (match && !SpellbookFrame.this.isVisible() && PM.getBoolean("TRAY_POPUP", false)) {
+                        // the tray popup translation should appear is the main frame is either not visible or minimized
+                        if (match && (!SpellbookFrame.this.isVisible() || (SpellbookFrame.this.getState() == JFrame.ICONIFIED)) && PM.getBoolean("TRAY_POPUP", false)) {
                             trayIcon.displayMessage(foundWord, wordTranslationTextArea.getText(), TrayIcon.MessageType.INFO);
                         }
                     }

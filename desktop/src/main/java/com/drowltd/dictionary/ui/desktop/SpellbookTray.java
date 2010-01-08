@@ -72,6 +72,7 @@ public class SpellbookTray {
                 if (appFrame.getState() == JFrame.ICONIFIED) {
                     LOGGER.info("App is iconified");
                     appFrame.setState(JFrame.NORMAL);
+                    appFrame.toFront();
                 }
 
                 if (!appFrame.isVisible()) {
