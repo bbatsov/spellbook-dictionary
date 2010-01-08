@@ -85,7 +85,7 @@ public class AboutDialog extends javax.swing.JDialog {
         nameAndLogoPanel.setBackground(new java.awt.Color(231, 243, 250));
 
         logoLabel.setBackground(new java.awt.Color(255, 255, 255));
-        logoLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/logo/spellbook.png"))); // NOI18N
+        logoLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/spellbook-logo.png"))); // NOI18N
 
         spellbookLabel.setFont(new java.awt.Font("All Times New Roman", 0, 36));
         spellbookLabel.setForeground(new java.awt.Color(0, 0, 102));
@@ -153,7 +153,7 @@ public class AboutDialog extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(nameAndLogoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 349, Short.MAX_VALUE)
+            .addComponent(nameAndLogoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 353, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addGap(56, 56, 56)
                 .addComponent(creditsButton)
@@ -161,7 +161,7 @@ public class AboutDialog extends javax.swing.JDialog {
                 .addComponent(licenseButton)
                 .addGap(18, 18, 18)
                 .addComponent(closeButton)
-                .addContainerGap(56, Short.MAX_VALUE))
+                .addContainerGap(81, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 329, Short.MAX_VALUE)

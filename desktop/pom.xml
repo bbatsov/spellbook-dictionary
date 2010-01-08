@@ -23,6 +23,9 @@
                         <manifest>
                             <mainClass>com.drowltd.dictionary.ui.desktop.SpellbookApp</mainClass>
                         </manifest>
+                        <manifestEntries>
+                             <SplashScreen-Image>images/spellbook-splash.png</SplashScreen-Image>
+                        </manifestEntries>
                     </archive>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
