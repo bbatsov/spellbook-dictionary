@@ -1,36 +1,18 @@
+
 package com.drowltd.dictionary.core.db;
 
 import com.drowltd.dictionary.core.exam.Difficulty;
-import java.sql.Connection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import javax.swing.ImageIcon;
 
 /**
  *
  * @author iivalchev
  */
-public class DictionaryDAO {
+public class SDatabaseService {
 
-    public DictionaryDAO(Connection connection, DictDAOConfig configuration){
-
-    }
-
-    public Language getLanguageFrom(){
-        return new Language();
-    }
-
-    public Language getLanguageTo(){
-        return new Language();
-    }
-
-    public String getName(){
-        return "";
-    }
-
-    public void addMisspelled(String misspelled){
-
+    public void addMisspelled(SDictionary dictionary, String misspelled){
     }
 
     /**
@@ -42,16 +24,16 @@ public class DictionaryDAO {
      * @return true if the word was added, false if it already existed in the
      * dictionary
      */
-    public boolean addWord(String word, String translation){
+    public boolean addWord(SDictionary dictionary, String word, String translation){
         return false;
     }
 
 
-    public List<String> getDifficultyWords(Difficulty difficulty, int quantity){
+    public List<String> getDifficultyWords(SDictionary dictionary, Difficulty difficulty, int quantity){
         return Collections.emptyList();
     }
 
-    public Map<String, Integer> getRatings(){
+    public Map<String, Integer> getRatings(Language language){
         return Collections.emptyMap();
     }
 
@@ -64,7 +46,7 @@ public class DictionaryDAO {
      *
      * @return the translation of the word
      */
-    public String getTranslation(String word){
+    public String getTranslation(SDictionary dictionary, String word){
         return "";
     }
 
@@ -76,7 +58,7 @@ public class DictionaryDAO {
      *
      * @return a list of all words in the selected dictionary
      */
-    public List<String> getWordsFromDictionary(){
+    public List<String> getWordsFromDictionary(SDictionary dictionary){
         return Collections.emptyList();
     }
 
@@ -87,11 +69,18 @@ public class DictionaryDAO {
      * @param translation
      * @param dictionary
      */
-    public void updateWord(String word, String translation){
-        
+    public void updateTranslation(SDictionary dictionary, String word, String translation){
     }
 
-    public ImageIcon getFlag(){
-        return new ImageIcon();
+    public void updateWord(SDictionary dictionary, String oldWord, String newWord){
     }
+
+    public List<SDictionary> getAvailableDictionaries(){
+        return Collections.emptyList();
+    }
+
+    public SDictionary getDictionary(Language languageFrom, Language languageTo){
+        return null;
+    }
+
 }
