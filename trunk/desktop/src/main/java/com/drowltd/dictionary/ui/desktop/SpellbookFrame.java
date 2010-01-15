@@ -724,7 +724,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         PreferencesDialog preferencesDialog = new PreferencesDialog(this, true);
 
         // tray options should be disabled is the tray is not supported
-        if (trayIcon == null || true) {
+        if (trayIcon == null) {
             preferencesDialog.disableTrayOptions();
         }
 
