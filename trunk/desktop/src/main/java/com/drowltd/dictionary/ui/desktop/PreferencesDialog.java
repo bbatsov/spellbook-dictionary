@@ -143,6 +143,17 @@ public class PreferencesDialog extends javax.swing.JDialog {
         return ok;
     }
 
+    public void disableTrayOptions() {
+        minimizeToTrayCheckBox.setSelected(false);
+        minimizeToTrayCheckBox.setEnabled(false);
+
+        minimizeToTrayOnCloseCheckBox.setSelected(false);
+        minimizeToTrayOnCloseCheckBox.setEnabled(false);
+
+        trayPopupCheckBox.setSelected(false);
+        trayPopupCheckBox.setEnabled(false);
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
