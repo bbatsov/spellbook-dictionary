@@ -240,7 +240,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
                         }
 
                         // the tray popup translation should appear is the main frame is either not visible or minimized
-                        if (match && (!SpellbookFrame.this.isVisible() || (SpellbookFrame.this.getState() == JFrame.ICONIFIED)) && PM.getBoolean("TRAY_POPUP", false)) {
+                        if ((trayIcon != null) && match && (!SpellbookFrame.this.isVisible() || (SpellbookFrame.this.getState() == JFrame.ICONIFIED)) && PM.getBoolean("TRAY_POPUP", false)) {
                             trayIcon.displayMessage(foundWord, wordTranslationTextArea.getText(), TrayIcon.MessageType.INFO);
                         }
                     }
@@ -722,6 +722,12 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
     private void prefsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prefsMenuItemActionPerformed
         PreferencesDialog preferencesDialog = new PreferencesDialog(this, true);
+
+        // tray options should be disabled is the tray is not supported
+        if (trayIcon == null || true) {
+            preferencesDialog.disableTrayOptions();
+        }
+
         preferencesDialog.setLocationRelativeTo(this);
 
         if (preferencesDialog.showDialog()) {
