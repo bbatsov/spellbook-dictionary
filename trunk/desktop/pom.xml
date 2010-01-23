@@ -24,7 +24,7 @@
                             <mainClass>com.drowltd.dictionary.ui.desktop.SpellbookApp</mainClass>
                         </manifest>
                         <manifestEntries>
-                             <SplashScreen-Image>images/spellbook-splash.png</SplashScreen-Image>
+                            <SplashScreen-Image>images/spellbook-splash.png</SplashScreen-Image>
                         </manifestEntries>
                     </archive>
                     <descriptorRefs>
@@ -43,6 +43,10 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.java.balloontip</groupId>
+            <artifactId>balloontip</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
