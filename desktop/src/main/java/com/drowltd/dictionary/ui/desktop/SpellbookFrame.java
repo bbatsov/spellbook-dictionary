@@ -15,7 +15,6 @@ import java.awt.TrayIcon;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -29,6 +28,7 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.text.DefaultEditorKit;
+import net.java.balloontip.BalloonTip;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -343,9 +343,11 @@ public class SpellbookFrame extends javax.swing.JFrame {
         wordsList.setModel(new WordsListModel(words));
 
         if (dictionary == Dictionary.EN_BG) {
+            SwingUtil.showBalloonTip(statusBar, TRANSLATOR.translate("EnBgDictLoaded(Message)"));
             statusBar.setText(String.format(TRANSLATOR.translate("EnBgDictSize(Label)"), words.size()));
             statusBar.setIcon(IconManager.getImageIcon("en-bg.png", IconSize.SIZE24));
         } else if (dictionary == Dictionary.BG_EN) {
+            SwingUtil.showBalloonTip(statusBar, TRANSLATOR.translate("BgEnDictLoaded(Message)"));
             statusBar.setText(String.format(TRANSLATOR.translate("BgEnDictSize(Label)"), words.size()));
             statusBar.setIcon(IconManager.getImageIcon("bg-en.png", IconSize.SIZE24));
         } else {
