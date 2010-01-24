@@ -2,6 +2,8 @@ package com.drowltd.dictionary.ui.desktop;
 
 import com.drowltd.dictionary.core.i18n.Translator;
 import com.drowltd.dictionary.core.preferences.PreferencesManager;
+import java.awt.Font;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.logging.Level;
@@ -10,6 +12,10 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 /**
  * Spellbook's preferences dialog.
@@ -21,6 +27,8 @@ public class PreferencesDialog extends javax.swing.JDialog {
     private static final Translator TRANSLATOR = Translator.getTranslator("PreferencesForm");
 
     private SupportedLanguages selectedLanguage;
+
+    private Font selectedFont;
     
     private boolean ok;
 
@@ -32,6 +40,12 @@ public class PreferencesDialog extends javax.swing.JDialog {
 
         initComponents();
 
+        initGeneralTab(parent);
+
+        initFontTab();
+    }
+
+    private void initGeneralTab(final java.awt.Frame parent) {
         PreferencesManager pm = PreferencesManager.getInstance();
 
         selectedLanguage = SupportedLanguages.valueOf(pm.get("LANG", "EN"));
@@ -109,6 +123,61 @@ public class PreferencesDialog extends javax.swing.JDialog {
         });
     }
 
+    private void initFontTab() {
+        PreferencesManager pm = PreferencesManager.getInstance();
+
+        String[] availableFonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+        fontList.setListData(availableFonts);
+
+        // select the current font
+        String selectedFontName = pm.get("FONT_NAME", "Serif");
+        fontList.setSelectedValue(selectedFontName, true);
+
+        fontList.addListSelectionListener(new SelectionUpdater());
+
+        fontSizeList.setListData(new Integer[]{8, 10, 12, 14, 16, 18});
+
+        int currentFontSize = pm.getInt("FONT_SIZE", 12);
+        fontSizeList.setSelectedValue(currentFontSize, true);
+
+        fontSizeList.addListSelectionListener(new SelectionUpdater());
+
+        fontStyleList.setListData(new String[]{"Regular", "Bold", "Italic"});
+        fontStyleList.addListSelectionListener(new SelectionUpdater());
+
+        previewText.setFont(generateFont());
+    }
+
+    private Font generateFont() {
+        String fontName = (String) fontList.getSelectedValue();
+
+        Integer sizeInt = (Integer) fontSizeList.getSelectedValue();
+
+        selectedFont = new Font(fontName,
+                (fontStyleList.isSelectedIndex(2) ? Font.ITALIC : Font.PLAIN)
+                        | (fontStyleList.isSelectedIndex(1) ? Font.BOLD : Font.PLAIN)
+                        | (fontStyleList.isSelectedIndex(0) ? Font.PLAIN : Font.PLAIN),
+                sizeInt);
+
+        return selectedFont;
+    }
+
+    public Font getSelectedFont() {
+        return selectedFont;
+    }
+
+    private class SelectionUpdater implements ChangeListener, ListSelectionListener {
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            previewText.setFont(generateFont());
+        }
+
+        @Override
+        public void stateChanged(ChangeEvent e) {
+            previewText.setFont(generateFont());
+        }
+    }
+
     public SupportedLanguages getSelectedLanguage() {
         return selectedLanguage;
     }
@@ -183,6 +252,19 @@ public class PreferencesDialog extends javax.swing.JDialog {
         jLabel8 = new javax.swing.JLabel();
         showMemoryUsageCheckBox = new javax.swing.JCheckBox();
         jPanel2 = new javax.swing.JPanel();
+        jPanel5 = new javax.swing.JPanel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        fontList = new javax.swing.JList();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        fontSizeList = new javax.swing.JList();
+        jLabel11 = new javax.swing.JLabel();
+        previewText = new javax.swing.JTextField();
+        jLabel12 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        fontStyleList = new javax.swing.JList();
+        jLabel13 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
@@ -319,18 +401,102 @@ public class PreferencesDialog extends javax.swing.JDialog {
 
         jTabbedPane1.addTab(bundle.getString("GeneralSettings(Title)"), new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/preferences.png")), jPanel1); // NOI18N
 
+        java.util.ResourceBundle bundle1 = java.util.ResourceBundle.getBundle("i18n/FontChooserForm"); // NOI18N
+        jLabel9.setText(bundle1.getString("Font(Label)")); // NOI18N
+
+        jLabel10.setText(bundle1.getString("Size(Label)")); // NOI18N
+
+        fontList.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane1.setViewportView(fontList);
+
+        fontSizeList.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane2.setViewportView(fontSizeList);
+
+        jLabel11.setText(bundle1.getString("Preview(Label)")); // NOI18N
+
+        previewText.setText(bundle1.getString("PreviewText(Label)")); // NOI18N
+
+        jLabel12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/48x48/font.png"))); // NOI18N
+
+        fontStyleList.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane3.setViewportView(fontStyleList);
+
+        jLabel13.setText(bundle1.getString("Style(Label)")); // NOI18N
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel11)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(previewText))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel9)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(24, 24, 24)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel13))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel10))))
+                .addGap(18, 18, 18)
+                .addComponent(jLabel12)
+                .addContainerGap(109, Short.MAX_VALUE))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel12)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel9)
+                            .addComponent(jLabel10)
+                            .addComponent(jLabel13))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE))
+                        .addGap(30, 30, 30)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel11)
+                            .addComponent(previewText, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(65, 65, 65))
+        );
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 592, Short.MAX_VALUE)
+            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 392, Short.MAX_VALUE)
+            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
-        jTabbedPane1.addTab("Font", new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/font.png")), jPanel2); // NOI18N
+        jTabbedPane1.addTab(bundle1.getString("Font(Label)"), new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/font.png")), jPanel2); // NOI18N
 
         okButton.setText("Ok");
         okButton.addActionListener(new java.awt.event.ActionListener() {
@@ -418,7 +584,14 @@ public class PreferencesDialog extends javax.swing.JDialog {
     private javax.swing.JButton cancelButton;
     private javax.swing.JCheckBox clipboardIntegrationCheckBox;
     private javax.swing.JComboBox defaultDictionaryComboBox;
+    private javax.swing.JList fontList;
+    private javax.swing.JList fontSizeList;
+    private javax.swing.JList fontStyleList;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -426,16 +599,22 @@ public class PreferencesDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JComboBox languageComboBox;
     private javax.swing.JComboBox lookAndFeelComboBox;
     private javax.swing.JCheckBox minimizeToTrayCheckBox;
     private javax.swing.JCheckBox minimizeToTrayOnCloseCheckBox;
     private javax.swing.JButton okButton;
+    private javax.swing.JTextField previewText;
     private javax.swing.JCheckBox showMemoryUsageCheckBox;
     private javax.swing.JCheckBox trayPopupCheckBox;
     // End of variables declaration//GEN-END:variables

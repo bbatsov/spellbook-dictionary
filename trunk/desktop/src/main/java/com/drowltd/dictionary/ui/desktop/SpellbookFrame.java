@@ -388,7 +388,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
         copyMenuItem = new javax.swing.JMenuItem(new DefaultEditorKit.CopyAction());
         pasteMenuItem = new javax.swing.JMenuItem(new DefaultEditorKit.PasteAction());
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
-        fontMenuItem = new javax.swing.JMenuItem();
         prefsMenuItem = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         enBgDictMenuItem = new javax.swing.JMenuItem();
@@ -462,7 +461,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 512, Short.MAX_VALUE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(statusBar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 493, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 494, Short.MAX_VALUE)
                         .addComponent(memoryLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(memoryProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -552,16 +551,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
         pasteMenuItem.setText(bundle.getString("EditPaste(MenuItem)")); // NOI18N
         jMenu2.add(pasteMenuItem);
         jMenu2.add(jSeparator1);
-
-        fontMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/font.png"))); // NOI18N
-        fontMenuItem.setMnemonic('f');
-        fontMenuItem.setText(bundle.getString("EditFont(MenuItem)")); // NOI18N
-        fontMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                fontMenuItemActionPerformed(evt);
-            }
-        });
-        jMenu2.add(fontMenuItem);
 
         prefsMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/preferences.png"))); // NOI18N
         prefsMenuItem.setMnemonic('e');
@@ -806,6 +795,15 @@ public class SpellbookFrame extends javax.swing.JFrame {
             if (!selectedLookAndFeel.equals(PM.get("LOOK_AND_FEEL", "System"))) {
                 PM.put("LOOK_AND_FEEL", selectedLookAndFeel);
             }
+
+            // set the font
+            final Font selectedFont = preferencesDialog.getSelectedFont();
+
+            PM.put("FONT_NAME", selectedFont.getFontName());
+            PM.putInt("FONT_SIZE", selectedFont.getSize());
+            PM.putInt("FONT_STYLE", selectedFont.getStyle());
+
+            setSelectedFont(selectedFont);
         } else {
             // we need to restore the old look and feel manually since it was changed on selection
             LookAndFeelInfo[] lookAndFeelInfos = UIManager.getInstalledLookAndFeels();
@@ -845,21 +843,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
             SwingUtilities.updateComponentTreeUI(this);
         }
     }//GEN-LAST:event_prefsMenuItemActionPerformed
-
-    private void fontMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fontMenuItemActionPerformed
-        FontChooserDialog fontChooserDialog = new FontChooserDialog(this, true);
-        fontChooserDialog.setLocationRelativeTo(this);
-
-        if (fontChooserDialog.showDialog()) {
-            final Font selectedFont = fontChooserDialog.getSelectedFont();
-
-            PM.put("FONT_NAME", selectedFont.getFontName());
-            PM.putInt("FONT_SIZE", selectedFont.getSize());
-            PM.putInt("FONT_STYLE", selectedFont.getStyle());
-
-            setSelectedFont(selectedFont);
-        }
-    }//GEN-LAST:event_fontMenuItemActionPerformed
 
     private void enBgDictMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enBgDictMenuItemActionPerformed
         selectDictionary(Dictionary.EN_BG);
@@ -932,7 +915,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem enBgDictMenuItem;
     private javax.swing.JMenuItem examMenuItem;
     private javax.swing.JMenuItem exitMenuItem;
-    private javax.swing.JMenuItem fontMenuItem;
     private javax.swing.JMenuItem helpContentsMenuItem;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;

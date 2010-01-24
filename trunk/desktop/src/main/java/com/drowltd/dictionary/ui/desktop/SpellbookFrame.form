@@ -125,20 +125,6 @@
             </MenuItem>
             <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator1">
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="fontMenuItem">
-              <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/icons/16x16/font.png"/>
-                </Property>
-                <Property name="mnemonic" type="int" value="102"/>
-                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="i18n/SpellbookForm.properties" key="EditFont(MenuItem)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-                </Property>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="fontMenuItemActionPerformed"/>
-              </Events>
-            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="prefsMenuItem">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
@@ -327,7 +313,7 @@
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="statusBar" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="493" max="32767" attributes="0"/>
+                          <EmptySpace pref="494" max="32767" attributes="0"/>
                           <Component id="memoryLabel" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="memoryProgressBar" min="-2" max="-2" attributes="0"/>
