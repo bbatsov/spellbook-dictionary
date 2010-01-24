@@ -13,7 +13,9 @@ import javax.swing.Timer;
 
 /**
  *
- * @author Franky, Snow, miroslava
+ * @author Ivan Spasov
+ * @author Georgi Angelov
+ * @author Miroslava Stancheva
  * @since 0.2
  * 
  */

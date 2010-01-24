@@ -1,22 +1,19 @@
-    package com.drowltd.dictionary.ui.desktop.exam;
+package com.drowltd.dictionary.ui.desktop.exam;
 
 import com.drowltd.dictionary.core.exam.Difficulty;
 import com.drowltd.dictionary.core.i18n.Translator;
 import com.drowltd.dictionary.core.preferences.PreferencesManager;
-import com.drowltd.dictionary.ui.desktop.NumberDocument;
 import com.drowltd.dictionary.ui.desktop.*;
-import java.security.acl.Owner;
 import javax.swing.ButtonGroup;
-import javax.swing.JDialog;
 
 /**
  *
- * @author Snow
+ * @author Georgi Angelov
+ * @since 0.2
  */
 public class ExamSettingsDialog extends javax.swing.JDialog {
 
     private static final PreferencesManager PM = PreferencesManager.getInstance();
-
     private static int seconds;
     private static int wordCount;
     private static boolean isOpen = false;
@@ -235,18 +232,18 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-       if (forTimeCheckBox.isSelected()) {
+        if (forTimeCheckBox.isSelected()) {
 
             levelChoice();      //seconds != 0
             ExamDialog.setTimerProgressbarVisible();
             ExamDialog.setEnumTimerStatus(ExamDialog.TimerStatus.STARTED);
             ExamDialog.setFeedbackFieldDefault();
         } else {
-           ExamDialog.setEnumTimerStatus(ExamDialog.TimerStatus.DISABLED);
-           ExamDialog.setFeedbackFieldDefault();
-           levelChoice();
-           seconds = 0;
-           ExamDialog.setTimerProgressbarInvisible();
+            ExamDialog.setEnumTimerStatus(ExamDialog.TimerStatus.DISABLED);
+            ExamDialog.setFeedbackFieldDefault();
+            levelChoice();
+            seconds = 0;
+            ExamDialog.setTimerProgressbarInvisible();
         }
 
         isOpen = true;
@@ -263,7 +260,6 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_wordCountFieldFocusGained
 
     private void wordCountFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_wordCountFieldFocusLost
-        
     }//GEN-LAST:event_wordCountFieldFocusLost
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
@@ -274,11 +270,9 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
     private void easyRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_easyRadioButtonActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_easyRadioButtonActionPerformed
-
     /**
      * @param args the command line arguments
      */
-   
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
     private javax.swing.JRadioButton easyRadioButton;
@@ -311,7 +305,7 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
             seconds = 15;
             difficulty = Difficulty.HARD;
         }
-        
+
     }
 
     public static int returnTimeSeconds() {
@@ -325,39 +319,39 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
     public void setWordsCount() {
         wordCount = Integer.parseInt(wordCountField.getText());
         PM.putInt("WORDS", wordCount);
-        
+
     }
 
     public static int getWordsCount() {
         return wordCount;
     }
-     public void setDifficultyLabels() {
+
+    public void setDifficultyLabels() {
 
         if (easyRadioButton.isSelected()) {
             difficultyLabelText = Difficulty.EASY.toString();
-        } else
-        if (mediumRadioButton.isSelected()) {
+        } else if (mediumRadioButton.isSelected()) {
             difficultyLabelText = Difficulty.MEDIUM.toString();
-        } else
-        if (hardRadioButton.isSelected()) {
+        } else if (hardRadioButton.isSelected()) {
             difficultyLabelText = Difficulty.HARD.toString();
-        } 
-  
+        }
+
     }
-     public int setWordsCountUnknown() {
+
+    public int setWordsCountUnknown() {
         return PM.getInt("WORDS", 10);
     }
 
-    public void PMPutCheckbox () {
+    public void PMPutCheckbox() {
         PM.putBoolean("EASY_CHECKBOX", easyRadioButton.isSelected());
         PM.putBoolean("MEDIUM_CHECKBOX", mediumRadioButton.isSelected());
         PM.putBoolean("HARD_CHECBOX", hardRadioButton.isSelected());
         PM.putBoolean("TIMER_CHECKBOX", forTimeCheckBox.isSelected());
     }
 
-    public static boolean returnTimerStatus () {
+    public static boolean returnTimerStatus() {
 
-       return forTimeCheckBox.isSelected();
+        return forTimeCheckBox.isSelected();
     }
 
     public void showExamSettingsDialog() {              // Thanks to Kiril Kamburov (:
@@ -367,7 +361,7 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
         mediumRadioButton.setSelected(PM.getBoolean("MEDIUM_CHECKBOX", false));
         hardRadioButton.setSelected(PM.getBoolean("HARD_CHECBOX", false));
 
-        
+
         setVisible(true);
 
     }

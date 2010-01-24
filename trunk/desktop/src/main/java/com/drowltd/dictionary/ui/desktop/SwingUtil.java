@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.drowltd.dictionary.ui.desktop;
 
 import javax.swing.JComponent;
@@ -10,8 +5,10 @@ import net.java.balloontip.BalloonTip;
 import net.java.balloontip.utils.TimingUtils;
 
 /**
+ * Utility class for recurring Swing related tasks.
  *
- * @author bozhidar
+ * @author Bozhidar Batsov
+ * @since 0.3
  */
 public class SwingUtil {
     private static final int DEFAULT_BALLOONTIP_DISPLAY_TIME = 5000;
