@@ -117,7 +117,8 @@ public class PreferencesDialog extends javax.swing.JDialog {
                     }
                 }
 
-                SwingUtilities.updateComponentTreeUI(jPanel1);
+                SwingUtilities.updateComponentTreeUI(jTabbedPane1);
+                SwingUtilities.updateComponentTreeUI(jPanel4);
                 SwingUtilities.updateComponentTreeUI(parent);
             }
         });

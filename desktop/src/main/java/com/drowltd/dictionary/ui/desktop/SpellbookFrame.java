@@ -19,16 +19,10 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.text.DefaultEditorKit;
-import net.java.balloontip.BalloonTip;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -145,7 +139,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         }
     }
 
-    private void showMemoryUsage() {
+    public void showMemoryUsage() {
         memoryLabel.setVisible(true);
         memoryProgressBar.setVisible(true);
 
@@ -169,7 +163,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         }
     }
 
-    private void hideMemoryUsage() {
+    public void hideMemoryUsage() {
          memoryLabel.setVisible(false);
          memoryProgressBar.setVisible(false);
     }
@@ -261,13 +255,13 @@ public class SpellbookFrame extends javax.swing.JFrame {
         }
     }
 
-    private void restart() {
+    public void restart() {
         this.dispose();
         SpellbookTray.destroyTrayIcon();
         SpellbookApp.init();
     }
 
-    private void setDefaultFont() {
+    public void setDefaultFont() {
         if (PM.get("FONT_NAME", "").isEmpty()) {
             // dirty fix for windows - it seem that the default font there is too small, so we set
             // a more appropriate one
@@ -721,127 +715,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         preferencesDialog.setLocationRelativeTo(this);
 
-        if (preferencesDialog.showDialog()) {
-            String oldLanguage = PM.get("LANG", "EN");
-            final String newLanguage = preferencesDialog.getSelectedLanguage().toString();
-            PM.put("LANG", newLanguage);
-
-            if (!oldLanguage.equals(newLanguage)) {
-                LOGGER.info("Language changed from " + oldLanguage + " to " + newLanguage);
-                int selectedOption = JOptionPane.showConfirmDialog(this, TRANSLATOR.translate("Restart(Message)"), "Restart",
-                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
-
-                if (selectedOption == JOptionPane.OK_OPTION) {
-                    restart();
-                }
-            }
-
-            final boolean minimizeToTrayEnabled = preferencesDialog.isMinimizeToTrayEnabled();
-
-            if (minimizeToTrayEnabled) {
-                LOGGER.info("Minimize to tray is enabled");
-            } else {
-                LOGGER.info("Minimize to tray is disabled");
-            }
-
-            PM.putBoolean("MIN_TO_TRAY", minimizeToTrayEnabled);
-
-            boolean minimizeToTrayOnCloseEnabled = preferencesDialog.isMinimizeToTrayOnCloseEnabled();
-
-            if (minimizeToTrayOnCloseEnabled) {
-                LOGGER.info("Minimize to tray on close is enabled");
-                setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-            } else {
-                LOGGER.info("Minimize to tray on close is disabled");
-                setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            }
-
-            PM.putBoolean("CLOSE_TO_TRAY", minimizeToTrayOnCloseEnabled);
-
-            final boolean clipboardIntegrationEnabled = preferencesDialog.isClipboardIntegrationEnabled();
-
-            if (clipboardIntegrationEnabled) {
-                activateClipboardMonitoring();
-                LOGGER.info("Clipboard integration is enabled");
-            } else {
-                shutdownClipboardMonitoring();
-                LOGGER.info("Clipboard integration is disabled");
-            }
-
-            PM.putBoolean("CLIPBOARD_INTEGRATION", clipboardIntegrationEnabled);
-
-            final boolean trayPopupEnabled = preferencesDialog.isTrayPopupEnabled();
-
-            if (trayPopupEnabled) {
-                LOGGER.info("Tray popup is enabled");
-            } else {
-                LOGGER.info("Tray popup is disabled");
-            }
-
-            PM.putBoolean("TRAY_POPUP", trayPopupEnabled);
-
-            final boolean showMemoryUsageEnabled = preferencesDialog.isShowMemoryUsageEnabled();
-
-            if (showMemoryUsageEnabled) {
-                showMemoryUsage();
-            } else {
-                hideMemoryUsage();
-            }
-
-            PM.putBoolean("SHOW_MEMORY_USAGE", showMemoryUsageEnabled);
-
-            String selectedLookAndFeel = preferencesDialog.getSelectedLookAndFeel();
-
-            if (!selectedLookAndFeel.equals(PM.get("LOOK_AND_FEEL", "System"))) {
-                PM.put("LOOK_AND_FEEL", selectedLookAndFeel);
-            }
-
-            // set the font
-            final Font selectedFont = preferencesDialog.getSelectedFont();
-
-            PM.put("FONT_NAME", selectedFont.getFontName());
-            PM.putInt("FONT_SIZE", selectedFont.getSize());
-            PM.putInt("FONT_STYLE", selectedFont.getStyle());
-
-            setSelectedFont(selectedFont);
-        } else {
-            // we need to restore the old look and feel manually since it was changed on selection
-            LookAndFeelInfo[] lookAndFeelInfos = UIManager.getInstalledLookAndFeels();
-
-            String selectedLookAndFeel = PM.get("LOOK_AND_FEEL", "System");
-
-            if (selectedLookAndFeel.equals("System")) {
-                try {
-                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                } catch (ClassNotFoundException ex) {
-                    java.util.logging.Logger.getLogger(SpellbookFrame.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (InstantiationException ex) {
-                    java.util.logging.Logger.getLogger(SpellbookFrame.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IllegalAccessException ex) {
-                    java.util.logging.Logger.getLogger(SpellbookFrame.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (UnsupportedLookAndFeelException ex) {
-                    java.util.logging.Logger.getLogger(SpellbookFrame.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            } else {
-                for (LookAndFeelInfo lookAndFeelInfo : lookAndFeelInfos) {
-                    if (lookAndFeelInfo.getName().equals(selectedLookAndFeel)) {
-                        try {
-                            UIManager.setLookAndFeel(lookAndFeelInfo.getClassName());
-                        } catch (ClassNotFoundException e1) {
-                            e1.printStackTrace();
-                        } catch (InstantiationException e1) {
-                            e1.printStackTrace();
-                        } catch (IllegalAccessException e1) {
-                            e1.printStackTrace();
-                        } catch (UnsupportedLookAndFeelException e1) {
-                            e1.printStackTrace();
-                        }
-                    }
-                }
-            }
-
-            SwingUtilities.updateComponentTreeUI(this);
-        }
+        PreferencesExtractor.extract(this, preferencesDialog);
     }//GEN-LAST:event_prefsMenuItemActionPerformed
 
     private void enBgDictMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enBgDictMenuItemActionPerformed
