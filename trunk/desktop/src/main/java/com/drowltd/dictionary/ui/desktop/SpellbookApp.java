@@ -35,7 +35,7 @@ public class SpellbookApp {
 
         PreferencesManager.init(SpellbookApp.class);
 
-        PreferencesManager pm = PreferencesManager.getInstance();
+        final PreferencesManager pm = PreferencesManager.getInstance();
 
         if (pm.get("LANG", "EN").equals("BG")) {
             Locale.setDefault(new Locale("bg", "BG"));
@@ -74,7 +74,15 @@ public class SpellbookApp {
             @Override
             public void run() {
                 final SpellbookFrame tApp = new SpellbookFrame();
-                tApp.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+                if (pm.getBoolean("CLOSE_TO_TRAY", false)) {
+                    LOGGER.info("Minimize to tray on close is enabled");
+                    tApp.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+                } else {
+                    LOGGER.info("Minimize to tray on close is disabled");
+                    tApp.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                }
+
                 tApp.setVisible(true);
             }
         });
