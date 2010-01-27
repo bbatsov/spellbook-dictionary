@@ -160,7 +160,7 @@ public class ExamResult extends javax.swing.JDialog {
 
     private void seeWrongWordsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_seeWrongWordsActionPerformed
 
-        WrongWordsDialog wrongWordsDialog = new WrongWordsDialog(null, rootPaneCheckingEnabled);
+        WrongWordsDialog wrongWordsDialog = new WrongWordsDialog(null, true);
         wrongWordsDialog.setLocationRelativeTo(this);
         wrongWordsDialog.setVisible(true);
     }//GEN-LAST:event_seeWrongWordsActionPerformed

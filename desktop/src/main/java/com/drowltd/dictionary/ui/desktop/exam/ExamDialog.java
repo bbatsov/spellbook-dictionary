@@ -728,7 +728,7 @@ public class ExamDialog extends javax.swing.JDialog {
 
     private void examResult() {
 
-        ExamResult examResultDialog = new ExamResult(null, rootPaneCheckingEnabled);
+        ExamResult examResultDialog = new ExamResult(null, true);
         examResultDialog.setLocationRelativeTo(this);
         examResultDialog.showExamResult(correctWords, totalWords);
 
