@@ -142,6 +142,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
     public void showMemoryUsage() {
         memoryLabel.setVisible(true);
         memoryProgressBar.setVisible(true);
+        runGcButton.setVisible(true);
 
         if (memoryUsageExecutorService == null) {
             Runnable memoryRunnable = new Runnable() {
@@ -166,6 +167,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
     public void hideMemoryUsage() {
          memoryLabel.setVisible(false);
          memoryProgressBar.setVisible(false);
+         runGcButton.setVisible(false);
     }
 
     private void clear() {
@@ -370,6 +372,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         statusBar = new javax.swing.JLabel();
         memoryProgressBar = new javax.swing.JProgressBar();
         memoryLabel = new javax.swing.JLabel();
+        runGcButton = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         restartMenuItem = new javax.swing.JMenuItem();
@@ -433,6 +436,13 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         memoryLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/memory.png"))); // NOI18N
 
+        runGcButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/recycle.png"))); // NOI18N
+        runGcButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                runGcButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -455,10 +465,12 @@ public class SpellbookFrame extends javax.swing.JFrame {
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 512, Short.MAX_VALUE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(statusBar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 494, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 460, Short.MAX_VALUE)
                         .addComponent(memoryLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(memoryProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(memoryProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(runGcButton)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -472,16 +484,19 @@ public class SpellbookFrame extends javax.swing.JFrame {
                     .addComponent(drowLabel))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 378, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 378, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(statusBar)
                         .addComponent(memoryLabel))
+                    .addComponent(runGcButton)
                     .addComponent(memoryProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addGap(15, 15, 15))
         );
+
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {memoryProgressBar, runGcButton});
 
         jMenu1.setMnemonic('f');
         jMenu1.setText(bundle.getString("File(Menu)")); // NOI18N
@@ -778,6 +793,10 @@ public class SpellbookFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_updateWordMenuItemActionPerformed
 
+    private void runGcButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runGcButtonActionPerformed
+        System.gc();
+    }//GEN-LAST:event_runGcButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JMenuItem addWordMenuItem;
@@ -807,6 +826,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem pasteMenuItem;
     private javax.swing.JMenuItem prefsMenuItem;
     private javax.swing.JMenuItem restartMenuItem;
+    private javax.swing.JButton runGcButton;
     private javax.swing.JMenuItem spellcheckMenuItem;
     private javax.swing.JLabel statusBar;
     private javax.swing.JMenuItem updateWordMenuItem;
