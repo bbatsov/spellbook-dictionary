@@ -107,6 +107,7 @@ public class SpellbookTray {
             public void actionPerformed(ActionEvent e) {
                 LOGGER.info("About dialog opened from tray");
                 AboutDialog aboutDialog = new AboutDialog(appFrame, true);
+                aboutDialog.setLocationRelativeTo(appFrame.isVisible() ? appFrame : null);
                 aboutDialog.setVisible(true);
             }
         });
