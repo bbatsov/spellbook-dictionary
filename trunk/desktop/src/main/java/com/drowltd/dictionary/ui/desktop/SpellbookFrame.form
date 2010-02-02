@@ -313,9 +313,7 @@
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="statusBar" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="460" max="32767" attributes="0"/>
-                          <Component id="memoryLabel" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <EmptySpace pref="496" max="32767" attributes="0"/>
                           <Component id="memoryProgressBar" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="runGcButton" min="-2" max="-2" attributes="0"/>
@@ -342,10 +340,7 @@
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="statusBar" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="memoryLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
+                      <Component id="statusBar" alignment="1" min="-2" max="-2" attributes="0"/>
                       <Component id="runGcButton" linkSize="2" alignment="1" min="-2" max="-2" attributes="0"/>
                       <Component id="memoryProgressBar" linkSize="2" min="-2" max="-2" attributes="0"/>
                   </Group>
@@ -430,17 +425,13 @@
             <Property name="stringPainted" type="boolean" value="true"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JLabel" name="memoryLabel">
-          <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/icons/24x24/memory.png"/>
-            </Property>
-          </Properties>
-        </Component>
         <Component class="javax.swing.JButton" name="runGcButton">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/icons/16x16/recycle.png"/>
+            </Property>
+            <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="i18n/SpellbookForm.properties" key="RunGC(ToolTip)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Events>
