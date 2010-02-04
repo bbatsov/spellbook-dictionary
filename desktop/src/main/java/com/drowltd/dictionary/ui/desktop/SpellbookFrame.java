@@ -173,6 +173,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         updateWordMenuItem.setEnabled(false);
         wordTranslationTextArea.setText(null);
         matchLabel.setIcon(IconManager.getImageIcon("bell2_red.png", IconSize.SIZE24));
+        lastTransfer = null;
     }
 
     public void activateClipboardMonitoring() {
@@ -656,6 +657,12 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private void wordsListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_wordsListValueChanged
         if (!wordsList.isSelectionEmpty()) {
             int selectedIndex = wordsList.getSelectedIndex();
+
+            String selectedWord = words.get(selectedIndex);
+            
+            if (!wordSearchField.hasFocus()) {
+                wordSearchField.setText(selectedWord);
+            }
 
             wordTranslationTextArea.setText(databaseService.getTranslation(selectedDictionary, words.get(selectedIndex)));
             wordTranslationTextArea.setCaretPosition(0);
