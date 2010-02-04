@@ -20,8 +20,13 @@ import org.junit.BeforeClass;
  */
 public abstract class AbstractDictionaryServiceTest {
 
-    protected static Connection connection;
-    protected static Map<SDictionary, DictionaryConfig> dictConfigMap = new HashMap<SDictionary, DictionaryConfig>();
+    static Connection connection;
+    static Map<SDictionary, DictionaryConfig> dictConfigMap = new HashMap<SDictionary, DictionaryConfig>();
+    static Language english;
+    static Language bulgarian;
+    static SDictionary dictionaryEN_BG;
+    static SDictionary dictionaryBG_EN;
+
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -32,12 +37,14 @@ public abstract class AbstractDictionaryServiceTest {
         connection = DriverManager.getConnection(url);
         connection.prepareStatement(readDbFromFile(pathToDB)).execute();
 
-        Language english = new Language("English", "abcdefghijklmnopqrstuvwxyz");
-        Language bulgarian = new Language("Bulgarian", "абвгдежзийклмнопрстуфхцчшщъьюя");
-
         final ImageIcon imageIcon = new ImageIcon("");
-        SDictionary dictionaryEN_BG = new SDictionary("English-Bulgarian", english, bulgarian, imageIcon, imageIcon);
-        SDictionary dictionaryBG_EN = new SDictionary("Bulgarian-English", bulgarian, english, imageIcon, imageIcon);
+
+        english = new Language("English", "abcdefghijklmnopqrstuvwxyz",imageIcon);
+        bulgarian = new Language("Bulgarian", "абвгдежзийклмнопрстуфхцчшщъьюя",imageIcon);
+
+        
+        dictionaryEN_BG = new SDictionary("English-Bulgarian", english, bulgarian, imageIcon, imageIcon);
+        dictionaryBG_EN = new SDictionary("Bulgarian-English", bulgarian, english, imageIcon, imageIcon);
 
         DictionaryConfig configEN_BG = new DictionaryConfig(dictionaryEN_BG, "EN_BG", "SPELLCHECK_EN");
         DictionaryConfig configBG_EN = new DictionaryConfig(dictionaryBG_EN, "BG_EN", "SPELLCHECK_BG");

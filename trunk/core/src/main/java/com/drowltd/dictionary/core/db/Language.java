@@ -12,7 +12,7 @@ public class Language {
     private final String alphabet;
     private ImageIcon flag;
 
-    public Language(String name, String alphabet) {
+    public Language(String name, String alphabet, ImageIcon flag) {
 
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("name is null or empty");
@@ -22,8 +22,16 @@ public class Language {
             throw new IllegalArgumentException("alphabet is null or empty");
         }
 
+        if(flag == null){
+            throw new IllegalArgumentException("flag is null");
+        }
+        if(flag.getImage() == null){
+            throw new IllegalArgumentException("flag.getImage() is null");
+        }
+
         this.name = name;
         this.alphabet = alphabet;
+        this.flag = new ImageIcon(flag.getImage());
     }
 
     public String getAlphabet() {
