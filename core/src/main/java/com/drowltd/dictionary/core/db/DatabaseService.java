@@ -285,7 +285,7 @@ public class DatabaseService {
             }
 
         } catch (SQLException ex) {
-            java.util.logging.Logger.getLogger(DatabaseService.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex.getMessage());
         }
 
         if (nWords.isEmpty()) {
