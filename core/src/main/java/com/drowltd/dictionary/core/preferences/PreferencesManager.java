@@ -61,6 +61,14 @@ public class PreferencesManager {
         preferences.putBoolean(key, value);
     }
 
+    public void putDouble(String key, double value) {
+        preferences.putDouble(key, value);
+    }
+
+    public double getDouble(String key, double def) {
+       return preferences.getDouble(key, def);
+    }
+
     public void clear() throws BackingStoreException {
         preferences.clear();
     }

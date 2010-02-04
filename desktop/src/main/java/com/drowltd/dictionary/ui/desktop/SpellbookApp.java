@@ -2,6 +2,7 @@ package com.drowltd.dictionary.ui.desktop;
 
 import com.drowltd.dictionary.core.preferences.PreferencesManager;
 import com.drowltd.dictionary.core.exception.*;
+import java.awt.Dimension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,6 +11,7 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 import java.awt.EventQueue;
+import java.awt.Toolkit;
 import java.util.Locale;
 
 /**
@@ -81,6 +83,25 @@ public class SpellbookApp {
                 } else {
                     LOGGER.info("Minimize to tray on close is disabled");
                     tApp.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                }
+
+                // restore last size and position of the frame
+                if (pm.getDouble("FRAME_X", 0.0) > 0) {
+                    double x = pm.getDouble("FRAME_X", 0.0);
+                    double y = pm.getDouble("FRAME_Y", 0.0);
+                    double width = pm.getDouble("FRAME_WIDTH", 0.0);
+                    double height = pm.getDouble("FRAME_HEIGHT", 0.0);
+
+                    tApp.setBounds((int) x, (int) y, (int) width, (int) height);
+                } else {
+                    //or dynamically determine an adequate frame size
+                    Toolkit toolkit = Toolkit.getDefaultToolkit();
+
+                    Dimension screenSize = toolkit.getScreenSize();
+
+                    tApp.setSize(screenSize.width / 2, screenSize.height / 2);
+                    // center on screen
+                    tApp.setLocationRelativeTo(null);
                 }
 
                 tApp.setVisible(true);
