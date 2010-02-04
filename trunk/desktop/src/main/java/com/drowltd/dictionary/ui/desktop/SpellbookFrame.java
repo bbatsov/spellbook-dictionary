@@ -8,9 +8,8 @@ import com.drowltd.dictionary.core.i18n.Translator;
 import com.drowltd.dictionary.core.preferences.PreferencesManager;
 import com.drowltd.dictionary.ui.desktop.IconManager.IconSize;
 import com.drowltd.dictionary.ui.desktop.spellcheck.SpellCheckFrame;
-import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Toolkit;
+import java.awt.Rectangle;
 import java.awt.TrayIcon;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -45,7 +44,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private ScheduledExecutorService memoryUsageExecutorService;
     private TrayIcon trayIcon;
     private Dictionary selectedDictionary = Dictionary.getSelectedDictionary();
-
     private static final int BYTES_IN_ONE_MEGABYTE = 1024 * 1024;
 
     /** Creates new form SpellbookFrame */
@@ -54,7 +52,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         // check the presence of the dictionary database
         if (!verifyDbPresence()) {
-            JOptionPane.showMessageDialog(null, TRANSLATOR.translate("NoDbSelected(Message)"), 
+            JOptionPane.showMessageDialog(null, TRANSLATOR.translate("NoDbSelected(Message)"),
                     TRANSLATOR.translate("Error(Title)"), JOptionPane.ERROR_MESSAGE);
             System.exit(-1);
         }
@@ -69,15 +67,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
         databaseService = DatabaseService.getInstance();
 
         words = databaseService.getWordsFromDictionary(selectedDictionary);
-
-        //dynamically determine an adequate frame size
-        Toolkit toolkit = Toolkit.getDefaultToolkit();
-
-        Dimension screenSize = toolkit.getScreenSize();
-
-        setSize(screenSize.width / 2, screenSize.height / 2);
-        // center on screen
-        setLocationRelativeTo(null);
 
         //set the frame title
         setTitle(TRANSLATOR.translate("ApplicationName(Title)"));
@@ -108,6 +97,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
                 if (PM.getBoolean("CLOSE_TO_TRAY", false)) {
                     LOGGER.info("Minimizing Spellbook to tray on window close");
                     setVisible(false);
+                } else {
+                    saveFrameState();
                 }
             }
         });
@@ -168,8 +159,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
     }
 
     public void hideMemoryUsage() {
-         memoryProgressBar.setVisible(false);
-         runGcButton.setVisible(false);
+        memoryProgressBar.setVisible(false);
+        runGcButton.setVisible(false);
     }
 
     private void clear() {
@@ -281,6 +272,14 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
             setSelectedFont(new Font(fontName, fontStyle, fontSize));
         }
+    }
+
+    private void saveFrameState() {
+        Rectangle r = getBounds();
+        PM.putDouble("FRAME_X", r.getX());
+        PM.putDouble("FRAME_Y", r.getY());
+        PM.putDouble("FRAME_WIDTH", r.getWidth());
+        PM.putDouble("FRAME_HEIGHT", r.getHeight());
     }
 
     private boolean verifyDbPresence() {
@@ -662,7 +661,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
             wordTranslationTextArea.setCaretPosition(0);
             matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
             matchLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
-            
+
             updateWordMenuItem.setEnabled(true);
         }
     }//GEN-LAST:event_wordsListValueChanged
@@ -713,6 +712,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_clearButtonActionPerformed
 
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
+        saveFrameState();
+
         System.exit(0);
     }//GEN-LAST:event_exitMenuItemActionPerformed
 
@@ -792,7 +793,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private void runGcButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runGcButtonActionPerformed
         System.gc();
     }//GEN-LAST:event_runGcButtonActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JMenuItem addWordMenuItem;
