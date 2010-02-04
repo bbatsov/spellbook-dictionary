@@ -399,6 +399,11 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        wordSearchField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                wordSearchFieldActionPerformed(evt);
+            }
+        });
         wordSearchField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 wordSearchFieldKeyReleased(evt);
@@ -662,6 +667,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
             
             if (!wordSearchField.hasFocus()) {
                 wordSearchField.setText(selectedWord);
+                wordSearchField.selectAll();
             }
 
             wordTranslationTextArea.setText(databaseService.getTranslation(selectedDictionary, words.get(selectedIndex)));
@@ -800,6 +806,11 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private void runGcButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runGcButtonActionPerformed
         System.gc();
     }//GEN-LAST:event_runGcButtonActionPerformed
+
+    private void wordSearchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_wordSearchFieldActionPerformed
+        wordSearchField.selectAll();
+    }//GEN-LAST:event_wordSearchFieldActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JMenuItem addWordMenuItem;
