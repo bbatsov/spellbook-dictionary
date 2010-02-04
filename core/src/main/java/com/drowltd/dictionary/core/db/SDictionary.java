@@ -27,11 +27,19 @@ public class SDictionary {
             throw new IllegalArgumentException("languageTo is null");
         }
 
-        if(flag16==null)
+        if (flag16 == null) {
             throw new IllegalArgumentException("flag16 is null");
+        }
+        if (flag16.getImage() == null) {
+            throw new IllegalArgumentException("flag16.getImage() is null");
+        }
 
-        if(flag24==null)
+        if (flag24 == null) {
             throw new IllegalArgumentException("flag24 is null");
+        }
+        if (flag24.getImage() == null) {
+            throw new IllegalArgumentException("flag24.getImage() is null");
+        }
 
         this.name = name;
         this.languageFrom = languageFrom;

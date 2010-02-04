@@ -8,7 +8,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -50,14 +49,30 @@ public class DictionaryService {
     private void populate() throws SQLException, NoDictionariesAvailableException {
         final Map<Integer, Language> languageMap = new HashMap<Integer, Language>();
 
+        populateLanguages(languageMap);
+        populateDictionaries(languageMap);
+    }
+
+    private void populateLanguages(final Map<Integer, Language> languageMap) throws SQLException {
+        assert languageMap != null : "languageMap is null";
+
         PreparedStatement psLang = connection.prepareStatement("SELECT * FROM " + languagesTable);
         final ResultSet rsLang = psLang.executeQuery();
         while (rsLang.next()) {
-            final Language language = new Language(rsLang.getString("NAME"), rsLang.getString("ALPHABET"));
+            final Language language;
+            try {
+                language = new Language(rsLang.getString("NAME"), rsLang.getString("ALPHABET"), new ImageIcon(inputStreamToByteArr(rsLang.getBinaryStream("FLAG_16"))));
+            } catch (IOException e) {
+                throw new SQLException("Can't load Language BLOB images", e);
+            }
             LOGGER.info("Language created: " + language.getName() + " " + language.getAlphabet());
 
             languageMap.put(rsLang.getInt("ID"), language);
         }
+    }
+
+    private void populateDictionaries(final Map<Integer, Language> languageMap) throws SQLException, NoDictionariesAvailableException {
+        assert languageMap != null : "languageMap is null";
 
         PreparedStatement psDict = connection.prepareStatement("SELECT * FROM " + schemaTable);
         final ResultSet rsDict = psDict.executeQuery();
@@ -78,7 +93,7 @@ public class DictionaryService {
                 flag16 = new ImageIcon(inputStreamToByteArr(rsDict.getBinaryStream("FLAG_16")));
                 flag24 = new ImageIcon(inputStreamToByteArr(rsDict.getBinaryStream("FLAG_24")));
             } catch (IOException e) {
-                throw new SQLException("Can't load BLOB images", e);
+                throw new SQLException("Can't load Dictionary BLOB images", e);
             }
 
             assert flag16 != null && flag24 != null : "flags16 or flag24 are null";
@@ -107,8 +122,47 @@ public class DictionaryService {
         return new ArrayList<SDictionary>(dictConfigMap.keySet());
     }
 
-    public Map<String, Integer> getWordsFromDictionary(SDictionary dictionary) {
-        return Collections.emptyMap();
+    public Map<String, Integer> getWordsFromDictionary(SDictionary dictionary) throws SQLException {
+        if (dictionary == null) {
+            throw new IllegalArgumentException("dictionary is null");
+        }
+        final DictionaryConfig config = getConfig(dictionary);
+
+        final PreparedStatement ps = connection.prepareStatement("SELECT WORD, RATING FROM " + config.getTranslationTable());
+
+        final ResultSet rs = ps.executeQuery();
+
+        Map<String, Integer> wordMap = new HashMap<String, Integer>();
+
+        while (rs.next()) {
+            wordMap.put(rs.getString(1), rs.getInt(2));
+        }
+
+        if (wordMap.isEmpty()) {
+            throw new IllegalStateException("No words loaded from db");
+        }
+
+        return wordMap;
+    }
+
+    public String getTranslation(SDictionary dictionary, String word) throws SQLException {
+
+        if(dictionary == null){
+            throw new IllegalArgumentException("dictionary is null");
+        }
+
+        if(word == null || word.isEmpty()){
+            throw new IllegalArgumentException("word is null or empty");
+        }
+        final String translationTable = getConfig(dictionary).getTranslationTable();
+
+        final PreparedStatement ps = connection.prepareStatement("SELECT TRANSLATION FROM " + translationTable);
+        final ResultSet rs = ps.executeQuery();
+
+        rs.next();
+        return rs.getString(1);
+
+       
     }
 
     private byte[] inputStreamToByteArr(InputStream stream) throws IOException {
