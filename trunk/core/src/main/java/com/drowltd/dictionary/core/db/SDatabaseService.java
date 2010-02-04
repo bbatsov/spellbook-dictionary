@@ -1,4 +1,3 @@
-
 package com.drowltd.dictionary.core.db;
 
 import com.drowltd.dictionary.core.exam.Difficulty;
@@ -12,7 +11,7 @@ import java.util.Map;
  */
 public class SDatabaseService {
 
-    public void addMisspelled(SDictionary dictionary, String misspelled){
+    public void addMisspelled(SDictionary dictionary, String misspelled) {
     }
 
     /**
@@ -24,16 +23,19 @@ public class SDatabaseService {
      * @return true if the word was added, false if it already existed in the
      * dictionary
      */
-    public boolean addWord(SDictionary dictionary, String word, String translation){
+    public boolean addWord(SDictionary dictionary, String word, String translation) {
+       return addWord(dictionary, word, translation, 0);
+    }
+
+    public boolean addWord(SDictionary dictionary, String word, String translation, int rating) {
         return false;
     }
 
-
-    public List<String> getDifficultyWords(SDictionary dictionary, Difficulty difficulty, int quantity){
+    public List<String> getDifficultyWords(SDictionary dictionary, Difficulty difficulty, int quantity) {
         return Collections.emptyList();
     }
 
-    public Map<String, Integer> getRatings(Language language){
+    public Map<String, Integer> getRatings(Language language) {
         return Collections.emptyMap();
     }
 
@@ -46,7 +48,7 @@ public class SDatabaseService {
      *
      * @return the translation of the word
      */
-    public String getTranslation(SDictionary dictionary, String word){
+    public String getTranslation(SDictionary dictionary, String word) {
         return "";
     }
 
@@ -58,7 +60,7 @@ public class SDatabaseService {
      *
      * @return a list of all words in the selected dictionary
      */
-    public List<String> getWordsFromDictionary(SDictionary dictionary){
+    public List<String> getWordsFromDictionary(SDictionary dictionary) {
         return Collections.emptyList();
     }
 
@@ -69,18 +71,21 @@ public class SDatabaseService {
      * @param translation
      * @param dictionary
      */
-    public void updateTranslation(SDictionary dictionary, String word, String translation){
+    public void updateTranslation(SDictionary dictionary, String word, String translation) {
     }
 
-    public void updateWord(SDictionary dictionary, String oldWord, String newWord){
+    public void updateWord(SDictionary dictionary, String oldWord, String newWord) {
     }
 
-    public List<SDictionary> getAvailableDictionaries(){
+    public List<SDictionary> getAvailableDictionaries() {
         return Collections.emptyList();
     }
 
-    public SDictionary getDictionary(Language languageFrom, Language languageTo){
+    public SDictionary getDictionary(Language languageFrom, Language languageTo) {
         return null;
     }
 
+    public List<Language> getLanguagesTo(Language language){
+        return Collections.emptyList();
+    }
 }

@@ -1,11 +1,19 @@
 package com.drowltd.dictionary.core.db;
 
+import com.drowltd.dictionary.core.exception.NoDictionariesAvailableException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import javax.swing.ImageIcon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +29,7 @@ public class DictionaryService {
     private final Connection connection;
     private final Map<SDictionary, DictionaryConfig> dictConfigMap;
 
-    public DictionaryService(Connection connection) throws SQLException {
+    public DictionaryService(Connection connection) throws SQLException, NoDictionariesAvailableException {
         if (connection == null) {
             throw new IllegalArgumentException("connection is null");
         }
@@ -39,36 +47,52 @@ public class DictionaryService {
         return dictConfigMap.get(dictionary);
     }
 
-    private void populate() throws SQLException {
+    private void populate() throws SQLException, NoDictionariesAvailableException {
         final Map<Integer, Language> languageMap = new HashMap<Integer, Language>();
 
-        PreparedStatement psLang = connection.prepareStatement("SELECT * FROM "+languagesTable);
+        PreparedStatement psLang = connection.prepareStatement("SELECT * FROM " + languagesTable);
         final ResultSet rsLang = psLang.executeQuery();
-        while(rsLang.next()){
+        while (rsLang.next()) {
             final Language language = new Language(rsLang.getString("NAME"), rsLang.getString("ALPHABET"));
-            LOGGER.info("Language created: "+language.getName()+" "+language.getAlphabet());
-            
+            LOGGER.info("Language created: " + language.getName() + " " + language.getAlphabet());
+
             languageMap.put(rsLang.getInt("ID"), language);
         }
 
-        PreparedStatement psDict = connection.prepareStatement("SELECT * FROM "+schemaTable);
+        PreparedStatement psDict = connection.prepareStatement("SELECT * FROM " + schemaTable);
         final ResultSet rsDict = psDict.executeQuery();
-        while(rsDict.next()){
+        while (rsDict.next()) {
 
             final Language languageFrom = languageMap.get(rsDict.getInt("LANGUAGE_FROM"));
             final Language languageTo = languageMap.get(rsDict.getInt("LANGUAGE_TO"));
 
-            assert languageFrom != null: "languageMap doesn't have LANGUAGE_FROM";
-            assert languageTo != null: "languageMap doesn't have LANGUAGE_TO";
+            assert languageFrom != null : "languageMap doesn't have LANGUAGE_FROM";
+            assert languageTo != null : "languageMap doesn't have LANGUAGE_TO";
 
-            String name = languageFrom.getName()+"-"+languageTo.getName();
-            SDictionary dictionary = new SDictionary(name, languageFrom, languageTo);
-            LOGGER.info("SDictionary created: "+dictionary.getName());
+            String name = languageFrom.getName() + "-" + languageTo.getName();
+
+            ImageIcon flag16 = null;
+            ImageIcon flag24 = null;
+
+            try {
+                flag16 = new ImageIcon(inputStreamToByteArr(rsDict.getBinaryStream("FLAG_16")));
+                flag24 = new ImageIcon(inputStreamToByteArr(rsDict.getBinaryStream("FLAG_24")));
+            } catch (IOException e) {
+                throw new SQLException("Can't load BLOB images", e);
+            }
+
+            assert flag16 != null && flag24 != null : "flags16 or flag24 are null";
+
+            SDictionary dictionary = new SDictionary(name, languageFrom, languageTo, flag16, flag24);
+            LOGGER.info("SDictionary created: " + dictionary.getName());
 
             DictionaryConfig config = new DictionaryConfig(dictionary, rsDict.getString("TRANSLATIONS_TABLE"), rsDict.getString("RATINGS_TABLE"));
-            LOGGER.info("DictionaryConfig created: "+config.getTranslationTable()+" "+config.getRatingsTable());
+            LOGGER.info("DictionaryConfig created: " + config.getTranslationTable() + " " + config.getRatingsTable());
 
             dictConfigMap.put(dictionary, config);
+        }
+        if (dictConfigMap.isEmpty()) {
+            throw new NoDictionariesAvailableException();
         }
 
     }
@@ -78,6 +102,40 @@ public class DictionaryService {
         return new HashMap<SDictionary, DictionaryConfig>(dictConfigMap);
     }
     //Tests only END
+
+    public List<SDictionary> getLoadedDictionaries() {
+        return new ArrayList<SDictionary>(dictConfigMap.keySet());
+    }
+
+    public Map<String, Integer> getWordsFromDictionary(SDictionary dictionary) {
+        return Collections.emptyMap();
+    }
+
+    private byte[] inputStreamToByteArr(InputStream stream) throws IOException {
+        assert stream != null : "stream is null";
+
+        List<Integer> bytesList = new LinkedList<Integer>();
+        try {
+            int next = -1;
+            for (;;) {
+                next = stream.read();
+                if (next == -1) {
+                    break;
+                }
+                bytesList.add(next);
+            }
+        } finally {
+            stream.close();
+        }
+
+        byte[] bytes = new byte[bytesList.size()];
+        int index = 0;
+        for (Integer i : bytesList) {
+            bytes[index] = i.byteValue();
+            ++index;
+        }
+        return bytes;
+    }
 
     protected static class DictionaryConfig {
 

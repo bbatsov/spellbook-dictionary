@@ -11,9 +11,10 @@ public class SDictionary {
     private final String name;
     private final Language languageFrom;
     private final Language languageTo;
-    private ImageIcon flag;
+    private final ImageIcon flag16;
+    private final ImageIcon flag24;
 
-    public SDictionary(String name, Language languageFrom, Language languageTo) {
+    public SDictionary(String name, Language languageFrom, Language languageTo, ImageIcon flag16, ImageIcon flag24) {
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("name is null or empty");
         }
@@ -26,13 +27,25 @@ public class SDictionary {
             throw new IllegalArgumentException("languageTo is null");
         }
 
+        if(flag16==null)
+            throw new IllegalArgumentException("flag16 is null");
+
+        if(flag24==null)
+            throw new IllegalArgumentException("flag24 is null");
+
         this.name = name;
         this.languageFrom = languageFrom;
         this.languageTo = languageTo;
+        this.flag16 = new ImageIcon(flag16.getImage());
+        this.flag24 = new ImageIcon(flag24.getImage());
     }
 
-    public ImageIcon getFlag() {
-        return new ImageIcon(flag.getImage());
+    public ImageIcon getFlagSmall() {
+        return new ImageIcon(flag16.getImage());
+    }
+
+    public ImageIcon getFlagLarge() {
+        return new ImageIcon(flag24.getImage());
     }
 
     public Language getLanguageFrom() {
