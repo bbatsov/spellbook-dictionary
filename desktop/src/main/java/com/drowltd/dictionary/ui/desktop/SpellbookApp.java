@@ -75,14 +75,14 @@ public class SpellbookApp {
 
             @Override
             public void run() {
-                final SpellbookFrame tApp = new SpellbookFrame();
+                final SpellbookFrame tAppFrame = new SpellbookFrame();
 
                 if (pm.getBoolean("CLOSE_TO_TRAY", false)) {
                     LOGGER.info("Minimize to tray on close is enabled");
-                    tApp.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+                    tAppFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
                 } else {
                     LOGGER.info("Minimize to tray on close is disabled");
-                    tApp.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    tAppFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 }
 
                 // restore last size and position of the frame
@@ -92,19 +92,22 @@ public class SpellbookApp {
                     double width = pm.getDouble("FRAME_WIDTH", 0.0);
                     double height = pm.getDouble("FRAME_HEIGHT", 0.0);
 
-                    tApp.setBounds((int) x, (int) y, (int) width, (int) height);
+                    tAppFrame.setBounds((int) x, (int) y, (int) width, (int) height);
                 } else {
                     //or dynamically determine an adequate frame size
                     Toolkit toolkit = Toolkit.getDefaultToolkit();
 
                     Dimension screenSize = toolkit.getScreenSize();
 
-                    tApp.setSize(screenSize.width / 2, screenSize.height / 2);
+                    tAppFrame.setSize(screenSize.width / 2, screenSize.height / 2);
                     // center on screen
-                    tApp.setLocationRelativeTo(null);
+                    tAppFrame.setLocationRelativeTo(null);
                 }
 
-                tApp.setVisible(true);
+                
+                tAppFrame.setAlwaysOnTop(pm.getBoolean("ALWAYS_ON_TOP", false));
+
+                tAppFrame.setVisible(true);
             }
         });
     }

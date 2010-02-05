@@ -90,12 +90,26 @@ public class PreferencesExtractor {
             final boolean showMemoryUsageEnabled = preferencesDialog.isShowMemoryUsageEnabled();
 
             if (showMemoryUsageEnabled) {
+                LOGGER.info("Show memory usage is enabled");
                 spellbookFrame.showMemoryUsage();
             } else {
+                LOGGER.info("Show memory usage is disabled");
                 spellbookFrame.hideMemoryUsage();
             }
 
             PM.putBoolean("SHOW_MEMORY_USAGE", showMemoryUsageEnabled);
+
+            final boolean alwaysOnTopEnabled = preferencesDialog.isAlwaysOnTopEnabled();
+
+            if (alwaysOnTopEnabled) {
+                LOGGER.info("Always on top enabled");
+                spellbookFrame.setAlwaysOnTop(true);
+            } else {
+                LOGGER.info("Always on top disabled");
+                spellbookFrame.setAlwaysOnTop(false);
+            }
+
+            PM.putBoolean("ALWAYS_ON_TOP", alwaysOnTopEnabled);
 
             String selectedLookAndFeel = preferencesDialog.getSelectedLookAndFeel();
 
