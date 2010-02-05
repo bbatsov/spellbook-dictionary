@@ -8,10 +8,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.ImageIcon;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 
 /**
@@ -27,22 +29,21 @@ public abstract class AbstractDictionaryServiceTest {
     static SDictionary dictionaryEN_BG;
     static SDictionary dictionaryBG_EN;
 
-
     @BeforeClass
     public static void setUpClass() throws Exception {
 
-        final String pathToDB = "resources/db.sql";
+
         String url = "jdbc:h2:mem:db1";
 
         connection = DriverManager.getConnection(url);
-        connection.prepareStatement(readDbFromFile(pathToDB)).execute();
+
 
         final ImageIcon imageIcon = new ImageIcon("");
 
-        english = new Language("English", "abcdefghijklmnopqrstuvwxyz",imageIcon);
-        bulgarian = new Language("Bulgarian", "абвгдежзийклмнопрстуфхцчшщъьюя",imageIcon);
+        english = new Language("English", "abcdefghijklmnopqrstuvwxyz", imageIcon);
+        bulgarian = new Language("Bulgarian", "абвгдежзийклмнопрстуфхцчшщъьюя", imageIcon);
 
-        
+
         dictionaryEN_BG = new SDictionary("English-Bulgarian", english, bulgarian, imageIcon, imageIcon);
         dictionaryBG_EN = new SDictionary("Bulgarian-English", bulgarian, english, imageIcon, imageIcon);
 
@@ -54,7 +55,7 @@ public abstract class AbstractDictionaryServiceTest {
         dictConfigMap.put(dictionaryBG_EN, configBG_EN);
     }
 
-    private static String readDbFromFile(String file) throws FileNotFoundException, IOException {
+    static String readDbFromFile(String file) throws FileNotFoundException, IOException {
         assert file != null : "file is null";
         assert !file.isEmpty() : "file is empty";
 
