@@ -1,5 +1,6 @@
 package com.drowltd.dictionary.core.db;
 
+import com.drowltd.dictionary.core.exam.Difficulty;
 import com.drowltd.dictionary.core.exception.NoDictionariesAvailableException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,14 +40,6 @@ public class DictionaryService {
         populate();
     }
 
-    private DictionaryConfig getConfig(SDictionary dictionary) {
-        assert dictionary != null : "dictionary is null";
-        assert !dictConfigMap.isEmpty() : "dictConfigMap is empty";
-        assert dictConfigMap.containsKey(dictionary) : "dictConfigMap doesn't contains dictionary";
-
-        return dictConfigMap.get(dictionary);
-    }
-
     private void populate() throws SQLException, NoDictionariesAvailableException {
         final Map<Integer, Language> languageMap = new HashMap<Integer, Language>();
 
@@ -60,11 +54,14 @@ public class DictionaryService {
         final ResultSet rsLang = psLang.executeQuery();
         while (rsLang.next()) {
             final Language language;
+
             try {
-                language = new Language(rsLang.getString("NAME"), rsLang.getString("ALPHABET"), new ImageIcon(inputStreamToByteArr(rsLang.getBinaryStream("FLAG_16"))));
+                final ImageIcon imageIcon = new ImageIcon(inputStreamToByteArr(rsLang.getBinaryStream("FLAG_16")));
+                language = new Language(rsLang.getString("NAME"), rsLang.getString("ALPHABET"), imageIcon);
             } catch (IOException e) {
                 throw new SQLException("Can't load Language BLOB images", e);
             }
+
             LOGGER.info("Language created: " + language.getName() + " " + language.getAlphabet());
 
             languageMap.put(rsLang.getInt("ID"), language);
@@ -126,9 +123,8 @@ public class DictionaryService {
         if (dictionary == null) {
             throw new IllegalArgumentException("dictionary is null");
         }
-        final DictionaryConfig config = getConfig(dictionary);
 
-        final PreparedStatement ps = connection.prepareStatement("SELECT WORD, RATING FROM " + config.getTranslationTable());
+        final PreparedStatement ps = connection.prepareStatement("SELECT WORD, RATING FROM " + getTranslationTable(dictionary));
 
         final ResultSet rs = ps.executeQuery();
 
@@ -147,22 +143,200 @@ public class DictionaryService {
 
     public String getTranslation(SDictionary dictionary, String word) throws SQLException {
 
-        if(dictionary == null){
+        if (dictionary == null) {
             throw new IllegalArgumentException("dictionary is null");
         }
 
-        if(word == null || word.isEmpty()){
+        if (word == null || word.isEmpty()) {
             throw new IllegalArgumentException("word is null or empty");
         }
-        final String translationTable = getConfig(dictionary).getTranslationTable();
 
-        final PreparedStatement ps = connection.prepareStatement("SELECT TRANSLATION FROM " + translationTable);
+        final PreparedStatement ps = connection.prepareStatement("SELECT TRANSLATION FROM " + getTranslationTable(dictionary));
         final ResultSet rs = ps.executeQuery();
 
         rs.next();
         return rs.getString(1);
+    }
 
-       
+    public boolean addWord(SDictionary dictionary, String word, String translation) throws SQLException {
+        return addWord(dictionary, word, translation, 1);
+    }
+
+    public boolean addWord(SDictionary dictionary, String word, String translation, int rating) throws SQLException {
+        if (dictionary == null) {
+            throw new IllegalArgumentException("dictionary is null");
+        }
+
+        if (word == null || word.isEmpty()) {
+            throw new IllegalArgumentException("word is null or empty");
+        }
+
+        if (translation == null || translation.isEmpty()) {
+            throw new IllegalArgumentException("translation is null or empty");
+        }
+
+        if (rating < 1) {
+            throw new IllegalArgumentException("rating < 1");
+        }
+
+        final PreparedStatement ps = connection.prepareStatement("INSERT INTO " + getTranslationTable(dictionary)
+                + "(WORD, TRANSLATION, RATING) VALUES('" + word + "','" + translation + "','" + rating + "')");
+
+        return ps.executeUpdate() > 0;
+    }
+
+    public Map<String, Integer> getRatings(Language language) throws SQLException {
+        if (language == null) {
+            throw new IllegalArgumentException("language is null");
+        }
+        final DictionaryConfig config = getConfig(language);
+
+        Map<String, Integer> ratingsMap = new HashMap<String, Integer>();
+
+        final String translationTable = config.getTranslationTable();
+        final ResultSet rs0 = connection.prepareStatement("SELECT WORD, RATING FROM " + translationTable).executeQuery();
+
+        while (rs0.next()) {
+            ratingsMap.put(rs0.getString(1), rs0.getInt(2));
+        }
+
+        final String ratingsTable = config.getRatingsTable();
+        final ResultSet rs1 = connection.prepareStatement("SELECT WORD, RATING FROM " + ratingsTable).executeQuery();
+
+        while (rs1.next()) {
+            ratingsMap.put(rs1.getString(1), rs1.getInt(2));
+        }
+
+        if (ratingsMap.isEmpty()) {
+            throw new IllegalStateException("Ratings couldn't be imported");
+        }
+
+        return ratingsMap;
+    }
+
+    public void updateTranslation(SDictionary dictionary, String word, String translation) throws SQLException {
+        if (dictionary == null) {
+            throw new IllegalArgumentException("dictionary is null");
+        }
+
+        if (word == null || word.isEmpty()) {
+            throw new IllegalArgumentException("word is null or empty");
+        }
+
+        if (translation == null || translation.isEmpty()) {
+            throw new IllegalArgumentException("translation is null or empty");
+        }
+
+        final int rowsUpdated = connection.prepareStatement("UPDATE " + getTranslationTable(dictionary) + " SET TRANSLATION = \'" + translation + "\' "
+                + "WHERE WORD = \'" + word + "\'").executeUpdate();
+
+        if (rowsUpdated < 1) {
+            throw new IllegalStateException("Translation couldn't be updated");
+        }
+
+    }
+
+    public void updateWord(SDictionary dictionary, String oldWord, String newWord) throws SQLException {
+        if (dictionary == null) {
+            throw new IllegalArgumentException("dictionary is null");
+        }
+
+        if (oldWord == null || oldWord.isEmpty()) {
+            throw new IllegalArgumentException("oldWord is null or empty");
+        }
+
+        if (newWord == null || newWord.isEmpty()) {
+            throw new IllegalArgumentException("newWord is null or empty");
+        }
+
+        final int rowsUpdated = connection.prepareStatement("UPDATE " + getTranslationTable(dictionary) + " SET WORD = \'" + newWord + "\' "
+                + "WHERE WORD = \'" + oldWord + "\'").executeUpdate();
+
+        if (rowsUpdated < 1) {
+            throw new IllegalStateException("Word couldn't be updated");
+        }
+
+    }
+
+    public SDictionary getDictionary(Language languageFrom, Language languageTo) {
+        if (languageFrom == null) {
+            throw new IllegalArgumentException("languageFrom is null");
+        }
+        if (languageTo == null) {
+            throw new IllegalArgumentException("languageTo is null");
+        }
+
+        for (SDictionary dict : dictConfigMap.keySet()) {
+            if (dict.getLanguageFrom().equals(languageFrom) && dict.getLanguageTo().equals(languageTo)) {
+                return dict;
+            }
+        }
+
+        throw new IllegalStateException("No dictionary found");
+    }
+
+    public List<Language> getLanguagesTo(Language languageFrom) {
+
+        if (languageFrom == null) {
+            throw new IllegalArgumentException("languageFrom is null");
+        }
+
+        List<Language> languageList = new ArrayList<Language>(dictConfigMap.size());
+
+        for(SDictionary dict:dictConfigMap.keySet()){
+            if(dict.getLanguageFrom().equals(languageFrom)){
+                languageList.add(dict.getLanguageTo());
+            }
+        }
+
+        if(languageList.isEmpty()){
+            throw new IllegalStateException("No languages found");
+        }
+
+        return languageList;
+    }
+
+    public List<String> getDifficultyWords(SDictionary dictionary, Difficulty difficulty, int quantity) {
+        return Collections.emptyList();
+    }
+
+    private DictionaryConfig getConfig(SDictionary dictionary) {
+        assert dictionary != null : "dictionary is null";
+        assert !dictConfigMap.isEmpty() : "dictConfigMap is empty";
+        assert dictConfigMap.containsKey(dictionary) : "dictConfigMap doesn't contains dictionary";
+
+        return dictConfigMap.get(dictionary);
+    }
+
+    private DictionaryConfig getConfig(Language language) {
+        assert language != null : "language is null";
+        assert !dictConfigMap.isEmpty() : "dictConfigMap is empty";
+
+        for (SDictionary dict : dictConfigMap.keySet()) {
+            if (dict.getLanguageFrom().equals(language)) {
+                return dictConfigMap.get(dict);
+            }
+        }
+
+        throw new IllegalStateException("No DictionaryConfig for " + language.getName());
+    }
+
+    private String getTranslationTable(SDictionary dictionary) {
+        assert dictionary != null : "dictionary is null";
+        assert !dictConfigMap.isEmpty() : "dictConfigMap is empty";
+        assert dictConfigMap.containsKey(dictionary) : "dictConfigMap doesn't contains dictionary";
+
+        return dictConfigMap.get(dictionary).getTranslationTable();
+
+    }
+
+    private String getRatingsTable(SDictionary dictionary) {
+        assert dictionary != null : "dictionary is null";
+        assert !dictConfigMap.isEmpty() : "dictConfigMap is empty";
+        assert dictConfigMap.containsKey(dictionary) : "dictConfigMap doesn't contains dictionary";
+
+        return dictConfigMap.get(dictionary).getRatingsTable();
+
     }
 
     private byte[] inputStreamToByteArr(InputStream stream) throws IOException {
