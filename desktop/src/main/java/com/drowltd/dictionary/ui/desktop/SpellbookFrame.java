@@ -105,11 +105,13 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         initComponents();
 
+        ((CompletableJTextField)wordSearchField).setWordsList(wordsList);
+
         // add the context popup
         ContextMenuMouseListener contextMenuMouseListener = new ContextMenuMouseListener();
 
         wordSearchField.addMouseListener(contextMenuMouseListener);
-        wordTranslationTextArea.addMouseListener(contextMenuMouseListener);
+        wordTranslationTextPane.addMouseListener(contextMenuMouseListener);
 
         statusBar.setText(String.format(TRANSLATOR.translate("EnBgDictSize(Label)"), words.size()));
         statusBar.setIcon(IconManager.getImageIcon("en-bg.png", IconSize.SIZE24));
@@ -171,7 +173,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         wordsList.ensureIndexIsVisible(0);
         wordsList.clearSelection();
         updateWordMenuItem.setEnabled(false);
-        wordTranslationTextArea.setText(null);
+        wordTranslationTextPane.setText(null);
         matchLabel.setIcon(IconManager.getImageIcon("bell2_red.png", IconSize.SIZE24));
         lastTransfer = null;
     }
@@ -231,7 +233,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
                         // the tray popup translation should appear is the main frame is either not visible or minimized
                         if ((trayIcon != null) && match && (!SpellbookFrame.this.isVisible() || (SpellbookFrame.this.getState() == JFrame.ICONIFIED)) && PM.getBoolean("TRAY_POPUP", false)) {
-                            trayIcon.displayMessage(foundWord, wordTranslationTextArea.getText(), TrayIcon.MessageType.INFO);
+                            trayIcon.displayMessage(foundWord, wordTranslationTextPane.getText(), TrayIcon.MessageType.INFO);
                         }
                     }
                 }
@@ -264,7 +266,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
             String osName = System.getProperty("os.name");
 
             if (osName.contains("Windows")) {
-                wordTranslationTextArea.setFont(new Font("Arial", Font.PLAIN, 14));
+                wordTranslationTextPane.setFont(new Font("Arial", Font.PLAIN, 14));
             }
         } else {
             String fontName = PM.get("FONT_NAME", "SansSerif");
@@ -318,7 +320,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
     public void setSelectedFont(Font font) {
         wordSearchField.setFont(font);
         wordsList.setFont(font);
-        wordTranslationTextArea.setFont(font);
+        wordTranslationTextPane.setFont(font);
         statusBar.setFont(font);
         drowLabel.setFont(font);
         clearButton.setFont(font);
@@ -363,17 +365,17 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        wordSearchField = new javax.swing.JTextField();
+        wordSearchField = new CompletableJTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         wordsList = new javax.swing.JList();
         clearButton = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        wordTranslationTextArea = new javax.swing.JTextArea();
         matchLabel = new javax.swing.JLabel();
         drowLabel = new javax.swing.JLabel();
         statusBar = new javax.swing.JLabel();
         memoryProgressBar = new javax.swing.JProgressBar();
         runGcButton = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        wordTranslationTextPane = new javax.swing.JTextPane();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         restartMenuItem = new javax.swing.JMenuItem();
@@ -427,11 +429,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
             }
         });
 
-        wordTranslationTextArea.setColumns(20);
-        wordTranslationTextArea.setEditable(false);
-        wordTranslationTextArea.setRows(5);
-        jScrollPane2.setViewportView(wordTranslationTextArea);
-
         matchLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/bell2_red.png"))); // NOI18N
 
         drowLabel.setText(bundle.getString("FuelledBy(Label)")); // NOI18N
@@ -448,6 +445,10 @@ public class SpellbookFrame extends javax.swing.JFrame {
             }
         });
 
+        wordTranslationTextPane.setContentType("text/html");
+        wordTranslationTextPane.setEditable(false);
+        jScrollPane2.setViewportView(wordTranslationTextPane);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -459,18 +460,21 @@ public class SpellbookFrame extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(wordSearchField)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE))
-                        .addGap(16, 16, 16)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(16, 16, 16)
                                 .addComponent(clearButton, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(matchLabel)
                                 .addGap(18, 18, 18)
-                                .addComponent(drowLabel))
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 512, Short.MAX_VALUE)))
+                                .addComponent(drowLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 522, Short.MAX_VALUE))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(statusBar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 496, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 508, Short.MAX_VALUE)
                         .addComponent(memoryProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(runGcButton)))
@@ -670,8 +674,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
                 wordSearchField.selectAll();
             }
 
-            wordTranslationTextArea.setText(databaseService.getTranslation(selectedDictionary, words.get(selectedIndex)));
-            wordTranslationTextArea.setCaretPosition(0);
+            wordTranslationTextPane.setText(SwingUtil.formatTranslation(selectedWord, databaseService.getTranslation(selectedDictionary, words.get(selectedIndex))));
+            wordTranslationTextPane.setCaretPosition(0);
             matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
             matchLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
 
@@ -794,7 +798,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         }
 
         addUpdateWordDialog.setWord((String) wordsList.getSelectedValue());
-        addUpdateWordDialog.setTranslation(wordTranslationTextArea.getText());
+        addUpdateWordDialog.setTranslation(wordTranslationTextPane.getText());
 
         addUpdateWordDialog.setVisible(true);
 
@@ -809,6 +813,9 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
     private void wordSearchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_wordSearchFieldActionPerformed
         wordSearchField.selectAll();
+        CompletableJTextField completableJTextField = (CompletableJTextField) wordSearchField;
+
+        completableJTextField.addCompletion(wordSearchField.getText());
     }//GEN-LAST:event_wordSearchFieldActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -844,7 +851,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private javax.swing.JLabel statusBar;
     private javax.swing.JMenuItem updateWordMenuItem;
     private javax.swing.JTextField wordSearchField;
-    private javax.swing.JTextArea wordTranslationTextArea;
+    private javax.swing.JTextPane wordTranslationTextPane;
     private javax.swing.JList wordsList;
     // End of variables declaration//GEN-END:variables
 }

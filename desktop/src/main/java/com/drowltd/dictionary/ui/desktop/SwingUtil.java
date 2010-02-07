@@ -23,4 +23,36 @@ public class SwingUtil {
         TimingUtils.showTimedBalloon(balloonTip, displayTime);
 
     }
+
+    public static String formatTranslation(String word, String translation) {
+        StringBuilder result = new StringBuilder();
+
+        result.append("<html><head></head><body>");
+
+        result.append("<b>" + word + "</b>");
+
+        result.append("<p>" + formatTranslation(translation) + "</p>");
+
+        result.append("</body></html>");
+
+        return result.toString();
+    }
+
+    private static String formatTranslation(String translation) {
+        StringBuffer result = new StringBuffer();
+
+        String[] lines = translation.split("\n");
+
+        for (String line : lines) {
+            result.append(line);
+
+            if (line.startsWith("[")) {
+                result.append("<br/><br/>");
+            } else {
+                result.append("<br/>");
+            }
+        }
+
+        return result.toString();
+    }
 }
