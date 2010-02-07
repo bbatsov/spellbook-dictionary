@@ -2,6 +2,8 @@ package com.drowltd.dictionary.ui.desktop;
 
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultListModel;
@@ -69,6 +71,17 @@ public class CompletableJTextField extends JTextField {
             public void focusLost(FocusEvent e) {
                 listWindow.setVisible(false);
             }
+        });
+
+        addKeyListener(new KeyAdapter() {
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (KeyEvent.VK_ESCAPE == e.getKeyCode()) {
+                    listWindow.setVisible(false);
+                }
+            }
+
         });
     }
 
