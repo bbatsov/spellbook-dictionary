@@ -1,5 +1,5 @@
 #summary Spellbook-dictionary home page.
-======English [http://code.google.com/p/spellbook-dictionary/ http://www.secretskypeemoticons.com/skype/emoticons/flags/gb.png] Bulgarian [http://.....com/ http://www.secretskypeemoticons.com/skype/emoticons/flags/bg.png]======
+======English [http://code.google.com/p/spellbook-dictionary/ http://www.secretskypeemoticons.com/skype/emoticons/flags/gb.png] Bulgarian [http://code.google.com/p/spellbook-dictionary/wiki/Honepage_bg http://www.secretskypeemoticons.com/skype/emoticons/flags/bg.png]======
 
 
 Spellbook е речник с отворен код написан на Java. За да пуснете програмата е необходимо да имате инсталиран [http://www.java.com/en/download/manual.jsp JRE]. Речникът Spellbook може да свалите от [http://code.google.com/p/spellbook-dictionary/downloads/list тук].
