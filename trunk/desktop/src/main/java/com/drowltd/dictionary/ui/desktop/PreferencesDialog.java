@@ -245,10 +245,6 @@ public class PreferencesDialog extends javax.swing.JDialog {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
         languageComboBox = new javax.swing.JComboBox();
         lookAndFeelComboBox = new javax.swing.JComboBox();
         defaultDictionaryComboBox = new javax.swing.JComboBox();
@@ -256,9 +252,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
         minimizeToTrayOnCloseCheckBox = new javax.swing.JCheckBox();
         clipboardIntegrationCheckBox = new javax.swing.JCheckBox();
         trayPopupCheckBox = new javax.swing.JCheckBox();
-        jLabel8 = new javax.swing.JLabel();
         showMemoryUsageCheckBox = new javax.swing.JCheckBox();
-        jLabel14 = new javax.swing.JLabel();
         alwaysOnTopCheckBox = new javax.swing.JCheckBox();
         jPanel2 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
@@ -288,14 +282,6 @@ public class PreferencesDialog extends javax.swing.JDialog {
 
         jLabel3.setText(bundle.getString("DefaultDictionary(Label)")); // NOI18N
 
-        jLabel4.setText(bundle.getString("MinimizeToTray(Label)")); // NOI18N
-
-        jLabel5.setText(bundle.getString("CloseToTray(Label)")); // NOI18N
-
-        jLabel6.setText(bundle.getString("ClipboardIntegration(Label)")); // NOI18N
-
-        jLabel7.setText(bundle.getString("TrayPopup(Label)")); // NOI18N
-
         languageComboBox.setModel(new DefaultComboBoxModel(new String[] {TRANSLATOR.translate("English(Item)"), TRANSLATOR.translate("Bulgarian(Item)")}));
         languageComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -307,15 +293,22 @@ public class PreferencesDialog extends javax.swing.JDialog {
 
         defaultDictionaryComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
+        minimizeToTrayCheckBox.setText(bundle.getString("MinimizeToTray(Label)")); // NOI18N
+
+        minimizeToTrayOnCloseCheckBox.setText(bundle.getString("CloseToTray(Label)")); // NOI18N
+
+        clipboardIntegrationCheckBox.setText(bundle.getString("ClipboardIntegration(Label)")); // NOI18N
         clipboardIntegrationCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 clipboardIntegrationCheckBoxActionPerformed(evt);
             }
         });
 
-        jLabel8.setText(bundle.getString("ShowMemory(Label)")); // NOI18N
+        trayPopupCheckBox.setText(bundle.getString("TrayPopup(Label)")); // NOI18N
 
-        jLabel14.setText(bundle.getString("AlwaysOnTop(Label)")); // NOI18N
+        showMemoryUsageCheckBox.setText(bundle.getString("ShowMemory(Label)")); // NOI18N
+
+        alwaysOnTopCheckBox.setText(bundle.getString("AlwaysOnTop(Label)")); // NOI18N
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -332,34 +325,16 @@ public class PreferencesDialog extends javax.swing.JDialog {
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 421, Short.MAX_VALUE)
                         .addComponent(lookAndFeelComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 452, Short.MAX_VALUE)
-                        .addComponent(minimizeToTrayCheckBox))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 395, Short.MAX_VALUE)
-                        .addComponent(minimizeToTrayOnCloseCheckBox))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 370, Short.MAX_VALUE)
-                        .addComponent(clipboardIntegrationCheckBox))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 426, Short.MAX_VALUE)
-                        .addComponent(trayPopupCheckBox))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel8)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 419, Short.MAX_VALUE)
-                        .addComponent(showMemoryUsageCheckBox))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel14))
+                        .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 384, Short.MAX_VALUE)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(defaultDictionaryComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(alwaysOnTopCheckBox))))
+                        .addComponent(defaultDictionaryComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(minimizeToTrayCheckBox)
+                    .addComponent(minimizeToTrayOnCloseCheckBox)
+                    .addComponent(clipboardIntegrationCheckBox)
+                    .addComponent(trayPopupCheckBox)
+                    .addComponent(showMemoryUsageCheckBox)
+                    .addComponent(alwaysOnTopCheckBox))
                 .addContainerGap())
         );
 
@@ -381,30 +356,18 @@ public class PreferencesDialog extends javax.swing.JDialog {
                     .addComponent(jLabel3)
                     .addComponent(defaultDictionaryComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(minimizeToTrayCheckBox))
+                .addComponent(minimizeToTrayCheckBox)
                 .addGap(18, 18, 18)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(minimizeToTrayOnCloseCheckBox))
+                .addComponent(minimizeToTrayOnCloseCheckBox)
                 .addGap(18, 18, 18)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(clipboardIntegrationCheckBox))
+                .addComponent(clipboardIntegrationCheckBox)
                 .addGap(18, 18, 18)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(trayPopupCheckBox))
+                .addComponent(trayPopupCheckBox)
                 .addGap(18, 18, 18)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
-                    .addComponent(showMemoryUsageCheckBox))
-                .addGap(13, 13, 13)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel14)
-                    .addComponent(alwaysOnTopCheckBox))
-                .addContainerGap(34, Short.MAX_VALUE))
+                .addComponent(showMemoryUsageCheckBox)
+                .addGap(18, 18, 18)
+                .addComponent(alwaysOnTopCheckBox)
+                .addContainerGap(29, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -612,14 +575,8 @@ public class PreferencesDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;

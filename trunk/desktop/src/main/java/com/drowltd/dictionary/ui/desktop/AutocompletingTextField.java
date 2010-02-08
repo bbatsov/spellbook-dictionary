@@ -79,6 +79,7 @@ public class AutocompletingTextField extends JTextField {
 
         listWindow = new JWindow(frame);
         listWindow.getContentPane().add(listScroller);
+        listWindow.setFocusable(true);
 
         addKeyListener(new KeyAdapter() {
 
