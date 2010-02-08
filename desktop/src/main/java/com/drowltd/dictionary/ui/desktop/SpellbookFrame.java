@@ -8,9 +8,12 @@ import com.drowltd.dictionary.core.i18n.Translator;
 import com.drowltd.dictionary.core.preferences.PreferencesManager;
 import com.drowltd.dictionary.ui.desktop.IconManager.IconSize;
 import com.drowltd.dictionary.ui.desktop.spellcheck.SpellCheckFrame;
+import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Rectangle;
 import java.awt.TrayIcon;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -108,7 +111,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
         initComponents();
 
         // we need to pass the completable search field a reference to the word list
-        ((CompletableJTextField)wordSearchField).setWordsList(wordsList);
+        ((AutocompletingTextField)wordSearchField).setWordsList(wordsList);
+        ((AutocompletingTextField)wordSearchField).setFrame(this);
 
         // monitor any changes in the search text field
         wordSearchField.getDocument().addDocumentListener(new DocumentListener() {
@@ -127,6 +131,15 @@ public class SpellbookFrame extends javax.swing.JFrame {
             public void changedUpdate(DocumentEvent e) {
                 onSearchChange();
             }
+        });
+
+        addComponentListener(new ComponentAdapter() {
+
+            @Override
+            public void componentMoved(ComponentEvent e) {
+                ((AutocompletingTextField)wordSearchField).showCompletions();
+            }
+
         });
 
         // add the context popup
@@ -159,7 +172,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         // in case the user types enough backspaces
         if (searchString.isEmpty()) {
-            clear();
+            //();
         }
 
         String approximation;
@@ -232,7 +245,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         LOGGER.info("Clear action invoked");
 
         wordSearchField.setText(null);
-        wordSearchField.requestFocus();
+        wordSearchField.requestFocusInWindow();
         wordsList.ensureIndexIsVisible(0);
         wordsList.clearSelection();
         updateWordMenuItem.setEnabled(false);
@@ -428,7 +441,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        wordSearchField = new CompletableJTextField();
+        wordSearchField = new AutocompletingTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         wordsList = new javax.swing.JList();
         clearButton = new javax.swing.JButton();
@@ -725,11 +738,16 @@ public class SpellbookFrame extends javax.swing.JFrame {
         if (!wordsList.isSelectionEmpty()) {
             int selectedIndex = wordsList.getSelectedIndex();
 
-            String selectedWord = words.get(selectedIndex);
+            final String selectedWord = words.get(selectedIndex);
             
+            // word field needs to be updated in a separate thread
             if (!wordSearchField.hasFocus()) {
-                wordSearchField.setText(selectedWord);
-                wordSearchField.selectAll();
+                EventQueue.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        wordSearchField.setText(selectedWord);
+                    }
+                });
             }
 
             wordTranslationTextPane.setText(SwingUtil.formatTranslation(selectedWord, databaseService.getTranslation(selectedDictionary, words.get(selectedIndex))));
@@ -830,7 +848,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
     private void wordSearchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_wordSearchFieldActionPerformed
         wordSearchField.selectAll();
-        CompletableJTextField completableJTextField = (CompletableJTextField) wordSearchField;
+        AutocompletingTextField completableJTextField = (AutocompletingTextField) wordSearchField;
 
         completableJTextField.addCompletion(wordSearchField.getText());
     }//GEN-LAST:event_wordSearchFieldActionPerformed
