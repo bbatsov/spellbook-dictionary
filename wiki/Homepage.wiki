@@ -1,0 +1,59 @@
+#summary Spellbook-dictionary home page.
+#labels Featured
+
+==Introduction==
+
+Spellbook is an open source dictionary written in Java.
+
+
+ http://i49.tinypic.com/6dv9mp.jpg
+
+
+ * Supported Dictionaries
+    # English - Bulgarian containing more then 45000 words.
+    # Bulgarian - English containing more then 43000 words.
+
+----
+
+==Features==
+
+
+===_Exam Module :_===
+
+
+  http://i48.tinypic.com/2qsvz7q.jpg
+
+
+  * English-Bulgarian and Bulgarian-English exam.
+  * Three levels of difficulty and custom number of words to be used.
+  * Countdown timer for the answer.
+  * Wrong words checker.
+
+
+===_Spell Checker :_===
+
+
+  http://i45.tinypic.com/14xkx04.jpg
+
+
+  * English and Bulgarian spell check.
+  * Correct word suggestion.
+
+
+===_Clipboard integration :_===
+
+
+  http://i50.tinypic.com/elejx1.jpg
+
+
+Allows you to view meaning of a copied to clipboard word. If you enable that function, small balloon will pop-up from system tray every time you copy something.
+
+
+===_Look&Feel and Languages_===
+
+
+  http://i46.tinypic.com/2nukj6p.jpg
+
+
+  * In preferences menu you can choose between few look&feels.
+  * Language: English, Bulgarian.
