@@ -3,7 +3,7 @@
 
 ==Introduction==
 
-Spellbook is an open source dictionary written in Java.
+Spellbook is an open source dictionary written in Java. In order to run the application you need [http://www.java.com/en/download/manual.jsp installed JRE]. Spellbook dictinary can be downloaded from [http://code.google.com/p/spellbook-dictionary/downloads/list here].
 
 
  http://i49.tinypic.com/6dv9mp.jpg
@@ -49,7 +49,7 @@ Spellbook is an open source dictionary written in Java.
 Allows you to view meaning of a copied to clipboard word. If you enable that function, small balloon will pop-up from system tray every time you copy something.
 
 
-===_Look&Feel and Languages_===
+===_Look&Feel and Languages :_===
 
 
   http://i46.tinypic.com/2nukj6p.jpg
