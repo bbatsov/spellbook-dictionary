@@ -398,7 +398,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
         wordsList.setFont(font);
         wordTranslationTextPane.setFont(font);
         statusBar.setFont(font);
-        drowLabel.setFont(font);
         clearButton.setFont(font);
     }
 
@@ -441,17 +440,19 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        wordSearchField = new AutocompletingTextField();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        wordsList = new javax.swing.JList();
-        clearButton = new javax.swing.JButton();
-        matchLabel = new javax.swing.JLabel();
-        drowLabel = new javax.swing.JLabel();
         statusBar = new javax.swing.JLabel();
         memoryProgressBar = new javax.swing.JProgressBar();
         runGcButton = new javax.swing.JButton();
+        jSplitPane1 = new javax.swing.JSplitPane();
+        jPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
+        wordsList = new javax.swing.JList();
+        wordSearchField = new AutocompletingTextField();
+        jPanel3 = new javax.swing.JPanel();
+        clearButton = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
         wordTranslationTextPane = new javax.swing.JTextPane();
+        matchLabel = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         restartMenuItem = new javax.swing.JMenuItem();
@@ -477,38 +478,12 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        wordSearchField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                wordSearchFieldActionPerformed(evt);
-            }
-        });
-
-        wordsList.setModel(new WordsListModel(words));
-        wordsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        wordsList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                wordsListValueChanged(evt);
-            }
-        });
-        jScrollPane1.setViewportView(wordsList);
-
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("i18n/SpellbookForm"); // NOI18N
-        clearButton.setText(bundle.getString("ClearButton(Label)")); // NOI18N
-        clearButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                clearButtonActionPerformed(evt);
-            }
-        });
-
-        matchLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/bell2_red.png"))); // NOI18N
-
-        drowLabel.setText(bundle.getString("FuelledBy(Label)")); // NOI18N
-
         statusBar.setText("Status");
 
         memoryProgressBar.setStringPainted(true);
 
         runGcButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/recycle.png"))); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("i18n/SpellbookForm"); // NOI18N
         runGcButton.setToolTipText(bundle.getString("RunGC(ToolTip)")); // NOI18N
         runGcButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -516,9 +491,79 @@ public class SpellbookFrame extends javax.swing.JFrame {
             }
         });
 
+        jSplitPane1.setDividerLocation(160);
+
+        wordsList.setModel(new WordsListModel(words));
+        wordsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        wordsList.setToolTipText(bundle.getString("WordsList(ToolTip)")); // NOI18N
+        wordsList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                wordsListValueChanged(evt);
+            }
+        });
+        jScrollPane2.setViewportView(wordsList);
+
+        wordSearchField.setToolTipText(bundle.getString("WordSearch(ToolTip)")); // NOI18N
+        wordSearchField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                wordSearchFieldActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
+            .addComponent(wordSearchField, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(wordSearchField, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE))
+        );
+
+        jSplitPane1.setLeftComponent(jPanel2);
+
+        clearButton.setText(bundle.getString("ClearButton(Label)")); // NOI18N
+        clearButton.setToolTipText(bundle.getString("ClearButton(ToolTip)")); // NOI18N
+        clearButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearButtonActionPerformed(evt);
+            }
+        });
+
         wordTranslationTextPane.setContentType("text/html");
         wordTranslationTextPane.setEditable(false);
-        jScrollPane2.setViewportView(wordTranslationTextPane);
+        jScrollPane1.setViewportView(wordTranslationTextPane);
+
+        matchLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/bell2_grey.png"))); // NOI18N
+        matchLabel.setToolTipText(bundle.getString("NoMatchFound(ToolTip)")); // NOI18N
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(clearButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(matchLabel)
+                .addContainerGap(436, Short.MAX_VALUE))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 577, Short.MAX_VALUE)
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(clearButton)
+                    .addComponent(matchLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE))
+        );
+
+        jSplitPane1.setRightComponent(jPanel3);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -528,43 +573,20 @@ public class SpellbookFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(wordSearchField)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE))
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(16, 16, 16)
-                                .addComponent(clearButton, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(matchLabel)
-                                .addGap(18, 18, 18)
-                                .addComponent(drowLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 522, Short.MAX_VALUE))))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(statusBar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 508, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 520, Short.MAX_VALUE)
                         .addComponent(memoryProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(runGcButton)))
+                        .addComponent(runGcButton))
+                    .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 743, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(wordSearchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(clearButton)
-                    .addComponent(matchLabel)
-                    .addComponent(drowLabel))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(6, 6, 6)
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(statusBar)
                     .addComponent(runGcButton)
@@ -734,35 +756,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void wordsListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_wordsListValueChanged
-        if (!wordsList.isSelectionEmpty()) {
-            int selectedIndex = wordsList.getSelectedIndex();
-
-            final String selectedWord = words.get(selectedIndex);
-            
-            // word field needs to be updated in a separate thread
-            if (!wordSearchField.hasFocus()) {
-                EventQueue.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        wordSearchField.setText(selectedWord);
-                    }
-                });
-            }
-
-            wordTranslationTextPane.setText(SwingUtil.formatTranslation(selectedWord, databaseService.getTranslation(selectedDictionary, words.get(selectedIndex))));
-            wordTranslationTextPane.setCaretPosition(0);
-            matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
-            matchLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
-
-            updateWordMenuItem.setEnabled(true);
-        }
-    }//GEN-LAST:event_wordsListValueChanged
-
-    private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearButtonActionPerformed
-        clear();
-    }//GEN-LAST:event_clearButtonActionPerformed
-
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
         saveFrameState();
 
@@ -847,11 +840,40 @@ public class SpellbookFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_runGcButtonActionPerformed
 
     private void wordSearchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_wordSearchFieldActionPerformed
-        wordSearchField.selectAll();
+wordSearchField.selectAll();
         AutocompletingTextField completableJTextField = (AutocompletingTextField) wordSearchField;
 
-        completableJTextField.addCompletion(wordSearchField.getText());
+        completableJTextField.addCompletion(wordSearchField.getText());        // TODO add your handling code here:
     }//GEN-LAST:event_wordSearchFieldActionPerformed
+
+    private void wordsListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_wordsListValueChanged
+if (!wordsList.isSelectionEmpty()) {
+            int selectedIndex = wordsList.getSelectedIndex();
+
+            final String selectedWord = words.get(selectedIndex);
+
+            // word field needs to be updated in a separate thread
+            if (!wordSearchField.hasFocus()) {
+                EventQueue.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        wordSearchField.setText(selectedWord);
+                    }
+                });
+            }
+
+            wordTranslationTextPane.setText(SwingUtil.formatTranslation(selectedWord, databaseService.getTranslation(selectedDictionary, words.get(selectedIndex))));
+            wordTranslationTextPane.setCaretPosition(0);
+            matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
+            matchLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
+
+            updateWordMenuItem.setEnabled(true);
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_wordsListValueChanged
+
+    private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearButtonActionPerformed
+    clear();        // TODO add your handling code here:
+    }//GEN-LAST:event_clearButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
@@ -860,7 +882,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private javax.swing.JButton clearButton;
     private javax.swing.JMenuItem copyMenuItem;
     private javax.swing.JMenuItem cutMenuItem;
-    private javax.swing.JLabel drowLabel;
     private javax.swing.JMenuItem enBgDictMenuItem;
     private javax.swing.JMenuItem examMenuItem;
     private javax.swing.JMenuItem exitMenuItem;
@@ -872,10 +893,13 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
+    private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JLabel matchLabel;
     private javax.swing.JProgressBar memoryProgressBar;
     private javax.swing.JMenuItem pasteMenuItem;
