@@ -1,0 +1,62 @@
+#summary Spellbook-dictionary home page.
+======English [http://code.google.com/p/spellbook-dictionary/ http://www.secretskypeemoticons.com/skype/emoticons/flags/gb.png] Bulgarian [http://.....com/ http://www.secretskypeemoticons.com/skype/emoticons/flags/bg.png]======
+
+
+Spellbook е речник с отворен код написан на Java. За да пуснете програмата е необходимо да имате инсталиран [http://www.java.com/en/download/manual.jsp JRE]. Речникът Spellbook може да свалите от [http://code.google.com/p/spellbook-dictionary/downloads/list тук].
+
+
+ http://i49.tinypic.com/6dv9mp.jpg
+
+
+ * Поддържани речници:
+    # Английско - Български съдържащ повече от 45000 думи.
+    # Българо - Английски съдържащ повече от 43000 думи.
+
+<br />
+----
+
+==Функционалност==
+
+
+===_Изпитен модул :_===
+
+
+  http://i48.tinypic.com/2qsvz7q.jpg
+
+
+  * Английско - Български и Българо - Английски изпит.
+  * Три нива на трудност и възможност за избор на броя думи в изпита.
+  * Таймер отброяващ времето за отговор.
+  * Проверка на сгрешените думи.
+
+
+===_Проверка на правопис :_===
+
+
+  http://i45.tinypic.com/14xkx04.jpg
+
+
+  * Проверка на правопис за Английски и Български език.
+  * Предложение за правилна дума.
+
+
+===_Интеграция с clipboard :_===
+
+
+  http://i50.tinypic.com/elejx1.jpg
+
+
+Тази функция показва автоматично превода на копирана дума.
+
+
+===_Look&Feel и езици :_===
+
+
+  http://i46.tinypic.com/2nukj6p.jpg
+
+
+  * От панела с настройки може да изберете различни look&feels.
+  * Езици: Английски, Български.
+
+<br />
+----
