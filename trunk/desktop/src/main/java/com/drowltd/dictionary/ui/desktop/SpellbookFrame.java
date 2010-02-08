@@ -21,6 +21,8 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.text.DefaultEditorKit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,7 +107,27 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         initComponents();
 
+        // we need to pass the completable search field a reference to the word list
         ((CompletableJTextField)wordSearchField).setWordsList(wordsList);
+
+        // monitor any changes in the search text field
+        wordSearchField.getDocument().addDocumentListener(new DocumentListener() {
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                onSearchChange();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                onSearchChange();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                onSearchChange();
+            }
+        });
 
         // add the context popup
         ContextMenuMouseListener contextMenuMouseListener = new ContextMenuMouseListener();
@@ -129,6 +151,47 @@ public class SpellbookFrame extends javax.swing.JFrame {
             showMemoryUsage();
         } else {
             hideMemoryUsage();
+        }
+    }
+
+    private void onSearchChange() {
+        String searchString = wordSearchField.getText();
+
+        // in case the user types enough backspaces
+        if (searchString.isEmpty()) {
+            clear();
+        }
+
+        String approximation;
+
+        // if we have an exact match for the search string or the search string in lowercase
+        if (words.contains(searchString) || words.contains(searchString.toLowerCase())) {
+            int index = words.indexOf(searchString);
+
+            // if the index is negative the match was for the lowercase version
+            if (index < 0) {
+                searchString = searchString.toLowerCase();
+                index = words.indexOf(searchString);
+            }
+
+            // invoking this method will trigger the list value changed listener,
+            // so there is no need to obtain the translation explicitly here
+            wordsList.setSelectedIndex(index);
+            wordsList.ensureIndexIsVisible(index);
+
+            matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
+            matchLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
+        } else if ((approximation = databaseService.getApproximation(selectedDictionary, searchString)) != null) {
+            int index = words.indexOf(approximation);
+
+            wordsList.setSelectedIndex(index);
+            wordsList.ensureIndexIsVisible(index);
+
+            matchLabel.setIcon(IconManager.getImageIcon("bell2_gold.png", IconSize.SIZE24));
+            matchLabel.setToolTipText(TRANSLATOR.translate("PartialMatchFound(ToolTip)"));
+        } else {
+            matchLabel.setIcon(IconManager.getImageIcon("bell2_red.png", IconSize.SIZE24));
+            matchLabel.setToolTipText(TRANSLATOR.translate("NoMatchFound(ToolTip)"));
         }
     }
 
@@ -406,11 +469,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
                 wordSearchFieldActionPerformed(evt);
             }
         });
-        wordSearchField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                wordSearchFieldKeyReleased(evt);
-            }
-        });
 
         wordsList.setModel(new WordsListModel(words));
         wordsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
@@ -682,47 +740,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
             updateWordMenuItem.setEnabled(true);
         }
     }//GEN-LAST:event_wordsListValueChanged
-
-    private void wordSearchFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_wordSearchFieldKeyReleased
-        String searchString = wordSearchField.getText();
-
-        // in case the user types enough backspaces
-        if (searchString.isEmpty()) {
-            clear();
-        }
-
-        String approximation;
-
-        // if we have an exact match for the search string or the search string in lowercase
-        if (words.contains(searchString) || words.contains(searchString.toLowerCase())) {
-            int index = words.indexOf(searchString);
-
-            // if the index is negative the match was for the lowercase version
-            if (index < 0) {
-                searchString = searchString.toLowerCase();
-                index = words.indexOf(searchString);
-            }
-
-            // invoking this method will trigger the list value changed listener,
-            // so there is no need to obtain the translation explicitly here
-            wordsList.setSelectedIndex(index);
-            wordsList.ensureIndexIsVisible(index);
-
-            matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
-            matchLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
-        } else if ((approximation = databaseService.getApproximation(selectedDictionary, searchString)) != null) {
-            int index = words.indexOf(approximation);
-
-            wordsList.setSelectedIndex(index);
-            wordsList.ensureIndexIsVisible(index);
-
-            matchLabel.setIcon(IconManager.getImageIcon("bell2_gold.png", IconSize.SIZE24));
-            matchLabel.setToolTipText(TRANSLATOR.translate("PartialMatchFound(ToolTip)"));
-        } else {
-            matchLabel.setIcon(IconManager.getImageIcon("bell2_red.png", IconSize.SIZE24));
-            matchLabel.setToolTipText(TRANSLATOR.translate("NoMatchFound(ToolTip)"));
-        }
-    }//GEN-LAST:event_wordSearchFieldKeyReleased
 
     private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearButtonActionPerformed
         clear();
