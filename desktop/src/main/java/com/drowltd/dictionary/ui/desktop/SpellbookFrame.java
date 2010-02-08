@@ -540,6 +540,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         jScrollPane1.setViewportView(wordTranslationTextPane);
 
         matchLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/bell2_grey.png"))); // NOI18N
+        matchLabel.setText(bundle.getString("FuelledBy(Label)")); // NOI18N
         matchLabel.setToolTipText(bundle.getString("NoMatchFound(ToolTip)")); // NOI18N
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -550,7 +551,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
                 .addComponent(clearButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(matchLabel)
-                .addContainerGap(436, Short.MAX_VALUE))
+                .addContainerGap(96, Short.MAX_VALUE))
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 577, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
