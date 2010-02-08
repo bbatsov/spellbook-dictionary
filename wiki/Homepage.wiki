@@ -1,9 +1,9 @@
 #summary Spellbook-dictionary home page.
 #labels Featured
 
-==Introduction==
+======English [http://code.google.com/p/spellbook-dictionary/ http://www.secretskypeemoticons.com/skype/emoticons/flags/gb.png] Bulgarian [http://code.google.com/p/spellbook-dictionary/wiki/Honepage_bg http://www.secretskypeemoticons.com/skype/emoticons/flags/bg.png]======
 
-Spellbook is an open source dictionary written in Java. In order to run the application you need [http://www.java.com/en/download/manual.jsp installed JRE]. Spellbook dictionary can be downloaded from [http://code.google.com/p/spellbook-dictionary/downloads/list here].
+Spellbook is an open source dictionary written in Java. In order to run the application you need installed [http://www.java.com/en/download/manual.jsp JRE]. Spellbook dictionary can be downloaded from [http://code.google.com/p/spellbook-dictionary/downloads/list here].
 
 
  http://i49.tinypic.com/6dv9mp.jpg
@@ -13,6 +13,7 @@ Spellbook is an open source dictionary written in Java. In order to run the appl
     # English - Bulgarian containing more then 45000 words.
     # Bulgarian - English containing more then 43000 words.
 
+<br />
 ----
 
 ==Features==
@@ -57,3 +58,6 @@ Allows you to view meaning of a copied to clipboard word. If you enable that fun
 
   * In preferences menu you can choose between few look&feels.
   * Language: English, Bulgarian.
+
+<br />
+----
