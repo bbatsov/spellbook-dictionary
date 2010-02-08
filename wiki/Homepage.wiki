@@ -3,7 +3,7 @@
 
 ==Introduction==
 
-Spellbook is an open source dictionary written in Java. In order to run the application you need [http://www.java.com/en/download/manual.jsp installed JRE]. Spellbook dictinary can be downloaded from [http://code.google.com/p/spellbook-dictionary/downloads/list here].
+Spellbook is an open source dictionary written in Java. In order to run the application you need [http://www.java.com/en/download/manual.jsp installed JRE]. Spellbook dictionary can be downloaded from [http://code.google.com/p/spellbook-dictionary/downloads/list here].
 
 
  http://i49.tinypic.com/6dv9mp.jpg
