@@ -74,6 +74,7 @@ public class SpellbookTray {
                 if (appFrame.getState() == JFrame.ICONIFIED) {
                     LOGGER.info("App is iconified");
                     appFrame.setState(JFrame.NORMAL);
+                    appFrame.toFront();
                 }
 
                 if (!appFrame.isVisible()) {
@@ -108,6 +109,7 @@ public class SpellbookTray {
             public void actionPerformed(ActionEvent e) {
                 LOGGER.info("About dialog opened from tray");
                 AboutDialog aboutDialog = new AboutDialog(appFrame, true);
+                aboutDialog.setLocationRelativeTo(appFrame.isVisible() ? appFrame : null);
                 aboutDialog.setVisible(true);
             }
         });

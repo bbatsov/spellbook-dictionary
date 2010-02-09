@@ -59,4 +59,12 @@ public class PreferencesManager {
     public void putBoolean(String key, boolean value) {
         preferences.putBoolean(key, value);
     }
+
+    public void putDouble(String key, double value) {
+        preferences.putDouble(key, value);
+    }
+
+    public double getDouble(String key, double def) {
+       return preferences.getDouble(key, def);
+    }
 }

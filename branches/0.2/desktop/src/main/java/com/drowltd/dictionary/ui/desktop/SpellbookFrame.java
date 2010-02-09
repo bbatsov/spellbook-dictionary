@@ -18,10 +18,8 @@ import com.drowltd.dictionary.core.i18n.Translator;
 import com.drowltd.dictionary.core.preferences.PreferencesManager;
 import com.drowltd.dictionary.ui.desktop.IconManager.IconSize;
 import com.drowltd.dictionary.ui.desktop.spellcheck.SpellCheckFrame;
-import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Point;
-import java.awt.Toolkit;
+import java.awt.Rectangle;
 import java.awt.TrayIcon;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -82,15 +80,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         words = databaseService.getWordsFromDictionary(selectedDictionary);
 
-        //dynamically determine an adequate frame size
-        Toolkit toolkit = Toolkit.getDefaultToolkit();
-
-        Dimension screenSize = toolkit.getScreenSize();
-
-        setSize(screenSize.width / 2, screenSize.height / 2);
-        // center on screen
-        setLocationRelativeTo(null);
-
+        
         //set the frame title
         setTitle(TRANSLATOR.translate("ApplicationName(Title)"));
 
@@ -120,6 +110,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
                 if (PM.getBoolean("CLOSE_TO_TRAY", false)) {
                     LOGGER.info("Minimizing Spellbook to tray on window close");
                     setVisible(false);
+                } else {
+                    saveFrameState();
                 }
             }
         });
@@ -151,6 +143,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         wordsList.clearSelection();
         wordTranslationTextArea.setText(null);
         matchLabel.setIcon(IconManager.getImageIcon("bell2_red.png", IconSize.SIZE24));
+        lastTransfer = null;
     }
 
     public void activateClipboardMonitoring() {
@@ -206,7 +199,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
                             matchLabel.setToolTipText(TRANSLATOR.translate("PartialMatchFound(ToolTip)"));
                         }
 
-                        if (match && !SpellbookFrame.this.isVisible()) {
+                        // the tray popup translation should appear is the main frame is either not visible or minimized
+                        if ((trayIcon != null) && match && (!SpellbookFrame.this.isVisible() || (SpellbookFrame.this.getState() == JFrame.ICONIFIED)) && PM.getBoolean("TRAY_POPUP", false)) {
                             trayIcon.displayMessage(foundWord, wordTranslationTextArea.getText(), TrayIcon.MessageType.INFO);
                         }
                     }
@@ -249,6 +243,14 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
             setSelectedFont(new Font(fontName, fontStyle, fontSize));
         }
+    }
+
+     private void saveFrameState() {
+        Rectangle r = getBounds();
+        PM.putDouble("FRAME_X", r.getX());
+        PM.putDouble("FRAME_Y", r.getY());
+        PM.putDouble("FRAME_WIDTH", r.getWidth());
+        PM.putDouble("FRAME_HEIGHT", r.getHeight());
     }
 
     private boolean verifyDbPresence() {
@@ -360,6 +362,11 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        wordSearchField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                wordSearchFieldActionPerformed(evt);
+            }
+        });
         wordSearchField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 wordSearchFieldKeyReleased(evt);
@@ -588,6 +595,13 @@ public class SpellbookFrame extends javax.swing.JFrame {
             return;
         }
 
+        String selectedWord = words.get(selectedIndex);
+            
+            if (!wordSearchField.hasFocus()) {
+                wordSearchField.setText(selectedWord);
+                wordSearchField.selectAll();
+            }
+
         wordTranslationTextArea.setText(databaseService.getTranslation(selectedDictionary, words.get(selectedIndex)));
         wordTranslationTextArea.setCaretPosition(0);
         matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
@@ -741,6 +755,11 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
             SwingUtilities.updateComponentTreeUI(this);
         }
+
+        // tray options should be disabled is the tray is not supported
+        if (trayIcon == null) {
+            preferencesDialog.disableTrayOptions();
+        }
     }//GEN-LAST:event_prefsMenuItemActionPerformed
 
     private void fontMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fontMenuItemActionPerformed
@@ -784,6 +803,11 @@ public class SpellbookFrame extends javax.swing.JFrame {
         ExamDialog examDialog = new ExamDialog(this, true);
         examDialog.showExamDialog();
     }//GEN-LAST:event_examMenuItemActionPerformed
+
+    private void wordSearchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_wordSearchFieldActionPerformed
+        wordSearchField.selectAll();
+    }//GEN-LAST:event_wordSearchFieldActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JMenuItem bgEnDictMenuItem;
