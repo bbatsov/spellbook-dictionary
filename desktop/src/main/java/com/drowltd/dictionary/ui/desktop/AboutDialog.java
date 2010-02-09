@@ -193,6 +193,7 @@ public class AboutDialog extends javax.swing.JDialog {
 
     private void licenseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_licenseButtonActionPerformed
         URL license = AboutDialog.class.getResource("/gplv3/gpl.html");
+
         try {
             Desktop.getDesktop().browse(license.toURI());
         } catch (URISyntaxException ex) {
@@ -219,24 +220,18 @@ public class AboutDialog extends javax.swing.JDialog {
                 + "\n\t <a href=\"mailto:strannika@gmail.com?subject=Spellbook\">%s</a> <br />"
                 + "\n\t   \n\t</p>\n\t\n  </body>\n</html>\n",
                 TRANSLATOR.translate("ProjectLead"),
-
-                    TRANSLATOR.translate("BozhidarBatsov"),
-
+                TRANSLATOR.translate("BozhidarBatsov"),
                 TRANSLATOR.translate("CoreUiSpellcheck"),
-
-                    TRANSLATOR.translate("IvanValchev"),
-
+                TRANSLATOR.translate("IvanValchev"),
                 TRANSLATOR.translate("ExamModul"),
-
-                    TRANSLATOR.translate("IvanSpasov"),
-                    TRANSLATOR.translate("MiroslavaStancheva"),
-                    TRANSLATOR.translate("GeorgiAngelov"),
-                    TRANSLATOR.translate("BilyanaMeshkova"),
-                    TRANSLATOR.translate("TsvetelinaNikolova"),
-                    TRANSLATOR.translate("NikolayDimitrov"),
-
+                TRANSLATOR.translate("IvanSpasov"),
+                TRANSLATOR.translate("MiroslavaStancheva"),
+                TRANSLATOR.translate("GeorgiAngelov"),
+                TRANSLATOR.translate("BilyanaMeshkova"),
+                TRANSLATOR.translate("TsvetelinaNikolova"),
+                TRANSLATOR.translate("NikolayDimitrov"),
                 TRANSLATOR.translate("AboutDialog"),
-                    TRANSLATOR.translate("AlexanderValchev"));
+                TRANSLATOR.translate("AlexanderValchev"));
 
         infoTextPane.setText(team);
     }//GEN-LAST:event_creditsButtonActionPerformed
@@ -244,11 +239,9 @@ public class AboutDialog extends javax.swing.JDialog {
     private void infoTextPaneHyperlinkUpdate(javax.swing.event.HyperlinkEvent evt) {//GEN-FIRST:event_infoTextPaneHyperlinkUpdate
         if (evt.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
             try {
-                try {
-                    Desktop.getDesktop().mail(evt.getURL().toURI());
-                } catch (IOException ex) {
-                    Logger.getLogger(AboutDialog.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                Desktop.getDesktop().mail(evt.getURL().toURI());
+            } catch (IOException ex) {
+                Logger.getLogger(AboutDialog.class.getName()).log(Level.SEVERE, null, ex);
             } catch (URISyntaxException ex) {
                 Logger.getLogger(AboutDialog.class.getName()).log(Level.SEVERE, null, ex);
             }

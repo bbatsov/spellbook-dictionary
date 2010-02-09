@@ -29,7 +29,7 @@ public class ExamDialog extends javax.swing.JDialog {
     private int maximumWordsProgressBar = 0;
     private Dictionary selectedDictionary = Dictionary.EN_BG;
     private static Difficulty difficulty = Difficulty.EASY;
-    private ExamSettingsDialog examSettingsDialog = new ExamSettingsDialog(this, rootPaneCheckingEnabled);
+    private ExamSettingsDialog examSettingsDialog = new ExamSettingsDialog(this, true);
     
     private int totalWords;
     private int correctWords;
@@ -726,7 +726,7 @@ public class ExamDialog extends javax.swing.JDialog {
 
     private void examResult() {
 
-        ExamResult examResultDialog = new ExamResult(null, rootPaneCheckingEnabled);
+        ExamResult examResultDialog = new ExamResult(null, true);
         examResultDialog.setLocationRelativeTo(this);
         examResultDialog.showExamResult(correctWords, totalWords);
 
