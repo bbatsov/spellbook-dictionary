@@ -30,6 +30,8 @@ import javax.swing.text.DefaultEditorKit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.drowltd.dictionary.core.preferences.PreferencesManager.Preference;
+
 /**
  * Spellbook's main application frame.
  *
@@ -63,7 +65,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         }
 
         try {
-            DatabaseService.init(PM.get("PATH_TO_DB", ""));
+            DatabaseService.init(PM.get(Preference.PATH_TO_DB, ""));
         } catch (DictionaryDbLockedException e) {
             JOptionPane.showMessageDialog(null, TRANSLATOR.translate("AlreadyRunning(Message)"), "Warning", JOptionPane.WARNING_MESSAGE);
             System.exit(0);
@@ -86,7 +88,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
             @Override
             public void windowIconified(WindowEvent e) {
-                if (PM.getBoolean("MIN_TO_TRAY", false)) {
+                if (PM.getBoolean(Preference.MIN_TO_TRAY, false)) {
                     LOGGER.info("Minimizing Spellbook to tray");
                     setVisible(false);
                 }
@@ -99,7 +101,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
             @Override
             public void windowClosing(WindowEvent e) {
-                if (PM.getBoolean("CLOSE_TO_TRAY", false)) {
+                if (PM.getBoolean(Preference.CLOSE_TO_TRAY, false)) {
                     LOGGER.info("Minimizing Spellbook to tray on window close");
                     setVisible(false);
                 } else {
@@ -111,7 +113,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         initComponents();
 
         // restore the divider location from the last session
-        splitPane.setDividerLocation(PM.getInt("DIVIDER_LOCATION", 160));
+        splitPane.setDividerLocation(PM.getInt(Preference.DIVIDER_LOCATION, 160));
 
         // we need to pass the completable search field a reference to the word list
         ((AutocompletingTextField)wordSearchField).setWordsList(wordsList);
@@ -159,11 +161,11 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         setDefaultFont();
 
-        if (PM.getBoolean("CLIPBOARD_INTEGRATION", false)) {
+        if (PM.getBoolean(Preference.CLIPBOARD_INTEGRATION, false)) {
             activateClipboardMonitoring();
         }
 
-        if (PM.getBoolean("SHOW_MEMORY_USAGE", false)) {
+        if (PM.getBoolean(Preference.SHOW_MEMORY_USAGE, false)) {
             showMemoryUsage();
         } else {
             hideMemoryUsage();
@@ -311,8 +313,11 @@ public class SpellbookFrame extends javax.swing.JFrame {
                         }
 
                         // the tray popup translation should appear is the main frame is either not visible or minimized
-                        if ((trayIcon != null) && match && (!SpellbookFrame.this.isVisible() || (SpellbookFrame.this.getState() == JFrame.ICONIFIED)) && PM.getBoolean("TRAY_POPUP", false)) {
-                            trayIcon.displayMessage(foundWord, wordTranslationTextPane.getText(), TrayIcon.MessageType.INFO);
+                        if ((trayIcon != null) && match && (!SpellbookFrame.this.isVisible() ||
+                                (SpellbookFrame.this.getState() == JFrame.ICONIFIED)) &&
+                                PM.getBoolean(Preference.TRAY_POPUP, false)) {
+                            trayIcon.displayMessage(foundWord, wordTranslationTextPane.getText(),
+                                    TrayIcon.MessageType.INFO);
                         }
                     }
                 }
@@ -339,7 +344,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
     }
 
     public void setDefaultFont() {
-        if (PM.get("FONT_NAME", "").isEmpty()) {
+        if (PM.get(Preference.FONT_NAME, "").isEmpty()) {
             // dirty fix for windows - it seem that the default font there is too small, so we set
             // a more appropriate one
             String osName = System.getProperty("os.name");
@@ -348,9 +353,9 @@ public class SpellbookFrame extends javax.swing.JFrame {
                 wordTranslationTextPane.setFont(new Font("Arial", Font.PLAIN, 14));
             }
         } else {
-            String fontName = PM.get("FONT_NAME", "SansSerif");
-            int fontSize = PM.getInt("FONT_SIZE", 14);
-            int fontStyle = PM.getInt("FONT_STYLE", Font.PLAIN);
+            String fontName = PM.get(Preference.FONT_NAME, "SansSerif");
+            int fontSize = PM.getInt(Preference.FONT_SIZE, 14);
+            int fontStyle = PM.getInt(Preference.FONT_STYLE, Font.PLAIN);
 
             setSelectedFont(new Font(fontName, fontStyle, fontSize));
         }
@@ -358,15 +363,15 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
     private void saveFrameState() {
         Rectangle r = getBounds();
-        PM.putDouble("FRAME_X", r.getX());
-        PM.putDouble("FRAME_Y", r.getY());
-        PM.putDouble("FRAME_WIDTH", r.getWidth());
-        PM.putDouble("FRAME_HEIGHT", r.getHeight());
-        PM.putInt("DIVIDER_LOCATION", splitPane.getDividerLocation());
+        PM.putDouble(Preference.FRAME_X, r.getX());
+        PM.putDouble(Preference.FRAME_Y, r.getY());
+        PM.putDouble(Preference.FRAME_WIDTH, r.getWidth());
+        PM.putDouble(Preference.FRAME_HEIGHT, r.getHeight());
+        PM.putInt(Preference.DIVIDER_LOCATION, splitPane.getDividerLocation());
     }
 
     private boolean verifyDbPresence() {
-        final String dbPath = PM.get("PATH_TO_DB", "");
+        final String dbPath = PM.get(Preference.PATH_TO_DB, "");
 
         File file = new File(dbPath);
 
@@ -384,7 +389,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
                 String selectedDbPath = fileChooser.getSelectedFile().getPath();
 
                 if (selectedDbPath.endsWith("dictionary.data.db")) {
-                    PM.put("PATH_TO_DB", selectedDbPath);
+                    PM.put(Preference.PATH_TO_DB, selectedDbPath);
                     return true;
                 } else {
                     return false;

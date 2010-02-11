@@ -14,6 +14,8 @@ import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.util.Locale;
 
+import static com.drowltd.dictionary.core.preferences.PreferencesManager.Preference;
+
 /**
  * The entry point in Spellbook. Here the preferences manager get initialized, some 
  * important settings are take into account(such as the initial look and feel and language)
@@ -39,7 +41,7 @@ public class SpellbookApp {
 
         final PreferencesManager pm = PreferencesManager.getInstance();
 
-        if (pm.get("LANG", "EN").equals("BG")) {
+        if (pm.get(Preference.LANG, "EN").equals("BG")) {
             Locale.setDefault(new Locale("bg", "BG"));
             LOGGER.info("Selected locate is " + Locale.getDefault());
         } else {
@@ -47,7 +49,7 @@ public class SpellbookApp {
         }
 
         try {
-            String selectedLookAndFeel = pm.get("LOOK_AND_FEEL", "System");
+            String selectedLookAndFeel = pm.get(Preference.LOOK_AND_FEEL, "System");
 
             if (selectedLookAndFeel.equals("System")) {
                 // Set System L&F
@@ -77,7 +79,7 @@ public class SpellbookApp {
             public void run() {
                 final SpellbookFrame tAppFrame = new SpellbookFrame();
 
-                if (pm.getBoolean("CLOSE_TO_TRAY", false)) {
+                if (pm.getBoolean(Preference.CLOSE_TO_TRAY, false)) {
                     LOGGER.info("Minimize to tray on close is enabled");
                     tAppFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
                 } else {
@@ -86,11 +88,11 @@ public class SpellbookApp {
                 }
 
                 // restore last size and position of the frame
-                if (pm.getDouble("FRAME_X", 0.0) > 0) {
-                    double x = pm.getDouble("FRAME_X", 0.0);
-                    double y = pm.getDouble("FRAME_Y", 0.0);
-                    double width = pm.getDouble("FRAME_WIDTH", 0.0);
-                    double height = pm.getDouble("FRAME_HEIGHT", 0.0);
+                if (pm.getDouble(Preference.FRAME_X, 0.0) > 0) {
+                    double x = pm.getDouble(Preference.FRAME_X, 0.0);
+                    double y = pm.getDouble(Preference.FRAME_Y, 0.0);
+                    double width = pm.getDouble(Preference.FRAME_WIDTH, 0.0);
+                    double height = pm.getDouble(Preference.FRAME_HEIGHT, 0.0);
 
                     tAppFrame.setBounds((int) x, (int) y, (int) width, (int) height);
                 } else {
@@ -105,7 +107,7 @@ public class SpellbookApp {
                 }
 
                 
-                tAppFrame.setAlwaysOnTop(pm.getBoolean("ALWAYS_ON_TOP", false));
+                tAppFrame.setAlwaysOnTop(pm.getBoolean(Preference.ALWAYS_ON_TOP, false));
 
                 tAppFrame.setVisible(true);
             }

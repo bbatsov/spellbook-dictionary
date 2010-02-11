@@ -15,11 +15,13 @@ import javax.swing.ImageIcon;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 
 /**
  *
  * @author iivalchev
  */
+@Ignore
 public abstract class AbstractDictionaryServiceTest {
 
     static Connection connection;

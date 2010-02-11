@@ -6,6 +6,8 @@ import com.drowltd.dictionary.core.preferences.PreferencesManager;
 import com.drowltd.dictionary.ui.desktop.*;
 import javax.swing.ButtonGroup;
 
+import static com.drowltd.dictionary.core.preferences.PreferencesManager.Preference;
+
 /**
  *
  * @author Georgi Angelov
@@ -318,7 +320,7 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
 
     public void setWordsCount() {
         wordCount = Integer.parseInt(wordCountField.getText());
-        PM.putInt("WORDS", wordCount);
+        PM.putInt(Preference.EXAM_WORDS, wordCount);
 
     }
 
@@ -339,14 +341,14 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
     }
 
     public int setWordsCountUnknown() {
-        return PM.getInt("WORDS", 10);
+        return PM.getInt(Preference.EXAM_WORDS, 10);
     }
 
     public void PMPutCheckbox() {
-        PM.putBoolean("EASY_CHECKBOX", easyRadioButton.isSelected());
-        PM.putBoolean("MEDIUM_CHECKBOX", mediumRadioButton.isSelected());
-        PM.putBoolean("HARD_CHECBOX", hardRadioButton.isSelected());
-        PM.putBoolean("TIMER_CHECKBOX", forTimeCheckBox.isSelected());
+        PM.putBoolean(Preference.EXAM_EASY, easyRadioButton.isSelected());
+        PM.putBoolean(Preference.EXAM_MEDIUM, mediumRadioButton.isSelected());
+        PM.putBoolean(Preference.EXAM_HARD, hardRadioButton.isSelected());
+        PM.putBoolean(Preference.EXAM_TIMER, forTimeCheckBox.isSelected());
     }
 
     public static boolean returnTimerStatus() {
@@ -355,11 +357,11 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
     }
 
     public void showExamSettingsDialog() {              // Thanks to Kiril Kamburov (:
-        wordCountField.setText("" + PM.getInt("WORDS", 10));
-        forTimeCheckBox.setSelected(PM.getBoolean("TIMER_CHECKBOX", false));
-        easyRadioButton.setSelected(PM.getBoolean("EASY_CHECKBOX", true));
-        mediumRadioButton.setSelected(PM.getBoolean("MEDIUM_CHECKBOX", false));
-        hardRadioButton.setSelected(PM.getBoolean("HARD_CHECBOX", false));
+        wordCountField.setText("" + PM.getInt(Preference.EXAM_WORDS, 10));
+        forTimeCheckBox.setSelected(PM.getBoolean(Preference.EXAM_TIMER, false));
+        easyRadioButton.setSelected(PM.getBoolean(Preference.EXAM_EASY, true));
+        mediumRadioButton.setSelected(PM.getBoolean(Preference.EXAM_MEDIUM, false));
+        hardRadioButton.setSelected(PM.getBoolean(Preference.EXAM_HARD, false));
 
 
         setVisible(true);

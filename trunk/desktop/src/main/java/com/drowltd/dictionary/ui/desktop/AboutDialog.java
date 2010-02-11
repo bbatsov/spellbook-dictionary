@@ -95,7 +95,7 @@ public class AboutDialog extends javax.swing.JDialog {
         dictionaryLabel.setForeground(new java.awt.Color(0, 0, 102));
         dictionaryLabel.setText(bundle.getString("Dictionary(Label)")); // NOI18N
 
-        versionLabel.setFont(new java.awt.Font("All Times New Roman", 2, 14));
+        versionLabel.setFont(new java.awt.Font("All Times New Roman", 2, 14)); // NOI18N
         versionLabel.setForeground(new java.awt.Color(0, 0, 102));
         versionLabel.setText(bundle.getString("Version(Label)")); // NOI18N
 
@@ -161,7 +161,7 @@ public class AboutDialog extends javax.swing.JDialog {
                 .addComponent(licenseButton)
                 .addGap(18, 18, 18)
                 .addComponent(closeButton)
-                .addContainerGap(81, Short.MAX_VALUE))
+                .addContainerGap(84, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 329, Short.MAX_VALUE)
