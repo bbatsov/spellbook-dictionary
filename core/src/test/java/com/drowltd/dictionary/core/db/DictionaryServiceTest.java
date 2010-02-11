@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -17,6 +18,7 @@ import static org.junit.Assert.*;
  *
  * @author iivalchev
  */
+@Ignore
 public class DictionaryServiceTest extends AbstractDictionaryServiceTest {
 
     private DictionaryService dictionaryService;

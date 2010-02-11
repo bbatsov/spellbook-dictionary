@@ -17,6 +17,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.drowltd.dictionary.core.preferences.PreferencesManager.Preference;
+
 /**
  *
  * @author bozhidar
@@ -29,9 +31,9 @@ public class PreferencesExtractor {
 
     public static void extract(SpellbookFrame spellbookFrame, PreferencesDialog preferencesDialog) {
         if (preferencesDialog.showDialog()) {
-            String oldLanguage = PM.get("LANG", "EN");
+            String oldLanguage = PM.get(Preference.LANG, "EN");
             final String newLanguage = preferencesDialog.getSelectedLanguage().toString();
-            PM.put("LANG", newLanguage);
+            PM.put(Preference.LANG, newLanguage);
 
             if (!oldLanguage.equals(newLanguage)) {
                 LOGGER.info("Language changed from " + oldLanguage + " to " + newLanguage);
@@ -51,7 +53,7 @@ public class PreferencesExtractor {
                 LOGGER.info("Minimize to tray is disabled");
             }
 
-            PM.putBoolean("MIN_TO_TRAY", minimizeToTrayEnabled);
+            PM.putBoolean(Preference.MIN_TO_TRAY, minimizeToTrayEnabled);
 
             boolean minimizeToTrayOnCloseEnabled = preferencesDialog.isMinimizeToTrayOnCloseEnabled();
 
@@ -63,7 +65,7 @@ public class PreferencesExtractor {
                 spellbookFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             }
 
-            PM.putBoolean("CLOSE_TO_TRAY", minimizeToTrayOnCloseEnabled);
+            PM.putBoolean(Preference.CLOSE_TO_TRAY, minimizeToTrayOnCloseEnabled);
 
             final boolean clipboardIntegrationEnabled = preferencesDialog.isClipboardIntegrationEnabled();
 
@@ -75,7 +77,7 @@ public class PreferencesExtractor {
                 LOGGER.info("Clipboard integration is disabled");
             }
 
-            PM.putBoolean("CLIPBOARD_INTEGRATION", clipboardIntegrationEnabled);
+            PM.putBoolean(Preference.CLIPBOARD_INTEGRATION, clipboardIntegrationEnabled);
 
             final boolean trayPopupEnabled = preferencesDialog.isTrayPopupEnabled();
 
@@ -85,7 +87,7 @@ public class PreferencesExtractor {
                 LOGGER.info("Tray popup is disabled");
             }
 
-            PM.putBoolean("TRAY_POPUP", trayPopupEnabled);
+            PM.putBoolean(Preference.TRAY_POPUP, trayPopupEnabled);
 
             final boolean showMemoryUsageEnabled = preferencesDialog.isShowMemoryUsageEnabled();
 
@@ -97,7 +99,7 @@ public class PreferencesExtractor {
                 spellbookFrame.hideMemoryUsage();
             }
 
-            PM.putBoolean("SHOW_MEMORY_USAGE", showMemoryUsageEnabled);
+            PM.putBoolean(Preference.SHOW_MEMORY_USAGE, showMemoryUsageEnabled);
 
             final boolean alwaysOnTopEnabled = preferencesDialog.isAlwaysOnTopEnabled();
 
@@ -109,27 +111,27 @@ public class PreferencesExtractor {
                 spellbookFrame.setAlwaysOnTop(false);
             }
 
-            PM.putBoolean("ALWAYS_ON_TOP", alwaysOnTopEnabled);
+            PM.putBoolean(Preference.ALWAYS_ON_TOP, alwaysOnTopEnabled);
 
             String selectedLookAndFeel = preferencesDialog.getSelectedLookAndFeel();
 
-            if (!selectedLookAndFeel.equals(PM.get("LOOK_AND_FEEL", "System"))) {
-                PM.put("LOOK_AND_FEEL", selectedLookAndFeel);
+            if (!selectedLookAndFeel.equals(PM.get(Preference.LOOK_AND_FEEL, "System"))) {
+                PM.put(Preference.LOOK_AND_FEEL, selectedLookAndFeel);
             }
 
             // set the font
             final Font selectedFont = preferencesDialog.getSelectedFont();
 
-            PM.put("FONT_NAME", selectedFont.getFontName());
-            PM.putInt("FONT_SIZE", selectedFont.getSize());
-            PM.putInt("FONT_STYLE", selectedFont.getStyle());
+            PM.put(Preference.FONT_NAME, selectedFont.getFontName());
+            PM.putInt(Preference.FONT_SIZE, selectedFont.getSize());
+            PM.putInt(Preference.FONT_STYLE, selectedFont.getStyle());
 
             spellbookFrame.setSelectedFont(selectedFont);
         } else {
             // we need to restore the old look and feel manually since it was changed on selection
             LookAndFeelInfo[] lookAndFeelInfos = UIManager.getInstalledLookAndFeels();
 
-            String selectedLookAndFeel = PM.get("LOOK_AND_FEEL", "System");
+            String selectedLookAndFeel = PM.get(Preference.LOOK_AND_FEEL, "System");
 
             if (selectedLookAndFeel.equals("System")) {
                 try {

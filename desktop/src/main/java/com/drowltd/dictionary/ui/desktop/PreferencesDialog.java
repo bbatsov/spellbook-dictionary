@@ -17,6 +17,8 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import static com.drowltd.dictionary.core.preferences.PreferencesManager.Preference;
+
 /**
  * Spellbook's preferences dialog.
  *
@@ -48,27 +50,27 @@ public class PreferencesDialog extends javax.swing.JDialog {
     private void initGeneralTab(final java.awt.Frame parent) {
         PreferencesManager pm = PreferencesManager.getInstance();
 
-        selectedLanguage = SupportedLanguages.valueOf(pm.get("LANG", "EN"));
+        selectedLanguage = SupportedLanguages.valueOf(pm.get(Preference.LANG, "EN"));
 
         // set the selected values from preferences
         languageComboBox.setSelectedIndex(selectedLanguage == SupportedLanguages.EN ? 0 : 1);
 
-        minimizeToTrayCheckBox.setSelected(pm.getBoolean("MIN_TO_TRAY", false));
+        minimizeToTrayCheckBox.setSelected(pm.getBoolean(Preference.MIN_TO_TRAY, false));
 
-        minimizeToTrayOnCloseCheckBox.setSelected(pm.getBoolean("CLOSE_TO_TRAY", false));
+        minimizeToTrayOnCloseCheckBox.setSelected(pm.getBoolean(Preference.CLOSE_TO_TRAY, false));
 
-        clipboardIntegrationCheckBox.setSelected(pm.getBoolean("CLIPBOARD_INTEGRATION", false));
+        clipboardIntegrationCheckBox.setSelected(pm.getBoolean(Preference.CLIPBOARD_INTEGRATION, false));
 
         if (!clipboardIntegrationCheckBox.isSelected()) {
             trayPopupCheckBox.setEnabled(false);
             trayPopupCheckBox.setSelected(false);
         } else {
-            trayPopupCheckBox.setSelected(pm.getBoolean("TRAY_POPUP", false));
+            trayPopupCheckBox.setSelected(pm.getBoolean(Preference.TRAY_POPUP, false));
         }
 
-        showMemoryUsageCheckBox.setSelected(pm.getBoolean("SHOW_MEMORY_USAGE", false));
+        showMemoryUsageCheckBox.setSelected(pm.getBoolean(Preference.SHOW_MEMORY_USAGE, false));
 
-        alwaysOnTopCheckBox.setSelected(pm.getBoolean("ALWAYS_ON_TOP", false));
+        alwaysOnTopCheckBox.setSelected(pm.getBoolean(Preference.ALWAYS_ON_TOP, false));
 
         // build the look and feel section
         final LookAndFeelInfo[] lookAndFeelInfos = UIManager.getInstalledLookAndFeels();
@@ -81,7 +83,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
 
         lookAndFeelComboBox.setModel(new DefaultComboBoxModel(lookAndFeelNames));
 
-        lookAndFeelComboBox.setSelectedItem(pm.get("LOOK_AND_FEEL", "System"));
+        lookAndFeelComboBox.setSelectedItem(pm.get(Preference.LOOK_AND_FEEL, "System"));
 
         lookAndFeelComboBox.addActionListener(new ActionListener() {
 
@@ -133,14 +135,14 @@ public class PreferencesDialog extends javax.swing.JDialog {
         fontList.setListData(availableFonts);
 
         // select the current font
-        String selectedFontName = pm.get("FONT_NAME", "Serif");
+        String selectedFontName = pm.get(Preference.FONT_NAME, "Serif");
         fontList.setSelectedValue(selectedFontName, true);
 
         fontList.addListSelectionListener(new SelectionUpdater());
 
         fontSizeList.setListData(new Integer[]{8, 10, 12, 14, 16, 18});
 
-        int currentFontSize = pm.getInt("FONT_SIZE", 12);
+        int currentFontSize = pm.getInt(Preference.FONT_SIZE, 12);
         fontSizeList.setSelectedValue(currentFontSize, true);
 
         fontSizeList.addListSelectionListener(new SelectionUpdater());

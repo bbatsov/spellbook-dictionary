@@ -11,6 +11,8 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.Timer;
 
+import static com.drowltd.dictionary.core.preferences.PreferencesManager.Preference;
+
 /**
  *
  * @author Ivan Spasov
@@ -62,8 +64,8 @@ public class ExamDialog extends javax.swing.JDialog {
         setLocationRelativeTo(parent);
 
         //   Next two lines can be used directly even with more languages
-        fromLanguageComboBox.setSelectedIndex(PM.getInt("FROM_LANGUAGE_LAST_SELECTED", fromLanguageComboBox.getSelectedIndex()));
-        toLanguageComboBox.setSelectedIndex(PM.getInt("TO_LANGUAGE_LAST_SELECTED", toLanguageComboBox.getSelectedIndex()));
+//        fromLanguageComboBox.setSelectedIndex(PM.getInt("FROM_LANGUAGE_LAST_SELECTED", fromLanguageComboBox.getSelectedIndex()));
+//        toLanguageComboBox.setSelectedIndex(PM.getInt("TO_LANGUAGE_LAST_SELECTED", toLanguageComboBox.getSelectedIndex()));
 
 
     }
@@ -406,7 +408,7 @@ public class ExamDialog extends javax.swing.JDialog {
         if (ExamSettingsDialog.isOpen()) {
             examWords = ExamSettingsDialog.getWordsCount();
             examWordsCopy = ExamSettingsDialog.getWordsCount();
-            PM.putInt("EXAM_WORDS", examWords);
+            PM.putInt(Preference.EXAM_WORDS, examWords);
         }
 
 
@@ -440,15 +442,15 @@ public class ExamDialog extends javax.swing.JDialog {
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
         swingTimer.stop();
-        PM.put("A_DIFFICULTY", enumDiff.name());
-        PM.put("DIFF_LABEL", difficultyLabel.getText());
-        PM.put("DIFFICULTY", difficulty.name());
-        PM.putBoolean("TIMER_USED", timerUsed);
-        PM.put("A_TIMER_STATUS", enumTimerStatus.name());
-        PM.putBoolean("TIMER_PROGRESSBAR_VISIBILITY", timerProgressBar.isVisible());
-        PM.putBoolean("TIMER_ICON_VISIBILITY", timerIconLabel.isVisible());
-        PM.putInt("FROM_LANGUAGE_LAST_SELECTED", fromLanguageComboBox.getSelectedIndex());
-        PM.putInt("TO_LANGUAGE_LAST_SELECTED", toLanguageComboBox.getSelectedIndex());
+//        PM.put("A_DIFFICULTY", enumDiff.name());
+//        PM.put("DIFF_LABEL", difficultyLabel.getText());
+//        PM.put("DIFFICULTY", difficulty.name());
+//        PM.putBoolean("TIMER_USED", timerUsed);
+//        PM.put("A_TIMER_STATUS", enumTimerStatus.name());
+//        PM.putBoolean("TIMER_PROGRESSBAR_VISIBILITY", timerProgressBar.isVisible());
+//        PM.putBoolean("TIMER_ICON_VISIBILITY", timerIconLabel.isVisible());
+//        PM.putInt("FROM_LANGUAGE_LAST_SELECTED", fromLanguageComboBox.getSelectedIndex());
+//        PM.putInt("TO_LANGUAGE_LAST_SELECTED", toLanguageComboBox.getSelectedIndex());
     }//GEN-LAST:event_formWindowClosed
 
     private void settingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_settingsButtonActionPerformed
@@ -643,23 +645,23 @@ public class ExamDialog extends javax.swing.JDialog {
    
 
     public void showExamDialog() {
-        difficulty = difficulty.valueOf(PM.get("DIFFICULTY", difficulty.name()));
-        if (PM.getBoolean("RETURN_TIMER_STATUS", false)) {
-            seconds = PM.getInt("SECONDS", WIDTH);
-
-        }
-
-        timerProgressBar.setVisible(PM.getBoolean("TIMER_PROGRESSBAR_VISIBILITY", false));
-
-        timerIconLabel.setVisible(PM.getBoolean("TIMER_ICON_VISIBILITY", false));
-
-        diffLabelText = PM.get("A_DIFFICULTY", enumDiff.name());
-        diffLabelChange(diffLabelText);
-
-        enumTimerStatus = enumTimerStatus.valueOf(PM.get("A_TIMER_STATUS", enumTimerStatus.DISABLED.toString()));
-        examWords = PM.getInt("EXAM_WORDS", 10);
-        examWordsCopy = examWords;
-        setVisible(true);
+//        difficulty = difficulty.valueOf(PM.get("DIFFICULTY", difficulty.name()));
+//        if (PM.getBoolean("RETURN_TIMER_STATUS", false)) {
+//            seconds = PM.getInt("SECONDS", WIDTH);
+//
+//        }
+//
+//        timerProgressBar.setVisible(PM.getBoolean("TIMER_PROGRESSBAR_VISIBILITY", false));
+//
+//        timerIconLabel.setVisible(PM.getBoolean("TIMER_ICON_VISIBILITY", false));
+//
+//        diffLabelText = PM.get("A_DIFFICULTY", enumDiff.name());
+//        diffLabelChange(diffLabelText);
+//
+//        enumTimerStatus = enumTimerStatus.valueOf(PM.get("A_TIMER_STATUS", enumTimerStatus.DISABLED.toString()));
+//        examWords = PM.getInt("EXAM_WORDS", 10);
+//        examWordsCopy = examWords;
+//        setVisible(true);
     }
 
      /* This method handels the text in GUI, which is related to difficulty
@@ -695,11 +697,11 @@ public class ExamDialog extends javax.swing.JDialog {
 
     private void timerRunButton() {
         seconds = ExamSettingsDialog.returnTimeSeconds();
-        if (seconds == 0) {
-            seconds = PM.getInt("SECONDS", WIDTH);
-        } else {
-            PM.putInt("SECONDS", seconds);
-        }
+//        if (seconds == 0) {
+//            seconds = PM.getInt("SECONDS", WIDTH);
+//        } else {
+//            PM.putInt("SECONDS", seconds);
+//        }
         swingTimer.start();
         pauseButton.setEnabled(true);
         maximumSecondsProgressBar = seconds;
@@ -721,7 +723,7 @@ public class ExamDialog extends javax.swing.JDialog {
         editability(true);
         translateField.setText(null);
         answerField.setText(null);
-        examWords = PM.getInt("EXAM_WORDS", examWords);
+        examWords = PM.getInt(Preference.EXAM_WORDS, examWords);
         examResult();
 
     }
