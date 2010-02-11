@@ -110,6 +110,9 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         initComponents();
 
+        // restore the divider location from the last session
+        splitPane.setDividerLocation(PM.getInt("DIVIDER_LOCATION", 160));
+
         // we need to pass the completable search field a reference to the word list
         ((AutocompletingTextField)wordSearchField).setWordsList(wordsList);
         ((AutocompletingTextField)wordSearchField).setFrame(this);
@@ -359,6 +362,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         PM.putDouble("FRAME_Y", r.getY());
         PM.putDouble("FRAME_WIDTH", r.getWidth());
         PM.putDouble("FRAME_HEIGHT", r.getHeight());
+        PM.putInt("DIVIDER_LOCATION", splitPane.getDividerLocation());
     }
 
     private boolean verifyDbPresence() {
@@ -443,7 +447,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         statusBar = new javax.swing.JLabel();
         memoryProgressBar = new javax.swing.JProgressBar();
         runGcButton = new javax.swing.JButton();
-        jSplitPane1 = new javax.swing.JSplitPane();
+        splitPane = new javax.swing.JSplitPane();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         wordsList = new javax.swing.JList();
@@ -491,7 +495,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
             }
         });
 
-        jSplitPane1.setDividerLocation(160);
+        splitPane.setDividerLocation(180);
 
         wordsList.setModel(new WordsListModel(words));
         wordsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
@@ -514,8 +518,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
-            .addComponent(wordSearchField, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+            .addComponent(wordSearchField, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -525,7 +529,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE))
         );
 
-        jSplitPane1.setLeftComponent(jPanel2);
+        splitPane.setLeftComponent(jPanel2);
 
         clearButton.setText(bundle.getString("ClearButton(Label)")); // NOI18N
         clearButton.setToolTipText(bundle.getString("ClearButton(ToolTip)")); // NOI18N
@@ -551,8 +555,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
                 .addComponent(clearButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(matchLabel)
-                .addContainerGap(96, Short.MAX_VALUE))
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 577, Short.MAX_VALUE)
+                .addContainerGap(70, Short.MAX_VALUE))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 558, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -561,10 +565,10 @@ public class SpellbookFrame extends javax.swing.JFrame {
                     .addComponent(clearButton)
                     .addComponent(matchLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 382, Short.MAX_VALUE))
         );
 
-        jSplitPane1.setRightComponent(jPanel3);
+        splitPane.setRightComponent(jPanel3);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -579,14 +583,14 @@ public class SpellbookFrame extends javax.swing.JFrame {
                         .addComponent(memoryProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(runGcButton))
-                    .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 743, Short.MAX_VALUE))
+                    .addComponent(splitPane, javax.swing.GroupLayout.DEFAULT_SIZE, 744, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(6, 6, 6)
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE)
+                .addComponent(splitPane, javax.swing.GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(statusBar)
@@ -900,7 +904,6 @@ if (!wordsList.isSelectionEmpty()) {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
-    private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JLabel matchLabel;
     private javax.swing.JProgressBar memoryProgressBar;
     private javax.swing.JMenuItem pasteMenuItem;
@@ -908,6 +911,7 @@ if (!wordsList.isSelectionEmpty()) {
     private javax.swing.JMenuItem restartMenuItem;
     private javax.swing.JButton runGcButton;
     private javax.swing.JMenuItem spellcheckMenuItem;
+    private javax.swing.JSplitPane splitPane;
     private javax.swing.JLabel statusBar;
     private javax.swing.JMenuItem updateWordMenuItem;
     private javax.swing.JTextField wordSearchField;
