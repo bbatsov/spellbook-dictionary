@@ -1,7 +1,7 @@
 #summary Spellbook-dictionary home page.
 #labels Featured
 
-======English [http://code.google.com/p/spellbook-dictionary/ http://www.secretskypeemoticons.com/skype/emoticons/flags/gb.png] Bulgarian [http://code.google.com/p/spellbook-dictionary/wiki/Honepage_bg http://www.secretskypeemoticons.com/skype/emoticons/flags/bg.png]======
+======English [http://code.google.com/p/spellbook-dictionary/ http://www.secretskypeemoticons.com/skype/emoticons/flags/gb.png] Bulgarian [http://code.google.com/p/spellbook-dictionary/wiki/Homepage_bg http://www.secretskypeemoticons.com/skype/emoticons/flags/bg.png]======
 
 Spellbook is an open source dictionary written in Java. In order to run the application you need installed [http://www.java.com/en/download/manual.jsp JRE]. Spellbook dictionary can be downloaded from [http://code.google.com/p/spellbook-dictionary/downloads/list here].
 
