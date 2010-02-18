@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -115,7 +116,7 @@ public class DictionaryService {
     }
     //Tests only END
 
-    public List<SDictionary> getLoadedDictionaries() {
+    public List<SDictionary> getAvailableDictionaries() {
         return new ArrayList<SDictionary>(dictConfigMap.keySet());
     }
 
@@ -128,14 +129,10 @@ public class DictionaryService {
 
         final ResultSet rs = ps.executeQuery();
 
-        Map<String, Integer> wordMap = new HashMap<String, Integer>();
+        Map<String, Integer> wordMap = new LinkedHashMap<String, Integer>();
 
         while (rs.next()) {
             wordMap.put(rs.getString(1), rs.getInt(2));
-        }
-
-        if (wordMap.isEmpty()) {
-            throw new IllegalStateException("No words loaded from db");
         }
 
         return wordMap;
@@ -151,11 +148,11 @@ public class DictionaryService {
             throw new IllegalArgumentException("word is null or empty");
         }
 
-        final PreparedStatement ps = connection.prepareStatement("SELECT TRANSLATION FROM " + getTranslationTable(dictionary));
-        final ResultSet rs = ps.executeQuery();
+        final ResultSet rs = connection.prepareStatement("SELECT TRANSLATION FROM " + getTranslationTable(dictionary)).executeQuery();
 
         rs.next();
-        return rs.getString(1);
+        final String translation = rs.getString(1);
+        return translation == null ? "" : translation;
     }
 
     public boolean addWord(SDictionary dictionary, String word, String translation) throws SQLException {
@@ -207,10 +204,6 @@ public class DictionaryService {
             ratingsMap.put(rs1.getString(1), rs1.getInt(2));
         }
 
-        if (ratingsMap.isEmpty()) {
-            throw new IllegalStateException("Ratings couldn't be imported");
-        }
-
         return ratingsMap;
     }
 
@@ -227,12 +220,8 @@ public class DictionaryService {
             throw new IllegalArgumentException("translation is null or empty");
         }
 
-        final int rowsUpdated = connection.prepareStatement("UPDATE " + getTranslationTable(dictionary) + " SET TRANSLATION = \'" + translation + "\' "
+        connection.prepareStatement("UPDATE " + getTranslationTable(dictionary) + " SET TRANSLATION = \'" + translation + "\' "
                 + "WHERE WORD = \'" + word + "\'").executeUpdate();
-
-        if (rowsUpdated < 1) {
-            throw new IllegalStateException("Translation couldn't be updated");
-        }
 
     }
 
@@ -249,12 +238,9 @@ public class DictionaryService {
             throw new IllegalArgumentException("newWord is null or empty");
         }
 
-        final int rowsUpdated = connection.prepareStatement("UPDATE " + getTranslationTable(dictionary) + " SET WORD = \'" + newWord + "\' "
+        connection.prepareStatement("UPDATE " + getTranslationTable(dictionary) + " SET WORD = \'" + newWord + "\' "
                 + "WHERE WORD = \'" + oldWord + "\'").executeUpdate();
 
-        if (rowsUpdated < 1) {
-            throw new IllegalStateException("Word couldn't be updated");
-        }
 
     }
 
@@ -283,21 +269,57 @@ public class DictionaryService {
 
         List<Language> languageList = new ArrayList<Language>(dictConfigMap.size());
 
-        for(SDictionary dict:dictConfigMap.keySet()){
-            if(dict.getLanguageFrom().equals(languageFrom)){
+        for (SDictionary dict : dictConfigMap.keySet()) {
+            if (dict.getLanguageFrom().equals(languageFrom)) {
                 languageList.add(dict.getLanguageTo());
             }
-        }
-
-        if(languageList.isEmpty()){
-            throw new IllegalStateException("No languages found");
         }
 
         return languageList;
     }
 
-    public List<String> getDifficultyWords(SDictionary dictionary, Difficulty difficulty, int quantity) {
-        return Collections.emptyList();
+    public List<String> getDifficultyWords(SDictionary dictionary, Difficulty difficulty) throws SQLException {
+
+        if (dictionary == null) {
+            throw new IllegalArgumentException("dictionary is null");
+        }
+
+        if (difficulty == null) {
+            throw new IllegalArgumentException("difficulty is null");
+        }
+
+        final ResultSet rs0 = connection.prepareStatement("SELECT COUNT(1) FROM EN_BG WHERE RATING > "
+                + difficulty.getLow() + " AND RATING <= " + difficulty.getHigh()).executeQuery();
+
+        rs0.next();
+        int rows = 0;
+        if ((rows = rs0.getInt(1)) == 0) {
+            return Collections.emptyList();
+        }
+
+        final ResultSet rs = connection.prepareStatement("SELECT WORD FROM " + getTranslationTable(dictionary)
+                + " WHERE RATING > " + difficulty.getLow() + " AND RATING <= " + difficulty.getHigh()).executeQuery();
+
+
+        List<String> words = new ArrayList<String>(rows);
+        while (rs.next()) {
+            words.add(rs.getString(1));
+        }
+
+        return words;
+    }
+
+    public boolean addMisspelled(SDictionary dictionary, String misspelled) throws SQLException {
+        if (dictionary == null) {
+            throw new IllegalArgumentException("dictionary is null");
+        }
+
+        if (misspelled == null || misspelled.isEmpty()) {
+            throw new IllegalArgumentException("misspelled is null or empty");
+        }
+
+        return connection.prepareStatement("INSERT INTO " + getRatingsTable(dictionary)
+                + " (WORD, RATING) VALUES('" + misspelled + "',1)").executeUpdate() > 0;
     }
 
     private DictionaryConfig getConfig(SDictionary dictionary) {
