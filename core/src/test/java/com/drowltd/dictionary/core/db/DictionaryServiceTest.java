@@ -1,5 +1,7 @@
 package com.drowltd.dictionary.core.db;
 
+import com.drowltd.dictionary.core.db.DictionaryService.DictionaryConfig;
+import com.drowltd.dictionary.core.exam.Difficulty;
 import com.drowltd.dictionary.core.exception.NoDictionariesAvailableException;
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -8,7 +10,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.swing.ImageIcon;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -19,20 +23,45 @@ import static org.junit.Assert.*;
  * @author iivalchev
  */
 @Ignore
-public class DictionaryServiceTest extends AbstractDictionaryServiceTest {
+public class DictionaryServiceTest extends AbstractDBTestCase {
 
-    private DictionaryService dictionaryService;
+    static Map<SDictionary, DictionaryConfig> dictConfigMap = new HashMap<SDictionary, DictionaryConfig>();
+    static Language english;
+    static Language bulgarian;
+    static SDictionary dictionaryEN_BG;
+    static SDictionary dictionaryBG_EN;
+    DictionaryService dictionaryService;
 
-    public DictionaryServiceTest() {
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+
+        setUpDB();
+
+        final ImageIcon imageIcon = new ImageIcon("");
+
+        english = new Language("English", "abcdefghijklmnopqrstuvwxyz", imageIcon);
+        bulgarian = new Language("Bulgarian", "абвгдежзийклмнопрстуфхцчшщъьюя", imageIcon);
+
+
+        dictionaryEN_BG = new SDictionary("English-Bulgarian", english, bulgarian, imageIcon, imageIcon);
+        dictionaryBG_EN = new SDictionary("Bulgarian-English", bulgarian, english, imageIcon, imageIcon);
+
+        DictionaryConfig configEN_BG = new DictionaryConfig(dictionaryEN_BG, "EN_BG", "SPELLCHECK_EN");
+        DictionaryConfig configBG_EN = new DictionaryConfig(dictionaryBG_EN, "BG_EN", "SPELLCHECK_BG");
+
+
+        dictConfigMap.put(dictionaryEN_BG, configEN_BG);
+        dictConfigMap.put(dictionaryBG_EN, configBG_EN);
     }
 
     @Before
     public void init() throws SQLException, NoDictionariesAvailableException, IOException {
-        final String pathToDB = "resources/db.sql";
-        connection.prepareStatement(readDbFromFile(pathToDB)).execute();
-
+        initDB();
         dictionaryService = new DictionaryService(connection);
 
+    }
+
+    public DictionaryServiceTest() {
     }
 
     @Test
@@ -41,8 +70,8 @@ public class DictionaryServiceTest extends AbstractDictionaryServiceTest {
     }
 
     @Test
-    public void testGetLoadedDictionaries() {
-        assertTrue("Dictionaries doesn't match", dictionaryService.getLoadedDictionaries().equals(new ArrayList<SDictionary>(dictConfigMap.keySet())));
+    public void testGetAvailableDictionaries() {
+        assertTrue("Dictionaries doesn't match", dictionaryService.getAvailableDictionaries().equals(new ArrayList<SDictionary>(dictConfigMap.keySet())));
     }
 
     @Test
@@ -130,5 +159,19 @@ public class DictionaryServiceTest extends AbstractDictionaryServiceTest {
         languages.add(english);
 
         assertTrue("Languages list doesn't match", languages.equals(dictionaryService.getLanguagesTo(bulgarian)));
+    }
+
+    @Test
+    public void testGetDifficultyWords() throws SQLException {
+        final List<String> difficultyWords = dictionaryService.getDifficultyWords(dictionaryBG_EN, Difficulty.MEDIUM);
+
+        assertTrue(difficultyWords.contains("\u0430"));
+    }
+
+    @Test
+    public void testAddMisspelled() throws SQLException {
+        dictionaryService.addMisspelled(dictionaryBG_EN, "m");
+        assertTrue("misspelled not inserted", connection.prepareStatement(
+                "SELECT WORD FROM SPELLCHECK_BG WHERE WORD = 'm'").executeQuery().next());
     }
 }

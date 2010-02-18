@@ -1,7 +1,14 @@
 package com.drowltd.dictionary.core.db;
 
 import com.drowltd.dictionary.core.exam.Difficulty;
-import java.util.Collections;
+import com.drowltd.dictionary.core.exception.DictionaryDbLockedException;
+import com.drowltd.dictionary.core.exception.NoDictionariesAvailableException;
+import com.drowltd.dictionary.core.exception.SDatabaseServiceException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +18,55 @@ import java.util.Map;
  */
 public class SDatabaseService {
 
-    public void addMisspelled(SDictionary dictionary, String misspelled) {
+    private final DictionaryService dictionaryService;
+    private int cacheSize = -1;
+    private final Map<SDictionary, Map<String, Integer>> dictCache = new HashMap<SDictionary, Map<String, Integer>>();
+
+    public static SDatabaseService getLocalDatabaseService(String dictDbFile) throws DictionaryDbLockedException, NoDictionariesAvailableException {
+        if (dictDbFile == null || dictDbFile.isEmpty()) {
+            throw new IllegalArgumentException("dictDbFile is null or empty");
+        }
+
+        String url = "jdbc:h2:" + dictDbFile.replace(".data.db", "");
+        String user = "bozhidar";
+        String password = "bozhidar";
+        Connection connection = null;
+        try {
+            connection = DriverManager.getConnection(url, user, password);
+        } catch (SQLException e) {
+            if (e.getMessage() != null) {
+                if (e.getMessage().contains("Database may be already in use: Locked by another process.")) {
+                    throw new DictionaryDbLockedException();
+                }
+            }
+            e.printStackTrace();
+        }
+
+        return new SDatabaseService(connection);
+    }
+
+    public static SDatabaseService getRemoteDatabaseService(){
+        return null;
+    }
+
+    private SDatabaseService(Connection connection) throws NoDictionariesAvailableException {
+        if (connection == null) {
+            throw new IllegalArgumentException("connectionis null");
+        }
+
+        try {
+            dictionaryService = new DictionaryService(connection);
+        } catch (SQLException ex) {
+            throw new IllegalStateException(ex.getMessage());
+        }
+    }
+
+    public void addMisspelled(SDictionary dictionary, String misspelled) throws SDatabaseServiceException {
+        try {
+            dictionaryService.addMisspelled(dictionary, misspelled);
+        } catch (SQLException ex) {
+            throw new SDatabaseServiceException(misspelled + " could not be added to the database.");
+        }
     }
 
     /**
@@ -23,20 +78,42 @@ public class SDatabaseService {
      * @return true if the word was added, false if it already existed in the
      * dictionary
      */
-    public boolean addWord(SDictionary dictionary, String word, String translation) {
-       return addWord(dictionary, word, translation, 0);
+    public boolean addWord(SDictionary dictionary, String word, String translation) throws SDatabaseServiceException {
+        return addWord(dictionary, word, translation, 0);
     }
 
-    public boolean addWord(SDictionary dictionary, String word, String translation, int rating) {
-        return false;
+    public boolean addWord(SDictionary dictionary, String word, String translation, int rating) throws SDatabaseServiceException {
+        boolean added = false;
+        try {
+            added = dictionaryService.addWord(dictionary, word, translation, rating);
+        } catch (SQLException ex) {
+            throw new SDatabaseServiceException(word + " could not be added to the database.");
+        }
+
+        return added;
     }
 
-    public List<String> getDifficultyWords(SDictionary dictionary, Difficulty difficulty, int quantity) {
-        return Collections.emptyList();
+    public List<String> getDifficultyWords(SDictionary dictionary, Difficulty difficulty) throws SDatabaseServiceException {
+        List<String> words = null;
+
+        try {
+            words = dictionaryService.getDifficultyWords(dictionary, difficulty);
+        } catch (SQLException ex) {
+            throw new SDatabaseServiceException("Words could not be fetched from database.");
+        }
+
+        return words;
     }
 
-    public Map<String, Integer> getRatings(Language language) {
-        return Collections.emptyMap();
+    public Map<String, Integer> getRatings(Language language) throws SDatabaseServiceException {
+        Map<String, Integer> ratings = null;
+        try {
+            ratings = dictionaryService.getRatings(language);
+        } catch (SQLException ex) {
+            throw new SDatabaseServiceException("Ratings could not be fetched from database.");
+        }
+
+        return ratings;
     }
 
     /**
@@ -48,8 +125,14 @@ public class SDatabaseService {
      *
      * @return the translation of the word
      */
-    public String getTranslation(SDictionary dictionary, String word) {
-        return "";
+    public String getTranslation(SDictionary dictionary, String word) throws SDatabaseServiceException {
+        String translation = null;
+        try {
+            translation = dictionaryService.getTranslation(dictionary, word);
+        } catch (SQLException ex) {
+            throw new SDatabaseServiceException("Translation could not be fetched from database.");
+        }
+        return translation;
     }
 
     /**
@@ -60,8 +143,18 @@ public class SDatabaseService {
      *
      * @return a list of all words in the selected dictionary
      */
-    public List<String> getWordsFromDictionary(SDictionary dictionary) {
-        return Collections.emptyList();
+    public List<String> getWordsFromDictionary(SDictionary dictionary) throws SDatabaseServiceException {
+       return new ArrayList<String>(getWordsMapFromDictionary(dictionary).keySet());
+    }
+
+    public Map<String, Integer> getWordsMapFromDictionary(SDictionary dictionary) throws SDatabaseServiceException {
+        Map<String, Integer> words = null;
+        try {
+            words = dictionaryService.getWordsFromDictionary(dictionary);
+        } catch (SQLException ex) {
+            throw new SDatabaseServiceException("Words could not be fetched from database.");
+        }
+        return words;
     }
 
     /**
@@ -71,21 +164,31 @@ public class SDatabaseService {
      * @param translation
      * @param dictionary
      */
-    public void updateTranslation(SDictionary dictionary, String word, String translation) {
+    public void updateTranslation(SDictionary dictionary, String word, String translation) throws SDatabaseServiceException {
+        try {
+            dictionaryService.updateTranslation(dictionary, word, translation);
+        } catch (SQLException ex) {
+            throw new SDatabaseServiceException("Translation could not be in database.");
+        }
     }
 
-    public void updateWord(SDictionary dictionary, String oldWord, String newWord) {
+    public void updateWord(SDictionary dictionary, String oldWord, String newWord) throws SDatabaseServiceException {
+        try {
+            dictionaryService.updateWord(dictionary, oldWord, newWord);
+        } catch (SQLException ex) {
+            throw new SDatabaseServiceException("Words could not be updated in database.");
+        }
     }
 
     public List<SDictionary> getAvailableDictionaries() {
-        return Collections.emptyList();
+        return dictionaryService.getAvailableDictionaries();
     }
 
     public SDictionary getDictionary(Language languageFrom, Language languageTo) {
-        return null;
+        return dictionaryService.getDictionary(languageFrom, languageTo);
     }
 
-    public List<Language> getLanguagesTo(Language language){
-        return Collections.emptyList();
+    public List<Language> getLanguagesTo(Language language) {
+        return dictionaryService.getLanguagesTo(language);
     }
 }
