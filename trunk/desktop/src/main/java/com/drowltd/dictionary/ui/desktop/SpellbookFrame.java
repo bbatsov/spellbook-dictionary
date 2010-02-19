@@ -424,7 +424,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         Dictionary.setSelectedDictionary(selectedDictionary);
 
         words = databaseService.getWordsFromDictionary(dictionary);
-        wordsList.setModel(new WordsListModel(words));
+        wordsList.setModel(new ListBackedListModel(words));
 
         if (dictionary == Dictionary.EN_BG) {
             SwingUtil.showBalloonTip(statusBar, TRANSLATOR.translate("EnBgDictLoaded(Message)"));
@@ -502,7 +502,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         splitPane.setDividerLocation(180);
 
-        wordsList.setModel(new WordsListModel(words));
+        wordsList.setModel(new ListBackedListModel(words));
         wordsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         wordsList.setToolTipText(bundle.getString("WordsList(ToolTip)")); // NOI18N
         wordsList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
@@ -822,7 +822,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
             // save word
             words.add(addUpdateWordDialog.getWord());
             // TODO calculate insertion index
-            wordsList.setModel(new WordsListModel(words));
+            wordsList.setModel(new ListBackedListModel(words));
         }
     }//GEN-LAST:event_addWordMenuItemActionPerformed
 
