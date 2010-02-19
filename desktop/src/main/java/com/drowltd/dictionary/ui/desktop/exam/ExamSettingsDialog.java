@@ -28,8 +28,6 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
         super(parent, modal);
         TRANSLATOR.reset();
 
-
-
         initComponents();
 
         // accept only numbers
@@ -40,8 +38,6 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
         difficultyGroup.add(easyRadioButton);
         difficultyGroup.add(mediumRadioButton);
         difficultyGroup.add(hardRadioButton);
-
-
     }
 
     /** This method is called from within the constructor to
@@ -345,9 +341,7 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
     }
 
     public void PMPutCheckbox() {
-        PM.putBoolean(Preference.EXAM_EASY, easyRadioButton.isSelected());
-        PM.putBoolean(Preference.EXAM_MEDIUM, mediumRadioButton.isSelected());
-        PM.putBoolean(Preference.EXAM_HARD, hardRadioButton.isSelected());
+
         PM.putBoolean(Preference.EXAM_TIMER, forTimeCheckBox.isSelected());
     }
 
@@ -359,9 +353,6 @@ public class ExamSettingsDialog extends javax.swing.JDialog {
     public void showExamSettingsDialog() {              // Thanks to Kiril Kamburov (:
         wordCountField.setText("" + PM.getInt(Preference.EXAM_WORDS, 10));
         forTimeCheckBox.setSelected(PM.getBoolean(Preference.EXAM_TIMER, false));
-        easyRadioButton.setSelected(PM.getBoolean(Preference.EXAM_EASY, true));
-        mediumRadioButton.setSelected(PM.getBoolean(Preference.EXAM_MEDIUM, false));
-        hardRadioButton.setSelected(PM.getBoolean(Preference.EXAM_HARD, false));
 
 
         setVisible(true);

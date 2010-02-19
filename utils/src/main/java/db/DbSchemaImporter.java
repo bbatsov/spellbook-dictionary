@@ -16,11 +16,11 @@ import java.sql.SQLException;
 public class DbSchemaImporter {
 
     //Set it to your local path
-    private static String url = "jdbc:h2:/home/ikkari/NetBeansProjects/SpellBook/dbRatings/dictionary";
+    private static String url = "jdbc:h2:/home/bozhidar/downloads/db/dictionary";
     private static String user = "bozhidar";
     private static String password = "bozhidar";
-    private static String imagePath16 = "/home/ikkari/NetBeansProjects/SpellBookCommit/trunk/desktop/src/main/resources/icons/16x16/";
-    private static String imagePath24 = "/home/ikkari/NetBeansProjects/SpellBookCommit/trunk/desktop/src/main/resources/icons/24x24/";
+    private static String imagePath16 = "/home/bozhidar/NetBeansProjects/trunk/desktop/src/main/resources/icons/16x16/";
+    private static String imagePath24 = "/home/bozhidar/NetBeansProjects/trunk/desktop/src/main/resources/icons/24x24/";
     private static String bg_en16 = imagePath16 + "bg-en.png";
     private static String en_bg16 = imagePath16 + "en-bg.png";
     private static String bg_flag16 = imagePath16 + "flag_bulgaria.png";
