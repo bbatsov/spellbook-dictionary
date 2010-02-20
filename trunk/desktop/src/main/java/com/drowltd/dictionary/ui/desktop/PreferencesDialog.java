@@ -1,5 +1,6 @@
 package com.drowltd.dictionary.ui.desktop;
 
+import com.drowltd.dictionary.core.exam.Difficulty;
 import com.drowltd.dictionary.core.i18n.Translator;
 import com.drowltd.dictionary.core.preferences.PreferencesManager;
 import java.awt.Font;
@@ -8,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.logging.Level;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -27,6 +29,7 @@ import static com.drowltd.dictionary.core.preferences.PreferencesManager.Prefere
  */
 public class PreferencesDialog extends javax.swing.JDialog {
     private static final Translator TRANSLATOR = Translator.getTranslator("PreferencesForm");
+    private static final PreferencesManager PM = PreferencesManager.getInstance();
 
     private SupportedLanguages selectedLanguage;
 
@@ -45,32 +48,38 @@ public class PreferencesDialog extends javax.swing.JDialog {
         initGeneralTab(parent);
 
         initFontTab();
+
+        initExamTab();
+    }
+
+    public JTabbedPane getTabbedTane() {
+        return tabbedPane;
     }
 
     private void initGeneralTab(final java.awt.Frame parent) {
-        PreferencesManager pm = PreferencesManager.getInstance();
+        
 
-        selectedLanguage = SupportedLanguages.valueOf(pm.get(Preference.LANG, "EN"));
+        selectedLanguage = SupportedLanguages.valueOf(PM.get(Preference.LANG, "EN"));
 
         // set the selected values from preferences
         languageComboBox.setSelectedIndex(selectedLanguage == SupportedLanguages.EN ? 0 : 1);
 
-        minimizeToTrayCheckBox.setSelected(pm.getBoolean(Preference.MIN_TO_TRAY, false));
+        minimizeToTrayCheckBox.setSelected(PM.getBoolean(Preference.MIN_TO_TRAY, false));
 
-        minimizeToTrayOnCloseCheckBox.setSelected(pm.getBoolean(Preference.CLOSE_TO_TRAY, false));
+        minimizeToTrayOnCloseCheckBox.setSelected(PM.getBoolean(Preference.CLOSE_TO_TRAY, false));
 
-        clipboardIntegrationCheckBox.setSelected(pm.getBoolean(Preference.CLIPBOARD_INTEGRATION, false));
+        clipboardIntegrationCheckBox.setSelected(PM.getBoolean(Preference.CLIPBOARD_INTEGRATION, false));
 
         if (!clipboardIntegrationCheckBox.isSelected()) {
             trayPopupCheckBox.setEnabled(false);
             trayPopupCheckBox.setSelected(false);
         } else {
-            trayPopupCheckBox.setSelected(pm.getBoolean(Preference.TRAY_POPUP, false));
+            trayPopupCheckBox.setSelected(PM.getBoolean(Preference.TRAY_POPUP, false));
         }
 
-        showMemoryUsageCheckBox.setSelected(pm.getBoolean(Preference.SHOW_MEMORY_USAGE, false));
+        showMemoryUsageCheckBox.setSelected(PM.getBoolean(Preference.SHOW_MEMORY_USAGE, false));
 
-        alwaysOnTopCheckBox.setSelected(pm.getBoolean(Preference.ALWAYS_ON_TOP, false));
+        alwaysOnTopCheckBox.setSelected(PM.getBoolean(Preference.ALWAYS_ON_TOP, false));
 
         // build the look and feel section
         final LookAndFeelInfo[] lookAndFeelInfos = UIManager.getInstalledLookAndFeels();
@@ -83,7 +92,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
 
         lookAndFeelComboBox.setModel(new DefaultComboBoxModel(lookAndFeelNames));
 
-        lookAndFeelComboBox.setSelectedItem(pm.get(Preference.LOOK_AND_FEEL, "System"));
+        lookAndFeelComboBox.setSelectedItem(PM.get(Preference.LOOK_AND_FEEL, "System"));
 
         lookAndFeelComboBox.addActionListener(new ActionListener() {
 
@@ -121,7 +130,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
                     }
                 }
 
-                SwingUtilities.updateComponentTreeUI(jTabbedPane1);
+                SwingUtilities.updateComponentTreeUI(tabbedPane);
                 SwingUtilities.updateComponentTreeUI(jPanel4);
                 SwingUtilities.updateComponentTreeUI(parent);
             }
@@ -129,20 +138,18 @@ public class PreferencesDialog extends javax.swing.JDialog {
     }
 
     private void initFontTab() {
-        PreferencesManager pm = PreferencesManager.getInstance();
-
         String[] availableFonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
         fontList.setListData(availableFonts);
 
         // select the current font
-        String selectedFontName = pm.get(Preference.FONT_NAME, "Serif");
+        String selectedFontName = PM.get(Preference.FONT_NAME, "Serif");
         fontList.setSelectedValue(selectedFontName, true);
 
         fontList.addListSelectionListener(new SelectionUpdater());
 
         fontSizeList.setListData(new Integer[]{8, 10, 12, 14, 16, 18});
 
-        int currentFontSize = pm.getInt(Preference.FONT_SIZE, 12);
+        int currentFontSize = PM.getInt(Preference.FONT_SIZE, 12);
         fontSizeList.setSelectedValue(currentFontSize, true);
 
         fontSizeList.addListSelectionListener(new SelectionUpdater());
@@ -180,6 +187,36 @@ public class PreferencesDialog extends javax.swing.JDialog {
         @Override
         public void stateChanged(ChangeEvent e) {
             previewText.setFont(generateFont());
+        }
+    }
+
+    private void initExamTab() {
+        switch (Difficulty.valueOf(PM.get(Preference.EXAM_DIFFICULTY, Difficulty.EASY.toString()))) {
+            case EASY: easyRadioButton.setSelected(true); break;
+            case MEDIUM: mediumRadioButton.setSelected(true); break;
+            case HARD: hardRadioButton.setSelected(true); break;
+            default: throw new IllegalStateException("Unknown difficulty");
+        }
+
+        wordCountField.setText(String.valueOf(PM.getInt(Preference.EXAM_WORDS, 10)));
+        timerCheckBox.setSelected(PM.getBoolean(Preference.EXAM_TIMER, false));
+    }
+
+    public int getExamWords() {
+        return Integer.parseInt(wordCountField.getText());
+    }
+
+    public boolean isExamTimerEnabled() {
+        return timerCheckBox.isSelected();
+    }
+
+    public Difficulty getExamDifficulty() {
+        if (easyRadioButton.isSelected()) {
+            return Difficulty.EASY;
+        } else if (mediumRadioButton.isSelected()) {
+            return Difficulty.MEDIUM;
+        } else {
+            return Difficulty.HARD;
         }
     }
 
@@ -241,7 +278,8 @@ public class PreferencesDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        difficultyButtonGroup = new javax.swing.ButtonGroup();
+        tabbedPane = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -270,6 +308,17 @@ public class PreferencesDialog extends javax.swing.JDialog {
         jScrollPane3 = new javax.swing.JScrollPane();
         fontStyleList = new javax.swing.JList();
         jLabel13 = new javax.swing.JLabel();
+        jPanel6 = new javax.swing.JPanel();
+        jLabel7 = new javax.swing.JLabel();
+        wordCountField = new javax.swing.JTextField();
+        jPanel7 = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        easyRadioButton = new javax.swing.JRadioButton();
+        mediumRadioButton = new javax.swing.JRadioButton();
+        hardRadioButton = new javax.swing.JRadioButton();
+        jPanel8 = new javax.swing.JPanel();
+        timerCheckBox = new javax.swing.JCheckBox();
+        jLabel5 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
@@ -383,7 +432,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
             .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
-        jTabbedPane1.addTab(bundle.getString("GeneralSettings(Title)"), new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/preferences.png")), jPanel1); // NOI18N
+        tabbedPane.addTab(bundle.getString("GeneralSettings(Title)"), new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/preferences.png")), jPanel1); // NOI18N
 
         java.util.ResourceBundle bundle1 = java.util.ResourceBundle.getBundle("i18n/FontChooserForm"); // NOI18N
         jLabel9.setText(bundle1.getString("Font(Label)")); // NOI18N
@@ -480,7 +529,127 @@ public class PreferencesDialog extends javax.swing.JDialog {
             .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
-        jTabbedPane1.addTab(bundle1.getString("Font(Label)"), new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/font.png")), jPanel2); // NOI18N
+        tabbedPane.addTab(bundle1.getString("Font(Label)"), new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/font.png")), jPanel2); // NOI18N
+
+        jPanel6.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel6.setForeground(new java.awt.Color(204, 204, 204));
+
+        java.util.ResourceBundle bundle2 = java.util.ResourceBundle.getBundle("i18n/ExamSettingsDialog"); // NOI18N
+        jLabel7.setText(bundle2.getString("WordsByExam(Label)")); // NOI18N
+
+        wordCountField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                wordCountFieldFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                wordCountFieldFocusLost(evt);
+            }
+        });
+
+        jPanel7.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jLabel4.setText(bundle2.getString("ChooseDifficulty(Label)")); // NOI18N
+
+        difficultyButtonGroup.add(easyRadioButton);
+        easyRadioButton.setText(bundle2.getString("Easy(Label)")); // NOI18N
+        easyRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                easyRadioButtonActionPerformed(evt);
+            }
+        });
+
+        difficultyButtonGroup.add(mediumRadioButton);
+        mediumRadioButton.setText(bundle2.getString("Medium(Label)")); // NOI18N
+
+        difficultyButtonGroup.add(hardRadioButton);
+        hardRadioButton.setText(bundle2.getString("Hard(Label)")); // NOI18N
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addComponent(easyRadioButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(mediumRadioButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(hardRadioButton))
+                    .addComponent(jLabel4))
+                .addContainerGap(24, Short.MAX_VALUE))
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addComponent(jLabel4)
+                .addGap(3, 3, 3)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(mediumRadioButton)
+                    .addComponent(hardRadioButton)
+                    .addComponent(easyRadioButton))
+                .addGap(13, 13, 13))
+        );
+
+        jPanel8.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        timerCheckBox.setText(bundle2.getString("Countdown(Label)")); // NOI18N
+
+        jLabel5.setText(bundle2.getString("TimeDependancy(Label)")); // NOI18N
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(timerCheckBox)
+                    .addComponent(jLabel5))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(timerCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel5)
+                .addContainerGap(17, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(wordCountField))
+                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(327, Short.MAX_VALUE))
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(wordCountField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(182, Short.MAX_VALUE))
+        );
+
+        tabbedPane.addTab("Exam", new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/blackboard.png")), jPanel6); // NOI18N
 
         okButton.setText("Ok");
         okButton.addActionListener(new java.awt.event.ActionListener() {
@@ -523,13 +692,13 @@ public class PreferencesDialog extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 604, Short.MAX_VALUE)
+            .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 604, Short.MAX_VALUE)
             .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 434, Short.MAX_VALUE)
+                .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 434, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -564,14 +733,29 @@ public class PreferencesDialog extends javax.swing.JDialog {
         setVisible(false);
     }//GEN-LAST:event_cancelButtonActionPerformed
 
+    private void wordCountFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_wordCountFieldFocusGained
+        wordCountField.setText(null);
+}//GEN-LAST:event_wordCountFieldFocusGained
+
+    private void wordCountFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_wordCountFieldFocusLost
+
+}//GEN-LAST:event_wordCountFieldFocusLost
+
+    private void easyRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_easyRadioButtonActionPerformed
+        // TODO add your handling code here:
+}//GEN-LAST:event_easyRadioButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox alwaysOnTopCheckBox;
     private javax.swing.JButton cancelButton;
     private javax.swing.JCheckBox clipboardIntegrationCheckBox;
     private javax.swing.JComboBox defaultDictionaryComboBox;
+    private javax.swing.ButtonGroup difficultyButtonGroup;
+    private javax.swing.JRadioButton easyRadioButton;
     private javax.swing.JList fontList;
     private javax.swing.JList fontSizeList;
     private javax.swing.JList fontStyleList;
+    private javax.swing.JRadioButton hardRadioButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -579,23 +763,32 @@ public class PreferencesDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private static javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JComboBox languageComboBox;
     private javax.swing.JComboBox lookAndFeelComboBox;
+    private javax.swing.JRadioButton mediumRadioButton;
     private javax.swing.JCheckBox minimizeToTrayCheckBox;
     private javax.swing.JCheckBox minimizeToTrayOnCloseCheckBox;
     private javax.swing.JButton okButton;
     private javax.swing.JTextField previewText;
     private javax.swing.JCheckBox showMemoryUsageCheckBox;
+    private javax.swing.JTabbedPane tabbedPane;
+    private static javax.swing.JCheckBox timerCheckBox;
     private javax.swing.JCheckBox trayPopupCheckBox;
+    private javax.swing.JTextField wordCountField;
     // End of variables declaration//GEN-END:variables
 }

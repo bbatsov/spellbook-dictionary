@@ -1,15 +1,15 @@
 package com.drowltd.dictionary.ui.desktop.exam;
 
 import com.drowltd.dictionary.ui.desktop.IconManager;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author Franky
  */
 public class WrongWordsDialog extends javax.swing.JDialog {
-    private ArrayList<String> wrongWords;
-    private ArrayList<String> correctTranslation;
+    private List<String> wrongWords;
+    private List<String> correctTranslation;
 
     /** Creates new form WrongWords */
     public WrongWordsDialog(java.awt.Frame parent, boolean modal) {
