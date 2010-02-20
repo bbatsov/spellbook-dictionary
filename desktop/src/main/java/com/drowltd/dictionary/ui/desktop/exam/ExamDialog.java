@@ -6,9 +6,14 @@ import com.drowltd.dictionary.core.exam.Difficulty;
 import com.drowltd.dictionary.core.i18n.Translator;
 import com.drowltd.dictionary.core.preferences.PreferencesManager;
 import com.drowltd.dictionary.ui.desktop.IconManager;
+import com.drowltd.dictionary.ui.desktop.PreferencesDialog;
+import com.drowltd.dictionary.ui.desktop.PreferencesExtractor;
+import com.drowltd.dictionary.ui.desktop.SpellbookFrame;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.Timer;
 
 import static com.drowltd.dictionary.core.preferences.PreferencesManager.Preference;
@@ -23,7 +28,7 @@ import static com.drowltd.dictionary.core.preferences.PreferencesManager.Prefere
  */
 public class ExamDialog extends javax.swing.JDialog {
 
-    private ExamService answer;
+    private ExamService answerService;
     private static final PreferencesManager PM = PreferencesManager.getInstance();
     private int seconds = 0;
     private int secondsBackup = 0;
@@ -33,7 +38,6 @@ public class ExamDialog extends javax.swing.JDialog {
     private int maximumWordsProgressBar = 0;
     private Dictionary selectedDictionary = Dictionary.EN_BG;
     private static Difficulty difficulty = Difficulty.EASY;
-    private ExamSettingsDialog examSettingsDialog = new ExamSettingsDialog(this, true);
     
     private int totalWords;
     private int correctWords;
@@ -43,11 +47,12 @@ public class ExamDialog extends javax.swing.JDialog {
     private String diffLabelText;
     private static Difficulty enumDiff = Difficulty.EASY;
     private static final Translator TRANSLATOR = Translator.getTranslator("ExamDialog");
-    private static ArrayList<String> wrongWords = new ArrayList<String>();
-    private static ArrayList<String> correctTranslation = new ArrayList<String>();
+    private static List<String> wrongWords = new ArrayList<String>();
+    private static List<String> correctTranslation = new ArrayList<String>();
+
+    private Frame parent;
 
     public enum TimerStatus {
-
         PAUSED, STARTED, STOPPED, DISABLED
     }
     private static TimerStatus enumTimerStatus = TimerStatus.DISABLED;
@@ -57,6 +62,7 @@ public class ExamDialog extends javax.swing.JDialog {
         super(parent, modal);
 
         TRANSLATOR.reset();
+        this.parent = parent;
         initComponents();
         pauseButton.setEnabled(false);
 
@@ -66,8 +72,6 @@ public class ExamDialog extends javax.swing.JDialog {
         //   Next two lines can be used directly even with more languages
         fromLanguageComboBox.setSelectedIndex(PM.getInt(Preference.EXAM_FROM_LANG, fromLanguageComboBox.getSelectedIndex()));
         toLanguageComboBox.setSelectedIndex(PM.getInt(Preference.EXAM_TO_LANG, toLanguageComboBox.getSelectedIndex()));
-
-
     }
 
     /** This method is called from within the constructor to
@@ -405,27 +409,27 @@ public class ExamDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
-        if ((fromLanguageComboBox.getSelectedIndex() == 0) && (toLanguageComboBox.getSelectedIndex() == 1)) {   //English Index = 0; Bulgarian = 1;
+        //English Index = 0; Bulgarian = 1;
+        if ((fromLanguageComboBox.getSelectedIndex() == 0) && (toLanguageComboBox.getSelectedIndex() == 1)) {
             selectedDictionary = Dictionary.EN_BG;
         }
+
         if ((fromLanguageComboBox.getSelectedIndex() == 1) && (toLanguageComboBox.getSelectedIndex() == 0)) {
             selectedDictionary = Dictionary.BG_EN;
         }
+
         wrongWords.clear();
         correctTranslation.clear();
-        answer = new ExamService(selectedDictionary, difficulty);
+        answerService = new ExamService(selectedDictionary, difficulty);
         totalWords = 0;
         correctWords = 0;
-        dbCalling();
+
+        callAnswerService();
 
         editability(false);
 
-        if (ExamSettingsDialog.isOpen()) {
-            examWords = ExamSettingsDialog.getWordsCount();
-            examWordsCopy = ExamSettingsDialog.getWordsCount();
-            PM.putInt(Preference.EXAM_WORDS, examWords);
-        }
-
+            examWords = PM.getInt(Preference.EXAM_WORDS, 10);
+            examWordsCopy = examWords;
 
         if (enumTimerStatus == TimerStatus.STARTED || enumTimerStatus == TimerStatus.STOPPED) {
             timerRunButton();
@@ -448,8 +452,8 @@ public class ExamDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_startButtonActionPerformed
 
     private void stopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopButtonActionPerformed
-        wrongWords.add(answer.examWord());
-        correctTranslation.add(answer.getTranslation());
+        wrongWords.add(answerService.examWord());
+        correctTranslation.add(answerService.getTranslation());
         stopExam();
         pauseButton.setText(TRANSLATOR.translate("Pause(Button)"));
 
@@ -464,9 +468,11 @@ public class ExamDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_formWindowClosed
 
     private void settingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_settingsButtonActionPerformed
-        examSettingsDialog.setLocationRelativeTo(this);
-        examSettingsDialog.showExamSettingsDialog();
-        
+        PreferencesDialog preferencesDialog = new PreferencesDialog(parent, true);
+        preferencesDialog.getTabbedTane().setSelectedIndex(2);
+
+        preferencesDialog.setLocationRelativeTo(this);
+        PreferencesExtractor.extract((SpellbookFrame)parent, preferencesDialog);
     }//GEN-LAST:event_settingsButtonActionPerformed
 
     private void answerFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_answerFieldActionPerformed
@@ -480,8 +486,7 @@ public class ExamDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_answerButtonActionPerformed
 
     private void settingsIconLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_settingsIconLabelMouseClicked
-        examSettingsDialog.setLocationRelativeTo(this);
-        examSettingsDialog.showExamSettingsDialog();
+
     }//GEN-LAST:event_settingsIconLabelMouseClicked
 
     private void fromLanguageComboBoxPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_fromLanguageComboBoxPopupMenuWillBecomeInvisible
@@ -554,14 +559,13 @@ public class ExamDialog extends javax.swing.JDialog {
     private javax.swing.JProgressBar wordsProgressBar;
     // End of variables declaration//GEN-END:variables
 
-    private void dbCalling() {
-        answer.getExamWord(selectedDictionary);
-        translateField.setText(answer.examWord());
+    private void callAnswerService() {
+        answerService.getExamWord(selectedDictionary);
+        translateField.setText(answerService.examWord());
         totalWords++;
     }
 
     private void answered() {
-
         examWords--;
         displayTranslation();
 
@@ -570,25 +574,26 @@ public class ExamDialog extends javax.swing.JDialog {
 
             examWords = examWordsCopy;
         } else {
-            dbCalling();
+            callAnswerService();
         }
 
         answerField.setText(null);
-
     }
 
     private void displayTranslation() {
-        answer.possibleAnswers();
+        answerService.possibleAnswers();
         String str;
+
         if (examWords == 0) {
             str = (examWordsCopy - examWords) + "/ " + examWordsCopy;
         } else {
             str = (examWordsCopy - examWords + 1) + "/ " + examWordsCopy;
         }
+
         wordsProgressBar.setString(str);
         wordsProgressBar.setValue(maximumWordsProgressBar - examWords + 1);
-        if (answer.isCorrect(answerField.getText())) {
-
+        
+        if (answerService.isCorrect(answerField.getText())) {
             wordsProgressBar.setForeground(new java.awt.Color(51, 255, 51));
 
             feedbackField.setText(TRANSLATOR.translate("CorrectAnswer(String)"));
@@ -598,8 +603,8 @@ public class ExamDialog extends javax.swing.JDialog {
             wordsProgressBar.setForeground(new java.awt.Color(204, 0, 0));
             feedbackField.setText(TRANSLATOR.translate("WrongAnser(String)"));
             answerIconLabel.setIcon(IconManager.getImageIcon("bell2_red.png", IconManager.IconSize.SIZE24));
-            wrongWords.add(answer.examWord());
-            correctTranslation.add(answer.getTranslation());
+            wrongWords.add(answerService.examWord());
+            correctTranslation.add(answerService.getTranslation());
         }
 
     }
@@ -622,9 +627,6 @@ public class ExamDialog extends javax.swing.JDialog {
 
                     seconds--;
                     timerProgressBar.setValue(maximumSecondsProgressBar - seconds);
-
-
-
                 } else if (seconds < 10 && seconds >= 0) {
                     if (seconds < 6) {
                         wordsProgressBar.setForeground(new java.awt.Color(204, 0, 0));
@@ -637,23 +639,19 @@ public class ExamDialog extends javax.swing.JDialog {
                     seconds--;
                     timerProgressBar.setValue(maximumSecondsProgressBar - seconds);
 
-
                     if (seconds == -1) {
 
                         answered();
 
                         flagLast = true;
-
                     }
                 }
             } else {
-                wrongWords.add(answer.examWord());
-                correctTranslation.add(answer.getTranslation());
+                wrongWords.add(answerService.examWord());
+                correctTranslation.add(answerService.getTranslation());
                 stopExam();
                 wordsProgressBar.setValue(maximumWordsProgressBar);
-
             }
-
         }
     });
 
@@ -661,18 +659,21 @@ public class ExamDialog extends javax.swing.JDialog {
 
     public void showExamDialog() {
         difficulty = difficulty.valueOf(PM.get(Preference.EXAM_DIFFICULTY, difficulty.name()));
-        if (PM.getBoolean(Preference.EXAM_TIMER, false)) {
-            seconds = 45; // TODO fix
+
+        boolean timerEnabled = PM.getBoolean(Preference.EXAM_TIMER, false);
+        
+        if (timerEnabled) {
+            seconds = difficulty.getTime();
         }
 
-        timerProgressBar.setVisible(PM.getBoolean(Preference.EXAM_TIMER, false));
+        timerProgressBar.setVisible(timerEnabled);
 
-        timerIconLabel.setVisible(PM.getBoolean(Preference.EXAM_TIMER, false));
+        timerIconLabel.setVisible(timerEnabled);
 
         diffLabelText = PM.get(Preference.EXAM_DIFFICULTY, enumDiff.name());
         diffLabelChange(diffLabelText);
 
-        enumTimerStatus = enumTimerStatus.valueOf(PM.get(Preference.EXAM_TIMER, enumTimerStatus.DISABLED.toString()));
+        enumTimerStatus = timerEnabled ? TimerStatus.STOPPED : TimerStatus.DISABLED;
         examWords = PM.getInt(Preference.EXAM_WORDS, 10);
         examWordsCopy = examWords;
         setVisible(true);
@@ -683,7 +684,6 @@ public class ExamDialog extends javax.swing.JDialog {
       * there going to be made some optimization
       */
      public static void diffLabelChange(String diff) {
-
         if (diff.equals("EASY")) {
             difficultyLabel.setText(TRANSLATOR.translate("Easy(Label)"));
             enumDiff = Difficulty.EASY;
@@ -710,12 +710,8 @@ public class ExamDialog extends javax.swing.JDialog {
     }
 
     private void timerRunButton() {
-        seconds = ExamSettingsDialog.returnTimeSeconds();
-//        if (seconds == 0) {
-//            seconds = PM.getInt("SECONDS", WIDTH);
-//        } else {
-//            PM.putInt("SECONDS", seconds);
-//        }
+        seconds = difficulty.getTime();
+
         swingTimer.start();
         pauseButton.setEnabled(true);
         maximumSecondsProgressBar = seconds;
@@ -750,11 +746,11 @@ public class ExamDialog extends javax.swing.JDialog {
 
     }
 
-    public static ArrayList<String> getWrongWords() {
+    public static List<String> getWrongWords() {
         return wrongWords;
     }
 
-    public static ArrayList<String> getCorrectTranslation() {
+    public static List<String> getCorrectTranslation() {
         return correctTranslation;
     }
 

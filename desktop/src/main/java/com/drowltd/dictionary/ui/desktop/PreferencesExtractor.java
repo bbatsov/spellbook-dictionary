@@ -20,8 +20,10 @@ import org.slf4j.LoggerFactory;
 import static com.drowltd.dictionary.core.preferences.PreferencesManager.Preference;
 
 /**
+ * A helper class that extracts the preferences from the preferences dialog.
  *
- * @author bozhidar
+ * @author Bozhidar Batsov
+ * @since 0.3
  */
 public class PreferencesExtractor {
 
@@ -127,6 +129,12 @@ public class PreferencesExtractor {
             PM.putInt(Preference.FONT_STYLE, selectedFont.getStyle());
 
             spellbookFrame.setSelectedFont(selectedFont);
+
+            // exam prefs
+            PM.put(Preference.EXAM_DIFFICULTY, preferencesDialog.getExamDifficulty().toString());
+            PM.putInt(Preference.EXAM_WORDS, preferencesDialog.getExamWords());
+            PM.putBoolean(Preference.EXAM_TIMER, preferencesDialog.isExamTimerEnabled());
+
         } else {
             // we need to restore the old look and feel manually since it was changed on selection
             LookAndFeelInfo[] lookAndFeelInfos = UIManager.getInstalledLookAndFeels();

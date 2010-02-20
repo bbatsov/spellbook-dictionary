@@ -1,18 +1,24 @@
 package com.drowltd.dictionary.core.exam;
 
+import com.drowltd.dictionary.core.i18n.Translator;
+
 /**
  *
- * @author F_R_A_N_K_Y
+ * @author Ivan Spasov
+ * @since 0.2
  */
 public enum Difficulty {
-    EASY(30, Integer.SIZE), MEDIUM(10,30), HARD(1,10);
+    EASY(30, Integer.SIZE, 45), MEDIUM(10,30, 30), HARD(1,10, 15);
 
     private final int low;
     private final int high;
+    private final int time; // in seconds
+    private static final Translator TRANSLATOR = Translator.getTranslator("ExamSettingsDialog");
 
-    private Difficulty(int low, int high) {
+    private Difficulty(int low, int high, int time) {
         this.low = low;
         this.high = high;
+        this.time = time;
     }
 
     public int getLow(){
@@ -21,5 +27,18 @@ public enum Difficulty {
 
     public int getHigh() {
         return high;
+    }
+
+    public String getName() {
+        switch (this) {
+            case EASY: return TRANSLATOR.translate("Easy(Label)");
+            case MEDIUM: return TRANSLATOR.translate("Medium(Label)");
+            case HARD: return TRANSLATOR.translate("Hard(Label)");
+            default: return null;
+        }
+    }
+
+    public int getTime() {
+        return time;
     }
 }
