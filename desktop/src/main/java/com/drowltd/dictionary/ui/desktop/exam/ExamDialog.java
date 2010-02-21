@@ -49,6 +49,7 @@ public class ExamDialog extends javax.swing.JDialog {
     private static final Translator TRANSLATOR = Translator.getTranslator("ExamDialog");
     private static List<String> wrongWords = new ArrayList<String>();
     private static List<String> correctTranslation = new ArrayList<String>();
+    private boolean timerEnabled = PM.getBoolean(Preference.EXAM_TIMER, false);
 
     private Frame parent;
 
@@ -60,7 +61,7 @@ public class ExamDialog extends javax.swing.JDialog {
     /** Creates new form ExamDialog */
     public ExamDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-
+      
         TRANSLATOR.reset();
         this.parent = parent;
         initComponents();
@@ -432,6 +433,11 @@ public class ExamDialog extends javax.swing.JDialog {
             examWordsCopy = examWords;
 
         if (enumTimerStatus == TimerStatus.STARTED || enumTimerStatus == TimerStatus.STOPPED) {
+            difficulty = difficulty.valueOf(PM.get(Preference.EXAM_DIFFICULTY, difficulty.name()));
+
+             if (timerEnabled) {
+                 seconds = difficulty.getTime();
+                 }
             timerRunButton();
             timerUsed = true;
             enumTimerStatus = TimerStatus.STARTED;
@@ -471,8 +477,11 @@ public class ExamDialog extends javax.swing.JDialog {
         PreferencesDialog preferencesDialog = new PreferencesDialog(parent, true);
         preferencesDialog.getTabbedTane().setSelectedIndex(2);
 
+
         preferencesDialog.setLocationRelativeTo(this);
         PreferencesExtractor.extract((SpellbookFrame)parent, preferencesDialog);
+        preferencesDialog.refreshNewSettingsToExam();
+
     }//GEN-LAST:event_settingsButtonActionPerformed
 
     private void answerFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_answerFieldActionPerformed
@@ -660,12 +669,6 @@ public class ExamDialog extends javax.swing.JDialog {
     public void showExamDialog() {
         difficulty = difficulty.valueOf(PM.get(Preference.EXAM_DIFFICULTY, difficulty.name()));
 
-        boolean timerEnabled = PM.getBoolean(Preference.EXAM_TIMER, false);
-        
-        if (timerEnabled) {
-            seconds = difficulty.getTime();
-        }
-
         timerProgressBar.setVisible(timerEnabled);
 
         timerIconLabel.setVisible(timerEnabled);
@@ -778,8 +781,9 @@ public class ExamDialog extends javax.swing.JDialog {
 
         feedbackField.setText(TRANSLATOR.translate("Feedback(Field)"));
     }
+
+    public static String returnDiffLabelText() {
+        return difficultyLabel.getText();
+    }
+
 }
-
-
-
-

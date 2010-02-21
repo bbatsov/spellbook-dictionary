@@ -53,6 +53,7 @@ public class WrongWordsDialog extends javax.swing.JDialog {
         jScrollPane1.setViewportView(wrongWordsList);
 
         correctTranslationTextArea.setColumns(20);
+        correctTranslationTextArea.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         correctTranslationTextArea.setRows(5);
         correctTranslationTextArea.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("CorrectTranslation(String)"))); // NOI18N
         jScrollPane2.setViewportView(correctTranslationTextArea);
