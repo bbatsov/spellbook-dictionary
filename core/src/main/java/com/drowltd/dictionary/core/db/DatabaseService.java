@@ -2,6 +2,7 @@ package com.drowltd.dictionary.core.db;
 
 import com.drowltd.dictionary.core.exam.Difficulty;
 import com.drowltd.dictionary.core.exception.DictionaryDbLockedException;
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -25,9 +26,10 @@ import java.util.Map;
  * @since  0.1
  */
 public class DatabaseService {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseService.class);
+
     private static DatabaseService instance;
+
     private Connection connection;
     // simple caching mechanism to avoid db operations
     private Map<Dictionary, List<String>> dictionaryCache = new HashMap<Dictionary, List<String>>();

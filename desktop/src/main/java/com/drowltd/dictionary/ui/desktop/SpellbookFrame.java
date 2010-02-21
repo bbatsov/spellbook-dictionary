@@ -52,15 +52,20 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private TrayIcon trayIcon;
     private Dictionary selectedDictionary = Dictionary.getSelectedDictionary();
     private static final int BYTES_IN_ONE_MEGABYTE = 1024 * 1024;
+    private static final String DEFAULT_DB_PATH = "/opt/spellbook/db/";
+    private static final String DB_FILE_NAME = "dictionary.data.db";
 
     /** Creates new form SpellbookFrame */
     public SpellbookFrame() {
         TRANSLATOR.reset();
 
+        // check a list of known possible locations for the db first
+        checkDefaultDbLocations();
+
         // check the presence of the dictionary database
         if (!verifyDbPresence()) {
             JOptionPane.showMessageDialog(null, TRANSLATOR.translate("NoDbSelected(Message)"),
-                    TRANSLATOR.translate("Error(Title)"), JOptionPane.ERROR_MESSAGE);
+                                          TRANSLATOR.translate("Error(Title)"), JOptionPane.ERROR_MESSAGE);
             System.exit(-1);
         }
 
@@ -116,8 +121,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
         splitPane.setDividerLocation(PM.getInt(Preference.DIVIDER_LOCATION, 160));
 
         // we need to pass the completable search field a reference to the word list
-        ((AutocompletingTextField)wordSearchField).setWordsList(wordsList);
-        ((AutocompletingTextField)wordSearchField).setFrame(this);
+        ((AutocompletingTextField) wordSearchField).setWordsList(wordsList);
+        ((AutocompletingTextField) wordSearchField).setFrame(this);
 
         // monitor any changes in the search text field
         wordSearchField.getDocument().addDocumentListener(new DocumentListener() {
@@ -142,9 +147,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
             @Override
             public void componentMoved(ComponentEvent e) {
-                ((AutocompletingTextField)wordSearchField).showCompletions();
+                ((AutocompletingTextField) wordSearchField).showCompletions();
             }
-
         });
 
         // add the context popup
@@ -313,11 +317,11 @@ public class SpellbookFrame extends javax.swing.JFrame {
                         }
 
                         // the tray popup translation should appear is the main frame is either not visible or minimized
-                        if ((trayIcon != null) && match && (!SpellbookFrame.this.isVisible() ||
-                                (SpellbookFrame.this.getState() == JFrame.ICONIFIED)) &&
-                                PM.getBoolean(Preference.TRAY_POPUP, false)) {
+                        if ((trayIcon != null) && match && (!SpellbookFrame.this.isVisible()
+                                || (SpellbookFrame.this.getState() == JFrame.ICONIFIED))
+                                && PM.getBoolean(Preference.TRAY_POPUP, false)) {
                             trayIcon.displayMessage(foundWord, wordTranslationTextPane.getText(),
-                                    TrayIcon.MessageType.INFO);
+                                                    TrayIcon.MessageType.INFO);
                         }
                     }
                 }
@@ -368,6 +372,23 @@ public class SpellbookFrame extends javax.swing.JFrame {
         PM.putDouble(Preference.FRAME_WIDTH, r.getWidth());
         PM.putDouble(Preference.FRAME_HEIGHT, r.getHeight());
         PM.putInt(Preference.DIVIDER_LOCATION, splitPane.getDividerLocation());
+    }
+
+    private void checkDefaultDbLocations() {
+        LOGGER.info("Checking default db locations...");
+
+        String[] defaultDbLocations = new String[]{DEFAULT_DB_PATH, "db/"};
+
+        for (String path : defaultDbLocations) {
+            File dbFile = new File(path + DB_FILE_NAME);
+
+            if (dbFile.exists()) {
+                LOGGER.info("Found db in " + path);
+                PM.put(Preference.PATH_TO_DB, path + DB_FILE_NAME);
+
+                break;
+            }
+        }
     }
 
     private boolean verifyDbPresence() {
@@ -850,14 +871,14 @@ public class SpellbookFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_runGcButtonActionPerformed
 
     private void wordSearchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_wordSearchFieldActionPerformed
-wordSearchField.selectAll();
+        wordSearchField.selectAll();
         AutocompletingTextField completableJTextField = (AutocompletingTextField) wordSearchField;
 
         completableJTextField.addCompletion(wordSearchField.getText());        // TODO add your handling code here:
     }//GEN-LAST:event_wordSearchFieldActionPerformed
 
     private void wordsListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_wordsListValueChanged
-if (!wordsList.isSelectionEmpty()) {
+        if (!wordsList.isSelectionEmpty()) {
             int selectedIndex = wordsList.getSelectedIndex();
 
             final String selectedWord = words.get(selectedIndex);
@@ -865,6 +886,7 @@ if (!wordsList.isSelectionEmpty()) {
             // word field needs to be updated in a separate thread
             if (!wordSearchField.hasFocus()) {
                 EventQueue.invokeLater(new Runnable() {
+
                     @Override
                     public void run() {
                         wordSearchField.setText(selectedWord);
@@ -882,9 +904,8 @@ if (!wordsList.isSelectionEmpty()) {
     }//GEN-LAST:event_wordsListValueChanged
 
     private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearButtonActionPerformed
-    clear();        // TODO add your handling code here:
+        clear();        // TODO add your handling code here:
     }//GEN-LAST:event_clearButtonActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JMenuItem addWordMenuItem;
