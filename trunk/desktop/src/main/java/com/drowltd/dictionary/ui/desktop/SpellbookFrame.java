@@ -320,7 +320,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
                         if ((trayIcon != null) && match && (!SpellbookFrame.this.isVisible()
                                 || (SpellbookFrame.this.getState() == JFrame.ICONIFIED))
                                 && PM.getBoolean(Preference.TRAY_POPUP, false)) {
-                            trayIcon.displayMessage(foundWord, wordTranslationTextPane.getText(),
+                            trayIcon.displayMessage(foundWord, databaseService.getTranslation(selectedDictionary, (String)wordsList.getSelectedValue()),
                                                     TrayIcon.MessageType.INFO);
                         }
                     }
