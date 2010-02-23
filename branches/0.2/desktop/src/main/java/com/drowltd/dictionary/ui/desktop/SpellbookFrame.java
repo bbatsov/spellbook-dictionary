@@ -80,7 +80,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         words = databaseService.getWordsFromDictionary(selectedDictionary);
 
-        
+
         //set the frame title
         setTitle(TRANSLATOR.translate("ApplicationName(Title)"));
 
@@ -245,7 +245,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         }
     }
 
-     private void saveFrameState() {
+    private void saveFrameState() {
         Rectangle r = getBounds();
         PM.putDouble("FRAME_X", r.getX());
         PM.putDouble("FRAME_Y", r.getY());
@@ -591,16 +591,16 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
     private void wordsListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_wordsListValueChanged
         int selectedIndex = wordsList.getSelectedIndex();
-        if(selectedIndex < 0){
+        if (selectedIndex < 0) {
             return;
         }
 
         String selectedWord = words.get(selectedIndex);
-            
-            if (!wordSearchField.hasFocus()) {
-                wordSearchField.setText(selectedWord);
-                wordSearchField.selectAll();
-            }
+
+        if (!wordSearchField.hasFocus()) {
+            wordSearchField.setText(selectedWord);
+            wordSearchField.selectAll();
+        }
 
         wordTranslationTextArea.setText(databaseService.getTranslation(selectedDictionary, words.get(selectedIndex)));
         wordTranslationTextArea.setCaretPosition(0);
@@ -711,7 +711,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
             PM.putBoolean("CLIPBOARD_INTEGRATION", clipboardIntegrationEnabled);
 
-            PM.putInt("EXAM_WORDS", preferencesDialog.getExamWords());
 
             String selectedLookAndFeel = preferencesDialog.getSelectedLookAndFeel();
 
@@ -808,7 +807,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private void wordSearchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_wordSearchFieldActionPerformed
         wordSearchField.selectAll();
     }//GEN-LAST:event_wordSearchFieldActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JMenuItem bgEnDictMenuItem;
