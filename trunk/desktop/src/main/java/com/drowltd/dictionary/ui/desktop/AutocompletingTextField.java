@@ -1,5 +1,7 @@
 package com.drowltd.dictionary.ui.desktop;
 
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -36,25 +38,6 @@ public class AutocompletingTextField extends JTextField {
         completionListModel = new DefaultListModel();
         completionList = new JList(completionListModel);
         completionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-        completionList.addKeyListener(new KeyAdapter() {
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-                listWindow.setVisible(false);
-
-                final String completionString = (String) completionList.getSelectedValue();
-
-                if (KeyEvent.VK_ENTER == e.getKeyCode()) {
-                    LOGGER.info("Enter press in completion list");
-
-                    if (completionString != null && !completionString.isEmpty()) {
-                        setText(completionString);
-                        wordsList.setSelectedValue(completionString, true);
-                    }
-                }
-            }
-        });
 
         completionList.addMouseListener(new MouseAdapter() {
 
@@ -94,14 +77,38 @@ public class AutocompletingTextField extends JTextField {
                 if (KeyEvent.VK_DOWN == e.getKeyCode()) {
                     LOGGER.info("Down arrow pressed in word search field");
 
-                    listWindow.requestFocusInWindow();
-
-                    if (completionList.getModel().getSize() > 0) {
-                        completionList.requestFocusInWindow();
+                    if (completionList.isSelectionEmpty()) {
                         completionList.setSelectedIndex(0);
+                    } else {
+                        completionList.setSelectedIndex(completionList.getSelectedIndex() + 1);
+                    }
+                }
+
+                if (KeyEvent.VK_UP == e.getKeyCode()) {
+                    LOGGER.info("Up arrow pressed in word search field");
+
+                    if (!completionList.isSelectionEmpty()) {
+                        completionList.setSelectedIndex(completionList.getSelectedIndex() - 1);
+                    }
+                }
+
+                if (KeyEvent.VK_ENTER == e.getKeyCode()) {
+                    LOGGER.info("Enter pressed in word search field");
+
+                    if (!completionList.isSelectionEmpty()) {
+                        setText((String)completionList.getSelectedValue());
                     }
                 }
             }
+        });
+
+        addFocusListener(new FocusAdapter() {
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                hideCompletions();
+            }
+
         });
     }
 
@@ -166,7 +173,7 @@ public class AutocompletingTextField extends JTextField {
             System.out.println("buildPopup for " + completions.size() + " completions");
 
             for (String completion : completions) {
-                if (completion.startsWith(getText())) {
+                if (completion.startsWith(getText()) && !completion.equals(getText())) {
                     // add if match
                     System.out.println("matched " + completion);
                     completionListModel.add(completionListModel.getSize(), completion);
