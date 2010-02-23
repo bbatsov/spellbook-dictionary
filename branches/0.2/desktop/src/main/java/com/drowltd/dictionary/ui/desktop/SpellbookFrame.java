@@ -654,6 +654,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_clearButtonActionPerformed
 
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
+        saveFrameState();
         System.exit(0);
     }//GEN-LAST:event_exitMenuItemActionPerformed
 
