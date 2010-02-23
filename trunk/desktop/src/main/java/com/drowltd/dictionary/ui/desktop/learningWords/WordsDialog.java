@@ -34,6 +34,7 @@ public class WordsDialog extends javax.swing.JDialog {
     private static final PreferencesManager PM = PreferencesManager.getInstance();
     private static final Translator TRANSLATOR = Translator.getTranslator("WordsDialog");
     LearningWordsDialog learningWordsDialog = new LearningWordsDialog(parent, true);
+
     /** Creates new form WordsDialog */
     public WordsDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -45,7 +46,7 @@ public class WordsDialog extends javax.swing.JDialog {
         countOFTheWords = dictDb.getCountOfTheWords();
         // wordsForLearning = dictDb.getWordsForLearning();
         translationForLearning = dictDb.getTranslationForLearning();
-        
+
         addWordField.requestFocus();
     }
 
@@ -234,7 +235,7 @@ public class WordsDialog extends javax.swing.JDialog {
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
         String word = addWordField.getText();
         String translation = addTranslationField.getText();
-        
+
         translation = translation.toLowerCase();
         List<String> words = new ArrayList<String>();
 
@@ -243,7 +244,7 @@ public class WordsDialog extends javax.swing.JDialog {
         words = LearningWordsDialog.getWords();
 
         if (word == null || word.isEmpty() || translation == null || translation.isEmpty()) {
-            JOptionPane.showMessageDialog(this,TRANSLATOR.translate("EmptyFields(Message)") , null, JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, TRANSLATOR.translate("EmptyFields(Message)"), null, JOptionPane.ERROR_MESSAGE);
         }
 
         if (words.contains(word)) { //da go napravq da se proverqva spored izbranite re4nici za6toto taka se zarejdata samo dumite na angliiski i se proverqva samo s tqh a ako dobavqme duma koqto e na drug ezik primerno germanski to 6te kazva postoqno 4e dumata q nqma v bazata
@@ -255,11 +256,11 @@ public class WordsDialog extends javax.swing.JDialog {
             if (!wordsForLearning.contains(word)) {
                 countOFTheWords++;
                 dictDb.addWordForLearning(word, translation);
-           
+
                 setWordsInTable(false);
             }
 
-            
+
 
         } else if (!words.contains(word) && !(word == null || word.isEmpty() || translation == null || translation.isEmpty())) {
             JOptionPane.showMessageDialog(this, TRANSLATOR.translate("NotExistWord(Message)"), null, JOptionPane.ERROR_MESSAGE);
@@ -278,17 +279,17 @@ public class WordsDialog extends javax.swing.JDialog {
                 countOFTheWords--;
             }
         }
-       
-        setWordsInTable( false);
+
+        setWordsInTable(false);
 
     }//GEN-LAST:event_deleteButtonActionPerformed
 
     private void nothingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nothingButtonActionPerformed
-        setWordsInTable( false);
+        setWordsInTable(false);
     }//GEN-LAST:event_nothingButtonActionPerformed
 
     private void allButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_allButtonActionPerformed
-        setWordsInTable( true);
+        setWordsInTable(true);
     }//GEN-LAST:event_allButtonActionPerformed
 
     private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearButtonActionPerformed
@@ -309,10 +310,10 @@ public class WordsDialog extends javax.swing.JDialog {
         words = LearningWordsDialog.getWords();
 
         if (word == null || word.isEmpty() || translation == null || translation.isEmpty()) {
-            JOptionPane.showMessageDialog(this, TRANSLATOR.translate("EmptyFields(Message)") , null, JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, TRANSLATOR.translate("EmptyFields(Message)"), null, JOptionPane.ERROR_MESSAGE);
         }
 
-        if (words.contains(word)) { 
+        if (words.contains(word)) {
             //     wordsForLearning.add(word);
             countOFTheWords = dictDb.getCountOfTheWords();
             if (wordsForLearning.contains(word)) {
@@ -321,12 +322,9 @@ public class WordsDialog extends javax.swing.JDialog {
             if (!wordsForLearning.contains(word)) {
                 countOFTheWords++;
                 dictDb.addWordForLearning(word, translation);
-           
+
                 setWordsInTable(false);
             }
-
-            
-
         } else if (!words.contains(word) && !(word == null || word.isEmpty() || translation == null || translation.isEmpty())) {
             JOptionPane.showMessageDialog(this, TRANSLATOR.translate("NotExistWord(Message)"), null, JOptionPane.ERROR_MESSAGE);
         }
@@ -336,7 +334,6 @@ public class WordsDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_addTranslationFieldActionPerformed
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
-     
     }//GEN-LAST:event_formWindowClosed
     /**
      * @param args the command line arguments
@@ -362,7 +359,7 @@ public class WordsDialog extends javax.swing.JDialog {
         addTranslationField.setText(null);
     }
 
-    public void setWordsInTable( Boolean select) {
+    public void setWordsInTable(Boolean select) {
         WordsTableModel model = new WordsTableModel();
         wordsTable.setModel(model);
         wordsForLearning = dictDb.getWordsForLearning();
