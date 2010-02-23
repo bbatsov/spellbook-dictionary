@@ -30,6 +30,7 @@ public class DictionaryService {
     private static final String languagesTable = "LANGUAGES";
     private final Connection connection;
     private final Map<SDictionary, DictionaryConfig> dictConfigMap;
+    private final DictionaryCache cache = new DictionaryCache();
 
     public DictionaryService(Connection connection) throws SQLException, NoDictionariesAvailableException {
         if (connection == null) {
@@ -125,6 +126,12 @@ public class DictionaryService {
             throw new IllegalArgumentException("dictionary is null");
         }
 
+        Map<String, Integer> cacheMap = cache.getWordsMap(dictionary);
+        if (cacheMap != null) {
+            LOGGER.info("Getting words from cache");
+            return cacheMap;
+        }
+
         final PreparedStatement ps = connection.prepareStatement("SELECT WORD, RATING FROM " + getTranslationTable(dictionary));
 
         final ResultSet rs = ps.executeQuery();
@@ -134,6 +141,9 @@ public class DictionaryService {
         while (rs.next()) {
             wordMap.put(rs.getString(1), rs.getInt(2));
         }
+
+        LOGGER.info("Adding words to cache");
+        cache.addDictionary(dictionary, wordMap);
 
         return wordMap;
     }
@@ -179,26 +189,43 @@ public class DictionaryService {
         final PreparedStatement ps = connection.prepareStatement("INSERT INTO " + getTranslationTable(dictionary)
                 + "(WORD, TRANSLATION, RATING) VALUES('" + word + "','" + translation + "','" + rating + "')");
 
-        return ps.executeUpdate() > 0;
+        final boolean inserted = ps.executeUpdate() > 0;
+        if (inserted) {
+            LOGGER.info("Dict cache inavalidated");
+            cache.invalidateDictCache(dictionary);
+        }
+
+        return inserted;
     }
 
     public Map<String, Integer> getRatings(Language language) throws SQLException {
         if (language == null) {
             throw new IllegalArgumentException("language is null");
         }
-        final DictionaryConfig config = getConfig(language);
+        final SDictionary dict = getDict(language);
+
+        final Map<String, Integer> cacheMap = cache.getRatingMap(dict);
+        if (cacheMap != null) {
+            LOGGER.info("Getting ratings from cache");
+            return cacheMap;
+        }
+
+        DictionaryConfig config = getConfig(dict);
 
         Map<String, Integer> ratingsMap = new HashMap<String, Integer>();
 
-        final String translationTable = config.getTranslationTable();
-        final ResultSet rs0 = connection.prepareStatement("SELECT WORD, RATING FROM " + translationTable).executeQuery();
+        final String ratingsTable = config.getRatingsTable();
+        final ResultSet rs0 = connection.prepareStatement("SELECT WORD, RATING FROM " + ratingsTable).executeQuery();
 
         while (rs0.next()) {
             ratingsMap.put(rs0.getString(1), rs0.getInt(2));
         }
 
-        final String ratingsTable = config.getRatingsTable();
-        final ResultSet rs1 = connection.prepareStatement("SELECT WORD, RATING FROM " + ratingsTable).executeQuery();
+        LOGGER.info("Adding ratings to cache");
+        cache.addRatings(dict, ratingsMap);
+
+        final String translationTable = config.getTranslationTable();
+        final ResultSet rs1 = connection.prepareStatement("SELECT WORD, RATING FROM " + translationTable).executeQuery();
 
         while (rs1.next()) {
             ratingsMap.put(rs1.getString(1), rs1.getInt(2));
@@ -219,10 +246,13 @@ public class DictionaryService {
         if (translation == null || translation.isEmpty()) {
             throw new IllegalArgumentException("translation is null or empty");
         }
+        final int rowsUpdated = connection.prepareStatement("UPDATE " + getTranslationTable(dictionary)
+                + " SET TRANSLATION = \'" + translation + "\' " + "WHERE WORD = \'" + word + "\'").executeUpdate();
 
-        connection.prepareStatement("UPDATE " + getTranslationTable(dictionary) + " SET TRANSLATION = \'" + translation + "\' "
-                + "WHERE WORD = \'" + word + "\'").executeUpdate();
-
+        if (rowsUpdated > 0) {
+            LOGGER.info("Dict cache inavalidated");
+            cache.invalidateDictCache(dictionary);
+        }
     }
 
     public void updateWord(SDictionary dictionary, String oldWord, String newWord) throws SQLException {
@@ -238,10 +268,13 @@ public class DictionaryService {
             throw new IllegalArgumentException("newWord is null or empty");
         }
 
-        connection.prepareStatement("UPDATE " + getTranslationTable(dictionary) + " SET WORD = \'" + newWord + "\' "
+        final int rowsUpdated = connection.prepareStatement("UPDATE " + getTranslationTable(dictionary) + " SET WORD = \'" + newWord + "\' "
                 + "WHERE WORD = \'" + oldWord + "\'").executeUpdate();
 
-
+        if (rowsUpdated > 0) {
+            LOGGER.info("Dict cache inavalidated");
+            cache.invalidateDictCache(dictionary);
+        }
     }
 
     public SDictionary getDictionary(Language languageFrom, Language languageTo) {
@@ -318,8 +351,20 @@ public class DictionaryService {
             throw new IllegalArgumentException("misspelled is null or empty");
         }
 
-        return connection.prepareStatement("INSERT INTO " + getRatingsTable(dictionary)
-                + " (WORD, RATING) VALUES('" + misspelled + "',1)").executeUpdate() > 0;
+        final int rowsUpdated = connection.prepareStatement("INSERT INTO " + getRatingsTable(dictionary)
+                + " (WORD, RATING) VALUES('" + misspelled + "',1)").executeUpdate();
+
+        if (rowsUpdated > 0) {
+            LOGGER.info("Ratings cache inavalidated");
+            cache.invalidateRatingsCache(dictionary);
+            return true;
+        }
+
+        return false;
+    }
+
+    public void setCacheSize(int size) {
+        cache.setCacheSize(size);
     }
 
     private DictionaryConfig getConfig(SDictionary dictionary) {
@@ -331,16 +376,21 @@ public class DictionaryService {
     }
 
     private DictionaryConfig getConfig(Language language) {
-        assert language != null : "language is null";
         assert !dictConfigMap.isEmpty() : "dictConfigMap is empty";
 
+        return dictConfigMap.get(getDict(language));
+
+    }
+
+    private SDictionary getDict(Language languageFrom) {
+        assert languageFrom != null : "language is null";
+
         for (SDictionary dict : dictConfigMap.keySet()) {
-            if (dict.getLanguageFrom().equals(language)) {
-                return dictConfigMap.get(dict);
+            if (dict.getLanguageFrom().equals(languageFrom)) {
+                return dict;
             }
         }
-
-        throw new IllegalStateException("No DictionaryConfig for " + language.getName());
+        throw new IllegalStateException("No dictionary available for langauge from");
     }
 
     private String getTranslationTable(SDictionary dictionary) {
