@@ -40,7 +40,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
 
         initComponents();
 
-      //  PreferencesManager pm = PreferencesManager.getInstance();
+        //  PreferencesManager pm = PreferencesManager.getInstance();
 
         selectedLanguage = SupportedLanguages.valueOf(pm.get("LANG", "EN"));
 
@@ -53,16 +53,13 @@ public class PreferencesDialog extends javax.swing.JDialog {
 
         clipboardIntegrationCheckBox.setSelected(pm.getBoolean("CLIPBOARD_INTEGRATION", false));
 
-         if (!clipboardIntegrationCheckBox.isSelected()) {
+        if (!clipboardIntegrationCheckBox.isSelected()) {
             trayPopupCheckBox.setEnabled(false);
             trayPopupCheckBox.setSelected(false);
         } else {
             trayPopupCheckBox.setSelected(pm.getBoolean("TRAY_POPUP", false));
         }
 
-        examWordsField.setDocument(new NumberDocument());
-        // exam length in words
-        examWordsField.setText("" + pm.getInt("EXAM_WORDS", 10));
 
         // build the look and feel section
         final LookAndFeelInfo[] lookAndFeelInfos = UIManager.getInstalledLookAndFeels();
@@ -139,10 +136,6 @@ public class PreferencesDialog extends javax.swing.JDialog {
         return minimizeToTrayOnCloseCheckBox.isSelected();
     }
 
-    public int getExamWords() {
-        return Integer.parseInt(examWordsField.getText());
-    }
-
     public String getSelectedLookAndFeel() {
         return (String) lookAndFeelComboBox.getSelectedItem();
     }
@@ -178,13 +171,11 @@ public class PreferencesDialog extends javax.swing.JDialog {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         languageComboBox = new javax.swing.JComboBox();
         minimizeToTrayCheckBox = new javax.swing.JCheckBox();
         minimizeToTrayOnCloseCheckBox = new javax.swing.JCheckBox();
         clipboardIntegrationCheckBox = new javax.swing.JCheckBox();
-        examWordsField = new javax.swing.JTextField();
         lookAndFeelComboBox = new javax.swing.JComboBox();
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
@@ -203,8 +194,6 @@ public class PreferencesDialog extends javax.swing.JDialog {
         jLabel3.setText(bundle.getString("CloseToTray(Label)")); // NOI18N
 
         jLabel4.setText(bundle.getString("ClipboardIntegration(Label)")); // NOI18N
-
-        jLabel5.setText(bundle.getString("ExamWords(Label)")); // NOI18N
 
         jLabel6.setText(bundle.getString("LookAndFeel(Label)")); // NOI18N
 
@@ -239,7 +228,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
 
         jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/48x48/preferences.png"))); // NOI18N
 
-        jLabel8.setText("Enable tray popups");
+        jLabel8.setText(bundle.getString("TrayPopup(Label)")); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -258,21 +247,18 @@ public class PreferencesDialog extends javax.swing.JDialog {
                             .addComponent(jLabel3)
                             .addComponent(jLabel2)
                             .addComponent(jLabel4)
-                            .addComponent(jLabel6)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel8))
+                            .addComponent(jLabel8)
+                            .addComponent(jLabel6))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(trayPopupCheckBox)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(lookAndFeelComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(examWordsField)
-                                .addComponent(jLabel7))
                             .addComponent(clipboardIntegrationCheckBox)
                             .addComponent(minimizeToTrayOnCloseCheckBox)
                             .addComponent(minimizeToTrayCheckBox)
-                            .addComponent(languageComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(75, Short.MAX_VALUE))
+                            .addComponent(languageComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lookAndFeelComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel7))))
+                .addContainerGap(75, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {cancelButton, okButton});
@@ -300,18 +286,13 @@ public class PreferencesDialog extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel8)
                     .addComponent(trayPopupCheckBox))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel6)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(examWordsField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5))
-                        .addGap(18, 18, 18)
-                        .addComponent(lookAndFeelComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(31, 31, 31)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lookAndFeelComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel7)
-                .addGap(18, 18, 18)
+                .addGap(43, 43, 43)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(okButton)
                     .addComponent(cancelButton))
@@ -363,16 +344,13 @@ public class PreferencesDialog extends javax.swing.JDialog {
             trayPopupCheckBox.setEnabled(false);
         }
     }//GEN-LAST:event_clipboardIntegrationCheckBoxActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
     private javax.swing.JCheckBox clipboardIntegrationCheckBox;
-    private javax.swing.JTextField examWordsField;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
