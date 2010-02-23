@@ -26,10 +26,9 @@ import java.util.Map;
  * @since  0.1
  */
 public class DatabaseService {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseService.class);
-
     private static DatabaseService instance;
-
     private Connection connection;
     // simple caching mechanism to avoid db operations
     private Map<Dictionary, List<String>> dictionaryCache = new HashMap<Dictionary, List<String>>();
@@ -299,24 +298,23 @@ public class DatabaseService {
         return nWords;
     }
 
-    public void addMisspelled(String misspelled, Dictionary dictionary){
-        if(misspelled == null || misspelled.isEmpty()){
+    public void addMisspelled(String misspelled, Dictionary dictionary) {
+        if (misspelled == null || misspelled.isEmpty()) {
             LOGGER.error("misspelled is null or empty");
             throw new IllegalArgumentException("misspelled is null or empty");
         }
 
-        if(dictionary == null){
+        if (dictionary == null) {
             LOGGER.error("dictionary is null");
             throw new NullPointerException("dictionary is null");
         }
         try {
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO " + dictionary.getRatingsTable()+" (WORD, RATING) VALUES('"+misspelled+"',"+1+")");
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO " + dictionary.getRatingsTable() + " (WORD, RATING) VALUES('" + misspelled + "'," + 1 + ")");
             ps.execute();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
-
 
     public ArrayList<String> getDifficultyWords(Dictionary dictionary, Difficulty difficulty) {
 
@@ -383,28 +381,30 @@ public class DatabaseService {
 
         return null;
     }
-    public List<String> getWordsForLearning(Dictionary dictionary) { 
+
+    public List<String> getWordsForLearning(Dictionary dictionary) {
         final List<String> words = new ArrayList<String>();
         String word = null;
         PreparedStatement ps = null;
         try {
             if (dictionary == Dictionary.EN_BG) {
                 ps = connection.prepareStatement("SELECT WORD FROM WORDS_FOR_LEARNING");
+                final ResultSet rs = ps.executeQuery();
+
+                while (rs.next()) {
+                    word = rs.getString("WORD");
+                    words.add(word);
+                }
             } else if (dictionary == Dictionary.BG_EN) {
                 ps = connection.prepareStatement("SELECT TRANSLATION FROM WORDS_FOR_LEARNING");
-            }
+                final ResultSet rs = ps.executeQuery();
 
-            final ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                if (dictionary == Dictionary.EN_BG) {
-                    word = rs.getString("WORD");
-                } else if (dictionary == Dictionary.BG_EN) {
+                while (rs.next()) {
                     word = rs.getString("TRANSLATION");
+                    words.add(word);
                 }
-
-                words.add(word);
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -412,16 +412,15 @@ public class DatabaseService {
         return words;
     }
 
-    public List<String> getWordsForLearning() { 
+    public List<String> getWordsForLearning() {
         final List<String> words = new ArrayList<String>();
         String word = null;
         try {
 
-            PreparedStatement  ps = connection.prepareStatement("SELECT WORD FROM WORDS_FOR_LEARNING");
+            PreparedStatement ps = connection.prepareStatement("SELECT WORD FROM WORDS_FOR_LEARNING");
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-
                 word = rs.getString("WORD");
                 words.add(word);
             }
@@ -432,25 +431,20 @@ public class DatabaseService {
 
         return words;
     }
+
     public List<String> getTranslationForLearning() {
         final List<String> translations = new ArrayList<String>();
         String translation = null;
 
         try {
 
-
-
             PreparedStatement ps = connection.prepareStatement("SELECT TRANSLATION FROM WORDS_FOR_LEARNING");
             ResultSet rs = ps.executeQuery();
 
-
             while (rs.next()) {
-
                 translation = rs.getString("TRANSLATION");
                 translations.add(translation);
             }
-
-
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -459,16 +453,14 @@ public class DatabaseService {
         return translations;
     }
 
-
-
-    public int getCountOfTheWords(){
+    public int getCountOfTheWords() {
         int count = 0;
         try {
             PreparedStatement ps = connection.prepareStatement("select count(*) from WORDS_FOR_LEARNING");
 
-           final ResultSet resultSet = ps.executeQuery();
-           resultSet.next();
-           count = resultSet.getInt(1);
+            final ResultSet resultSet = ps.executeQuery();
+            resultSet.next();
+            count = resultSet.getInt(1);
 
         } catch (SQLException ex) {
             java.util.logging.Logger.getLogger(DatabaseService.class.getName()).log(Level.SEVERE, null, ex);
@@ -477,10 +469,9 @@ public class DatabaseService {
         return count;
     }
 
-    public void addWordForLearning(String word,String translation){//neraboti
+    public void addWordForLearning(String word, String translation) {
         try {
             PreparedStatement ps = connection.prepareStatement("INSERT INTO WORDS_FOR_LEARNING (WORD, TRANSLATION) values(?, ?)");
-
 
             ps.setString(1, word);
             ps.setString(2, translation);
@@ -491,7 +482,7 @@ public class DatabaseService {
         }
     }
 
-    public void deleteWord(String word){
+    public void deleteWord(String word) {
         getCountOfTheWords();
         try {
             PreparedStatement ps = connection.prepareStatement("delete from WORDS_FOR_LEARNING where word='" + word.replaceAll("'", "''") + "'");
@@ -501,5 +492,4 @@ public class DatabaseService {
             java.util.logging.Logger.getLogger(DatabaseService.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
 }

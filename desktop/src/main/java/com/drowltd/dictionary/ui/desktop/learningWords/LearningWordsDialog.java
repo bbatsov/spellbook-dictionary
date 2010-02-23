@@ -8,7 +8,6 @@
  *
  * Created on 2010-1-27, 17:01:30
  */
-
 package com.drowltd.dictionary.ui.desktop.learningWords;
 
 import com.drowltd.dictionary.core.db.DatabaseService;
@@ -27,12 +26,12 @@ import javax.swing.JLabel;
 import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
 
-
 /**
  *
  * @author Sasho
  */
 public class LearningWordsDialog extends javax.swing.JDialog {
+
     private int fromWordsIndex;
     private int toWordsIndex;
     private DatabaseService dictDb;
@@ -47,7 +46,6 @@ public class LearningWordsDialog extends javax.swing.JDialog {
     private List<String> translationForLearning = new ArrayList<String>();
     private List shuffleWordsForLearning = new ArrayList<String>();
     private List shuffleTranslationForLearning = new ArrayList<String>();
-    //int countOFTheWords = 0;
     private int wordIndex = 0;
     private int countOfWords = 0;
     private Integer correctAnswer;
@@ -55,20 +53,18 @@ public class LearningWordsDialog extends javax.swing.JDialog {
     private Integer answerSeen;
     private HowToEnumerate howToEnumerate = HowToEnumerate.IN_ORDER_OF_INPUT;
     private Frame parent;
-   
-    public enum HowToEnumerate {
 
+    public enum HowToEnumerate {
         IN_ORDER_OF_INPUT, IN_REVERSE_ORDER_OF_INPUT, RANDOM
     }
-    
+
     /** Creates new form LearningWordsDialog */
     public LearningWordsDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-      //  Translator.reset();
         TRANSLATOR.reset();
         this.parent = parent;
         initComponents();
-       // learningWordsDialog = new LearningWordsDialog(javax.swing.JFrame, modal);
+
         dictDb = DatabaseService.getInstance();
         ButtonGroup enumerateGroup = new ButtonGroup();
         enumerateGroup.add(inReverseOrderOfInputRadioButton);
@@ -81,46 +77,28 @@ public class LearningWordsDialog extends javax.swing.JDialog {
         stopButton.setEnabled(false);
         correctAnswer = new Integer(0);
         wrongAnswer = new Integer(0);
-        answerSeen = new Integer (0);
+        answerSeen = new Integer(0);
         countOfWords = dictDb.getCountOfTheWords();
         checkingTheDatabase();
         fromLanguageComboBox.setSelectedIndex(PM.getInt(Preference.LEARNING_WORDS_FROM_LANG, fromLanguageComboBox.getSelectedIndex()));
         toLanguageComboBox.setSelectedIndex(PM.getInt(Preference.LEARNING_WORDS_TO_LANG, toLanguageComboBox.getSelectedIndex()));
-        
-       // wordsForLearning = dictDb.getWordsForLearning();
-       // translationForLearning = dictDb.getTranslationForLearning();
-       // countOFTheWords = dictDb.getCountOfTheWords();
+
+        // wordsForLearning = dictDb.getWordsForLearning();
+        // translationForLearning = dictDb.getTranslationForLearning();
+        // countOFTheWords = dictDb.getCountOfTheWords();
         //if(countOFTheWords==0){
         //    wordsForLearning = new ArrayList<String>();
         //    translationForLearning = new ArrayList<String>();
-       // }
+        // }
     }
+
     public static List<String> getWords() {
         return words;
     }
 
-    public JLabel getFirstRowLabel() {
-        return firstRowLabel;
-    }
-
-    public JLabel getSecondRowLabel() {
-        return secondRowLabel;
-    }
-
-    public JButton getStartButton() {
-        return startButton;
-    }
-
-    public JButton getStopButton() {
-        return stopButton;
-    }
-
-    public JLabel getWarningIconLabel() {
-        return warningIconLabel;
-    }
-   // public int getCountOFTheWords() {
-   //     return countOFTheWords;                                             
-   // }
+    // public int getCountOFTheWords() {
+    //     return countOFTheWords;
+    // }
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -498,86 +476,19 @@ public class LearningWordsDialog extends javax.swing.JDialog {
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
         startLearning();
-        
     }//GEN-LAST:event_startButtonActionPerformed
 
     private void wordsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_wordsButtonActionPerformed
-        wordsDialog = new WordsDialog(parent,true);
+
+        wordsDialog = new WordsDialog(parent, true);
         wordsDialog.clear();
         wordsDialog.setWordsInTable(false);
-        
-      
         wordsDialog.setLocationRelativeTo(this);
         wordsDialog.setVisible(true);
-       
+
     }//GEN-LAST:event_wordsButtonActionPerformed
 
     private void answerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_answerButtonActionPerformed
-        
-        if(selectedDictionary == Dictionary.EN_BG){
-            if(howToEnumerate == HowToEnumerate.RANDOM){
-                getAnswer(shuffleWordsForLearning,shuffleTranslationForLearning);
-            }else {
-                getAnswer(wordsForLearning, translationForLearning);
-            }
-        }
-        if(selectedDictionary == Dictionary.BG_EN){
-            if(howToEnumerate == HowToEnumerate.RANDOM){
-                getAnswer(shuffleTranslationForLearning, shuffleWordsForLearning);
-            } else {
-                getAnswer(translationForLearning, wordsForLearning);
-            }
-        }    
-    }//GEN-LAST:event_answerButtonActionPerformed
-
-    private void seeAnswerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_seeAnswerButtonActionPerformed
-        if(selectedDictionary == Dictionary.EN_BG){
-            if(howToEnumerate == HowToEnumerate.RANDOM){
-                word = (String)shuffleTranslationForLearning.get(wordIndex);
-            } else {
-                word = translationForLearning.get(wordIndex);
-            }
-            String message = TRANSLATOR.translate("SeeAnswerMessege(Message)") + " \"" + word + "\"";
-            JOptionPane.showMessageDialog(this,message,TRANSLATOR.translate("SeeAnswerPaneTittle(Title)"),JOptionPane.INFORMATION_MESSAGE);
-        }
-        if(selectedDictionary == Dictionary.BG_EN){
-            if(howToEnumerate == HowToEnumerate.RANDOM){
-                word = (String)shuffleWordsForLearning.get(wordIndex);
-            } else {
-                word = wordsForLearning.get(wordIndex);
-            }
-            String message = TRANSLATOR.translate("SeeAnswerMessege(Message)") + " \"" + word + "\"";
-            JOptionPane.showMessageDialog(this,message,TRANSLATOR.translate("SeeAnswerPaneTittle(Title)"),JOptionPane.INFORMATION_MESSAGE);
-        }
-        answerSeen++;
-        answerSeenLabel.setText(answerSeen.toString());
-        answerField.requestFocus();
-    }//GEN-LAST:event_seeAnswerButtonActionPerformed
-
-    private void stopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopButtonActionPerformed
-        wordsButton.setEnabled(true);
-        answerButton.setEnabled(false);
-        seeAnswerButton.setEnabled(false);
-        startButton.setEnabled(true);
-        translateField.setText(null);
-        answerField.setText(null);
-
-
-    }//GEN-LAST:event_stopButtonActionPerformed
-
-    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
-        PM.putInt(Preference.LEARNING_WORDS_FROM_LANG, fromLanguageComboBox.getSelectedIndex());
-        PM.putInt(Preference.LEARNING_WORDS_TO_LANG, toLanguageComboBox.getSelectedIndex());
-        PM.putBoolean(Preference.LEARNING_IN_ORDER, inOrderOfInputRadioButton.isSelected());
-        PM.putBoolean(Preference.LEARNING_IN_REVERSE_ORDER, inReverseOrderOfInputRadioButton.isSelected());
-        PM.putBoolean(Preference.LEARNING_RANDOM, randomRadioButton.isSelected());
-        PM.putBoolean(Preference.REPEAT_MISSPELLED_WORDS, repeatMisspelledWordsCheckBox.isSelected());
-        PM.putBoolean(Preference.REPEAT_WORDS, repeatWordCheckBox.isSelected());
-
-    }//GEN-LAST:event_formWindowClosed
-
-    private void answerFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_answerFieldActionPerformed
-  
 
         if (selectedDictionary == Dictionary.EN_BG) {
             if (howToEnumerate == HowToEnumerate.RANDOM) {
@@ -593,18 +504,80 @@ public class LearningWordsDialog extends javax.swing.JDialog {
                 getAnswer(translationForLearning, wordsForLearning);
             }
         }
+    }//GEN-LAST:event_answerButtonActionPerformed
 
+    private void seeAnswerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_seeAnswerButtonActionPerformed
+        if (selectedDictionary == Dictionary.EN_BG) {
+            if (howToEnumerate == HowToEnumerate.RANDOM) {
+                word = (String) shuffleTranslationForLearning.get(wordIndex);
+            } else {
+                word = translationForLearning.get(wordIndex);
+            }
+            String message = TRANSLATOR.translate("SeeAnswerMessege(Message)") + " \"" + word + "\"";
+            JOptionPane.showMessageDialog(this, message, TRANSLATOR.translate("SeeAnswerPaneTittle(Title)"), JOptionPane.INFORMATION_MESSAGE);
+        }
+        if (selectedDictionary == Dictionary.BG_EN) {
+            if (howToEnumerate == HowToEnumerate.RANDOM) {
+                word = (String) shuffleWordsForLearning.get(wordIndex);
+            } else {
+                word = wordsForLearning.get(wordIndex);
+            }
+            String message = TRANSLATOR.translate("SeeAnswerMessege(Message)") + " \"" + word + "\"";
+            JOptionPane.showMessageDialog(this, message, TRANSLATOR.translate("SeeAnswerPaneTittle(Title)"), JOptionPane.INFORMATION_MESSAGE);
+        }
+        answerSeen++;
+        answerSeenLabel.setText(answerSeen.toString());
+        answerField.requestFocus();
+    }//GEN-LAST:event_seeAnswerButtonActionPerformed
+
+    private void stopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopButtonActionPerformed
+
+        wordsButton.setEnabled(true);
+        answerButton.setEnabled(false);
+        seeAnswerButton.setEnabled(false);
+        startButton.setEnabled(true);
+        translateField.setText(null);
+        answerField.setText(null);
+
+    }//GEN-LAST:event_stopButtonActionPerformed
+
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+        PM.putInt(Preference.LEARNING_WORDS_FROM_LANG, fromLanguageComboBox.getSelectedIndex());
+        PM.putInt(Preference.LEARNING_WORDS_TO_LANG, toLanguageComboBox.getSelectedIndex());
+        PM.putBoolean(Preference.LEARNING_IN_ORDER, inOrderOfInputRadioButton.isSelected());
+        PM.putBoolean(Preference.LEARNING_IN_REVERSE_ORDER, inReverseOrderOfInputRadioButton.isSelected());
+        PM.putBoolean(Preference.LEARNING_RANDOM, randomRadioButton.isSelected());
+        PM.putBoolean(Preference.REPEAT_MISSPELLED_WORDS, repeatMisspelledWordsCheckBox.isSelected());
+        PM.putBoolean(Preference.REPEAT_WORDS, repeatWordCheckBox.isSelected());
+
+    }//GEN-LAST:event_formWindowClosed
+
+    private void answerFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_answerFieldActionPerformed
+        if (selectedDictionary == Dictionary.EN_BG) {
+            if (howToEnumerate == HowToEnumerate.RANDOM) {
+                getAnswer(shuffleWordsForLearning, shuffleTranslationForLearning);
+            } else {
+                getAnswer(wordsForLearning, translationForLearning);
+            }
+        }
+        if (selectedDictionary == Dictionary.BG_EN) {
+            if (howToEnumerate == HowToEnumerate.RANDOM) {
+                getAnswer(shuffleTranslationForLearning, shuffleWordsForLearning);
+            } else {
+                getAnswer(translationForLearning, wordsForLearning);
+            }
+        }
     }//GEN-LAST:event_answerFieldActionPerformed
 
     private void repeatWordCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_repeatWordCheckBoxActionPerformed
-        if(repeatWordCheckBox.isSelected()){
+        if (repeatWordCheckBox.isSelected()) {
             repeatMisspelledWordsCheckBox.setSelected(false);
-        } 
+        }
         answerField.requestFocus();
     }//GEN-LAST:event_repeatWordCheckBoxActionPerformed
 
     private void repeatMisspelledWordsCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_repeatMisspelledWordsCheckBoxActionPerformed
-        if( repeatMisspelledWordsCheckBox.isSelected()){
+        if (repeatMisspelledWordsCheckBox.isSelected()) {
             repeatWordCheckBox.setSelected(false);
         }
     }//GEN-LAST:event_repeatMisspelledWordsCheckBoxActionPerformed
@@ -633,12 +606,9 @@ public class LearningWordsDialog extends javax.swing.JDialog {
         checkingTheDatabase();
         countOfWords = dictDb.getCountOfTheWords();
     }//GEN-LAST:event_formWindowGainedFocus
-
     /**
-    * @param args the command line arguments
-    */
-    
-
+     * @param args the command line arguments
+     */
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton answerButton;
     private javax.swing.JTextField answerField;
@@ -681,15 +651,15 @@ public class LearningWordsDialog extends javax.swing.JDialog {
         wordTranslation = wordTranslation.toLowerCase();
         if (wordTranslation == null || wordTranslation.isEmpty()) {
             JOptionPane.showMessageDialog(this, TRANSLATOR.translate("AnswerFeild(Message)"), null, JOptionPane.ERROR_MESSAGE);
-            if (howToEnumerate == HowToEnumerate.IN_ORDER_OF_INPUT&&!wordTranslation.isEmpty()) {
+            if (howToEnumerate == HowToEnumerate.IN_ORDER_OF_INPUT && !wordTranslation.isEmpty()) {
                 wordIndex--;
                 wrongAnswer--;
             }
-            if (howToEnumerate == HowToEnumerate.IN_REVERSE_ORDER_OF_INPUT&&!wordTranslation.isEmpty()) {
+            if (howToEnumerate == HowToEnumerate.IN_REVERSE_ORDER_OF_INPUT && !wordTranslation.isEmpty()) {
                 wordIndex++;
                 wrongAnswer--;
             }
-            if (howToEnumerate == HowToEnumerate.RANDOM&&!wordTranslation.isEmpty()) {
+            if (howToEnumerate == HowToEnumerate.RANDOM && !wordTranslation.isEmpty()) {
                 wordIndex--;
                 wrongAnswer--;
             }
@@ -699,7 +669,7 @@ public class LearningWordsDialog extends javax.swing.JDialog {
         String translation = translations.get(wordIndex);
         translation = translation.toLowerCase();
         translation = translation.replaceAll("\\b(n|a|v|(attr)|(adv)|[0-9]+)\\b\\s?", "");
-        if(translation.charAt(0)==' '){
+        if (translation.charAt(0) == ' ') {
             translation = translation.substring(1);
         }
         String[] answers = Pattern.compile("\\s*[,|;|.|\\n]\\s*").split(translation, 0);
@@ -708,20 +678,19 @@ public class LearningWordsDialog extends javax.swing.JDialog {
             possibleAnswers.add(answer);
         }
         if (repeatWordCheckBox.isSelected()) {
-                if (howToEnumerate == HowToEnumerate.IN_ORDER_OF_INPUT) {
-                    wordIndex--;
-                }
-                if (howToEnumerate == HowToEnumerate.IN_REVERSE_ORDER_OF_INPUT) {
-                    wordIndex++;
-                }
-                if (howToEnumerate == HowToEnumerate.RANDOM) {
-                    wordIndex--;
-                }
-
+            if (howToEnumerate == HowToEnumerate.IN_ORDER_OF_INPUT) {
+                wordIndex--;
             }
+            if (howToEnumerate == HowToEnumerate.IN_REVERSE_ORDER_OF_INPUT) {
+                wordIndex++;
+            }
+            if (howToEnumerate == HowToEnumerate.RANDOM) {
+                wordIndex--;
+            }
+        }
         //  if(translations.contains(wordTranslation)&&translations.indexOf(wordTranslation)==wordIndex){  
-        if (possibleAnswers.contains(wordTranslation)) {                                                            
-            answerStatutLabel.setText(TRANSLATOR.translate("CorrectAnswer(Message)")); 
+        if (possibleAnswers.contains(wordTranslation)) {
+            answerStatutLabel.setText(TRANSLATOR.translate("CorrectAnswer(Message)"));
             correctAnswer++;
             countOfTheCorrectWordsLabel.setText(correctAnswer.toString());
             imoticonLabel.setIcon(IconManager.getImageIcon("laugh.gif", IconManager.IconSize.SIZE48));
@@ -748,7 +717,6 @@ public class LearningWordsDialog extends javax.swing.JDialog {
                 if (howToEnumerate == HowToEnumerate.RANDOM) {
                     wordIndex--;
                 }
-
             }
         }
         if (howToEnumerate == HowToEnumerate.IN_ORDER_OF_INPUT) {
@@ -804,13 +772,12 @@ public class LearningWordsDialog extends javax.swing.JDialog {
                 shuffleWordsForLearning.add(copyWords.remove(index));
                 shuffleTranslationForLearning.add(copyTranslations.remove(index));
             } while (copyWords.size() > 0);
-
-
         }
     }
-    public void checkingTheDatabase(){
+
+    public void checkingTheDatabase() {
         wordsForLearning = dictDb.getWordsForLearning();
-        if(wordsForLearning.isEmpty()){
+        if (wordsForLearning.isEmpty()) {
             startButton.setEnabled(false);
             warningIconLabel.setIcon(IconManager.getImageIcon("warning.png", IconManager.IconSize.SIZE24));
             firstRowLabel.setText(TRANSLATOR.translate("AddWordsFirstLabel(Message)"));
@@ -823,7 +790,8 @@ public class LearningWordsDialog extends javax.swing.JDialog {
             secondRowLabel.setText(null);
         }
     }
-    public void showLearningWordsDialog(){
+
+    public void showLearningWordsDialog() {
 
         inOrderOfInputRadioButton.setSelected(PM.getBoolean(Preference.LEARNING_IN_ORDER, true));
         inReverseOrderOfInputRadioButton.setSelected(PM.getBoolean(Preference.LEARNING_IN_REVERSE_ORDER, false));
@@ -834,18 +802,20 @@ public class LearningWordsDialog extends javax.swing.JDialog {
         setVisible(true);
 
     }
-    public void stopLearning(){
 
-                answerButton.setEnabled(false);
-                seeAnswerButton.setEnabled(false);
-                stopButton.setEnabled(false);
-                wordsButton.setEnabled(true);
-                startButton.setEnabled(true);
-               // imoticonLabel.setVisible(false);
-                translateField.setText(null);
+    public void stopLearning() {
+
+        answerButton.setEnabled(false);
+        seeAnswerButton.setEnabled(false);
+        stopButton.setEnabled(false);
+        wordsButton.setEnabled(true);
+        startButton.setEnabled(true);
+        // imoticonLabel.setVisible(false);
+        translateField.setText(null);
 
     }
-    public void startLearning(){
+
+    public void startLearning() {
         if ((fromLanguageComboBox.getSelectedIndex() == 0) && (toLanguageComboBox.getSelectedIndex() == 1)) {   //English Index = 0; Bulgarian = 1;
             selectedDictionary = Dictionary.EN_BG;
         }
@@ -874,37 +844,37 @@ public class LearningWordsDialog extends javax.swing.JDialog {
         wrongAnswer = new Integer(0);
         answerSeen = new Integer(0);
         shuffle(wordsForLearning, translationForLearning);
-        if(inOrderOfInputRadioButton.isSelected()){
+        if (inOrderOfInputRadioButton.isSelected()) {
             howToEnumerate = HowToEnumerate.IN_ORDER_OF_INPUT;
             wordIndex = 0;
-            if(selectedDictionary==Dictionary.EN_BG){
+            if (selectedDictionary == Dictionary.EN_BG) {
                 word = wordsForLearning.get(wordIndex);
                 translateField.setText(word);
-            }else{
+            } else {
                 translation = translationForLearning.get(wordIndex);
                 translateField.setText(translation);
             }
         }
-        if(inReverseOrderOfInputRadioButton.isSelected()){
+        if (inReverseOrderOfInputRadioButton.isSelected()) {
             howToEnumerate = HowToEnumerate.IN_REVERSE_ORDER_OF_INPUT;
-             wordIndex = dictDb.getCountOfTheWords()-1;
+            wordIndex = dictDb.getCountOfTheWords() - 1;
 
-            if(selectedDictionary==Dictionary.EN_BG){
+            if (selectedDictionary == Dictionary.EN_BG) {
                 word = wordsForLearning.get(wordIndex);
                 translateField.setText(word);
-            }else{
+            } else {
                 translation = translationForLearning.get(wordIndex);
                 translateField.setText(translation);
             }
         }
-        if(randomRadioButton.isSelected()){
+        if (randomRadioButton.isSelected()) {
             howToEnumerate = HowToEnumerate.RANDOM;
             wordIndex = 0;
-            if(selectedDictionary==Dictionary.EN_BG){
-                word = (String)shuffleWordsForLearning.get(wordIndex);
+            if (selectedDictionary == Dictionary.EN_BG) {
+                word = (String) shuffleWordsForLearning.get(wordIndex);
                 translateField.setText(word);
-            }else{
-                translation = (String)shuffleTranslationForLearning.get(wordIndex);
+            } else {
+                translation = (String) shuffleTranslationForLearning.get(wordIndex);
                 translateField.setText(translation);
             }
         }
