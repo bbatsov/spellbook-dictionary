@@ -8,6 +8,7 @@ import com.drowltd.dictionary.core.i18n.Translator;
 import com.drowltd.dictionary.core.preferences.PreferencesManager;
 import com.drowltd.dictionary.ui.desktop.IconManager.IconSize;
 import com.drowltd.dictionary.ui.desktop.spellcheck.SpellCheckFrame;
+import com.drowltd.dictionary.ui.desktop.learningWords.LearningWordsDialog;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Rectangle;
@@ -500,6 +501,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         enBgDictMenuItem = new javax.swing.JMenuItem();
         bgEnDictMenuItem = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
+        LearningWordsMenuItem = new javax.swing.JMenuItem();
         examMenuItem = new javax.swing.JMenuItem();
         spellcheckMenuItem = new javax.swing.JMenuItem();
         jMenu5 = new javax.swing.JMenu();
@@ -523,7 +525,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         splitPane.setDividerLocation(180);
 
-        wordsList.setModel(new ListBackedListModel(words));
+        wordsList.setModel(new com.drowltd.dictionary.ui.desktop.ListBackedListModel(words));
         wordsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         wordsList.setToolTipText(bundle.getString("WordsList(ToolTip)")); // NOI18N
         wordsList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
@@ -544,15 +546,15 @@ public class SpellbookFrame extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
-            .addComponent(wordSearchField, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
+            .addComponent(wordSearchField, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(wordSearchField, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE))
         );
 
         splitPane.setLeftComponent(jPanel2);
@@ -581,8 +583,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
                 .addComponent(clearButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(matchLabel)
-                .addContainerGap(70, Short.MAX_VALUE))
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 558, Short.MAX_VALUE)
+                .addContainerGap(170, Short.MAX_VALUE))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 566, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -591,7 +593,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
                     .addComponent(clearButton)
                     .addComponent(matchLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 382, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE))
         );
 
         splitPane.setRightComponent(jPanel3);
@@ -609,7 +611,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
                         .addComponent(memoryProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(runGcButton))
-                    .addComponent(splitPane, javax.swing.GroupLayout.DEFAULT_SIZE, 744, Short.MAX_VALUE))
+                    .addComponent(splitPane, javax.swing.GroupLayout.DEFAULT_SIZE, 752, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -729,6 +731,15 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         jMenu4.setMnemonic('t');
         jMenu4.setText(bundle.getString("Tools(Menu)")); // NOI18N
+
+        LearningWordsMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/teacher.png"))); // NOI18N
+        LearningWordsMenuItem.setText(bundle.getString("LearningWords(MenuItem)")); // NOI18N
+        LearningWordsMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                LearningWordsMenuItemActionPerformed(evt);
+            }
+        });
+        jMenu4.add(LearningWordsMenuItem);
 
         examMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/blackboard.png"))); // NOI18N
         examMenuItem.setMnemonic('e');
@@ -906,7 +917,15 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearButtonActionPerformed
         clear();        // TODO add your handling code here:
     }//GEN-LAST:event_clearButtonActionPerformed
+
+    private void LearningWordsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LearningWordsMenuItemActionPerformed
+        LearningWordsDialog learningWords = new LearningWordsDialog(this, true);
+        learningWords.setLocationRelativeTo(this);
+        learningWords.showLearningWordsDialog();
+    }//GEN-LAST:event_LearningWordsMenuItemActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem LearningWordsMenuItem;
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JMenuItem addWordMenuItem;
     private javax.swing.JMenuItem bgEnDictMenuItem;
