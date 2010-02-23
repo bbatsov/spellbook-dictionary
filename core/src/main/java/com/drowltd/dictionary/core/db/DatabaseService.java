@@ -383,4 +383,123 @@ public class DatabaseService {
 
         return null;
     }
+    public List<String> getWordsForLearning(Dictionary dictionary) { 
+        final List<String> words = new ArrayList<String>();
+        String word = null;
+        PreparedStatement ps = null;
+        try {
+            if (dictionary == Dictionary.EN_BG) {
+                ps = connection.prepareStatement("SELECT WORD FROM WORDS_FOR_LEARNING");
+            } else if (dictionary == Dictionary.BG_EN) {
+                ps = connection.prepareStatement("SELECT TRANSLATION FROM WORDS_FOR_LEARNING");
+            }
+
+            final ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                if (dictionary == Dictionary.EN_BG) {
+                    word = rs.getString("WORD");
+                } else if (dictionary == Dictionary.BG_EN) {
+                    word = rs.getString("TRANSLATION");
+                }
+
+                words.add(word);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return words;
+    }
+
+    public List<String> getWordsForLearning() { 
+        final List<String> words = new ArrayList<String>();
+        String word = null;
+        try {
+
+            PreparedStatement  ps = connection.prepareStatement("SELECT WORD FROM WORDS_FOR_LEARNING");
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                word = rs.getString("WORD");
+                words.add(word);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return words;
+    }
+    public List<String> getTranslationForLearning() {
+        final List<String> translations = new ArrayList<String>();
+        String translation = null;
+
+        try {
+
+
+
+            PreparedStatement ps = connection.prepareStatement("SELECT TRANSLATION FROM WORDS_FOR_LEARNING");
+            ResultSet rs = ps.executeQuery();
+
+
+            while (rs.next()) {
+
+                translation = rs.getString("TRANSLATION");
+                translations.add(translation);
+            }
+
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return translations;
+    }
+
+
+
+    public int getCountOfTheWords(){
+        int count = 0;
+        try {
+            PreparedStatement ps = connection.prepareStatement("select count(*) from WORDS_FOR_LEARNING");
+
+           final ResultSet resultSet = ps.executeQuery();
+           resultSet.next();
+           count = resultSet.getInt(1);
+
+        } catch (SQLException ex) {
+            java.util.logging.Logger.getLogger(DatabaseService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return count;
+    }
+
+    public void addWordForLearning(String word,String translation){//neraboti
+        try {
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO WORDS_FOR_LEARNING (WORD, TRANSLATION) values(?, ?)");
+
+
+            ps.setString(1, word);
+            ps.setString(2, translation);
+            ps.executeUpdate();
+
+        } catch (SQLException ex) {
+            java.util.logging.Logger.getLogger(DatabaseService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void deleteWord(String word){
+        getCountOfTheWords();
+        try {
+            PreparedStatement ps = connection.prepareStatement("delete from WORDS_FOR_LEARNING where word='" + word.replaceAll("'", "''") + "'");
+
+            ps.executeUpdate();
+        } catch (SQLException ex) {
+            java.util.logging.Logger.getLogger(DatabaseService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
 }
