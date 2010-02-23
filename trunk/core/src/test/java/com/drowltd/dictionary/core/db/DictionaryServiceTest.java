@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.swing.ImageIcon;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -26,10 +25,6 @@ import static org.junit.Assert.*;
 public class DictionaryServiceTest extends AbstractDBTestCase {
 
     static Map<SDictionary, DictionaryConfig> dictConfigMap = new HashMap<SDictionary, DictionaryConfig>();
-    static Language english;
-    static Language bulgarian;
-    static SDictionary dictionaryEN_BG;
-    static SDictionary dictionaryBG_EN;
     DictionaryService dictionaryService;
 
     @BeforeClass
@@ -37,21 +32,12 @@ public class DictionaryServiceTest extends AbstractDBTestCase {
 
         setUpDB();
 
-        final ImageIcon imageIcon = new ImageIcon("");
-
-        english = new Language("English", "abcdefghijklmnopqrstuvwxyz", imageIcon);
-        bulgarian = new Language("Bulgarian", "абвгдежзийклмнопрстуфхцчшщъьюя", imageIcon);
+        DictionaryConfig configEN_BG = new DictionaryConfig(Dictionaries.dictionaryEN_BG, "EN_BG", "SPELLCHECK_EN");
+        DictionaryConfig configBG_EN = new DictionaryConfig(Dictionaries.dictionaryBG_EN, "BG_EN", "SPELLCHECK_BG");
 
 
-        dictionaryEN_BG = new SDictionary("English-Bulgarian", english, bulgarian, imageIcon, imageIcon);
-        dictionaryBG_EN = new SDictionary("Bulgarian-English", bulgarian, english, imageIcon, imageIcon);
-
-        DictionaryConfig configEN_BG = new DictionaryConfig(dictionaryEN_BG, "EN_BG", "SPELLCHECK_EN");
-        DictionaryConfig configBG_EN = new DictionaryConfig(dictionaryBG_EN, "BG_EN", "SPELLCHECK_BG");
-
-
-        dictConfigMap.put(dictionaryEN_BG, configEN_BG);
-        dictConfigMap.put(dictionaryBG_EN, configBG_EN);
+        dictConfigMap.put(Dictionaries.dictionaryEN_BG, configEN_BG);
+        dictConfigMap.put(Dictionaries.dictionaryBG_EN, configBG_EN);
     }
 
     @Before
@@ -79,7 +65,7 @@ public class DictionaryServiceTest extends AbstractDBTestCase {
         Map<String, Integer> wordsBgExpected = new HashMap<String, Integer>();
         wordsBgExpected.put("\u0430", 16);
 
-        final Map<String, Integer> wordsBgActual = dictionaryService.getWordsFromDictionary(dictionaryBG_EN);
+        final Map<String, Integer> wordsBgActual = dictionaryService.getWordsFromDictionary(Dictionaries.dictionaryBG_EN);
 
         assertTrue("Words from db doesn't match", wordsBgExpected.equals(wordsBgActual));
     }
@@ -89,7 +75,7 @@ public class DictionaryServiceTest extends AbstractDBTestCase {
         String translationExpected = "a";
         String word = "\u0430";
 
-        final String translationActual = dictionaryService.getTranslation(dictionaryBG_EN, word);
+        final String translationActual = dictionaryService.getTranslation(Dictionaries.dictionaryBG_EN, word);
 
         assertTrue("Translation doesn't matctch", translationExpected.equals(translationActual));
 
@@ -101,7 +87,7 @@ public class DictionaryServiceTest extends AbstractDBTestCase {
         String translation = "ab";
         int rating = 7;
 
-        assertTrue("word not inserted", dictionaryService.addWord(dictionaryBG_EN, word, translation, rating));
+        assertTrue("word not inserted", dictionaryService.addWord(Dictionaries.dictionaryBG_EN, word, translation, rating));
         final ResultSet rs = connection.prepareStatement("SELECT WORD, TRANSLATION, RATING FROM BG_EN WHERE WORD='b' AND TRANSLATION = 'ab' AND RATING = 7").executeQuery();
         assertTrue("word not selected", rs.next());
 
@@ -113,7 +99,7 @@ public class DictionaryServiceTest extends AbstractDBTestCase {
         ratingsMapExpected.put("\u0430", 16);
         ratingsMapExpected.put("\u0431", 5);
 
-        final Map<String, Integer> ratingsMapActual = dictionaryService.getRatings(bulgarian);
+        final Map<String, Integer> ratingsMapActual = dictionaryService.getRatings(Dictionaries.bulgarian);
 
         assertTrue("ratings map do not match", ratingsMapExpected.equals(ratingsMapActual));
 
@@ -124,7 +110,7 @@ public class DictionaryServiceTest extends AbstractDBTestCase {
         String newTranslation = "spellbook";
         String word = "\u0430";
 
-        dictionaryService.updateTranslation(dictionaryBG_EN, word, newTranslation);
+        dictionaryService.updateTranslation(Dictionaries.dictionaryBG_EN, word, newTranslation);
         final ResultSet rs = connection.prepareStatement("SELECT TRANSLATION FROM BG_EN").executeQuery();
 
         final boolean next = rs.next();
@@ -139,7 +125,7 @@ public class DictionaryServiceTest extends AbstractDBTestCase {
         String oldWord = "\u0430";
         String newWord = "\u0432";
 
-        dictionaryService.updateWord(dictionaryBG_EN, oldWord, newWord);
+        dictionaryService.updateWord(Dictionaries.dictionaryBG_EN, oldWord, newWord);
         final ResultSet rs = connection.prepareStatement("SELECT WORD FROM BG_EN WHERE WORD = \'" + newWord + "\'").executeQuery();
         final boolean next = rs.next();
         assertTrue("No word selected", next);
@@ -150,28 +136,41 @@ public class DictionaryServiceTest extends AbstractDBTestCase {
     @Test
     public void testGetDictionary() {
 
-        assertTrue("Dictionaries doesn't match", dictionaryBG_EN.equals(dictionaryService.getDictionary(bulgarian, english)));
+        assertTrue("Dictionaries doesn't match", Dictionaries.dictionaryBG_EN.equals(dictionaryService.getDictionary(Dictionaries.bulgarian, Dictionaries.english)));
     }
 
     @Test
     public void testGetLanguagesTo() {
         List<Language> languages = new ArrayList<Language>(1);
-        languages.add(english);
+        languages.add(Dictionaries.english);
 
-        assertTrue("Languages list doesn't match", languages.equals(dictionaryService.getLanguagesTo(bulgarian)));
+        assertTrue("Languages list doesn't match", languages.equals(dictionaryService.getLanguagesTo(Dictionaries.bulgarian)));
     }
 
     @Test
     public void testGetDifficultyWords() throws SQLException {
-        final List<String> difficultyWords = dictionaryService.getDifficultyWords(dictionaryBG_EN, Difficulty.MEDIUM);
+        final List<String> difficultyWords = dictionaryService.getDifficultyWords(Dictionaries.dictionaryBG_EN, Difficulty.MEDIUM);
 
         assertTrue(difficultyWords.contains("\u0430"));
     }
 
     @Test
     public void testAddMisspelled() throws SQLException {
-        dictionaryService.addMisspelled(dictionaryBG_EN, "m");
+        dictionaryService.addMisspelled(Dictionaries.dictionaryBG_EN, "m");
         assertTrue("misspelled not inserted", connection.prepareStatement(
                 "SELECT WORD FROM SPELLCHECK_BG WHERE WORD = 'm'").executeQuery().next());
+    }
+
+    @Test
+    public void testGetRatingsCache() throws SQLException {
+        Map<String, Integer> ratingsMapExpected = new HashMap<String, Integer>();
+        ratingsMapExpected.put("\u0430", 16);
+        ratingsMapExpected.put("\u0431", 5);
+
+        Map<String, Integer> ratingsMapActual = dictionaryService.getRatings(Dictionaries.bulgarian);
+        ratingsMapActual = dictionaryService.getRatings(Dictionaries.bulgarian);
+
+        assertTrue("ratings map do not match", ratingsMapExpected.equals(ratingsMapActual));
+
     }
 }
