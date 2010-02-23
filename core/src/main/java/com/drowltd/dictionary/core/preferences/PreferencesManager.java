@@ -95,6 +95,14 @@ public class PreferencesManager {
         FRAME_HEIGHT,
         FRAME_WIDTH,
         DIVIDER_LOCATION,
-        PATH_TO_DB
+        PATH_TO_DB,
+        LEARNING_WORDS_FROM_LANG,
+        LEARNING_WORDS_TO_LANG,
+        LEARNING_IN_ORDER,
+        LEARNING_IN_REVERSE_ORDER,
+        LEARNING_RANDOM,
+        REPEAT_MISSPELLED_WORDS,
+        REPEAT_WORDS
+
     }
 }
