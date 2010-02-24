@@ -309,7 +309,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="statusBar" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="520" max="32767" attributes="0"/>
+                          <EmptySpace pref="529" max="32767" attributes="0"/>
                           <Component id="memoryProgressBar" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="runGcButton" min="-2" max="-2" attributes="0"/>
@@ -377,8 +377,8 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jScrollPane2" alignment="0" pref="179" max="32767" attributes="0"/>
-                      <Component id="wordSearchField" alignment="0" pref="179" max="32767" attributes="0"/>
+                      <Component id="jScrollPane2" alignment="0" pref="180" max="32767" attributes="0"/>
+                      <Component id="wordSearchField" alignment="0" pref="180" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
                 <DimensionLayout dim="1">
@@ -386,7 +386,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="wordSearchField" min="-2" pref="28" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jScrollPane2" pref="381" max="32767" attributes="0"/>
+                          <Component id="jScrollPane2" pref="383" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -444,7 +444,7 @@
                           <Component id="clearButton" min="-2" pref="105" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="matchLabel" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="170" max="32767" attributes="0"/>
+                          <EmptySpace pref="85" max="32767" attributes="0"/>
                       </Group>
                       <Component id="jScrollPane1" alignment="0" pref="566" max="32767" attributes="0"/>
                   </Group>
@@ -457,7 +457,7 @@
                               <Component id="matchLabel" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jScrollPane1" pref="385" max="32767" attributes="0"/>
+                          <Component id="jScrollPane1" pref="384" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>

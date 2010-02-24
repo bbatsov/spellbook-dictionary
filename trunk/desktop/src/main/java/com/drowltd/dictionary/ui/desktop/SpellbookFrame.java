@@ -136,6 +136,11 @@ public class SpellbookFrame extends javax.swing.JFrame {
             @Override
             public void removeUpdate(DocumentEvent e) {
                 onSearchChange();
+
+                // in case the user types enough backspaces
+                if (wordSearchField.getText().isEmpty()) {
+                    clear();
+                }
             }
 
             @Override
@@ -181,11 +186,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
     private void onSearchChange() {
         String searchString = wordSearchField.getText();
-
-        // in case the user types enough backspaces
-        if (searchString.isEmpty()) {
-            //();
-        }
 
         String approximation;
 
