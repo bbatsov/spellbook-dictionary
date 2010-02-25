@@ -95,7 +95,7 @@ public class DatabaseService {
         final List<String> words = new ArrayList<String>();
 
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT word FROM " + dictionary);
+            PreparedStatement ps = connection.prepareStatement("SELECT word FROM " + dictionary + " ORDER BY LOWER(word) ASC");
 
             final ResultSet rs = ps.executeQuery();
 
