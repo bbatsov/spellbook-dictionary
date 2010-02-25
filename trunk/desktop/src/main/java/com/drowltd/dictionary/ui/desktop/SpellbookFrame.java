@@ -139,7 +139,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
                 // in case the user types enough backspaces
                 if (wordSearchField.getText().isEmpty()) {
-                    clear();
+                    // causes nasty bug when selecting words in the jlist
+                    //clear();
                 }
             }
 
