@@ -15,6 +15,8 @@ import java.awt.Rectangle;
 import java.awt.TrayIcon;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -136,18 +138,23 @@ public class SpellbookFrame extends javax.swing.JFrame {
             @Override
             public void removeUpdate(DocumentEvent e) {
                 onSearchChange();
-
-                // in case the user types enough backspaces
-                if (wordSearchField.getText().isEmpty()) {
-                    // causes nasty bug when selecting words in the jlist
-                    //clear();
-                }
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
                 onSearchChange();
             }
+        });
+
+        wordSearchField.addKeyListener(new KeyAdapter() {
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (wordSearchField.getText().isEmpty()) {
+                    clear();
+                }
+            }
+
         });
 
         addComponentListener(new ComponentAdapter() {
