@@ -2,14 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>dictionary</artifactId>
-        <groupId>com.drowltd.dictionary</groupId>
+        <artifactId>spellbook</artifactId>
+        <groupId>com.drowltd.spellbook</groupId>
         <version>0.3-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.drowltd.dictionary.ui</groupId>
-    <artifactId>dictionary-ui</artifactId>
+    <groupId>com.drowltd.spellbook.ui</groupId>
+    <artifactId>spellbook-ui</artifactId>
 
     <name>Spellbook Dictionary UI</name>
     <description>The user interface of Spellbook, written in Swing</description>
