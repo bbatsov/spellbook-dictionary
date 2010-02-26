@@ -1,7 +1,7 @@
 package com.drowltd.spellbook.ui.desktop;
 
-import com.drowltd.dictionary.core.preferences.PreferencesManager;
-import com.drowltd.dictionary.core.exception.SpellbookDefaultExceptionHandler;
+import com.drowltd.spellbook.core.preferences.PreferencesManager;
+import com.drowltd.spellbook.core.exception.SpellbookDefaultExceptionHandler;
 import java.awt.Dimension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +14,7 @@ import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.util.Locale;
 
-import static com.drowltd.dictionary.core.preferences.PreferencesManager.Preference;
+import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preference;
 
 /**
  * The entry point in Spellbook. Here the preferences manager get initialized, some 

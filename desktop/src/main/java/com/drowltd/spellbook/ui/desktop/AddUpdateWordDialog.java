@@ -11,7 +11,7 @@
 
 package com.drowltd.spellbook.ui.desktop;
 
-import com.drowltd.dictionary.core.db.Dictionary;
+import com.drowltd.spellbook.core.db.Dictionary;
 
 /**
  *

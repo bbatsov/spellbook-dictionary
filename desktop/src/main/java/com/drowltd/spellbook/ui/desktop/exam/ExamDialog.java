@@ -1,10 +1,10 @@
 package com.drowltd.spellbook.ui.desktop.exam;
 
-import com.drowltd.dictionary.core.exam.ExamService;
-import com.drowltd.dictionary.core.db.*;
-import com.drowltd.dictionary.core.exam.Difficulty;
-import com.drowltd.dictionary.core.i18n.Translator;
-import com.drowltd.dictionary.core.preferences.PreferencesManager;
+import com.drowltd.spellbook.core.exam.ExamService;
+import com.drowltd.spellbook.core.db.*;
+import com.drowltd.spellbook.core.exam.Difficulty;
+import com.drowltd.spellbook.core.i18n.Translator;
+import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.ui.desktop.IconManager;
 import com.drowltd.spellbook.ui.desktop.PreferencesDialog;
 import com.drowltd.spellbook.ui.desktop.PreferencesExtractor;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Timer;
 
-import static com.drowltd.dictionary.core.preferences.PreferencesManager.Preference;
+import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preference;
 
 /**
  *

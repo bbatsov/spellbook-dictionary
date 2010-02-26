@@ -10,11 +10,11 @@
  */
 package com.drowltd.spellbook.ui.desktop.learningWords;
 
-import com.drowltd.dictionary.core.db.DatabaseService;
-import com.drowltd.dictionary.core.preferences.PreferencesManager;
-import static com.drowltd.dictionary.core.preferences.PreferencesManager.Preference;
-import com.drowltd.dictionary.core.db.Dictionary;
-import com.drowltd.dictionary.core.i18n.Translator;
+import com.drowltd.spellbook.core.db.DatabaseService;
+import com.drowltd.spellbook.core.preferences.PreferencesManager;
+import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preference;
+import com.drowltd.spellbook.core.db.Dictionary;
+import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.ui.desktop.IconManager;
 import java.awt.Frame;
 import java.util.List;

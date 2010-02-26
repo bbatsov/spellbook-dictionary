@@ -10,9 +10,9 @@
  */
 package com.drowltd.spellbook.ui.desktop.learningWords;
 
-import com.drowltd.dictionary.core.db.DatabaseService;
-import com.drowltd.dictionary.core.preferences.PreferencesManager;
-import com.drowltd.dictionary.core.i18n.Translator;
+import com.drowltd.spellbook.core.db.DatabaseService;
+import com.drowltd.spellbook.core.preferences.PreferencesManager;
+import com.drowltd.spellbook.core.i18n.Translator;
 import java.awt.Frame;
 import java.util.ArrayList;
 import java.util.List;
