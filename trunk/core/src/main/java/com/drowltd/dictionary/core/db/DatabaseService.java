@@ -2,7 +2,6 @@ package com.drowltd.dictionary.core.db;
 
 import com.drowltd.dictionary.core.exam.Difficulty;
 import com.drowltd.dictionary.core.exception.DictionaryDbLockedException;
-import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
