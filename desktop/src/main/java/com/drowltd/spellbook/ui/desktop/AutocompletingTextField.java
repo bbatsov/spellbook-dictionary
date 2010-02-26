@@ -24,6 +24,8 @@ import org.slf4j.LoggerFactory;
 public class AutocompletingTextField extends JTextField {
     private static final Logger LOGGER = LoggerFactory.getLogger(AutocompletingTextField.class);
 
+    private static int MAX_VISIBLE_COMPLETIONS = 5;
+
     private Completer completer;
     private JList completionList;
     private DefaultListModel completionListModel;
@@ -153,8 +155,9 @@ public class AutocompletingTextField extends JTextField {
         }
 
         public void addCompletion(String s) {
-            completions.add(s);
-            //buildAndShowPopup();
+            if (!completions.contains(s)) {
+                completions.add(s);
+            }
         }
 
         public void removeCompletion(String s) {
