@@ -442,15 +442,15 @@ public class LearningWordsDialog extends javax.swing.JDialog {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(repeatWordCheckBox)
-                .addGap(43, 43, 43)
+                .addGap(31, 31, 31)
                 .addComponent(repeatMisspelledWordsCheckBox)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(58, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                .addComponent(repeatMisspelledWordsCheckBox)
-                .addComponent(repeatWordCheckBox))
+                .addComponent(repeatWordCheckBox)
+                .addComponent(repeatMisspelledWordsCheckBox))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -828,7 +828,7 @@ public class LearningWordsDialog extends javax.swing.JDialog {
         wordsButton.setEnabled(true);
         startButton.setEnabled(true);
         translateField.setText(null);
-
+        transcriptionLabel.setText(null);
     }
 
     public void startLearning() {
@@ -877,6 +877,9 @@ public class LearningWordsDialog extends javax.swing.JDialog {
             if (selectedDictionary == Dictionary.EN_BG) {
                 word = wordsForLearning.get(wordIndex);
                 translateField.setText(word);
+                translateField.setText(word);
+                String transcription = getTranscription(word);
+                transcriptionLabel.setText(" " + transcription);
             } else {
                 translation = translationForLearning.get(wordIndex);
                 translateField.setText(translation);
@@ -888,6 +891,9 @@ public class LearningWordsDialog extends javax.swing.JDialog {
             if (selectedDictionary == Dictionary.EN_BG) {
                 word = (String) shuffleWordsForLearning.get(wordIndex);
                 translateField.setText(word);
+                translateField.setText(word);
+                String transcription = getTranscription(word);
+                transcriptionLabel.setText(" " + transcription);
             } else {
                 translation = (String) shuffleTranslationForLearning.get(wordIndex);
                 translateField.setText(translation);
