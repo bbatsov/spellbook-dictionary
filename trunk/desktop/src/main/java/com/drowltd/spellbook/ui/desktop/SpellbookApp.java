@@ -28,6 +28,9 @@ import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preferen
 public class SpellbookApp {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellbookApp.class);
 
+    private static int MIN_FRAME_WIDTH = 400;
+    private static int MIN_FRAME_HEIGHT = 200;
+
     public static void main(final String[] args) {
         init();
     }
@@ -108,6 +111,7 @@ public class SpellbookApp {
                     tAppFrame.setLocationRelativeTo(null);
                 }
 
+                tAppFrame.setMinimumSize(new Dimension(MIN_FRAME_WIDTH, MIN_FRAME_HEIGHT));
                 tAppFrame.setAlwaysOnTop(pm.getBoolean(Preference.ALWAYS_ON_TOP, false));
                 tAppFrame.setVisible(true);
             }
