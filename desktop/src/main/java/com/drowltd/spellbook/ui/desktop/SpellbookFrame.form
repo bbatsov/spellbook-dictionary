@@ -363,6 +363,9 @@
         </Component>
         <Container class="javax.swing.JSplitPane" name="splitPane">
           <Properties>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <Border info="null"/>
+            </Property>
             <Property name="dividerLocation" type="int" value="180"/>
           </Properties>
 
@@ -387,7 +390,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="wordSearchField" min="-2" pref="28" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jScrollPane2" pref="381" max="32767" attributes="0"/>
+                          <Component id="jScrollPane2" pref="383" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -445,9 +448,9 @@
                           <Component id="clearButton" min="-2" pref="105" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="matchLabel" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="179" max="32767" attributes="0"/>
+                          <EmptySpace pref="181" max="32767" attributes="0"/>
                       </Group>
-                      <Component id="jScrollPane1" alignment="0" pref="575" max="32767" attributes="0"/>
+                      <Component id="jScrollPane1" alignment="0" pref="577" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
                 <DimensionLayout dim="1">
@@ -458,7 +461,7 @@
                               <Component id="matchLabel" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jScrollPane1" pref="385" max="32767" attributes="0"/>
+                          <Component id="jScrollPane1" pref="387" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
