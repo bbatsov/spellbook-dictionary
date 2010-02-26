@@ -1,7 +1,7 @@
 package com.drowltd.dictionary.ui.desktop;
 
 import com.drowltd.dictionary.core.preferences.PreferencesManager;
-import com.drowltd.dictionary.core.exception.*;
+import com.drowltd.dictionary.core.exception.SpellbookDefaultExceptionHandler;
 import java.awt.Dimension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +26,6 @@ import static com.drowltd.dictionary.core.preferences.PreferencesManager.Prefere
  *
  */
 public class SpellbookApp {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellbookApp.class);
 
     public static void main(final String[] args) {
@@ -35,7 +34,7 @@ public class SpellbookApp {
 
     public static void init() {
         // enable anti-aliased text:
-        System.setProperty("awt.useSystemAAFontSettings","on");
+        System.setProperty("awt.useSystemAAFontSettings", "on");
         System.setProperty("swing.aatext", "true");
 
         // install the default exception handler
@@ -78,7 +77,6 @@ public class SpellbookApp {
         }
 
         EventQueue.invokeLater(new Runnable() {
-
             @Override
             public void run() {
                 final SpellbookFrame tAppFrame = new SpellbookFrame();
@@ -110,9 +108,7 @@ public class SpellbookApp {
                     tAppFrame.setLocationRelativeTo(null);
                 }
 
-                
                 tAppFrame.setAlwaysOnTop(pm.getBoolean(Preference.ALWAYS_ON_TOP, false));
-
                 tAppFrame.setVisible(true);
             }
         });
