@@ -1,8 +1,8 @@
 package com.drowltd.spellbook.ui.desktop;
 
-import com.drowltd.dictionary.core.exam.Difficulty;
-import com.drowltd.dictionary.core.i18n.Translator;
-import com.drowltd.dictionary.core.preferences.PreferencesManager;
+import com.drowltd.spellbook.core.exam.Difficulty;
+import com.drowltd.spellbook.core.i18n.Translator;
+import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.ui.desktop.exam.ExamDialog;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
@@ -20,7 +20,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import static com.drowltd.dictionary.core.preferences.PreferencesManager.Preference;
+import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preference;
 
 /**
  * Spellbook's preferences dialog.

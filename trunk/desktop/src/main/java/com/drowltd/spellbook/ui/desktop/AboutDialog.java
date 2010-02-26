@@ -1,6 +1,6 @@
 package com.drowltd.spellbook.ui.desktop;
 
-import com.drowltd.dictionary.core.i18n.Translator;
+import com.drowltd.spellbook.core.i18n.Translator;
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.*;

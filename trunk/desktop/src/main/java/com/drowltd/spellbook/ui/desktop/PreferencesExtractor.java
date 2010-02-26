@@ -4,8 +4,8 @@
  */
 package com.drowltd.spellbook.ui.desktop;
 
-import com.drowltd.dictionary.core.i18n.Translator;
-import com.drowltd.dictionary.core.preferences.PreferencesManager;
+import com.drowltd.spellbook.core.i18n.Translator;
+import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import java.awt.Font;
 import java.util.logging.Level;
 import javax.swing.JFrame;
@@ -17,7 +17,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.drowltd.dictionary.core.preferences.PreferencesManager.Preference;
+import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preference;
 
 /**
  * A helper class that extracts the preferences from the preferences dialog.

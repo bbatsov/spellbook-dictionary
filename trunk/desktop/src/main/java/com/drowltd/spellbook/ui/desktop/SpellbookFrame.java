@@ -1,11 +1,11 @@
 package com.drowltd.spellbook.ui.desktop;
 
 import com.drowltd.spellbook.ui.desktop.exam.ExamDialog;
-import com.drowltd.dictionary.core.db.DatabaseService;
-import com.drowltd.dictionary.core.db.Dictionary;
-import com.drowltd.dictionary.core.exception.DictionaryDbLockedException;
-import com.drowltd.dictionary.core.i18n.Translator;
-import com.drowltd.dictionary.core.preferences.PreferencesManager;
+import com.drowltd.spellbook.core.db.DatabaseService;
+import com.drowltd.spellbook.core.db.Dictionary;
+import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
+import com.drowltd.spellbook.core.i18n.Translator;
+import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.ui.desktop.IconManager.IconSize;
 import com.drowltd.spellbook.ui.desktop.spellcheck.SpellCheckFrame;
 import com.drowltd.spellbook.ui.desktop.learningWords.LearningWordsDialog;
@@ -33,7 +33,7 @@ import javax.swing.text.DefaultEditorKit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.drowltd.dictionary.core.preferences.PreferencesManager.Preference;
+import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preference;
 
 /**
  * Spellbook's main application frame.

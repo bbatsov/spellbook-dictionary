@@ -1,7 +1,7 @@
 package com.drowltd.spellbook.ui.desktop.spellcheck;
 
-import com.drowltd.dictionary.core.db.Dictionary;
-import com.drowltd.dictionary.core.spellcheck.SpellChecker;
+import com.drowltd.spellbook.core.db.Dictionary;
+import com.drowltd.spellbook.core.spellcheck.SpellChecker;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;

@@ -41,8 +41,8 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.drowltd.dictionary</groupId>
-                <artifactId>dictionary-core</artifactId>
+                <groupId>com.drowltd.spellbook</groupId>
+                <artifactId>spellbook-core</artifactId>
                 <version>0.3-SNAPSHOT</version>
             </dependency>
             <dependency>

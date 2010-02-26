@@ -21,7 +21,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.drowltd.dictionary.ui.desktop.SpellbookApp</mainClass>
+                            <mainClass>com.drowltd.spellbook.ui.desktop.SpellbookApp</mainClass>
                         </manifest>
                         <manifestEntries>
                             <SplashScreen-Image>images/spellbook-splash.png</SplashScreen-Image>
@@ -37,8 +37,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.drowltd.dictionary</groupId>
-            <artifactId>dictionary-core</artifactId>
+            <groupId>com.drowltd.spellbook</groupId>
+            <artifactId>spellbook-core</artifactId>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
