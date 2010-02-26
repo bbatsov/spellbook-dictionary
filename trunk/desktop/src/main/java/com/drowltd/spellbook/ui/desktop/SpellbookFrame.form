@@ -192,6 +192,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/icons/16x16/teacher.png"/>
                 </Property>
+                <Property name="mnemonic" type="int" value="108"/>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                   <ResourceString bundle="i18n/SpellbookForm.properties" key="LearningWords(MenuItem)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                 </Property>
@@ -314,7 +315,7 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="runGcButton" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="splitPane" alignment="0" pref="752" max="32767" attributes="0"/>
+                      <Component id="splitPane" alignment="0" pref="761" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -377,8 +378,8 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jScrollPane2" alignment="0" pref="180" max="32767" attributes="0"/>
-                      <Component id="wordSearchField" alignment="0" pref="180" max="32767" attributes="0"/>
+                      <Component id="jScrollPane2" alignment="0" pref="179" max="32767" attributes="0"/>
+                      <Component id="wordSearchField" alignment="0" pref="179" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
                 <DimensionLayout dim="1">
@@ -386,7 +387,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="wordSearchField" min="-2" pref="28" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jScrollPane2" pref="383" max="32767" attributes="0"/>
+                          <Component id="jScrollPane2" pref="381" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -444,9 +445,9 @@
                           <Component id="clearButton" min="-2" pref="105" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="matchLabel" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="85" max="32767" attributes="0"/>
+                          <EmptySpace pref="179" max="32767" attributes="0"/>
                       </Group>
-                      <Component id="jScrollPane1" alignment="0" pref="566" max="32767" attributes="0"/>
+                      <Component id="jScrollPane1" alignment="0" pref="575" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
                 <DimensionLayout dim="1">
@@ -457,7 +458,7 @@
                               <Component id="matchLabel" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jScrollPane1" pref="384" max="32767" attributes="0"/>
+                          <Component id="jScrollPane1" pref="385" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
