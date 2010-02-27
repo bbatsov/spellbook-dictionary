@@ -46,6 +46,11 @@
                 <version>0.3-SNAPSHOT</version>
             </dependency>
             <dependency>
+                <groupId>com.drowltd.spellbook</groupId>
+                <artifactId>spellbook-utils</artifactId>
+                <version>0.3-SNAPSHOT</version>
+            </dependency>
+            <dependency>
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>
                 <version>1.1.117</version>
