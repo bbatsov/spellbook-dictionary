@@ -48,7 +48,7 @@ public class LearningWordsDialog extends javax.swing.JDialog {
     private Integer correctAnswer;
     private Integer wrongAnswer;
     private Integer answerSeen;
-    private boolean startButtonEnabled = true;
+    private boolean isStartedLearn = true;
     private HowToEnumerate howToEnumerate = HowToEnumerate.IN_ORDER_OF_INPUT;
     private Frame parent;
 
@@ -306,6 +306,7 @@ public class LearningWordsDialog extends javax.swing.JDialog {
 
         jLabel6.setText(bundle.getString("OverAnswerField(Label)")); // NOI18N
 
+        answerField.setEditable(false);
         answerField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 answerFieldActionPerformed(evt);
@@ -547,7 +548,7 @@ public class LearningWordsDialog extends javax.swing.JDialog {
     private void stopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopButtonActionPerformed
 
         stopLearning();
-        answerField.setText(null);
+        //answerField.setText(null);
 
     }//GEN-LAST:event_stopButtonActionPerformed
 
@@ -563,6 +564,7 @@ public class LearningWordsDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_formWindowClosed
 
     private void answerFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_answerFieldActionPerformed
+        if(!isStartedLearn){
         if (selectedDictionary == Dictionary.EN_BG) {
             if (howToEnumerate == HowToEnumerate.RANDOM) {
                 getAnswer(shuffleWordsForLearning, shuffleTranslationForLearning);
@@ -576,6 +578,7 @@ public class LearningWordsDialog extends javax.swing.JDialog {
             } else {
                 getAnswer(translationForLearning, wordsForLearning);
             }
+        }
         }
     }//GEN-LAST:event_answerFieldActionPerformed
 
@@ -733,12 +736,13 @@ public class LearningWordsDialog extends javax.swing.JDialog {
                 translateField.setText(word);
                 String transcription = getTranscription(word);
                 transcriptionLabel.setText(" " + transcription);
+                answerField.setText(null);
             }
             if (wordIndex == countOfWords) {
                 stopLearning();
             }
 
-            answerField.setText(null);
+            //answerField.setText(null);
         } else if (howToEnumerate == HowToEnumerate.IN_REVERSE_ORDER_OF_INPUT) {
             if (!wordTranslation.isEmpty()) {
                 wordIndex--;
@@ -748,12 +752,13 @@ public class LearningWordsDialog extends javax.swing.JDialog {
                 translateField.setText(word);
                 String transcription = getTranscription(word);
                 transcriptionLabel.setText(" " + transcription);
+                answerField.setText(null);
             }
             if (wordIndex == -1) {
                 stopLearning();
             }
 
-            answerField.setText(null);
+            //answerField.setText(null);
         } else {
             if (!wordTranslation.isEmpty()) {
                 wordIndex++;
@@ -763,11 +768,12 @@ public class LearningWordsDialog extends javax.swing.JDialog {
                 translateField.setText(word);
                 String transcription = getTranscription(word);
                 transcriptionLabel.setText(" " + transcription);
+                answerField.setText(null);
             }
             if (wordIndex == countOfWords) {
                 stopLearning();
             }
-            answerField.setText(null);
+            //answerField.setText(null);
         }
         answerField.requestFocus();
     }
@@ -800,7 +806,7 @@ public class LearningWordsDialog extends javax.swing.JDialog {
             firstRowLabel.setText(TRANSLATOR.translate("AddWordsFirstLabel(Message)"));
             secondRowLabel.setText(TRANSLATOR.translate("AddWordsSecondLabel(Message)"));
         } else {
-            startButton.setEnabled(startButtonEnabled);
+            startButton.setEnabled(isStartedLearn);
             warningIconLabel.setIcon(null);
             firstRowLabel.setText(null);
             secondRowLabel.setText(null);
@@ -821,7 +827,7 @@ public class LearningWordsDialog extends javax.swing.JDialog {
 
     public void stopLearning() {
 
-        startButtonEnabled = true;
+        isStartedLearn = true;
         answerButton.setEnabled(false);
         seeAnswerButton.setEnabled(false);
         stopButton.setEnabled(false);
@@ -829,6 +835,9 @@ public class LearningWordsDialog extends javax.swing.JDialog {
         startButton.setEnabled(true);
         translateField.setText(null);
         transcriptionLabel.setText(null);
+        answerField.setText(null);
+        answerField.setEditable(false);
+        startButton.requestFocus();       
     }
 
     public void startLearning() {
@@ -844,9 +853,10 @@ public class LearningWordsDialog extends javax.swing.JDialog {
         answerButton.setEnabled(true);
         seeAnswerButton.setEnabled(true);
         stopButton.setEnabled(true);
-        startButtonEnabled = false;
+        isStartedLearn = false;
         startButton.setEnabled(false);
         wordsButton.setEnabled(false);
+        answerField.setEditable(true);
         answerField.setText(null);
         answerStatutLabel.setText(null);
         answerField.requestFocus();
