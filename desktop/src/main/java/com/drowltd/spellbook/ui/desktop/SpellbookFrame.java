@@ -406,6 +406,20 @@ public class SpellbookFrame extends javax.swing.JFrame {
         }
     }
 
+    private void updateWordDefinition() throws IllegalStateException {
+        AddUpdateWordDialog addUpdateWordDialog = new AddUpdateWordDialog(this, true);
+        addUpdateWordDialog.setDictionary(selectedDictionary);
+        if (wordsList.isSelectionEmpty()) {
+            throw new IllegalStateException("No word selected");
+        }
+        addUpdateWordDialog.setWord((String) wordsList.getSelectedValue());
+        addUpdateWordDialog.setTranslation(databaseService.getTranslation(selectedDictionary, (String) wordsList.getSelectedValue()));
+        addUpdateWordDialog.setVisible(true);
+        if (addUpdateWordDialog.getReturnStatus() == AddUpdateWordDialog.RET_OK) {
+            // update word
+        }
+    }
+
     private boolean verifyDbPresence() {
         final String dbPath = PM.get(Preference.PATH_TO_DB, "");
 
@@ -530,6 +544,11 @@ public class SpellbookFrame extends javax.swing.JFrame {
         wordsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("i18n/SpellbookForm"); // NOI18N
         wordsList.setToolTipText(bundle.getString("WordsList(ToolTip)")); // NOI18N
+        wordsList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                wordsListMouseClicked(evt);
+            }
+        });
         wordsList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
                 wordsListValueChanged(evt);
@@ -578,6 +597,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         statusBar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/en-bg.png"))); // NOI18N
 
         previousWordLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/arrow_left_blue.png"))); // NOI18N
+        previousWordLabel.setToolTipText(bundle.getString("PreviousWord(Label)")); // NOI18N
         previousWordLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 previousWordLabelMouseClicked(evt);
@@ -585,6 +605,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         });
 
         nextWordLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/arrow_right_blue.png"))); // NOI18N
+        nextWordLabel.setToolTipText(bundle.getString("NextWord(Label)")); // NOI18N
         nextWordLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 nextWordLabelMouseClicked(evt);
@@ -877,22 +898,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_addWordMenuItemActionPerformed
 
     private void updateWordMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateWordMenuItemActionPerformed
-        AddUpdateWordDialog addUpdateWordDialog = new AddUpdateWordDialog(this, true);
-
-        addUpdateWordDialog.setDictionary(selectedDictionary);
-
-        if (wordsList.isSelectionEmpty()) {
-            throw new IllegalStateException("No word selected");
-        }
-
-        addUpdateWordDialog.setWord((String) wordsList.getSelectedValue());
-        addUpdateWordDialog.setTranslation(wordTranslationTextPane.getText());
-
-        addUpdateWordDialog.setVisible(true);
-
-        if (addUpdateWordDialog.getReturnStatus() == AddUpdateWordDialog.RET_OK) {
-            // update word
-        }
+        updateWordDefinition();
     }//GEN-LAST:event_updateWordMenuItemActionPerformed
 
     private void wordSearchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_wordSearchFieldActionPerformed
@@ -952,6 +958,12 @@ public class SpellbookFrame extends javax.swing.JFrame {
             wordSearchField.setText(searchedWords.get(++searchWordsIndex));
         }
     }//GEN-LAST:event_nextWordLabelMouseClicked
+
+    private void wordsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_wordsListMouseClicked
+        if (evt.getClickCount() == 2) {
+            updateWordDefinition();
+        }
+    }//GEN-LAST:event_wordsListMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem LearningWordsMenuItem;
