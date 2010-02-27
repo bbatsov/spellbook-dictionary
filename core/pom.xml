@@ -16,6 +16,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.drowltd.spellbook</groupId>
+            <artifactId>spellbook-utils</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
         </dependency>

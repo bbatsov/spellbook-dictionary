@@ -2,6 +2,7 @@ package com.drowltd.spellbook.core.db;
 
 import com.drowltd.spellbook.core.exam.Difficulty;
 import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
+import com.drowltd.spellbook.util.SearchUtils;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -193,18 +194,8 @@ public class DatabaseService {
      * dictionary
      */
     public boolean addWord(String word, String translation, Dictionary dictionary) {
-        List<String> wordsInDictionary = dictionaryCache.get(dictionary);
-
-        if (wordsInDictionary == null) {
-            throw new IllegalStateException("current active dictionary not in dictionary cache");
-        }
-
-        if (wordsInDictionary.contains(word)) {
-            // the dictionary already contains this word
-            return false;
-        }
-
-        wordsInDictionary.add(word);
+        LOGGER.info("Adding " + word + " to " + dictionary);
+        // nothing needs to be done to the cache since it's already update from the client side
 
         // don't forget to copy the word rating if available
 
@@ -215,6 +206,8 @@ public class DatabaseService {
             ps.setString(2, translation);
 
             ps.executeUpdate();
+
+            LOGGER.info("Added word " + word + " to dictionary " + dictionary);
         } catch (SQLException ex) {
             java.util.logging.Logger.getLogger(DatabaseService.class.getName()).log(Level.SEVERE, null, ex);
         }
