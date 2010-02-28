@@ -234,36 +234,32 @@ public class SpellbookFrame extends javax.swing.JFrame {
     }
 
     public void showMemoryUsage() {
-//        memoryProgressBar.setVisible(true);
-//        runGcButton.setVisible(true);
-//
-//        if (memoryUsageExecutorService == null) {
-//            Runnable memoryRunnable = new Runnable() {
-//
-//                @Override
-//                public void run() {
-//                    final Runtime runtime = Runtime.getRuntime();
-//                    final long freeMemory = runtime.freeMemory();
-//                    final long totalMemory = runtime.totalMemory();
-//                    memoryProgressBar.setMaximum((int) totalMemory);
-//                    memoryProgressBar.setValue((int) (totalMemory - freeMemory));
-//
-//                    int usedMemInMb = (int) (totalMemory - freeMemory) / BYTES_IN_ONE_MEGABYTE;
-//                    int totalMemInMb = (int) totalMemory / BYTES_IN_ONE_MEGABYTE;
-//
-//                    memoryProgressBar.setString(usedMemInMb + "M of " + totalMemInMb + "M");
-//                    memoryProgressBar.setToolTipText(String.format(TRANSLATOR.translate("MemoryUsage(ToolTip)"), totalMemInMb, usedMemInMb));
-//                }
-//            };
-//
-//            memoryUsageExecutorService = Executors.newSingleThreadScheduledExecutor();
-//            memoryUsageExecutorService.scheduleAtFixedRate(memoryRunnable, 0, 10, TimeUnit.SECONDS);
-//        }
+        memoryUsageLabel.setVisible(true);
+
+        if (memoryUsageExecutorService == null) {
+            Runnable memoryRunnable = new Runnable() {
+
+                @Override
+                public void run() {
+                    final Runtime runtime = Runtime.getRuntime();
+                    final long freeMemory = runtime.freeMemory();
+                    final long totalMemory = runtime.totalMemory();
+
+                    int usedMemInMb = (int) (totalMemory - freeMemory) / BYTES_IN_ONE_MEGABYTE;
+                    int totalMemInMb = (int) totalMemory / BYTES_IN_ONE_MEGABYTE;
+
+                    memoryUsageLabel.setText(usedMemInMb + "M of " + totalMemInMb + "M");
+                    memoryUsageLabel.setToolTipText(String.format(TRANSLATOR.translate("MemoryUsage(ToolTip)"), totalMemInMb, usedMemInMb));
+                }
+            };
+
+            memoryUsageExecutorService = Executors.newSingleThreadScheduledExecutor();
+            memoryUsageExecutorService.scheduleAtFixedRate(memoryRunnable, 0, 10, TimeUnit.SECONDS);
+        }
     }
 
     public void hideMemoryUsage() {
-//        memoryProgressBar.setVisible(false);
-//        runGcButton.setVisible(false);
+        memoryUsageLabel.setVisible(false);
     }
 
     private void clear() {
@@ -511,6 +507,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         statusBar = new javax.swing.JLabel();
         previousWordLabel = new javax.swing.JLabel();
         nextWordLabel = new javax.swing.JLabel();
+        memoryUsageLabel = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         restartMenuItem = new javax.swing.JMenuItem();
@@ -612,6 +609,14 @@ public class SpellbookFrame extends javax.swing.JFrame {
             }
         });
 
+        memoryUsageLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/memory.png"))); // NOI18N
+        memoryUsageLabel.setText("Memory usage");
+        memoryUsageLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                memoryUsageLabelMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -625,14 +630,18 @@ public class SpellbookFrame extends javax.swing.JFrame {
                 .addComponent(matchLabel)
                 .addGap(18, 18, 18)
                 .addComponent(statusBar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 300, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(memoryUsageLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 163, Short.MAX_VALUE)
                 .addComponent(jLabel1))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel1)
+                        .addComponent(memoryUsageLabel))
                     .addComponent(previousWordLabel)
                     .addComponent(nextWordLabel)
                     .addComponent(matchLabel)
@@ -965,6 +974,11 @@ public class SpellbookFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_wordsListMouseClicked
 
+    private void memoryUsageLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_memoryUsageLabelMouseClicked
+        // trigger manually garbage collection
+        System.gc();
+    }//GEN-LAST:event_memoryUsageLabelMouseClicked
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem LearningWordsMenuItem;
     private javax.swing.JMenuItem aboutMenuItem;
@@ -991,6 +1005,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JLabel matchLabel;
+    private javax.swing.JLabel memoryUsageLabel;
     private javax.swing.JLabel nextWordLabel;
     private javax.swing.JMenuItem pasteMenuItem;
     private javax.swing.JMenuItem prefsMenuItem;
