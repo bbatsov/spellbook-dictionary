@@ -11,7 +11,8 @@
 
 package com.drowltd.spellbook.ui.desktop;
 
-import com.drowltd.spellbook.core.db.SDictionary;
+import com.drowltd.spellbook.core.model.Dictionary;
+
 
 /**
  *
@@ -23,7 +24,7 @@ public class AddUpdateWordDialog extends javax.swing.JDialog {
     /** A return status code - returned if OK button has been pressed */
     public static final int RET_OK = 1;
 
-    private SDictionary dictionary;
+    private Dictionary dictionary;
 
     /** Creates new form AddWordToDb */
     public AddUpdateWordDialog(java.awt.Frame parent, boolean modal) {
@@ -38,11 +39,11 @@ public class AddUpdateWordDialog extends javax.swing.JDialog {
         return returnStatus;
     }
 
-    public void setDictionary(SDictionary dictionary) {
+    public void setDictionary(Dictionary dictionary) {
         this.dictionary = dictionary;
     }
 
-    public SDictionary getDictionary() {
+    public Dictionary getDictionary() {
         return dictionary;
     }
 
