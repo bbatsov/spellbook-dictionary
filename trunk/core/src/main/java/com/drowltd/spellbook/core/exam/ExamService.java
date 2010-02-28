@@ -4,8 +4,8 @@
  */
 package com.drowltd.spellbook.core.exam;
 
-import com.drowltd.spellbook.core.db.DatabaseService;
-import com.drowltd.spellbook.core.db.Dictionary;
+import com.drowltd.spellbook.core.db.SDatabaseService;
+import com.drowltd.spellbook.core.db.SDictionary;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -20,16 +20,17 @@ import java.util.regex.Pattern;
  */
 public class ExamService {
 
-    private DatabaseService dictDb;
+    private SDatabaseService dictDb;
     private List<String> words;
     private List<String> answers;
     private int examWordIndex;
     private Random random = new Random();
     private String translation;
 
-    public ExamService(Dictionary selectedDictionary, Difficulty selectedDifficulty) {
-        dictDb = DatabaseService.getInstance();
+    public ExamService(SDictionary selectedDictionary, Difficulty selectedDifficulty) {
+        dictDb = SDatabaseService.getCurrentInstance();
         words = dictDb.getDifficultyWords(selectedDictionary, selectedDifficulty);
+        assert words.size() > 0;
     }
 
     /**
@@ -38,13 +39,13 @@ public class ExamService {
      * @param dictionary the target dictionary
      *
      */
-    public void getExamWord(Dictionary selectedDic) {
+    public void getExamWord(SDictionary selectedDic) {
         examWordIndex = random.nextInt(words.size());
 
         while (dictDb.getTranslation(selectedDic, words.get(examWordIndex)).contains("\u0432\u0436.")) {
             examWordIndex = random.nextInt(words.size());
         }
-        
+
         translation = dictDb.getTranslation(selectedDic, words.get(examWordIndex));
     }
 
