@@ -229,17 +229,17 @@ public class SpellbookFrame extends javax.swing.JFrame {
             matchLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
 
             exactMatch = true;
-//        } else if ((approximation = sDatabaseService.getApproximation(selectedSDictionary, searchString)) != null) {
-//
-//            int index = words.indexOf(approximation);
-//
-//            wordsList.setSelectedIndex(index);
-//            wordsList.ensureIndexIsVisible(index);
-//
-//            matchLabel.setIcon(IconManager.getImageIcon("bell2_gold.png", IconSize.SIZE24));
-//            matchLabel.setToolTipText(TRANSLATOR.translate("PartialMatchFound(ToolTip)"));
-//
-//            exactMatch = false;
+        } else if ((approximation = DICTIONARY_SERVICE.getApproximation(selectedDictionary, searchString)) != null) {
+
+            int index = words.indexOf(approximation);
+
+            wordsList.setSelectedIndex(index);
+            wordsList.ensureIndexIsVisible(index);
+
+            matchLabel.setIcon(IconManager.getImageIcon("bell2_gold.png", IconSize.SIZE24));
+            matchLabel.setToolTipText(TRANSLATOR.translate("PartialMatchFound(ToolTip)"));
+
+            exactMatch = false;
         } else {
             matchLabel.setIcon(IconManager.getImageIcon("bell2_red.png", IconSize.SIZE24));
             matchLabel.setToolTipText(TRANSLATOR.translate("NoMatchFound(ToolTip)"));
@@ -330,18 +330,17 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
                             matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
                             matchLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
-//                        } else if ((approximation = databaseService.getApproximation(selectedDictionary, searchString)) != null) {
-//                            foundWord = approximation;
-//                            int index = words.indexOf(foundWord);
-//
-//                            wordsList.setSelectedIndex(index);
-//                            wordsList.ensureIndexIsVisible(index);
-//
-//                            match = true;
-//
-//                            matchLabel.setIcon(IconManager.getImageIcon("bell2_gold.png", IconSize.SIZE24));
-//                            matchLabel.setToolTipText(TRANSLATOR.translate("PartialMatchFound(ToolTip)"));
-//                        }
+                        } else if ((approximation = DICTIONARY_SERVICE.getApproximation(selectedDictionary, searchString)) != null) {
+                            foundWord = approximation;
+                            int index = words.indexOf(foundWord);
+
+                            wordsList.setSelectedIndex(index);
+                            wordsList.ensureIndexIsVisible(index);
+
+                            match = true;
+
+                            matchLabel.setIcon(IconManager.getImageIcon("bell2_gold.png", IconSize.SIZE24));
+                            matchLabel.setToolTipText(TRANSLATOR.translate("PartialMatchFound(ToolTip)"));
                         }
 
                         // the tray popup translation should appear is the main frame is either not visible or minimized
