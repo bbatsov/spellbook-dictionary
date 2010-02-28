@@ -193,4 +193,8 @@ public class SDatabaseService {
     public List<Language> getLanguagesTo(Language language) {
         return dictionaryService.getLanguagesTo(language);
     }
+
+    public String getApproximation(SDictionary dictionary, String searchKey){
+        return dictionaryService.getApproximation(dictionary, searchKey);
+    }
 }
