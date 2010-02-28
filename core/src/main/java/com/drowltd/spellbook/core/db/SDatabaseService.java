@@ -18,7 +18,11 @@ import java.util.Map;
 public class SDatabaseService {
 
     private final DictionaryService dictionaryService;
-    
+    private static SDatabaseService INSTANCE;
+
+    public static SDatabaseService getCurrentInstance() {
+        return INSTANCE;
+    }
 
     public static SDatabaseService getLocalDatabaseService(String dictDbFile) throws DictionaryDbLockedException, NoDictionariesAvailableException {
         if (dictDbFile == null || dictDbFile.isEmpty()) {
@@ -39,8 +43,10 @@ public class SDatabaseService {
             }
             e.printStackTrace();
         }
+        final SDatabaseService sDatabaseService = new SDatabaseService(connection);
 
-        return new SDatabaseService(connection);
+        INSTANCE = sDatabaseService;
+        return sDatabaseService;
     }
 
     public static SDatabaseService getRemoteDatabaseService() {
@@ -59,8 +65,8 @@ public class SDatabaseService {
         }
     }
 
-    public void setCacheSize(int size){
-       dictionaryService.setCacheSize(size);
+    public void setCacheSize(int size) {
+        dictionaryService.setCacheSize(size);
     }
 
     public void addMisspelled(SDictionary dictionary, String misspelled) {
@@ -80,22 +86,22 @@ public class SDatabaseService {
      * @return true if the word was added, false if it already existed in the
      * dictionary
      */
-    public boolean addWord(SDictionary dictionary, String word, String translation)  {
+    public boolean addWord(SDictionary dictionary, String word, String translation) {
         return addWord(dictionary, word, translation, 0);
     }
 
-    public boolean addWord(SDictionary dictionary, String word, String translation, int rating)  {
+    public boolean addWord(SDictionary dictionary, String word, String translation, int rating) {
         boolean added = false;
         try {
             added = dictionaryService.addWord(dictionary, word, translation, rating);
         } catch (SQLException ex) {
-            throw new SDatabaseServiceException(word + " could not be added to the database."+ex.getMessage());
+            throw new SDatabaseServiceException(word + " could not be added to the database." + ex.getMessage());
         }
 
         return added;
     }
 
-    public List<String> getDifficultyWords(SDictionary dictionary, Difficulty difficulty)  {
+    public List<String> getDifficultyWords(SDictionary dictionary, Difficulty difficulty) {
         List<String> words = null;
 
         try {
@@ -107,7 +113,7 @@ public class SDatabaseService {
         return words;
     }
 
-    public Map<String, Integer> getRatings(Language language)  {
+    public Map<String, Integer> getRatings(Language language) {
         Map<String, Integer> ratings = null;
         try {
             ratings = dictionaryService.getRatings(language);
@@ -127,7 +133,7 @@ public class SDatabaseService {
      *
      * @return the translation of the word
      */
-    public String getTranslation(SDictionary dictionary, String word)  {
+    public String getTranslation(SDictionary dictionary, String word) {
         String translation = null;
         try {
             translation = dictionaryService.getTranslation(dictionary, word);
@@ -145,11 +151,11 @@ public class SDatabaseService {
      *
      * @return a list of all words in the selected dictionary
      */
-    public List<String> getWordsFromDictionary(SDictionary dictionary)  {
+    public List<String> getWordsFromDictionary(SDictionary dictionary) {
         return new ArrayList<String>(getWordsMapFromDictionary(dictionary).keySet());
     }
 
-    public Map<String, Integer> getWordsMapFromDictionary(SDictionary dictionary)  {
+    public Map<String, Integer> getWordsMapFromDictionary(SDictionary dictionary) {
         Map<String, Integer> words = null;
         try {
             words = dictionaryService.getWordsFromDictionary(dictionary);
@@ -166,7 +172,7 @@ public class SDatabaseService {
      * @param translation
      * @param dictionary
      */
-    public void updateTranslation(SDictionary dictionary, String word, String translation)  {
+    public void updateTranslation(SDictionary dictionary, String word, String translation) {
         try {
             dictionaryService.updateTranslation(dictionary, word, translation);
         } catch (SQLException ex) {
@@ -174,7 +180,7 @@ public class SDatabaseService {
         }
     }
 
-    public void updateWord(SDictionary dictionary, String oldWord, String newWord)  {
+    public void updateWord(SDictionary dictionary, String oldWord, String newWord) {
         try {
             dictionaryService.updateWord(dictionary, oldWord, newWord);
         } catch (SQLException ex) {
@@ -194,7 +200,7 @@ public class SDatabaseService {
         return dictionaryService.getLanguagesTo(language);
     }
 
-    public String getApproximation(SDictionary dictionary, String searchKey){
+    public String getApproximation(SDictionary dictionary, String searchKey) {
         return dictionaryService.getApproximation(dictionary, searchKey);
     }
 }

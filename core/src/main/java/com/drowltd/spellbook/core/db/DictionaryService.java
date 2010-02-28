@@ -327,8 +327,8 @@ public class DictionaryService {
             throw new IllegalArgumentException("difficulty is null");
         }
 
-        final ResultSet rs0 = connection.prepareStatement("SELECT COUNT(1) FROM EN_BG WHERE RATING > "
-                + difficulty.getLow() + " AND RATING <= " + difficulty.getHigh()).executeQuery();
+        final ResultSet rs0 = connection.prepareStatement("SELECT COUNT(1) FROM " + getTranslationTable(dictionary)
+                + " WHERE RATING > " + difficulty.getLow() + " AND RATING <= " + difficulty.getHigh()).executeQuery();
 
         rs0.next();
         int rows = 0;

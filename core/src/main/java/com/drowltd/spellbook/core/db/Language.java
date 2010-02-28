@@ -77,4 +77,9 @@ public class Language {
         hash = 97 * hash + (this.alphabet != null ? this.alphabet.hashCode() : 0);
         return hash;
     }
+
+    @Override
+    public String toString(){
+        return name;
+    }
 }
