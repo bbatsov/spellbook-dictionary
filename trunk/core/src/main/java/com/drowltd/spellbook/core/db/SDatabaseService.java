@@ -89,7 +89,7 @@ public class SDatabaseService {
         try {
             added = dictionaryService.addWord(dictionary, word, translation, rating);
         } catch (SQLException ex) {
-            throw new SDatabaseServiceException(word + " could not be added to the database.");
+            throw new SDatabaseServiceException(word + " could not be added to the database."+ex.getMessage());
         }
 
         return added;

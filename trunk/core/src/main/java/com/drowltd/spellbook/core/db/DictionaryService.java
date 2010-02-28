@@ -185,7 +185,11 @@ public class DictionaryService {
         }
 
         if (rating < 1) {
-            throw new IllegalArgumentException("rating < 1");
+            rating = 1;
+        }
+
+        if (!this.getTranslation(dictionary, word).equals("")) {
+            return false;
         }
 
         final PreparedStatement ps = connection.prepareStatement("INSERT INTO " + getTranslationTable(dictionary)
