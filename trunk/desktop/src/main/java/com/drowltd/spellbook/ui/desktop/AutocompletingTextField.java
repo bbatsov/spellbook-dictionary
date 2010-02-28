@@ -198,7 +198,8 @@ public class AutocompletingTextField extends JTextField {
             int popX = los.x;
             int popY = los.y + getHeight();
             listWindow.setLocation(popX, popY);
-            listWindow.setSize(getSize().width, getSize().height * 5);
+            // dynamically determine the size of the completion suggestion list
+            listWindow.setSize(getSize().width, getSize().height * (completionListModel.getSize() < MAX_VISIBLE_COMPLETIONS ? completionListModel.getSize() : MAX_VISIBLE_COMPLETIONS));
             listWindow.setVisible(true);
         }
 
