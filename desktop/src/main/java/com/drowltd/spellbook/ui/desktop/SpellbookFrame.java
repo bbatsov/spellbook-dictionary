@@ -48,7 +48,6 @@ import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preferen
  * @since 0.1
  */
 public class SpellbookFrame extends javax.swing.JFrame {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellbookFrame.class);
     private static final Translator TRANSLATOR = Translator.getTranslator("SpellbookForm");
     private static final PreferencesManager PM = PreferencesManager.getInstance();
@@ -77,7 +76,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         // check the presence of the dictionary database
         if (!verifyDbPresence()) {
             JOptionPane.showMessageDialog(null, TRANSLATOR.translate("NoDbSelected(Message)"),
-                    TRANSLATOR.translate("Error(Title)"), JOptionPane.ERROR_MESSAGE);
+                                          TRANSLATOR.translate("Error(Title)"), JOptionPane.ERROR_MESSAGE);
             System.exit(-1);
         }
 
@@ -107,7 +106,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
         trayIcon = SpellbookTray.createTraySection(this);
 
         addWindowListener(new WindowAdapter() {
-
             @Override
             public void windowIconified(WindowEvent e) {
                 if (PM.getBoolean(Preference.MIN_TO_TRAY, false)) {
@@ -144,7 +142,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         // monitor any changes in the search text field
         wordSearchField.getDocument().addDocumentListener(new DocumentListener() {
-
             @Override
             public void insertUpdate(DocumentEvent e) {
                 onSearchChange();
@@ -162,7 +159,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
         });
 
         wordSearchField.addKeyListener(new KeyAdapter() {
-
             @Override
             public void keyReleased(KeyEvent e) {
                 if (wordSearchField.getText().isEmpty()) {
@@ -172,7 +168,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
         });
 
         addComponentListener(new ComponentAdapter() {
-
             @Override
             public void componentMoved(ComponentEvent e) {
                 if (wordSearchField.hasFocus()) {
@@ -187,7 +182,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         wordSearchField.addMouseListener(contextMenuMouseListener);
         wordTranslationTextPane.addMouseListener(contextMenuMouseListener);
 
-        updateStatusBar(selectedDictionary);
+        updateDictionaryLabel(selectedDictionary);
 
         // update word menu item is initially disabled
         updateWordMenuItem.setEnabled(false);
@@ -253,7 +248,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         if (memoryUsageExecutorService == null) {
             Runnable memoryRunnable = new Runnable() {
-
                 @Override
                 public void run() {
                     final Runtime runtime = Runtime.getRuntime();
@@ -298,7 +292,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
             clipboardIntegration = new ClipboardIntegration();
 
             Runnable clipboardRunnable = new Runnable() {
-
                 @Override
                 public void run() {
                     String transferredText = clipboardIntegration.getClipboardContents().trim();
@@ -348,7 +341,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
                                 || (SpellbookFrame.this.getState() == JFrame.ICONIFIED))
                                 && PM.getBoolean(Preference.TRAY_POPUP, false)) {
                             trayIcon.displayMessage(foundWord, DICTIONARY_SERVICE.getTranslation((String) wordsList.getSelectedValue(), selectedDictionary),
-                                    TrayIcon.MessageType.INFO);
+                                                    TrayIcon.MessageType.INFO);
                         }
                     }
                 }
@@ -437,21 +430,21 @@ public class SpellbookFrame extends javax.swing.JFrame {
         words = DICTIONARY_SERVICE.getWordsFromDictionary(dictionary);
     }
 
-    private void updateStatusBar(Dictionary dictionary) {
-        statusBar.setToolTipText(String.format(dictionary.getName() + "dictionary containing %d words", words.size()));
-        //statusBar.setIcon(dictionary.getFlagLarge());
+    private void updateDictionaryLabel(Dictionary dictionary) {
+        dictionaryLabel.setToolTipText(String.format(dictionary.getName() + "dictionary containing %d words", words.size()));
+        dictionaryLabel.setIcon(IconManager.getImageIcon(dictionary.getIconName(), IconManager.IconSize.SIZE24));
 
-        //        if (dictionary == Dictionary.EN_BG) {
-        //            SwingUtil.showBalloonTip(statusBar, TRANSLATOR.translate("EnBgDictLoaded(Message)"));
-        //       statusBar.setText(String.format(TRANSLATOR.translate("EnBgDictSize(Label)"), words.size()));
-        //            statusBar.setIcon(IconManager.getImageIcon("en-bg.png", IconSize.SIZE24));
-        //        } else if (dictionary == Dictionary.BG_EN) {
-        //            SwingUtil.showBalloonTip(statusBar, TRANSLATOR.translate("BgEnDictLoaded(Message)"));
-        //            statusBar.setText(String.format(TRANSLATOR.translate("BgEnDictSize(Label)"), words.size()));
-        //            statusBar.setIcon(IconManager.getImageIcon("bg-en.png", IconSize.SIZE24));
-        //        } else {
-        //            throw new IllegalArgumentException("Unknown dictionary " + dictionary);
-        //        }
+        if (dictionary.getName().equals("English-Bulgarian")) {
+            SwingUtil.showBalloonTip(dictionaryLabel, TRANSLATOR.translate("EnBgDictLoaded(Message)"));
+            dictionaryLabel.setToolTipText(String.format(TRANSLATOR.translate("EnBgDictSize(Label)"), words.size()));
+            dictionaryLabel.setIcon(IconManager.getImageIcon(dictionary.getIconName(), IconManager.IconSize.SIZE24));
+        } else if (dictionary.getName().equals("Bulgarian-English")) {
+            SwingUtil.showBalloonTip(dictionaryLabel, TRANSLATOR.translate("BgEnDictLoaded(Message)"));
+            dictionaryLabel.setToolTipText(String.format(TRANSLATOR.translate("BgEnDictSize(Label)"), words.size()));
+            dictionaryLabel.setIcon(IconManager.getImageIcon(dictionary.getIconName(), IconManager.IconSize.SIZE24));
+        } else {
+            throw new IllegalArgumentException("Unknown dictionary " + dictionary);
+        }
     }
 
     private boolean verifyDbPresence() {
@@ -490,7 +483,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         wordSearchField.setFont(font);
         wordsList.setFont(font);
         wordTranslationTextPane.setFont(font);
-        statusBar.setFont(font);
+        dictionaryLabel.setFont(font);
     }
 
     public void selectDictionary(Dictionary dictionary) {
@@ -506,7 +499,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         setSelectedDictionary(dictionary);
 
         wordsList.setModel(new ListBackedListModel(words));
-        updateStatusBar(dictionary);
+        updateDictionaryLabel(dictionary);
 
     }
 
@@ -530,7 +523,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         wordTranslationTextPane = new javax.swing.JTextPane();
         matchLabel = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        statusBar = new javax.swing.JLabel();
+        dictionaryLabel = new javax.swing.JLabel();
         previousWordLabel = new javax.swing.JLabel();
         nextWordLabel = new javax.swing.JLabel();
         memoryUsageLabel = new javax.swing.JLabel();
@@ -615,7 +608,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         jLabel1.setText(bundle.getString("FuelledBy(Label)")); // NOI18N
 
-        statusBar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/en-bg.png"))); // NOI18N
+        dictionaryLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/en-bg.png"))); // NOI18N
 
         previousWordLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/arrow_left_blue.png"))); // NOI18N
         previousWordLabel.setToolTipText(bundle.getString("PreviousWord(Label)")); // NOI18N
@@ -653,10 +646,10 @@ public class SpellbookFrame extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(matchLabel)
                 .addGap(18, 18, 18)
-                .addComponent(statusBar)
+                .addComponent(dictionaryLabel)
                 .addGap(18, 18, 18)
                 .addComponent(memoryUsageLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 163, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 156, Short.MAX_VALUE)
                 .addComponent(jLabel1))
         );
         jPanel3Layout.setVerticalGroup(
@@ -669,7 +662,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
                     .addComponent(previousWordLabel)
                     .addComponent(nextWordLabel)
                     .addComponent(matchLabel)
-                    .addComponent(statusBar))
+                    .addComponent(dictionaryLabel))
                 .addGap(9, 9, 9)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE))
         );
@@ -925,7 +918,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
             // word field needs to be updated in a separate thread
             if (!wordSearchField.hasFocus()) {
                 EventQueue.invokeLater(new Runnable() {
-
                     @Override
                     public void run() {
                         wordSearchField.setText(selectedWord);
@@ -979,6 +971,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem addWordMenuItem;
     private javax.swing.JMenuItem copyMenuItem;
     private javax.swing.JMenuItem cutMenuItem;
+    private javax.swing.JLabel dictionaryLabel;
     private javax.swing.JMenuItem examMenuItem;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenuItem helpContentsMenuItem;
@@ -1005,7 +998,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem restartMenuItem;
     private javax.swing.JMenuItem spellcheckMenuItem;
     private javax.swing.JSplitPane splitPane;
-    private javax.swing.JLabel statusBar;
     private javax.swing.JMenuItem updateWordMenuItem;
     private javax.swing.JTextField wordSearchField;
     private javax.swing.JTextPane wordTranslationTextPane;
@@ -1024,7 +1016,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
     }
 
     private class DictionaryItem extends JMenuItem implements ActionListener {
-
         private final Dictionary dictionary;
 
         public DictionaryItem(Dictionary dictionary) {
@@ -1033,8 +1024,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
             }
 
             this.dictionary = dictionary;
-            //setIcon(dictionary.getFlagSmall());
-            setText(dictionary.getName());
+            setIcon(IconManager.getMenuIcon(dictionary.getIconName()));
+            setText(TRANSLATOR.translate(dictionary.getName() + "(Dictionary)"));
             addActionListener(this);
         }
 

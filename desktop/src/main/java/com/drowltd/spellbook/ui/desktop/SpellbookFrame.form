@@ -385,7 +385,7 @@
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="matchLabel" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Component id="statusBar" min="-2" max="-2" attributes="0"/>
+                          <Component id="dictionaryLabel" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="memoryUsageLabel" min="-2" max="-2" attributes="0"/>
                           <EmptySpace pref="156" max="32767" attributes="0"/>
@@ -404,7 +404,7 @@
                               <Component id="previousWordLabel" min="-2" max="-2" attributes="0"/>
                               <Component id="nextWordLabel" min="-2" max="-2" attributes="0"/>
                               <Component id="matchLabel" min="-2" max="-2" attributes="0"/>
-                              <Component id="statusBar" min="-2" max="-2" attributes="0"/>
+                              <Component id="dictionaryLabel" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
                           <Component id="jScrollPane1" pref="424" max="32767" attributes="0"/>
@@ -448,7 +448,7 @@
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JLabel" name="statusBar">
+                <Component class="javax.swing.JLabel" name="dictionaryLabel">
                   <Properties>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                       <Image iconType="3" name="/icons/24x24/en-bg.png"/>
