@@ -28,7 +28,7 @@ import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preferen
 public class SpellbookApp {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellbookApp.class);
 
-    private static int MIN_FRAME_WIDTH = 400;
+    private static int MIN_FRAME_WIDTH = 600;
     private static int MIN_FRAME_HEIGHT = 200;
 
     public static void main(final String[] args) {
