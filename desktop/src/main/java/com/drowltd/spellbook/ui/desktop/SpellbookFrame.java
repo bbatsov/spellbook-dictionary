@@ -436,15 +436,14 @@ public class SpellbookFrame extends javax.swing.JFrame {
         }
     }
 
-    //Must be fixed for SDictionary
     private void updateWordDefinition() throws IllegalStateException {
         AddUpdateWordDialog addUpdateWordDialog = new AddUpdateWordDialog(this, true);
-        addUpdateWordDialog.setDictionary(selectedDictionary);
+        addUpdateWordDialog.setDictionary(selectedSDictionary);
         if (wordsList.isSelectionEmpty()) {
             throw new IllegalStateException("No word selected");
         }
         addUpdateWordDialog.setWord((String) wordsList.getSelectedValue());
-        addUpdateWordDialog.setTranslation(databaseService.getTranslation(selectedDictionary, (String) wordsList.getSelectedValue()));
+        addUpdateWordDialog.setTranslation(sDatabaseService.getTranslation(selectedSDictionary, (String) wordsList.getSelectedValue()));
         addUpdateWordDialog.setVisible(true);
         if (addUpdateWordDialog.getReturnStatus() == AddUpdateWordDialog.RET_OK) {
             // update word
@@ -512,7 +511,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         statusBar.setFont(font);
     }
 
-        public void selectDictionary(SDictionary dictionary) {
+    public void selectDictionary(SDictionary dictionary) {
         // if we select the currently selected dictionary we don't have to do nothing
         if (selectedSDictionary == dictionary) {
             LOGGER.info("Dictionary " + dictionary + " is already selected");
@@ -902,7 +901,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private void addWordMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addWordMenuItemActionPerformed
         AddUpdateWordDialog addUpdateWordDialog = new AddUpdateWordDialog(this, true);
 
-        addUpdateWordDialog.setDictionary(selectedDictionary);
+        addUpdateWordDialog.setDictionary(selectedSDictionary);
         addUpdateWordDialog.setVisible(true);
 
         if (addUpdateWordDialog.getReturnStatus() == AddUpdateWordDialog.RET_OK) {
@@ -916,7 +915,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
             wordsList.setModel(new ListBackedListModel(words));
 
-            databaseService.addWord(addUpdateWordDialog.getWord(), addUpdateWordDialog.getTranslation(), selectedDictionary);
+            sDatabaseService.addWord(selectedSDictionary, addUpdateWordDialog.getWord(), addUpdateWordDialog.getTranslation());
         }
     }//GEN-LAST:event_addWordMenuItemActionPerformed
 
@@ -992,7 +991,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
         // trigger manually garbage collection
         System.gc();
     }//GEN-LAST:event_memoryUsageLabelMouseClicked
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem LearningWordsMenuItem;
     private javax.swing.JMenuItem aboutMenuItem;
@@ -1063,5 +1061,4 @@ public class SpellbookFrame extends javax.swing.JFrame {
             SpellbookFrame.this.selectDictionary(dictionary);
         }
     }
-
 }
