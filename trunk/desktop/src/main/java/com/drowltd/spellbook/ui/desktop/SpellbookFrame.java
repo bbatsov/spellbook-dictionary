@@ -456,7 +456,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
     }
 
     private void updateStatusBar(SDictionary dictionary) {
-        statusBar.setText(String.format(dictionary.getName() + "dictionary containing %d words", words.size()));
+        statusBar.setToolTipText(String.format(dictionary.getName() + "dictionary containing %d words", words.size()));
         statusBar.setIcon(dictionary.getFlagLarge());
 
         //        if (dictionary == Dictionary.EN_BG) {
