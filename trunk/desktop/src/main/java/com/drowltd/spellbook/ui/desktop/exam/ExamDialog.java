@@ -13,7 +13,10 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.swing.Timer;
 
 import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preference;
@@ -36,9 +39,9 @@ public class ExamDialog extends javax.swing.JDialog {
     private int examWordsCopy;
     private int maximumSecondsProgressBar = 0;
     private int maximumWordsProgressBar = 0;
-    private Dictionary selectedDictionary = Dictionary.EN_BG;
     private static Difficulty difficulty = Difficulty.EASY;
-    
+    private SDictionary selectedSDictionary;
+    private final SDatabaseService sDatabaseService = SDatabaseService.getCurrentInstance();
     private int totalWords;
     private int correctWords;
     private int fromWordsIndex;
@@ -50,10 +53,10 @@ public class ExamDialog extends javax.swing.JDialog {
     private static List<String> wrongWords = new ArrayList<String>();
     private static List<String> correctTranslation = new ArrayList<String>();
     private boolean timerEnabled = PM.getBoolean(Preference.EXAM_TIMER, false);
-
     private Frame parent;
 
     public enum TimerStatus {
+
         PAUSED, STARTED, STOPPED, DISABLED
     }
     private static TimerStatus enumTimerStatus = TimerStatus.DISABLED;
@@ -61,18 +64,16 @@ public class ExamDialog extends javax.swing.JDialog {
     /** Creates new form ExamDialog */
     public ExamDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-      
+
         TRANSLATOR.reset();
         this.parent = parent;
         initComponents();
+        initLanguages();
         pauseButton.setEnabled(false);
 
         setIconImage(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE16).getImage());
         setLocationRelativeTo(parent);
 
-        //   Next two lines can be used directly even with more languages
-        fromLanguageComboBox.setSelectedIndex(PM.getInt(Preference.EXAM_FROM_LANG, fromLanguageComboBox.getSelectedIndex()));
-        toLanguageComboBox.setSelectedIndex(PM.getInt(Preference.EXAM_TO_LANG, toLanguageComboBox.getSelectedIndex()));
     }
 
     /** This method is called from within the constructor to
@@ -133,9 +134,12 @@ public class ExamDialog extends javax.swing.JDialog {
                 fromLanguageComboBoxPopupMenuWillBecomeVisible(evt);
             }
         });
+        fromLanguageComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fromLanguageComboBoxActionPerformed(evt);
+            }
+        });
 
-        toLanguageComboBox.addItem(bundle.getString("English(Item)"));
-        toLanguageComboBox.addItem(bundle.getString("Bulgarian(Item)"));
         toLanguageComboBox.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
             public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
             }
@@ -198,10 +202,6 @@ public class ExamDialog extends javax.swing.JDialog {
                     .addComponent(settingsIconLabel))
                 .addGap(18, 18, 18))
         );
-
-        fromLanguageComboBox.addItem(bundle.getString("English(Item)"));
-        fromLanguageComboBox.addItem(bundle.getString("Bulgarian(Item)"));
-        fromLanguageComboBox.setSelectedIndex(1);
 
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel3.setMinimumSize(new java.awt.Dimension(32767, 32767));
@@ -410,18 +410,12 @@ public class ExamDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
-        //English Index = 0; Bulgarian = 1;
-        if ((fromLanguageComboBox.getSelectedIndex() == 0) && (toLanguageComboBox.getSelectedIndex() == 1)) {
-            selectedDictionary = Dictionary.EN_BG;
-        }
-
-        if ((fromLanguageComboBox.getSelectedIndex() == 1) && (toLanguageComboBox.getSelectedIndex() == 0)) {
-            selectedDictionary = Dictionary.BG_EN;
-        }
+        selectedSDictionary = sDatabaseService.getDictionary((Language) fromLanguageComboBox.getSelectedItem(), (Language) toLanguageComboBox.getSelectedItem());
+        assert selectedSDictionary != null;
 
         wrongWords.clear();
         correctTranslation.clear();
-        answerService = new ExamService(selectedDictionary, difficulty);
+        answerService = new ExamService(selectedSDictionary, difficulty);
         totalWords = 0;
         correctWords = 0;
 
@@ -429,15 +423,15 @@ public class ExamDialog extends javax.swing.JDialog {
 
         editability(false);
 
-            examWords = PM.getInt(Preference.EXAM_WORDS, 10);
-            examWordsCopy = examWords;
+        examWords = PM.getInt(Preference.EXAM_WORDS, 10);
+        examWordsCopy = examWords;
 
         if (enumTimerStatus == TimerStatus.STARTED || enumTimerStatus == TimerStatus.STOPPED) {
             difficulty = difficulty.valueOf(PM.get(Preference.EXAM_DIFFICULTY, difficulty.name()));
 
-             if (timerEnabled) {
-                 seconds = difficulty.getTime();
-                 }
+            if (timerEnabled) {
+                seconds = difficulty.getTime();
+            }
             timerRunButton();
             timerUsed = true;
             enumTimerStatus = TimerStatus.STARTED;
@@ -479,7 +473,7 @@ public class ExamDialog extends javax.swing.JDialog {
 
 
         preferencesDialog.setLocationRelativeTo(this);
-        PreferencesExtractor.extract((SpellbookFrame)parent, preferencesDialog);
+        PreferencesExtractor.extract((SpellbookFrame) parent, preferencesDialog);
         preferencesDialog.refreshNewSettingsToExam();
 
     }//GEN-LAST:event_settingsButtonActionPerformed
@@ -495,7 +489,6 @@ public class ExamDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_answerButtonActionPerformed
 
     private void settingsIconLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_settingsIconLabelMouseClicked
-
     }//GEN-LAST:event_settingsIconLabelMouseClicked
 
     private void fromLanguageComboBoxPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_fromLanguageComboBoxPopupMenuWillBecomeInvisible
@@ -536,6 +529,14 @@ public class ExamDialog extends javax.swing.JDialog {
     private void quitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quitButtonActionPerformed
         setVisible(false);
     }//GEN-LAST:event_quitButtonActionPerformed
+
+    private void fromLanguageComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fromLanguageComboBoxActionPerformed
+        final List<Language> languagesTo = sDatabaseService.getLanguagesTo((Language) fromLanguageComboBox.getSelectedItem());
+        toLanguageComboBox.removeAllItems();
+        for (Language language : languagesTo) {
+            toLanguageComboBox.addItem(language);
+        }
+    }//GEN-LAST:event_fromLanguageComboBoxActionPerformed
     /**
      * @param args the command line arguments
      */
@@ -569,7 +570,7 @@ public class ExamDialog extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     private void callAnswerService() {
-        answerService.getExamWord(selectedDictionary);
+        answerService.getExamWord(selectedSDictionary);
         translateField.setText(answerService.examWord());
         totalWords++;
     }
@@ -601,7 +602,7 @@ public class ExamDialog extends javax.swing.JDialog {
 
         wordsProgressBar.setString(str);
         wordsProgressBar.setValue(maximumWordsProgressBar - examWords + 1);
-        
+
         if (answerService.isCorrect(answerField.getText())) {
             wordsProgressBar.setForeground(new java.awt.Color(51, 255, 51));
 
@@ -664,8 +665,6 @@ public class ExamDialog extends javax.swing.JDialog {
         }
     });
 
-   
-
     public void showExamDialog() {
         difficulty = difficulty.valueOf(PM.get(Preference.EXAM_DIFFICULTY, difficulty.name()));
 
@@ -682,16 +681,16 @@ public class ExamDialog extends javax.swing.JDialog {
         setVisible(true);
     }
 
-     /* This method handels the text in GUI, which is related to difficulty
-      * Maybe using String isn't the best way for handling the problem, but
-      * there going to be made some optimization
-      */
-     public static void diffLabelChange(String diff) {
+    /* This method handels the text in GUI, which is related to difficulty
+     * Maybe using String isn't the best way for handling the problem, but
+     * there going to be made some optimization
+     */
+    public static void diffLabelChange(String diff) {
         if (diff.equals("EASY")) {
             difficultyLabel.setText(TRANSLATOR.translate("Easy(Label)"));
             enumDiff = Difficulty.EASY;
         }
-        if (diff.equals("MEDIUM")){
+        if (diff.equals("MEDIUM")) {
             difficultyLabel.setText(TRANSLATOR.translate("Medium(Label)"));
             enumDiff = Difficulty.MEDIUM;
         }
@@ -786,4 +785,15 @@ public class ExamDialog extends javax.swing.JDialog {
         return difficultyLabel.getText();
     }
 
+    private void initLanguages() {
+        final List<SDictionary> availableDictionaries = sDatabaseService.getAvailableDictionaries();
+        Set<Language> addedLanguages = new HashSet<Language>();
+        for (SDictionary dictionary : availableDictionaries) {
+            final Language languageFrom = dictionary.getLanguageFrom();
+            if (!addedLanguages.contains(languageFrom)) {
+                addedLanguages.add(languageFrom);
+                fromLanguageComboBox.addItem(languageFrom);
+            }
+        }
+    }
 }

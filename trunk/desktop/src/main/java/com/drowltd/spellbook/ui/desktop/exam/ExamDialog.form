@@ -126,10 +126,8 @@
           <Events>
             <EventHandler event="popupMenuWillBecomeInvisible" listener="javax.swing.event.PopupMenuListener" parameters="javax.swing.event.PopupMenuEvent" handler="fromLanguageComboBoxPopupMenuWillBecomeInvisible"/>
             <EventHandler event="popupMenuWillBecomeVisible" listener="javax.swing.event.PopupMenuListener" parameters="javax.swing.event.PopupMenuEvent" handler="fromLanguageComboBoxPopupMenuWillBecomeVisible"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="fromLanguageComboBoxActionPerformed"/>
           </Events>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="fromLanguageComboBox.addItem(bundle.getString(&quot;English(Item)&quot;));&#xa;fromLanguageComboBox.addItem(bundle.getString(&quot;Bulgarian(Item)&quot;));&#xa;fromLanguageComboBox.setSelectedIndex(1);"/>
-          </AuxValues>
         </Component>
         <Component class="javax.swing.JComboBox" name="toLanguageComboBox">
           <Properties>
@@ -141,9 +139,6 @@
             <EventHandler event="popupMenuWillBecomeInvisible" listener="javax.swing.event.PopupMenuListener" parameters="javax.swing.event.PopupMenuEvent" handler="toLanguageComboBoxPopupMenuWillBecomeInvisible"/>
             <EventHandler event="popupMenuWillBecomeVisible" listener="javax.swing.event.PopupMenuListener" parameters="javax.swing.event.PopupMenuEvent" handler="toLanguageComboBoxPopupMenuWillBecomeVisible"/>
           </Events>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="toLanguageComboBox.addItem(bundle.getString(&quot;English(Item)&quot;));&#xa;toLanguageComboBox.addItem(bundle.getString(&quot;Bulgarian(Item)&quot;));"/>
-          </AuxValues>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel1">
           <Properties>
