@@ -13,7 +13,14 @@
 
     <name>Spellbook Dictionary Core</name>
     <description>The core logic shared between the various clients</description>
-
+    <repositories>
+        <repository>
+            <url>http://download.java.net/maven/2</url>
+            <id>hibernate-persistence</id>
+            <layout>default</layout>
+            <name>Repository for library Library[hibernate-persistence]</name>
+        </repository>
+    </repositories>
     <dependencies>
         <dependency>
             <groupId>com.drowltd.spellbook</groupId>
@@ -28,6 +35,7 @@
                     <artifactId>slf4j-api</artifactId>
                 </exclusion>
             </exclusions>
+            <version>3.3.2.GA</version>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
