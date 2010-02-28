@@ -14,7 +14,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-import javax.transaction.Transaction;
 
 /**
  *
@@ -33,16 +32,17 @@ public class InitDb {
         DatabaseService.init("/opt/spellbook/db/dictionary.data.db");
         databaseService = DatabaseService.getInstance();
 
-        copyLegacyDict(com.drowltd.spellbook.core.db.Dictionary.EN_BG);
-        copyLegacyDict(com.drowltd.spellbook.core.db.Dictionary.BG_EN);
+        copyLegacyDict(com.drowltd.spellbook.core.db.Dictionary.EN_BG, "en-bg.png", "English-Bulgarian");
+        copyLegacyDict(com.drowltd.spellbook.core.db.Dictionary.BG_EN, "bg-en.png", "Bulgarian-English");
     }
 
-    private static void copyLegacyDict(com.drowltd.spellbook.core.db.Dictionary d) {
+    private static void copyLegacyDict(com.drowltd.spellbook.core.db.Dictionary d, String icon, String name) {
         EntityTransaction t = em.getTransaction();
         t.begin();
 
         Dictionary newDict = new Dictionary();
-        newDict.setName(d.toString());
+        newDict.setName(name);
+        newDict.setIconName(icon);
 
         em.persist(newDict);
 

@@ -5,9 +5,12 @@
 
 package com.drowltd.spellbook.core.model;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import javax.imageio.ImageIO;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -30,15 +33,11 @@ public class Dictionary extends AbstractEntity {
     @OneToMany(fetch=FetchType.LAZY)
     private Set<DictionaryEntry> dictionaryEntries = new HashSet<DictionaryEntry>();
 
+    @Column(nullable = false)
     private String name;
 
-    @Lob
-    @Column(name = "icon16", length = 10000)
-    private byte[] icon16Bytes;
-
-    @Lob
-    @Column(name = "icon24", length = 10000)
-    private byte[] icon24Bytes;
+    @Column(nullable = false)
+    private String iconName;
 
     public String getName() {
         return name;
@@ -46,6 +45,14 @@ public class Dictionary extends AbstractEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getIconName() {
+        return iconName;
+    }
+
+    public void setIconName(String iconName) {
+        this.iconName = iconName;
     }
 
     public Set<DictionaryEntry> getDictionaryEntries() {
