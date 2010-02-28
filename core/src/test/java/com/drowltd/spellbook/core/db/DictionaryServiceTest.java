@@ -149,7 +149,7 @@ public class DictionaryServiceTest extends AbstractDBTestCase {
         assertTrue("Languages list doesn't match", languages.equals(dictionaryService.getLanguagesTo(Dictionaries.bulgarian)));
     }
 
-    @Test
+    //@Test
     public void testGetDifficultyWords() throws SQLException {
         final List<String> difficultyWords = dictionaryService.getDifficultyWords(Dictionaries.dictionaryBG_EN, Difficulty.MEDIUM);
 
@@ -173,6 +173,16 @@ public class DictionaryServiceTest extends AbstractDBTestCase {
         ratingsMapActual = dictionaryService.getRatings(Dictionaries.bulgarian);
 
         assertTrue("ratings map do not match", ratingsMapExpected.equals(ratingsMapActual));
+
+    }
+
+    @Test
+    public void testGetApproxmiation() throws SQLException{
+        final String expected = "aproximate";
+        dictionaryService.addWord(Dictionaries.dictionaryEN_BG, expected, "trans" );
+        final String actual = dictionaryService.getApproximation(Dictionaries.dictionaryEN_BG, "aproxximate");
+
+        assertTrue("aproximation doesn't match",expected.equals(actual));
 
     }
 }

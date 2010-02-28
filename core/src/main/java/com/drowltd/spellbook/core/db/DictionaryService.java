@@ -132,7 +132,8 @@ public class DictionaryService {
             return cacheMap;
         }
 
-        final PreparedStatement ps = connection.prepareStatement("SELECT WORD, RATING FROM " + getTranslationTable(dictionary));
+        final PreparedStatement ps = connection.prepareStatement("SELECT WORD, RATING FROM " + getTranslationTable(dictionary)
+                + " ORDER BY LOWER(WORD)");
 
         final ResultSet rs = ps.executeQuery();
 
@@ -158,7 +159,8 @@ public class DictionaryService {
             throw new IllegalArgumentException("word is null or empty");
         }
 
-        final ResultSet rs = connection.prepareStatement("SELECT TRANSLATION FROM " + getTranslationTable(dictionary)).executeQuery();
+        final ResultSet rs = connection.prepareStatement("SELECT TRANSLATION FROM " + getTranslationTable(dictionary)
+                + " WHERE WORD = \'" + word + "\'").executeQuery();
 
         rs.next();
         final String translation = rs.getString(1);
@@ -361,6 +363,36 @@ public class DictionaryService {
         }
 
         return false;
+    }
+
+    public String getApproximation(SDictionary dictionary, String searchKey) {
+        if (!(dictionary == null || searchKey == null || searchKey.isEmpty())) {
+
+            LOGGER.info("Getting approximation for " + searchKey);
+
+            StringBuilder builder = new StringBuilder(searchKey);
+
+            try {
+                // we start looking for approximate matches of the full search key, but if we fail - we start looking
+                // for shorter matches
+                do {
+                    PreparedStatement ps = connection.prepareStatement("SELECT WORD FROM " + getTranslationTable(dictionary)
+                            + " WHERE WORD LIKE '" + builder.toString().replaceAll("'", "''") + "%' ORDER BY WORD ASC");
+
+                    final ResultSet resultSet = ps.executeQuery();
+
+                    if (resultSet.next()) {
+                        return resultSet.getString("WORD");
+                    }
+
+                    builder.deleteCharAt(builder.length() - 1);
+                } while (builder.length() > 0);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+        }
+        return null;
     }
 
     public void setCacheSize(int size) {
