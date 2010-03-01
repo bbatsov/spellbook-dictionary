@@ -44,9 +44,14 @@ public class SwingUtil {
         String[] lines = translation.split("\n");
 
         for (String line : lines) {
-            result.append(line);
+            // some special handling for transcripts
+            if (line.startsWith("[") && line.endsWith("]")) {
+                result.append("<span style=\"color:blue\">" + line + "</span>");
+            } else {
+                result.append(line);
+            }
 
-            if (line.startsWith("[")) {
+            if (line.startsWith("[") && line.endsWith("]")) {
                 result.append("<br/><br/>");
             } else {
                 result.append("<br/>");
