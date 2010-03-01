@@ -62,8 +62,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private int searchWordsIndex = -1;
     private static final int BYTES_IN_ONE_MEGABYTE = 1024 * 1024;
     private static final String DEFAULT_DB_PATH = "/opt/spellbook/db/";
-    private static final String DB_FILE_NAME = "dictionary.data.db";
-    private static final DictionaryService DICTIONARY_SERVICE = new DictionaryService();
+    private static final String DB_FILE_NAME = "spellbook.data.db";
+    private static DictionaryService dictionaryService;
     private static Dictionary selectedDictionary;
 
     /** Creates new form SpellbookFrame */
@@ -80,20 +80,24 @@ public class SpellbookFrame extends javax.swing.JFrame {
             System.exit(-1);
         }
 
-//        try {
-//            //sDatabaseService = SDatabaseService.getLocalDatabaseService(PM.get(Preference.PATH_TO_DB, ""));
-//        } catch (DictionaryDbLockedException ex) {
-//            JOptionPane.showMessageDialog(null, TRANSLATOR.translate("AlreadyRunning(Message)"), "Warning", JOptionPane.WARNING_MESSAGE);
-//            System.exit(0);
-//        } catch (NoDictionariesAvailableException ex) {
-//            //@todo fix bundle
-//            //JOptionPane.showMessageDialog(null, TRANSLATOR.translate("AlreadyRunning(Message)"), "Warning", JOptionPane.WARNING_MESSAGE);
-//            JOptionPane.showMessageDialog(null, "No Dictionaries available", "Warning", JOptionPane.WARNING_MESSAGE);
-//            System.exit(0);
-//        }
+        try {
+            DictionaryService.init(PM.get(Preference.PATH_TO_DB, ""));
+            dictionaryService = DictionaryService.getInstance();
+        } catch (DictionaryDbLockedException ex) {
+            JOptionPane.showMessageDialog(null, TRANSLATOR.translate("AlreadyRunning(Message)"), "Warning", JOptionPane.WARNING_MESSAGE);
+            System.exit(0);
+        }
 
 
-        setSelectedDictionary(DICTIONARY_SERVICE.getDictionaries().get(0));
+        if (dictionaryService.getDictionaries().size() == 0) {
+            // todo add translation
+            JOptionPane.showMessageDialog(null, "No Dictionaries available", "Warning", JOptionPane.WARNING_MESSAGE);
+
+            System.exit(0);
+        }
+
+        // todo implement default dict
+        setSelectedDictionary(dictionaryService.getDictionaries().get(0));
 
 
         //set the frame title
@@ -224,7 +228,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
             matchLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
 
             exactMatch = true;
-        } else if ((approximation = DICTIONARY_SERVICE.getApproximation(selectedDictionary, searchString)) != null) {
+        } else if ((approximation = dictionaryService.getApproximation(selectedDictionary, searchString)) != null) {
 
             int index = words.indexOf(approximation);
 
@@ -323,7 +327,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
                             matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
                             matchLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
-                        } else if ((approximation = DICTIONARY_SERVICE.getApproximation(selectedDictionary, searchString)) != null) {
+                        } else if ((approximation = dictionaryService.getApproximation(selectedDictionary, searchString)) != null) {
                             foundWord = approximation;
                             int index = words.indexOf(foundWord);
 
@@ -340,7 +344,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
                         if ((trayIcon != null) && match && (!SpellbookFrame.this.isVisible()
                                 || (SpellbookFrame.this.getState() == JFrame.ICONIFIED))
                                 && PM.getBoolean(Preference.TRAY_POPUP, false)) {
-                            trayIcon.displayMessage(foundWord, DICTIONARY_SERVICE.getTranslation((String) wordsList.getSelectedValue(), selectedDictionary),
+                            trayIcon.displayMessage(foundWord, dictionaryService.getTranslation((String) wordsList.getSelectedValue(), selectedDictionary),
                                                     TrayIcon.MessageType.INFO);
                         }
                     }
@@ -418,7 +422,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
             throw new IllegalStateException("No word selected");
         }
         addUpdateWordDialog.setWord((String) wordsList.getSelectedValue());
-        addUpdateWordDialog.setTranslation(DICTIONARY_SERVICE.getTranslation((String) wordsList.getSelectedValue(), selectedDictionary));
+        addUpdateWordDialog.setTranslation(dictionaryService.getTranslation((String) wordsList.getSelectedValue(), selectedDictionary));
         addUpdateWordDialog.setVisible(true);
         if (addUpdateWordDialog.getReturnStatus() == AddUpdateWordDialog.RET_OK) {
             // update word
@@ -427,7 +431,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
     private void setSelectedDictionary(Dictionary dictionary) {
         selectedDictionary = dictionary;
-        words = DICTIONARY_SERVICE.getWordsFromDictionary(dictionary);
+        words = dictionaryService.getWordsFromDictionary(dictionary);
     }
 
     private void updateDictionaryLabel(Dictionary dictionary) {
@@ -925,7 +929,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
                 });
             }
 
-            wordTranslationTextPane.setText(SwingUtil.formatTranslation(selectedWord, DICTIONARY_SERVICE.getTranslation(words.get(selectedIndex), selectedDictionary)));
+            wordTranslationTextPane.setText(SwingUtil.formatTranslation(selectedWord, dictionaryService.getTranslation(words.get(selectedIndex), selectedDictionary)));
             wordTranslationTextPane.setCaretPosition(0);
             matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
             matchLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
@@ -1008,7 +1012,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private void initDictionaries() {
         jDictionaryMenu.removeAll();
 
-        final List<Dictionary> availableDictionaries = DICTIONARY_SERVICE.getDictionaries();
+        final List<Dictionary> availableDictionaries = dictionaryService.getDictionaries();
         for (Dictionary dictionary : availableDictionaries) {
             jDictionaryMenu.add(new DictionaryItem(dictionary));
         }
