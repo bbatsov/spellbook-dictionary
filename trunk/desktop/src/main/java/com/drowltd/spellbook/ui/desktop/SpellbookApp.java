@@ -37,8 +37,8 @@ public class SpellbookApp {
 
     public static void init() {
         // enable anti-aliased text:
-        System.setProperty("awt.useSystemAAFontSettings", "on");
-        System.setProperty("swing.aatext", "true");
+//        System.setProperty("awt.useSystemAAFontSettings", "on");
+//        System.setProperty("swing.aatext", "true");
 
         // install the default exception handler
         Thread.setDefaultUncaughtExceptionHandler(new SpellbookDefaultExceptionHandler());
