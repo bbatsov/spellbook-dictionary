@@ -469,7 +469,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
             if (result == JFileChooser.APPROVE_OPTION) {
                 String selectedDbPath = fileChooser.getSelectedFile().getPath();
 
-                if (selectedDbPath.endsWith("dictionary.data.db")) {
+                if (selectedDbPath.endsWith("spellbook.data.db")) {
                     PM.put(Preference.PATH_TO_DB, selectedDbPath);
                     return true;
                 } else {
