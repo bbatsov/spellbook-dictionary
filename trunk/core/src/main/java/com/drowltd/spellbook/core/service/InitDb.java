@@ -30,20 +30,22 @@ public class InitDb {
         DatabaseService.init("/opt/spellbook/db/dictionary.data.db");
         databaseService = DatabaseService.getInstance();
 
-         copyLegacyDict(com.drowltd.spellbook.core.db.Dictionary.EN_BG, "en-bg.png", "English-Bulgarian");
-         copyLegacyDict(com.drowltd.spellbook.core.db.Dictionary.BG_EN, "bg-en.png", "Bulgarian-English");
+         copyLegacyDict(com.drowltd.spellbook.core.db.Dictionary.EN_BG, "en-bg.png", "English-Bulgarian", Language.ENGLISH, Language.BULGARIAN);
+         copyLegacyDict(com.drowltd.spellbook.core.db.Dictionary.BG_EN, "bg-en.png", "Bulgarian-English", Language.BULGARIAN, Language.ENGLISH);
 
 
-        copyLegacyRatings(com.drowltd.spellbook.core.db.Dictionary.EN_BG, "English-Bulgarian", Language.English);
-        copyLegacyRatings(com.drowltd.spellbook.core.db.Dictionary.BG_EN, "Bulgarian-English", Language.Bulgarian);
+        copyLegacyRatings(com.drowltd.spellbook.core.db.Dictionary.EN_BG, "English-Bulgarian", Language.ENGLISH);
+        copyLegacyRatings(com.drowltd.spellbook.core.db.Dictionary.BG_EN, "Bulgarian-English", Language.BULGARIAN);
     }
 
-    private static void copyLegacyDict(com.drowltd.spellbook.core.db.Dictionary d, String icon, String name) {
+    private static void copyLegacyDict(com.drowltd.spellbook.core.db.Dictionary d, String icon, String name, Language from, Language to) {
         EntityTransaction t = em.getTransaction();
         t.begin();
 
         Dictionary newDict = new Dictionary();
         newDict.setName(name);
+        newDict.setFromLanguage(from);
+        newDict.setToLanguage(to);
         newDict.setIconName(icon);
 
         em.persist(newDict);

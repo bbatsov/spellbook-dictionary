@@ -7,8 +7,8 @@ package com.drowltd.spellbook.core.model;
  */
 public enum Language {
     
-    Bulgarian("абвгдежзийклмнопрстуфхцчшщъьюя"),
-    English("abcdefghijklmnopqrstuvwxyz");
+    BULGARIAN("абвгдежзийклмнопрстуфхцчшщъьюя"),
+    ENGLISH("abcdefghijklmnopqrstuvwxyz");
 
     private final String alphabet;
 

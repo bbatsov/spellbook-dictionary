@@ -2,6 +2,8 @@ package com.drowltd.spellbook.core.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -17,10 +19,13 @@ public class RatingsEntry extends AbstractEntity {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Dictionary dictionary;
 
-    @Column(nullable = false)    
+    @Column(nullable = false)
+    @Enumerated(EnumType.ORDINAL)
     private Language lang;
+
     @Column(nullable = false)
     private String word;
+
     @Column(nullable = false)
     private int spellcheckRank;
 
