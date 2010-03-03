@@ -1,15 +1,13 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.drowltd.spellbook.core.service;
 
 import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
 import com.drowltd.spellbook.core.model.Dictionary;
+import com.drowltd.spellbook.core.model.DictionaryEntry;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +17,7 @@ import org.slf4j.LoggerFactory;
  * @author bozhidar
  */
 public class DictionaryService {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(DictionaryService.class);
     private static EntityManager EM;
     private static DictionaryService instance;
@@ -69,11 +68,90 @@ public class DictionaryService {
     }
 
     public List<String> getWordsFromDictionary(Dictionary d) {
-        return EM.createQuery("select de.word from DictionaryEntry de where de.dictionary = :dictionary").setParameter("dictionary", d).getResultList();
+        return EM.createQuery("select de.word from DictionaryEntry de "
+                + "where de.dictionary = :dictionary order by LOWER(de.word) asc").setParameter("dictionary", d).getResultList();
     }
 
     public String getTranslation(String word, Dictionary d) {
-        return (String) EM.createQuery("select de.wordTranslation from DictionaryEntry de where de.word = :word and de.dictionary = :dictionary").setParameter("word", word).setParameter("dictionary", d).getSingleResult();
+        return (String) EM.createQuery("select de.wordTranslation from DictionaryEntry de"
+                + " where de.word = :word and de.dictionary = :dictionary").setParameter("word", word).setParameter("dictionary", d).getSingleResult();
+    }
+
+    public void addWord(String word, String translation, Dictionary d) {
+        if (word == null || word.isEmpty()) {
+            LOGGER.error("word == null || word.isEmpty()");
+            throw new IllegalArgumentException("word == null || word.isEmpty()");
+        }
+
+        if (translation == null || translation.isEmpty()) {
+            LOGGER.error("translation == null || translation.isEmpty()");
+            throw new IllegalArgumentException("word == null || word.isEmpty()");
+        }
+        if (d == null) {
+            LOGGER.error("d == null");
+            throw new IllegalArgumentException("d == null");
+        }
+
+        if (containsWord(word, d)) {
+            return;
+        }
+
+        final DictionaryEntry de = new DictionaryEntry();
+        de.setDictionary(d);
+        de.setWord(word);
+        de.setWordTranslation(translation);
+        de.setAddedByUser(true);
+
+        EntityTransaction t = EM.getTransaction();
+        t.begin();
+        EM.persist(de);
+        t.commit();
+
+    }
+
+    public void upateWord(String word, String translation, Dictionary d) {
+        if (word == null || word.isEmpty()) {
+            LOGGER.error("word == null || word.isEmpty()");
+            throw new IllegalArgumentException("word == null || word.isEmpty()");
+        }
+
+        if (translation == null || translation.isEmpty()) {
+            LOGGER.error("translation == null || translation.isEmpty()");
+            throw new IllegalArgumentException("word == null || word.isEmpty()");
+        }
+        if (d == null) {
+            LOGGER.error("d == null");
+            throw new IllegalArgumentException("d == null");
+        }
+
+        if (!containsWord(word, d)) {
+            return;
+        }
+
+        DictionaryEntry de = (DictionaryEntry) EM.createQuery("select de from DictionaryEntry de "
+                + "where de.dictionary = :dictionary and de.word = :word").setParameter("dictionary", d).setParameter("word", word).getSingleResult();
+
+        de.setWordTranslation(translation);
+        final EntityTransaction t = EM.getTransaction();
+        t.begin();
+        EM.persist(de);
+        t.commit();
+    }
+
+    public boolean containsWord(String word, Dictionary d) {
+        if (d == null) {
+            LOGGER.error("d == null");
+            throw new IllegalArgumentException("d == null");
+        }
+        if (d == null) {
+            LOGGER.error("d == null");
+            throw new IllegalArgumentException("d == null");
+        }
+
+
+        long count = (Long) EM.createQuery("SELECT COUNT(de.word) FROM DictionaryEntry de "
+                + "WHERE de.word = :word and de.dictionary = :dictionary").setParameter("word", word).setParameter("dictionary", d).getSingleResult();
+        return count > 0;
     }
 
     public String getApproximation(Dictionary dictionary, String searchKey) {
@@ -86,7 +164,7 @@ public class DictionaryService {
             // we start looking for approximate matches of the full search key, but if we fail - we start looking
             // for shorter matches
             do {
-                List<String> matches = EM.createQuery("select de.word from DictionaryEntry de where de.dictionary = :dictionary and de.word like :searchKey order by de.word asc").setParameter("dictionary", dictionary).setParameter("searchKey", builder.append("%").toString()).getResultList();
+                List<String> matches = EM.createQuery("select de.word from DictionaryEntry de where de.dictionary = :dictionary and de.word like :searchKey order by de.word asc").setParameter("dictionary", dictionary).setParameter("searchKey", builder.toString() + "%").getResultList();
 
                 if (matches.size() > 0) {
                     return matches.get(0);
