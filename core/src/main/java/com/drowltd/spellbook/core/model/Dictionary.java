@@ -13,6 +13,8 @@ import java.util.Set;
 import javax.imageio.ImageIO;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
@@ -37,6 +39,14 @@ public class Dictionary extends AbstractEntity {
     private String name;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.ORDINAL)
+    private Language fromLanguage;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.ORDINAL)
+    private Language toLanguage;
+
+    @Column(nullable = false)
     private String iconName;
 
     public String getName() {
@@ -45,6 +55,22 @@ public class Dictionary extends AbstractEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Language getFromLanguage() {
+        return fromLanguage;
+    }
+
+    public void setFromLanguage(Language fromLanguage) {
+        this.fromLanguage = fromLanguage;
+    }
+
+    public Language getToLanguage() {
+        return toLanguage;
+    }
+
+    public void setToLanguage(Language toLanguage) {
+        this.toLanguage = toLanguage;
     }
 
     public String getIconName() {
