@@ -2,21 +2,15 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.drowltd.spellbook.core.model;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
-import javax.imageio.ImageIO;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -26,26 +20,23 @@ import javax.persistence.Table;
  *
  * @author bozhidar
  */
-@Entity(name="Dictionary")
-@Table(name="SpellbookDictionary")
+@Entity(name = "Dictionary")
+@Table(name = "SpellbookDictionary")
 @NamedQueries({
-    @NamedQuery(name="Dictionary.getAllDictionaries", query="select d from Dictionary as d")
+    @NamedQuery(name = "Dictionary.getAllDictionaries", query = "select d from Dictionary as d")
 })
 public class Dictionary extends AbstractEntity {
-    @OneToMany(fetch=FetchType.LAZY)
-    private Set<DictionaryEntry> dictionaryEntries = new HashSet<DictionaryEntry>();
 
+    @OneToMany(fetch = FetchType.LAZY)
+    private Set<DictionaryEntry> dictionaryEntries = new HashSet<DictionaryEntry>();
     @Column(nullable = false)
     private String name;
-
     @Column(nullable = false)
     @Enumerated(EnumType.ORDINAL)
     private Language fromLanguage;
-
     @Column(nullable = false)
     @Enumerated(EnumType.ORDINAL)
     private Language toLanguage;
-
     @Column(nullable = false)
     private String iconName;
 
@@ -83,5 +74,43 @@ public class Dictionary extends AbstractEntity {
 
     public Set<DictionaryEntry> getDictionaryEntries() {
         return dictionaryEntries;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
+
+        if (o == this) {
+            return true;
+        }
+
+        if (o.getClass() != this.getClass()) {
+            return false;
+        }
+
+        Dictionary other = (Dictionary) o;
+
+        if (name.equals(other.name)) {
+            return false;
+        }
+        if (fromLanguage != other.fromLanguage) {
+            return false;
+        }
+        if (toLanguage != other.toLanguage) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 73 * hash + (this.name != null ? this.name.hashCode() : 0);
+        hash = 73 * hash + (this.fromLanguage != null ? this.fromLanguage.hashCode() : 0);
+        hash = 73 * hash + (this.toLanguage != null ? this.toLanguage.hashCode() : 0);
+        return hash;
     }
 }

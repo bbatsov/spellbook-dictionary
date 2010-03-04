@@ -3,6 +3,9 @@ package com.drowltd.spellbook.core.service;
 import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.DictionaryEntry;
+import com.drowltd.spellbook.core.model.Language;
+import com.drowltd.spellbook.core.model.RatingsEntry;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -143,15 +146,53 @@ public class DictionaryService {
             LOGGER.error("d == null");
             throw new IllegalArgumentException("d == null");
         }
-        if (d == null) {
-            LOGGER.error("d == null");
-            throw new IllegalArgumentException("d == null");
-        }
 
 
         long count = (Long) EM.createQuery("SELECT COUNT(de.word) FROM DictionaryEntry de "
                 + "WHERE de.word = :word and de.dictionary = :dictionary").setParameter("word", word).setParameter("dictionary", d).getSingleResult();
         return count > 0;
+    }
+
+    public Map<String, Integer> getRatings(Dictionary dictionary) {
+        if (dictionary == null) {
+            LOGGER.error("dictionary == null");
+            throw new IllegalArgumentException("dictionary == null");
+        }
+
+        final List<RatingsEntry> ratingslist = EM.createQuery("select re from RatingsEntry re "
+                + " where re.dictionary = :dictionary").setParameter("dictionary", dictionary).getResultList();
+
+        Map<String, Integer> ratingsMap = new HashMap<String, Integer>();
+        for (RatingsEntry re : ratingslist) {
+            ratingsMap.put(re.getWord(), re.getSpellcheckRank());
+        }
+
+        return ratingsMap;
+    }
+
+    public Dictionary getDictionary(Language languageFrom, Language languageTo) {
+        if (languageFrom == null || languageTo == null) {
+            LOGGER.error("languageFrom == null || languageTo == null");
+            throw new IllegalArgumentException("languageFrom == null || languageTo == null");
+        }
+        return (Dictionary) EM.createQuery("select d from Dictionary d "
+                + " where d.fromLanguage = :fromLanguage and d.toLanguage = :toLanguage").setParameter("fromLanguage", languageFrom).setParameter("toLanguage", languageTo).getSingleResult();
+    }
+
+    public List<Language> getToLanguages(Language fromLanguage){
+        if (fromLanguage == null) {
+            LOGGER.error("fromLanguage == null");
+            throw new IllegalArgumentException("fromLanguage");
+        }
+
+        List<Dictionary> dictionaries = EM.createQuery("select d from Dictionary d where d.fromLanguage = :fromLanguage").setParameter("fromLanguage", fromLanguage).getResultList();
+
+        List<Language> languagesTo = new ArrayList<Language>(dictionaries.size());
+        for(Dictionary dictionary:dictionaries){
+            languagesTo.add(dictionary.getToLanguage());
+        }
+
+        return languagesTo;
     }
 
     public String getApproximation(Dictionary dictionary, String searchKey) {

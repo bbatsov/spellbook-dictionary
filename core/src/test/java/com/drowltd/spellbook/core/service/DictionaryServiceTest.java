@@ -7,7 +7,11 @@ package com.drowltd.spellbook.core.service;
 import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.DictionaryEntry;
+import com.drowltd.spellbook.core.model.Language;
+import com.drowltd.spellbook.core.model.RatingsEntry;
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import org.junit.AfterClass;
@@ -47,7 +51,6 @@ public class DictionaryServiceTest {
     public static void tearDownClass() throws Exception {
     }
 
-
     @Test
     public void testGetInstance() {
         assertNotNull(dictionaryService);
@@ -66,7 +69,7 @@ public class DictionaryServiceTest {
 
     @Test
     public void testGetTranslation() {
-        assertTrue("translation is not not in the db", translation.equals(dictionaryService.getTranslation(word, dictionary)));
+        assertEquals("translation is not not in the db", translation, dictionaryService.getTranslation(word, dictionary));
     }
 
     @Test
@@ -78,7 +81,7 @@ public class DictionaryServiceTest {
         dictionaryService.addWord(nWord, nTranslation, dictionary);
 
         assertTrue("word not added", dictionaryService.getWordsFromDictionary(dictionary).contains(nWord));
-        assertTrue("translation not added", nTranslation.equals(dictionaryService.getTranslation(nWord, dictionary)));
+        assertEquals("translation not added", nTranslation, dictionaryService.getTranslation(nWord, dictionary));
 
     }
 
@@ -87,8 +90,8 @@ public class DictionaryServiceTest {
         final String nTranslation = "new trans";
 
         dictionaryService.upateWord(word, nTranslation, dictionary);
-        assertTrue("word not updated", nTranslation.equals(dictionaryService.getTranslation(word, dictionary)));
-        
+        assertEquals("word not updated", nTranslation, dictionaryService.getTranslation(word, dictionary));
+
     }
 
     @Test
@@ -96,9 +99,29 @@ public class DictionaryServiceTest {
         assertTrue("word is not contained", dictionaryService.containsWord(word, dictionary));
     }
 
-   @Test
+    @Test
     public void testGetApproximation() {
-        assertTrue("approximation not found", word.equals(dictionaryService.getApproximation(dictionary, word+"b")));
+        assertEquals("approximation not found", word, dictionaryService.getApproximation(dictionary, word + "b"));
+    }
+
+    @Test
+    public void testGetRatings() {
+        Map<String, Integer> ratings = new HashMap<String, Integer>();
+        ratings.put(word, Integer.MAX_VALUE);
+
+        assertEquals("ratings doesn't match", ratings, dictionaryService.getRatings(dictionary));
+    }
+
+    @Test
+    public void testGetDictionary() {
+
+        assertEquals("dictionaries doesn't match", dictionary, dictionaryService.getDictionary(Language.ENGLISH, Language.BULGARIAN));
+    }
+
+    @Test
+    public void testGetLanguagesTo() {
+        
+        assertTrue("languages doesn't match", dictionaryService.getToLanguages(Language.ENGLISH).contains(Language.BULGARIAN));
     }
 
     private static void init() {
@@ -107,6 +130,8 @@ public class DictionaryServiceTest {
         dictionary = new Dictionary();
         dictionary.setName("English-Bulgarian");
         dictionary.setIconName("en-bg.png");
+        dictionary.setFromLanguage(Language.ENGLISH);
+        dictionary.setToLanguage(Language.BULGARIAN);
 
 
         dictionaryEntry = new DictionaryEntry();
@@ -116,8 +141,16 @@ public class DictionaryServiceTest {
         dictionaryEntry.setSpellcheckRank(1);
         dictionaryEntry.setAddedByUser(true);
 
+        final RatingsEntry re = new RatingsEntry();
+        re.setDictionary(dictionary);
+        re.setLang(Language.ENGLISH);
+        re.setWord(word);
+        re.setSpellcheckRank(Integer.MAX_VALUE);
+
+
         EM.persist(dictionary);
         EM.persist(dictionaryEntry);
+        EM.persist(re);
         t.commit();
     }
 }
