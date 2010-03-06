@@ -11,10 +11,12 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import org.hibernate.annotations.ManyToAny;
 
 /**
  *
@@ -31,11 +33,9 @@ public class Dictionary extends AbstractEntity {
     private Set<DictionaryEntry> dictionaryEntries = new HashSet<DictionaryEntry>();
     @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
-    @Enumerated(EnumType.ORDINAL)
+    @ManyToOne(optional=false,fetch=FetchType.LAZY)
     private Language fromLanguage;
-    @Column(nullable = false)
-    @Enumerated(EnumType.ORDINAL)
+    @ManyToOne(optional=false,fetch=FetchType.LAZY)
     private Language toLanguage;
     @Column(nullable = false)
     private String iconName;

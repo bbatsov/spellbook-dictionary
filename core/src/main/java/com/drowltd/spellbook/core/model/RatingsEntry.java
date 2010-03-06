@@ -2,8 +2,6 @@ package com.drowltd.spellbook.core.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -19,9 +17,9 @@ public class RatingsEntry extends AbstractEntity {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Dictionary dictionary;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.ORDINAL)
-    private Language lang;
+    //@Column(nullable = false)
+    @ManyToOne(optional=false,fetch=FetchType.LAZY)
+    private Language language;
 
     @Column(nullable = false)
     private String word;
@@ -40,12 +38,12 @@ public class RatingsEntry extends AbstractEntity {
         this.dictionary = dictionary;
     }
 
-    public Language getLang() {
-        return lang;
+    public Language getLanguage() {
+        return language;
     }
 
-    public void setLang(Language lang) {
-        this.lang = lang;
+    public void setLanguage(Language lang) {
+        this.language = lang;
     }
 
     public int getSpellcheckRank() {
@@ -86,7 +84,7 @@ public class RatingsEntry extends AbstractEntity {
         if (!dictionary.equals(other.dictionary)) {
             return false;
         }
-        if (lang != other.lang) {
+        if (language != other.language) {
             return false;
         }
 
@@ -97,7 +95,7 @@ public class RatingsEntry extends AbstractEntity {
     public int hashCode() {
         int hash = 7;
         hash = 67 * hash + (this.dictionary != null ? this.dictionary.hashCode() : 0);
-        hash = 67 * hash + (this.lang != null ? this.lang.hashCode() : 0);
+        hash = 67 * hash + (this.language != null ? this.language.hashCode() : 0);
         hash = 67 * hash + (this.word != null ? this.word.hashCode() : 0);
         return hash;
     }

@@ -1,22 +1,42 @@
 
 package com.drowltd.spellbook.core.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 /**
  *
  * @author iivalchev
  */
-public enum Language {
+
+@Entity(name="Language")
+@Table(name="Language")
+public class Language extends AbstractEntity {
     
-    BULGARIAN("абвгдежзийклмнопрстуфхцчшщъьюя"),
-    ENGLISH("abcdefghijklmnopqrstuvwxyz");
 
-    private final String alphabet;
 
-    private Language(String alphabet){
-        this.alphabet = alphabet;
+    private String alphabet;
+    private String name;
+
+    public Language(){
+        
     }
 
     public String getAlphabet() {
         return alphabet;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAlphabet(String alphabet) {
+        this.alphabet = alphabet;
+    }
+
+
 }
