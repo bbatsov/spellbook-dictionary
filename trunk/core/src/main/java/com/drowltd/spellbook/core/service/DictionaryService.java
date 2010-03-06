@@ -1,5 +1,6 @@
 package com.drowltd.spellbook.core.service;
 
+import com.drowltd.spellbook.core.exam.Difficulty;
 import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.DictionaryEntry;
@@ -153,14 +154,14 @@ public class DictionaryService {
         return count > 0;
     }
 
-    public Map<String, Integer> getRatings(Dictionary dictionary) {
-        if (dictionary == null) {
-            LOGGER.error("dictionary == null");
-            throw new IllegalArgumentException("dictionary == null");
+    public Map<String, Integer> getRatings(Language language) {
+        if (language == null) {
+            LOGGER.error("language == null");
+            throw new IllegalArgumentException("language == null");
         }
 
         final List<RatingsEntry> ratingslist = EM.createQuery("select re from RatingsEntry re "
-                + " where re.dictionary = :dictionary").setParameter("dictionary", dictionary).getResultList();
+                + " where re.language = :language").setParameter("language", language).getResultList();
 
         Map<String, Integer> ratingsMap = new HashMap<String, Integer>();
         for (RatingsEntry re : ratingslist) {
@@ -179,7 +180,7 @@ public class DictionaryService {
                 + " where d.fromLanguage = :fromLanguage and d.toLanguage = :toLanguage").setParameter("fromLanguage", languageFrom).setParameter("toLanguage", languageTo).getSingleResult();
     }
 
-    public List<Language> getToLanguages(Language fromLanguage){
+    public List<Language> getToLanguages(Language fromLanguage) {
         if (fromLanguage == null) {
             LOGGER.error("fromLanguage == null");
             throw new IllegalArgumentException("fromLanguage");
@@ -188,11 +189,29 @@ public class DictionaryService {
         List<Dictionary> dictionaries = EM.createQuery("select d from Dictionary d where d.fromLanguage = :fromLanguage").setParameter("fromLanguage", fromLanguage).getResultList();
 
         List<Language> languagesTo = new ArrayList<Language>(dictionaries.size());
-        for(Dictionary dictionary:dictionaries){
+        for (Dictionary dictionary : dictionaries) {
             languagesTo.add(dictionary.getToLanguage());
         }
 
         return languagesTo;
+    }
+
+    public List<String> getDifficultyWords(Dictionary dictionary, Difficulty difficulty) {
+        if (dictionary == null) {
+            LOGGER.error("dictionary == null");
+            throw new IllegalArgumentException("dictionary == null");
+        }
+
+        if (difficulty == null) {
+            LOGGER.error("difficulty == null");
+            throw new IllegalArgumentException("difficulty == null");
+        }
+
+        List<String> words = EM.createQuery("select re.word from RatingsEntry re where "
+                + " re.spellcheckRank > :low and re.spellcheckRank <= :high").setParameter("low", difficulty.getLow()).setParameter("high", difficulty.getHigh()).getResultList();
+
+
+        return words;
     }
 
     public String getApproximation(Dictionary dictionary, String searchKey) {

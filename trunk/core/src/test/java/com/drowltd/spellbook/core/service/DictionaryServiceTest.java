@@ -1,9 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.drowltd.spellbook.core.service;
 
+import com.drowltd.spellbook.core.exam.Difficulty;
 import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.DictionaryEntry;
@@ -16,6 +13,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -23,12 +21,15 @@ import static org.junit.Assert.*;
  *
  * @author ikkari
  */
+//@Ignore
 public class DictionaryServiceTest {
 
     private static DictionaryService dictionaryService;
     private static EntityManager EM = null;
     private static Dictionary dictionary;
     private static DictionaryEntry dictionaryEntry;
+    private static Language English;
+    private static Language Bulgarian;
     private static String word = "word";
     private static String translation = "translation";
 
@@ -109,29 +110,42 @@ public class DictionaryServiceTest {
         Map<String, Integer> ratings = new HashMap<String, Integer>();
         ratings.put(word, Integer.MAX_VALUE);
 
-        assertEquals("ratings doesn't match", ratings, dictionaryService.getRatings(dictionary));
+        assertEquals("ratings doesn't match", ratings, dictionaryService.getRatings(English));
     }
 
     @Test
     public void testGetDictionary() {
 
-        assertEquals("dictionaries doesn't match", dictionary, dictionaryService.getDictionary(Language.ENGLISH, Language.BULGARIAN));
+        assertEquals("dictionaries doesn't match", dictionary, dictionaryService.getDictionary(English, Bulgarian));
     }
 
     @Test
     public void testGetLanguagesTo() {
-        
-        assertTrue("languages doesn't match", dictionaryService.getToLanguages(Language.ENGLISH).contains(Language.BULGARIAN));
+
+        assertTrue("languages doesn't match", dictionaryService.getToLanguages(English).contains(Bulgarian));
+    }
+
+    //@Test
+    public void testGetDifficultyWords(){
+        assertTrue("word not contained", dictionaryService.getDifficultyWords(dictionary, Difficulty.EASY).contains(word));
     }
 
     private static void init() {
         final EntityTransaction t = EM.getTransaction();
         t.begin();
+        English = new Language();
+        English.setAlphabet(com.drowltd.spellbook.core.db.Dictionary.EN_BG.getAlphabet());
+        English.setName("English");
+
+        Bulgarian = new Language();
+        Bulgarian.setAlphabet(com.drowltd.spellbook.core.db.Dictionary.BG_EN.getAlphabet());
+        Bulgarian.setName("Bulgarian");
+
         dictionary = new Dictionary();
         dictionary.setName("English-Bulgarian");
         dictionary.setIconName("en-bg.png");
-        dictionary.setFromLanguage(Language.ENGLISH);
-        dictionary.setToLanguage(Language.BULGARIAN);
+        dictionary.setFromLanguage(English);
+        dictionary.setToLanguage(Bulgarian);
 
 
         dictionaryEntry = new DictionaryEntry();
@@ -143,11 +157,12 @@ public class DictionaryServiceTest {
 
         final RatingsEntry re = new RatingsEntry();
         re.setDictionary(dictionary);
-        re.setLang(Language.ENGLISH);
+        re.setLanguage(English);
         re.setWord(word);
         re.setSpellcheckRank(Integer.MAX_VALUE);
 
-
+        EM.persist(English);
+        EM.persist(Bulgarian);
         EM.persist(dictionary);
         EM.persist(dictionaryEntry);
         EM.persist(re);

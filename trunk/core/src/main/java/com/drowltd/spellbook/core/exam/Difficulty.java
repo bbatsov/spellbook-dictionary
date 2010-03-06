@@ -8,7 +8,7 @@ import com.drowltd.spellbook.core.i18n.Translator;
  * @since 0.2
  */
 public enum Difficulty {
-    EASY(30, Integer.SIZE, 45), MEDIUM(10,30, 30), HARD(1,10, 15);
+    EASY(30, Integer.MAX_VALUE, 45), MEDIUM(10,30, 30), HARD(1,10, 15);
 
     private final int low;
     private final int high;

@@ -30,13 +30,30 @@ public class InitDb {
         DatabaseService.init("/opt/spellbook/db/dictionary.data.db");
         databaseService = DatabaseService.getInstance();
 
-         copyLegacyDict(com.drowltd.spellbook.core.db.Dictionary.EN_BG, "en-bg.png", "English-Bulgarian", Language.ENGLISH, Language.BULGARIAN);
-         copyLegacyDict(com.drowltd.spellbook.core.db.Dictionary.BG_EN, "bg-en.png", "Bulgarian-English", Language.BULGARIAN, Language.ENGLISH);
+        Language English = createLanguage(com.drowltd.spellbook.core.db.Dictionary.EN_BG);
+        Language Bulgarian = createLanguage(com.drowltd.spellbook.core.db.Dictionary.BG_EN);
+        
+
+        copyLegacyDict(com.drowltd.spellbook.core.db.Dictionary.EN_BG, "en-bg.png", "English-Bulgarian", English, Bulgarian);
+        copyLegacyDict(com.drowltd.spellbook.core.db.Dictionary.BG_EN, "bg-en.png", "Bulgarian-English", Bulgarian, English);
 
 
-        copyLegacyRatings(com.drowltd.spellbook.core.db.Dictionary.EN_BG, "English-Bulgarian", Language.ENGLISH);
-        copyLegacyRatings(com.drowltd.spellbook.core.db.Dictionary.BG_EN, "Bulgarian-English", Language.BULGARIAN);
+        copyLegacyRatings(com.drowltd.spellbook.core.db.Dictionary.EN_BG, "English-Bulgarian", Bulgarian);
+        copyLegacyRatings(com.drowltd.spellbook.core.db.Dictionary.BG_EN, "Bulgarian-English", English);
     }
+
+    private static Language createLanguage(com.drowltd.spellbook.core.db.Dictionary d) {
+        final Language l = new Language();
+        l.setAlphabet(d.getAlphabet());
+        l.setName(d.getLanguage());
+        
+        final EntityTransaction t = em.getTransaction();
+        t.begin();
+        em.persist(l);
+        t.commit();
+        return l;
+    }
+
 
     private static void copyLegacyDict(com.drowltd.spellbook.core.db.Dictionary d, String icon, String name, Language from, Language to) {
         EntityTransaction t = em.getTransaction();
@@ -82,12 +99,12 @@ public class InitDb {
 
             RatingsEntry re = new RatingsEntry();
             re.setDictionary(dictionary);
-            re.setLang(l);
+            re.setLanguage(l);
             re.setWord(word);
             re.setSpellcheckRank(rating == 0 ? 1 : rating);
 
             em.persist(re);
-            System.out.println("Adding ratings entry: "+word+" "+rating);
+            System.out.println("Adding ratings entry: " + word + " " + rating);
         }
 
         t.commit();
