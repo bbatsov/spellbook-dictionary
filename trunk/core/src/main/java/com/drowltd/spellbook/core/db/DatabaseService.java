@@ -289,6 +289,52 @@ public class DatabaseService {
         return nWords;
     }
 
+    public Map<String, Integer> getRatings(Dictionary dictionary, boolean withTranslation) {
+
+        if (dictionary == null) {
+            LOGGER.error("dictionary is null");
+            throw new NullPointerException("dictionary is null");
+        }
+
+        if (spellCheckerCache.containsKey(dictionary)) {
+            LOGGER.info("Word ratings for " + dictionary + " loaded from cache");
+            return spellCheckerCache.get(dictionary);
+        }
+
+        Map<String, Integer> nWords = new HashMap<String, Integer>();
+
+        try {
+            if (withTranslation) {
+                PreparedStatement ps1 = connection.prepareStatement("SELECT word, rating FROM " + dictionary);
+                LOGGER.info("SELECT WORD, RATING FROM " + dictionary);
+                final ResultSet resultSet1 = ps1.executeQuery();
+
+                while (resultSet1.next()) {
+                    nWords.put(resultSet1.getString("WORD"), resultSet1.getInt("RATING"));
+                }
+            } else {
+                PreparedStatement ps2 = connection.prepareStatement("SELECT word, rating FROM " + dictionary.getRatingsTable());
+                LOGGER.info("SELECT WORD, RATING FROM " + dictionary.getRatingsTable());
+                final ResultSet resultSet2 = ps2.executeQuery();
+
+                while (resultSet2.next()) {
+                    nWords.put(resultSet2.getString("WORD"), resultSet2.getInt("RATING"));
+                }
+            }
+
+        } catch (SQLException ex) {
+            LOGGER.error(ex.getMessage());
+        }
+
+//        if (nWords.isEmpty()) {
+//            throw new IllegalStateException("ratings from db are not imported");
+//        }
+//
+//        spellCheckerCache.put(dictionary, nWords);
+
+        return nWords;
+    }
+
     public void addMisspelled(String misspelled, Dictionary dictionary) {
         if (misspelled == null || misspelled.isEmpty()) {
             LOGGER.error("misspelled is null or empty");

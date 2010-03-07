@@ -160,6 +160,7 @@ public class DictionaryServiceTest {
         re.setLanguage(English);
         re.setWord(word);
         re.setSpellcheckRank(Integer.MAX_VALUE);
+        re.setHasTranslation(true);
 
         EM.persist(English);
         EM.persist(Bulgarian);
