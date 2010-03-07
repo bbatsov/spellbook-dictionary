@@ -208,7 +208,7 @@ public class DictionaryService {
         }
 
         List<String> words = EM.createQuery("select re.word from RatingsEntry re where "
-                + " re.spellcheckRank > :low and re.spellcheckRank <= :high").setParameter("low", difficulty.getLow()).setParameter("high", difficulty.getHigh()).getResultList();
+                + " re.spellcheckRank > :low and re.spellcheckRank <= :high and re.hasTranslation = true").setParameter("low", difficulty.getLow()).setParameter("high", difficulty.getHigh()).getResultList();
 
 
         return words;

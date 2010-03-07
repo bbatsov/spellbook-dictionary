@@ -27,6 +27,8 @@ public class RatingsEntry extends AbstractEntity {
     @Column(nullable = false)
     private int spellcheckRank;
 
+    private boolean hasTranslation;
+
     public RatingsEntry() {
     }
 
@@ -60,6 +62,14 @@ public class RatingsEntry extends AbstractEntity {
 
     public void setWord(String word) {
         this.word = word;
+    }
+
+    public boolean isHasTranslation() {
+        return hasTranslation;
+    }
+
+    public void setHasTranslation(boolean hasTranslation) {
+        this.hasTranslation = hasTranslation;
     }
 
     @Override
