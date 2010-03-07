@@ -38,5 +38,9 @@ public class Language extends AbstractEntity {
         this.alphabet = alphabet;
     }
 
+    @Override
+    public String toString(){
+        return name;
+    }
 
 }
