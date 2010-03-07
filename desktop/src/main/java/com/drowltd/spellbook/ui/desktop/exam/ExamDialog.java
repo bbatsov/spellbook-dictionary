@@ -1,10 +1,12 @@
 package com.drowltd.spellbook.ui.desktop.exam;
 
 import com.drowltd.spellbook.core.exam.ExamService;
-import com.drowltd.spellbook.core.db.*;
 import com.drowltd.spellbook.core.exam.Difficulty;
 import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
+import com.drowltd.spellbook.core.service.DictionaryService;
+import com.drowltd.spellbook.core.model.Dictionary;
+import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.ui.desktop.IconManager;
 import com.drowltd.spellbook.ui.desktop.PreferencesDialog;
 import com.drowltd.spellbook.ui.desktop.PreferencesExtractor;
@@ -13,7 +15,6 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,8 +41,8 @@ public class ExamDialog extends javax.swing.JDialog {
     private int maximumSecondsProgressBar = 0;
     private int maximumWordsProgressBar = 0;
     private static Difficulty difficulty = Difficulty.EASY;
-    private SDictionary selectedSDictionary;
-    private final SDatabaseService sDatabaseService = SDatabaseService.getCurrentInstance();
+    private Dictionary selectedDictionary;
+    private final DictionaryService dictionaryService = DictionaryService.getInstance();
     private int totalWords;
     private int correctWords;
     private int fromWordsIndex;
@@ -410,12 +411,12 @@ public class ExamDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
-        selectedSDictionary = sDatabaseService.getDictionary((Language) fromLanguageComboBox.getSelectedItem(), (Language) toLanguageComboBox.getSelectedItem());
-        assert selectedSDictionary != null;
+        selectedDictionary = dictionaryService.getDictionary((Language) fromLanguageComboBox.getSelectedItem(), (Language) toLanguageComboBox.getSelectedItem());
+        assert selectedDictionary != null;
 
         wrongWords.clear();
         correctTranslation.clear();
-        answerService = new ExamService(selectedSDictionary, difficulty);
+        answerService = new ExamService(selectedDictionary, difficulty);
         totalWords = 0;
         correctWords = 0;
 
@@ -531,7 +532,7 @@ public class ExamDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_quitButtonActionPerformed
 
     private void fromLanguageComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fromLanguageComboBoxActionPerformed
-        final List<Language> languagesTo = sDatabaseService.getLanguagesTo((Language) fromLanguageComboBox.getSelectedItem());
+        final List<Language> languagesTo = dictionaryService.getToLanguages((Language) fromLanguageComboBox.getSelectedItem());
         toLanguageComboBox.removeAllItems();
         for (Language language : languagesTo) {
             toLanguageComboBox.addItem(language);
@@ -570,7 +571,7 @@ public class ExamDialog extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     private void callAnswerService() {
-        answerService.getExamWord(selectedSDictionary);
+        answerService.getExamWord(selectedDictionary);
         translateField.setText(answerService.examWord());
         totalWords++;
     }
@@ -786,10 +787,10 @@ public class ExamDialog extends javax.swing.JDialog {
     }
 
     private void initLanguages() {
-        final List<SDictionary> availableDictionaries = sDatabaseService.getAvailableDictionaries();
+        final List<Dictionary> availableDictionaries = dictionaryService.getDictionaries();
         Set<Language> addedLanguages = new HashSet<Language>();
-        for (SDictionary dictionary : availableDictionaries) {
-            final Language languageFrom = dictionary.getLanguageFrom();
+        for (Dictionary dictionary : availableDictionaries) {
+            final Language languageFrom = dictionary.getFromLanguage();
             if (!addedLanguages.contains(languageFrom)) {
                 addedLanguages.add(languageFrom);
                 fromLanguageComboBox.addItem(languageFrom);

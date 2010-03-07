@@ -884,6 +884,12 @@ public class SpellbookFrame extends javax.swing.JFrame {
         addUpdateWordDialog.setVisible(true);
 
         if (addUpdateWordDialog.getReturnStatus() == AddUpdateWordDialog.RET_OK) {
+
+            if(words.contains(addUpdateWordDialog.getWord())){
+                JOptionPane.showMessageDialog(null, TRANSLATOR.translate("WordAlreadyExists(Message)"), "Warning", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
             // save word
             int insertionIndex = SearchUtils.findInsertionIndex(words, addUpdateWordDialog.getWord());
 
@@ -894,6 +900,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
             wordsList.setModel(new ListBackedListModel(words));
 
+            dictionaryService.addWord(addUpdateWordDialog.getWord(), addUpdateWordDialog.getTranslation(), selectedDictionary);
             //sDatabaseService.addWord(selectedSDictionary, addUpdateWordDialog.getWord(), addUpdateWordDialog.getTranslation());
         }
     }//GEN-LAST:event_addWordMenuItemActionPerformed
