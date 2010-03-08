@@ -106,9 +106,18 @@ public class DictionaryService {
         de.setWordTranslation(translation);
         de.setAddedByUser(true);
 
+        RatingsEntry re = new RatingsEntry();
+        re.setDictionary(d);
+        re.setWord(word);
+        re.setHasTranslation(true);
+        re.setSpellcheckRank(1);
+        re.setLanguage(d.getFromLanguage());
+
+
         EntityTransaction t = EM.getTransaction();
         t.begin();
         EM.persist(de);
+        EM.persist(re);
         t.commit();
 
     }

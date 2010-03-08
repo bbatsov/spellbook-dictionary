@@ -7,13 +7,10 @@ import com.drowltd.spellbook.core.model.DictionaryEntry;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.model.RatingsEntry;
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -31,6 +28,7 @@ public class DictionaryServiceTest {
     private static Language English;
     private static Language Bulgarian;
     private static String word = "word";
+    private static String ratingsWord = "rating";
     private static String translation = "translation";
 
     public DictionaryServiceTest() {
@@ -83,6 +81,7 @@ public class DictionaryServiceTest {
 
         assertTrue("word not added", dictionaryService.getWordsFromDictionary(dictionary).contains(nWord));
         assertEquals("translation not added", nTranslation, dictionaryService.getTranslation(nWord, dictionary));
+        assertTrue("ratings entry not inserted", dictionaryService.getRatings(English).keySet().contains(nWord));
 
     }
 
@@ -107,10 +106,7 @@ public class DictionaryServiceTest {
 
     @Test
     public void testGetRatings() {
-        Map<String, Integer> ratings = new HashMap<String, Integer>();
-        ratings.put(word, Integer.MAX_VALUE);
-
-        assertEquals("ratings doesn't match", ratings, dictionaryService.getRatings(English));
+        assertTrue("ratings doesn't match", dictionaryService.getRatings(English).containsKey(ratingsWord));
     }
 
     @Test
@@ -126,7 +122,7 @@ public class DictionaryServiceTest {
     }
 
     //@Test
-    public void testGetDifficultyWords(){
+    public void testGetDifficultyWords() {
         assertTrue("word not contained", dictionaryService.getDifficultyWords(dictionary, Difficulty.EASY).contains(word));
     }
 
@@ -158,7 +154,7 @@ public class DictionaryServiceTest {
         final RatingsEntry re = new RatingsEntry();
         re.setDictionary(dictionary);
         re.setLanguage(English);
-        re.setWord(word);
+        re.setWord(ratingsWord);
         re.setSpellcheckRank(Integer.MAX_VALUE);
         re.setHasTranslation(true);
 
