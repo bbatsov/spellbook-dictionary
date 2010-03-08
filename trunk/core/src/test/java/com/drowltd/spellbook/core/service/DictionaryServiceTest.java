@@ -152,7 +152,6 @@ public class DictionaryServiceTest {
         dictionaryEntry.setAddedByUser(true);
 
         final RatingsEntry re = new RatingsEntry();
-        re.setDictionary(dictionary);
         re.setLanguage(English);
         re.setWord(ratingsWord);
         re.setSpellcheckRank(Integer.MAX_VALUE);
