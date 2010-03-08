@@ -1,25 +1,26 @@
-
 package com.drowltd.spellbook.core.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
  *
  * @author iivalchev
  */
-
 @Entity(name="Language")
 @Table(name="Language")
 public class Language extends AbstractEntity {
-    
-
+    @ManyToOne(fetch=FetchType.LAZY)
+    private List<RatingsEntry> ratingsEntries = new ArrayList<RatingsEntry>();
 
     private String alphabet;
     private String name;
 
-    public Language(){
-        
+    public Language() {
     }
 
     public String getAlphabet() {
@@ -36,6 +37,10 @@ public class Language extends AbstractEntity {
 
     public void setAlphabet(String alphabet) {
         this.alphabet = alphabet;
+    }
+
+    public List<RatingsEntry> getRatingsEntries() {
+        return ratingsEntries;
     }
 
     @Override

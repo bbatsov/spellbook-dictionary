@@ -107,7 +107,6 @@ public class DictionaryService {
         de.setAddedByUser(true);
 
         RatingsEntry re = new RatingsEntry();
-        re.setDictionary(d);
         re.setWord(word);
         re.setHasTranslation(true);
         re.setSpellcheckRank(1);

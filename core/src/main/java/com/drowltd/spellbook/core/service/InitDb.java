@@ -98,7 +98,6 @@ public class InitDb {
                 final int rating = ratings.get(word);
 
                 RatingsEntry re = new RatingsEntry();
-                re.setDictionary(dictionary);
                 re.setLanguage(l);
                 re.setWord(word);
                 re.setSpellcheckRank(rating == 0 ? 1 : rating);

@@ -13,11 +13,6 @@ import javax.persistence.Table;
 @Entity(name = "RatingsEntry")
 @Table(name = "RatingsEntry")
 public class RatingsEntry extends AbstractEntity {
-
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Dictionary dictionary;
-
-    //@Column(nullable = false)
     @ManyToOne(optional=false,fetch=FetchType.LAZY)
     private Language language;
 
@@ -30,14 +25,6 @@ public class RatingsEntry extends AbstractEntity {
     private boolean hasTranslation;
 
     public RatingsEntry() {
-    }
-
-    public Dictionary getDictionary() {
-        return dictionary;
-    }
-
-    public void setDictionary(Dictionary dictionary) {
-        this.dictionary = dictionary;
     }
 
     public Language getLanguage() {
