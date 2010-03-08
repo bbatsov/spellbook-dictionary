@@ -4,8 +4,6 @@
  */
 package com.drowltd.spellbook.core.exam;
 
-import com.drowltd.spellbook.core.db.SDatabaseService;
-import com.drowltd.spellbook.core.db.SDictionary;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import java.util.ArrayList;
