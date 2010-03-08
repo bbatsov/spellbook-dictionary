@@ -78,9 +78,7 @@ public class RatingsEntry extends AbstractEntity {
         if (!word.equals(other.word)) {
             return false;
         }
-        if (!dictionary.equals(other.dictionary)) {
-            return false;
-        }
+
         if (language != other.language) {
             return false;
         }
@@ -91,7 +89,6 @@ public class RatingsEntry extends AbstractEntity {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 67 * hash + (this.dictionary != null ? this.dictionary.hashCode() : 0);
         hash = 67 * hash + (this.language != null ? this.language.hashCode() : 0);
         hash = 67 * hash + (this.word != null ? this.word.hashCode() : 0);
         return hash;
