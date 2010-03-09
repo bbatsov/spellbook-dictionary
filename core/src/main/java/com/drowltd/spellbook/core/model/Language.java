@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -14,7 +14,7 @@ import javax.persistence.Table;
 @Entity(name="Language")
 @Table(name="Language")
 public class Language extends AbstractEntity {
-    @ManyToOne(fetch=FetchType.LAZY)
+    @OneToMany(fetch=FetchType.LAZY)
     private List<RatingsEntry> ratingsEntries = new ArrayList<RatingsEntry>();
 
     private String alphabet;
