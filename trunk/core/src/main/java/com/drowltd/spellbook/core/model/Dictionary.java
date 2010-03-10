@@ -4,11 +4,14 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -16,21 +19,27 @@ import javax.persistence.Table;
  * @author bozhidar
  */
 @Entity(name = "Dictionary")
-@Table(name = "SpellbookDictionary")
+@Table(name = "DICTIONARIES")
 @NamedQueries({
     @NamedQuery(name = "Dictionary.getAllDictionaries", query = "select d from Dictionary as d")
 })
 public class Dictionary extends AbstractEntity {
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "dictionary", fetch = FetchType.LAZY)
     private Set<DictionaryEntry> dictionaryEntries = new HashSet<DictionaryEntry>();
+
     @Column(nullable = false)
     private String name;
-    @ManyToOne(optional=false,fetch=FetchType.LAZY)
+
+    @Enumerated(EnumType.ORDINAL)
+    @Column(name = "from_language")
     private Language fromLanguage;
-    @ManyToOne(optional=false,fetch=FetchType.LAZY)
+
+    @Enumerated(EnumType.ORDINAL)
+    @Column(name = "to_language")
     private Language toLanguage;
-    @Column(nullable = false)
+    
+    @Column(name = "icon_name", nullable = false)
     private String iconName;
 
     public String getName() {

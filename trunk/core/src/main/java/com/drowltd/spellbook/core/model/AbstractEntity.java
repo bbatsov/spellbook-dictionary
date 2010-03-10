@@ -10,6 +10,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import org.hibernate.annotations.GenericGenerator;
 
 /**
  *
@@ -18,7 +19,8 @@ import javax.persistence.TemporalType;
 @MappedSuperclass
 public abstract class AbstractEntity implements Serializable {
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GenericGenerator(name = "generator", strategy = "increment")
+    @GeneratedValue(generator = "generator")
     private long id;
 
     @Temporal(TemporalType.TIMESTAMP)

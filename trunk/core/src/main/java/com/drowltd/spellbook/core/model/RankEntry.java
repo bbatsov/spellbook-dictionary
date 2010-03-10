@@ -2,6 +2,8 @@ package com.drowltd.spellbook.core.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -11,20 +13,19 @@ import javax.persistence.Table;
  * @author iivalchev
  */
 @Entity(name = "RatingsEntry")
-@Table(name = "RatingsEntry")
-public class RatingsEntry extends AbstractEntity {
-    @ManyToOne(optional=false,fetch=FetchType.LAZY)
+@Table(name = "RANK_ENTRIES")
+public class RankEntry extends AbstractEntity {
+    @Enumerated(EnumType.ORDINAL)
+    @Column(name = "word_language", nullable=false)
     private Language language;
 
     @Column(nullable = false)
     private String word;
 
     @Column(nullable = false)
-    private int spellcheckRank;
+    private int rank;
 
-    private boolean hasTranslation;
-
-    public RatingsEntry() {
+    public RankEntry() {
     }
 
     public Language getLanguage() {
@@ -35,12 +36,12 @@ public class RatingsEntry extends AbstractEntity {
         this.language = lang;
     }
 
-    public int getSpellcheckRank() {
-        return spellcheckRank;
+    public int getRank() {
+        return rank;
     }
 
-    public void setSpellcheckRank(int spellcheckRank) {
-        this.spellcheckRank = spellcheckRank;
+    public void setRank(int spellcheckRank) {
+        this.rank = spellcheckRank;
     }
 
     public String getWord() {
@@ -49,14 +50,6 @@ public class RatingsEntry extends AbstractEntity {
 
     public void setWord(String word) {
         this.word = word;
-    }
-
-    public boolean isHasTranslation() {
-        return hasTranslation;
-    }
-
-    public void setHasTranslation(boolean hasTranslation) {
-        this.hasTranslation = hasTranslation;
     }
 
     @Override
@@ -73,7 +66,7 @@ public class RatingsEntry extends AbstractEntity {
             return false;
         }
 
-        RatingsEntry other = (RatingsEntry) o;
+        RankEntry other = (RankEntry) o;
 
         if (!word.equals(other.word)) {
             return false;
