@@ -94,4 +94,12 @@
       </column>
     </createTable>
   </changeSet>
+  <changeSet id="2" author="bozhidar">
+    <createIndex tableName="DICTIONARY_ENTRIES" indexName="idx_de_word">
+      <column name="word"/>
+    </createIndex>
+    <createIndex tableName="RANK_ENTRIES" indexName="idx_re_word">
+      <column name="word"/>
+    </createIndex>
+  </changeSet>
 </databaseChangeLog>
