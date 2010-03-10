@@ -5,12 +5,13 @@ import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.DictionaryEntry;
 import com.drowltd.spellbook.core.model.Language;
-import com.drowltd.spellbook.core.model.RatingsEntry;
+import com.drowltd.spellbook.core.model.RankEntry;
 import java.lang.reflect.Field;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -18,7 +19,7 @@ import static org.junit.Assert.*;
  *
  * @author ikkari
  */
-//@Ignore
+@Ignore
 public class DictionaryServiceTest {
 
     private static DictionaryService dictionaryService;
@@ -129,13 +130,6 @@ public class DictionaryServiceTest {
     private static void init() {
         final EntityTransaction t = EM.getTransaction();
         t.begin();
-        English = new Language();
-        English.setAlphabet(com.drowltd.spellbook.core.db.Dictionary.EN_BG.getAlphabet());
-        English.setName("English");
-
-        Bulgarian = new Language();
-        Bulgarian.setAlphabet(com.drowltd.spellbook.core.db.Dictionary.BG_EN.getAlphabet());
-        Bulgarian.setName("Bulgarian");
 
         dictionary = new Dictionary();
         dictionary.setName("English-Bulgarian");
@@ -147,15 +141,13 @@ public class DictionaryServiceTest {
         dictionaryEntry = new DictionaryEntry();
         dictionaryEntry.setDictionary(dictionary);
         dictionaryEntry.setWord(word);
-        dictionaryEntry.setWordTranslation(translation);
-        dictionaryEntry.setSpellcheckRank(1);
-        dictionaryEntry.setAddedByUser(true);
+        dictionaryEntry.setTranslation(translation);
+        //dictionaryEntry.setAddedByUser(true);
 
-        final RatingsEntry re = new RatingsEntry();
+        final RankEntry re = new RankEntry();
         re.setLanguage(English);
         re.setWord(ratingsWord);
-        re.setSpellcheckRank(Integer.MAX_VALUE);
-        re.setHasTranslation(true);
+        re.setRank(Integer.MAX_VALUE);
 
         EM.persist(English);
         EM.persist(Bulgarian);

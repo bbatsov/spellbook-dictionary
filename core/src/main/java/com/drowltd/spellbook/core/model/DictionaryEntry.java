@@ -11,31 +11,29 @@ import javax.persistence.Table;
  * @author bozhidar
  */
 @Entity(name = "DictionaryEntry")
-@Table(name = "DictionaryEntry")
+@Table(name = "DICTIONARY_ENTRIES")
 public class DictionaryEntry extends AbstractEntity {
     @ManyToOne(optional=false, fetch=FetchType.LAZY)
     private Dictionary dictionary;
 
     @Column(nullable=false, unique=true)
     private String word;
-    @Column(nullable=false, length=10000)
-    private String wordTranslation;
-    @Column(nullable=true)
-    private int spellcheckRank;
+    @Column(name="word_translation", nullable=false, length=10000)
+    private String translation;
 
-    @Column(nullable=false)
-    private boolean addedByUser;
+//    @Column(name = "added_by_user", nullable=false)
+//    private boolean addedByUser;
 
     public DictionaryEntry() {
     }
 
-    public boolean isAddedByUser() {
-        return addedByUser;
-    }
-
-    public void setAddedByUser(boolean addedByUser) {
-        this.addedByUser = addedByUser;
-    }
+//    public boolean isAddedByUser() {
+//        return addedByUser;
+//    }
+//
+//    public void setAddedByUser(boolean addedByUser) {
+//        this.addedByUser = addedByUser;
+//    }
 
     public Dictionary getDictionary() {
         return dictionary;
@@ -43,14 +41,6 @@ public class DictionaryEntry extends AbstractEntity {
 
     public void setDictionary(Dictionary dictionary) {
         this.dictionary = dictionary;
-    }
-
-    public int getSpellcheckRank() {
-        return spellcheckRank;
-    }
-
-    public void setSpellcheckRank(int spellcheckRank) {
-        this.spellcheckRank = spellcheckRank;
     }
 
     public String getWord() {
@@ -61,12 +51,12 @@ public class DictionaryEntry extends AbstractEntity {
         this.word = word;
     }
 
-    public String getWordTranslation() {
-        return wordTranslation;
+    public String getTranslation() {
+        return translation;
     }
 
-    public void setWordTranslation(String wordTranslation) {
-        this.wordTranslation = wordTranslation;
+    public void setTranslation(String wordTranslation) {
+        this.translation = wordTranslation;
     }
 
     @Override
@@ -81,7 +71,7 @@ public class DictionaryEntry extends AbstractEntity {
         if ((this.word == null) ? (other.word != null) : !this.word.equals(other.word)) {
             return false;
         }
-        if ((this.wordTranslation == null) ? (other.wordTranslation != null) : !this.wordTranslation.equals(other.wordTranslation)) {
+        if ((this.translation == null) ? (other.translation != null) : !this.translation.equals(other.translation)) {
             return false;
         }
         return true;

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+
+  <changeSet id="1" author="bozhidar">
+    <createTable tableName="DICTIONARIES">
+      <column name="id" type="bigint">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="modified" type="datetime">
+        <constraints nullable="true"/>
+      </column>
+      <column name="created" type="datetime">
+        <constraints nullable="false"/>
+      </column>
+      <column name="name" type="varchar(50)">
+        <constraints nullable="false" unique="true"/>
+      </column>
+      <column name="from_language" type="int">
+        <constraints nullable="false"/>
+      </column>
+      <column name="to_language" type="int">
+        <constraints nullable="false"/>
+      </column>
+      <column name="icon_name" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <createTable tableName="DICTIONARY_ENTRIES">
+      <column name="id" type="bigint">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="modified" type="datetime">
+        <constraints nullable="true"/>
+      </column>
+      <column name="created" type="datetime">
+        <constraints nullable="false"/>
+      </column>
+      <column name="word" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="word_translation" type="varchar">
+        <constraints nullable="false"/>
+      </column>
+      <column name="added_by_user" type="boolean">
+        <constraints nullable="false"/>
+      </column>
+      <column name="dictionary_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <createTable tableName="LANGUAGES">
+      <column name="id" type="bigint">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="modified" type="datetime">
+        <constraints nullable="true"/>
+      </column>
+      <column name="created" type="datetime">
+        <constraints nullable="false"/>
+      </column>
+      <column name="name" type="varchar(50)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="alphabet" type="varchar(50)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <createTable tableName="RANK_ENTRIES">
+      <column name="id" type="bigint">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="modified" type="datetime">
+        <constraints nullable="true"/>
+      </column>
+      <column name="created" type="datetime">
+        <constraints nullable="false"/>
+      </column>
+      <column name="word" type="varchar(50)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="rank" type="int">
+        <constraints nullable="false"/>
+      </column>
+      <column name="word_language" type="bit">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+</databaseChangeLog>

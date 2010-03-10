@@ -5,7 +5,7 @@ import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.DictionaryEntry;
 import com.drowltd.spellbook.core.model.Language;
-import com.drowltd.spellbook.core.model.RatingsEntry;
+import com.drowltd.spellbook.core.model.RankEntry;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -77,7 +77,7 @@ public class DictionaryService {
     }
 
     public String getTranslation(String word, Dictionary d) {
-        return (String) EM.createQuery("select de.wordTranslation from DictionaryEntry de"
+        return (String) EM.createQuery("select de.translation from DictionaryEntry de"
                 + " where de.word = :word and de.dictionary = :dictionary").setParameter("word", word).setParameter("dictionary", d).getSingleResult();
     }
 
@@ -103,13 +103,12 @@ public class DictionaryService {
         final DictionaryEntry de = new DictionaryEntry();
         de.setDictionary(d);
         de.setWord(word);
-        de.setWordTranslation(translation);
-        de.setAddedByUser(true);
+        de.setTranslation(translation);
+        //de.setAddedByUser(true);
 
-        RatingsEntry re = new RatingsEntry();
+        RankEntry re = new RankEntry();
         re.setWord(word);
-        re.setHasTranslation(true);
-        re.setSpellcheckRank(1);
+        re.setRank(1);
         re.setLanguage(d.getFromLanguage());
 
 
@@ -143,7 +142,7 @@ public class DictionaryService {
         DictionaryEntry de = (DictionaryEntry) EM.createQuery("select de from DictionaryEntry de "
                 + "where de.dictionary = :dictionary and de.word = :word").setParameter("dictionary", d).setParameter("word", word).getSingleResult();
 
-        de.setWordTranslation(translation);
+        de.setTranslation(translation);
         final EntityTransaction t = EM.getTransaction();
         t.begin();
         EM.persist(de);
@@ -168,12 +167,12 @@ public class DictionaryService {
             throw new IllegalArgumentException("language == null");
         }
 
-        final List<RatingsEntry> ratingslist = EM.createQuery("select re from RatingsEntry re "
+        final List<RankEntry> ratingslist = EM.createQuery("select re from RatingsEntry re "
                 + " where re.language = :language").setParameter("language", language).getResultList();
 
         Map<String, Integer> ratingsMap = new HashMap<String, Integer>();
-        for (RatingsEntry re : ratingslist) {
-            ratingsMap.put(re.getWord(), re.getSpellcheckRank());
+        for (RankEntry re : ratingslist) {
+            ratingsMap.put(re.getWord(), re.getRank());
         }
 
         return ratingsMap;

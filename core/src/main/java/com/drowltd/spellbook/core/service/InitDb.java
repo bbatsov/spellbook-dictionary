@@ -5,7 +5,7 @@ import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.DictionaryEntry;
 import com.drowltd.spellbook.core.model.Language;
-import com.drowltd.spellbook.core.model.RatingsEntry;
+import com.drowltd.spellbook.core.model.RankEntry;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.EntityManager;
@@ -30,28 +30,13 @@ public class InitDb {
         DatabaseService.init("/opt/spellbook/db/dictionary.data.db");
         databaseService = DatabaseService.getInstance();
 
-        Language English = createLanguage(com.drowltd.spellbook.core.db.Dictionary.EN_BG);
-        Language Bulgarian = createLanguage(com.drowltd.spellbook.core.db.Dictionary.BG_EN);
+
+        copyLegacyDict(com.drowltd.spellbook.core.db.Dictionary.EN_BG, "en-bg.png", "English-Bulgarian", Language.ENGLISH, Language.BULGARIAN);
+        copyLegacyDict(com.drowltd.spellbook.core.db.Dictionary.BG_EN, "bg-en.png", "Bulgarian-English", Language.BULGARIAN, Language.ENGLISH);
 
 
-        copyLegacyDict(com.drowltd.spellbook.core.db.Dictionary.EN_BG, "en-bg.png", "English-Bulgarian", English, Bulgarian);
-        copyLegacyDict(com.drowltd.spellbook.core.db.Dictionary.BG_EN, "bg-en.png", "Bulgarian-English", Bulgarian, English);
-
-
-        copyLegacyRatings(com.drowltd.spellbook.core.db.Dictionary.EN_BG, "English-Bulgarian", English);
-        copyLegacyRatings(com.drowltd.spellbook.core.db.Dictionary.BG_EN, "Bulgarian-English", Bulgarian);
-    }
-
-    private static Language createLanguage(com.drowltd.spellbook.core.db.Dictionary d) {
-        final Language l = new Language();
-        l.setAlphabet(d.getAlphabet());
-        l.setName(d.getLanguage());
-
-        final EntityTransaction t = em.getTransaction();
-        t.begin();
-        em.persist(l);
-        t.commit();
-        return l;
+        copyLegacyRatings(com.drowltd.spellbook.core.db.Dictionary.EN_BG, "English-Bulgarian", Language.ENGLISH);
+        copyLegacyRatings(com.drowltd.spellbook.core.db.Dictionary.BG_EN, "Bulgarian-English", Language.BULGARIAN);
     }
 
     private static void copyLegacyDict(com.drowltd.spellbook.core.db.Dictionary d, String icon, String name, Language from, Language to) {
@@ -74,9 +59,8 @@ public class InitDb {
             DictionaryEntry de = new DictionaryEntry();
             de.setDictionary(newDict);
             de.setWord(string);
-            de.setWordTranslation(translation);
-            de.setSpellcheckRank(0);
-            de.setAddedByUser(false);
+            de.setTranslation(translation);
+            //de.setAddedByUser(false);
 
             em.persist(de);
         }
@@ -97,11 +81,10 @@ public class InitDb {
             for (String word : ratings.keySet()) {
                 final int rating = ratings.get(word);
 
-                RatingsEntry re = new RatingsEntry();
+                RankEntry re = new RankEntry();
                 re.setLanguage(l);
                 re.setWord(word);
-                re.setSpellcheckRank(rating == 0 ? 1 : rating);
-                re.setHasTranslation(withTranslation);
+                re.setRank(rating == 0 ? 1 : rating);
 
                 em.persist(re);
                 System.out.println("Adding ratings entry: " + word + " " + rating);
