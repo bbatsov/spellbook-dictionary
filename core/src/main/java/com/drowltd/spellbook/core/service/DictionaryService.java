@@ -167,7 +167,7 @@ public class DictionaryService {
             throw new IllegalArgumentException("language == null");
         }
 
-        final List<RankEntry> ratingslist = EM.createQuery("select re from RatingsEntry re "
+        final List<RankEntry> ratingslist = EM.createQuery("select re from RankEntry re "
                 + " where re.language = :language").setParameter("language", language).getResultList();
 
         Map<String, Integer> ratingsMap = new HashMap<String, Integer>();
@@ -214,7 +214,7 @@ public class DictionaryService {
             throw new IllegalArgumentException("difficulty == null");
         }
 
-        List<String> words = EM.createQuery("select re.word from RatingsEntry re where "
+        List<String> words = EM.createQuery("select re.word from RankEntry re where "
                 + " re.spellcheckRank > :low and re.spellcheckRank <= :high and re.hasTranslation = true and LENGTH(re.word) >=3 ").setParameter("low", difficulty.getLow()).setParameter("high", difficulty.getHigh()).getResultList();
 
 
