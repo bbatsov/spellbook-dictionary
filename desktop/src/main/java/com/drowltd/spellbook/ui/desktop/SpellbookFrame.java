@@ -2,7 +2,6 @@ package com.drowltd.spellbook.ui.desktop;
 
 import com.drowltd.spellbook.ui.desktop.exam.ExamDialog;
 import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
-import com.drowltd.spellbook.core.exception.NoDictionariesAvailableException;
 import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
