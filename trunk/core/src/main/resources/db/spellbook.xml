@@ -102,4 +102,7 @@
       <column name="word"/>
     </createIndex>
   </changeSet>
+  <changeSet id="3" author="bozhidar">
+     <dropColumn tableName="DICTIONARY_ENTRIES" columnName="added_by_user"/>
+  </changeSet>
 </databaseChangeLog>
