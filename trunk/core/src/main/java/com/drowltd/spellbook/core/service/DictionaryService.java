@@ -214,8 +214,9 @@ public class DictionaryService {
             throw new IllegalArgumentException("difficulty == null");
         }
 
-        List<String> words = EM.createQuery("select re.word from RankEntry re where "
-                + " re.spellcheckRank > :low and re.spellcheckRank <= :high and re.hasTranslation = true and LENGTH(re.word) >=3 ").setParameter("low", difficulty.getLow()).setParameter("high", difficulty.getHigh()).getResultList();
+        List<String> words = EM.createQuery("select re.word from RankEntry re where"
+                + " re.rank > :low and re.rank <= :high and LENGTH(re.word) >=3 and " +
+                "exists (select de.word from DictionaryEntry de where de.word = re.word and de.dictionary.fromLanguage = re.language)").setParameter("low", difficulty.getLow()).setParameter("high", difficulty.getHigh()).getResultList();
 
 
         return words;

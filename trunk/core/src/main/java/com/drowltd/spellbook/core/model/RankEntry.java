@@ -38,8 +38,8 @@ public class RankEntry extends AbstractEntity {
         return rank;
     }
 
-    public void setRank(int spellcheckRank) {
-        this.rank = spellcheckRank;
+    public void setRank(int rank) {
+        this.rank = rank;
     }
 
     public String getWord() {
