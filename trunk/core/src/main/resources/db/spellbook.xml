@@ -112,4 +112,12 @@
       </column>
     </addColumn>     
   </changeSet>
+  <changeSet id="5" author="bozhidar">
+      <dropTable tableName="LANGUAGES"/>
+      <modifyColumn tableName="RANK_ENTRIES">
+          <column name="word_language" type="int">
+              <constraints nullable="false"/>
+          </column>
+      </modifyColumn>
+  </changeSet>
 </databaseChangeLog>
