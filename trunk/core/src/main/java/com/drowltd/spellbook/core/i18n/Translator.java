@@ -3,6 +3,7 @@ package com.drowltd.spellbook.core.i18n;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
@@ -27,7 +28,16 @@ public class Translator {
     }
 
     public String translate(String resourceKey) {
-        return resourceBundle.getString(resourceKey);
+        if (resourceKey == null) {
+            throw new IllegalArgumentException("Null resource key");
+        }
+
+        // prevent nasty exceptions from missing resources
+        try {
+            return resourceBundle.getString(resourceKey);
+        } catch (MissingResourceException ex) {
+            return resourceKey;
+        }
     }
 
     @Override
