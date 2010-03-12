@@ -103,6 +103,13 @@
     </createIndex>
   </changeSet>
   <changeSet id="3" author="bozhidar">
-     <dropColumn tableName="DICTIONARY_ENTRIES" columnName="added_by_user"/>
+    <dropColumn tableName="DICTIONARY_ENTRIES" columnName="added_by_user"/>
+  </changeSet>
+  <changeSet id="4" author="bozhidar">
+    <addColumn tableName="DICTIONARY_ENTRIES">
+      <column name="added_by_user" type="boolean" defaultValue="false">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>     
   </changeSet>
 </databaseChangeLog>

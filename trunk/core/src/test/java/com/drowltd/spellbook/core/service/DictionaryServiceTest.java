@@ -142,7 +142,7 @@ public class DictionaryServiceTest {
         dictionaryEntry.setDictionary(dictionary);
         dictionaryEntry.setWord(word);
         dictionaryEntry.setTranslation(translation);
-        //dictionaryEntry.setAddedByUser(true);
+        dictionaryEntry.setAddedByUser(true);
 
         final RankEntry re = new RankEntry();
         re.setLanguage(English);

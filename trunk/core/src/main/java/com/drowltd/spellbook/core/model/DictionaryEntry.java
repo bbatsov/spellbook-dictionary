@@ -21,19 +21,19 @@ public class DictionaryEntry extends AbstractEntity {
     @Column(name="word_translation", nullable=false, length=10000)
     private String translation;
 
-//    @Column(name = "added_by_user", nullable=false)
-//    private boolean addedByUser;
+    @Column(name = "added_by_user", nullable=false)
+    private boolean addedByUser;
 
     public DictionaryEntry() {
     }
 
-//    public boolean isAddedByUser() {
-//        return addedByUser;
-//    }
-//
-//    public void setAddedByUser(boolean addedByUser) {
-//        this.addedByUser = addedByUser;
-//    }
+    public boolean isAddedByUser() {
+        return addedByUser;
+    }
+
+    public void setAddedByUser(boolean addedByUser) {
+        this.addedByUser = addedByUser;
+    }
 
     public Dictionary getDictionary() {
         return dictionary;
