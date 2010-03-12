@@ -60,7 +60,7 @@ public class InitDb {
             de.setDictionary(newDict);
             de.setWord(string);
             de.setTranslation(translation);
-            //de.setAddedByUser(false);
+            de.setAddedByUser(false);
 
             em.persist(de);
         }

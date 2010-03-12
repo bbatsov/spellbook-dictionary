@@ -104,7 +104,7 @@ public class DictionaryService {
         de.setDictionary(d);
         de.setWord(word);
         de.setTranslation(translation);
-        //de.setAddedByUser(true);
+        de.setAddedByUser(true);
 
         RankEntry re = new RankEntry();
         re.setWord(word);
