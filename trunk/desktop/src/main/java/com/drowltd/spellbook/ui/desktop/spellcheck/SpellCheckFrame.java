@@ -1,7 +1,8 @@
 package com.drowltd.spellbook.ui.desktop.spellcheck;
 
-import com.drowltd.spellbook.core.db.DatabaseService;
 import com.drowltd.spellbook.core.db.Dictionary;
+import com.drowltd.spellbook.core.model.Language;
+import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.core.spellcheck.SpellChecker;
 import com.drowltd.spellbook.ui.desktop.IconManager;
 import java.awt.EventQueue;
@@ -379,7 +380,8 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
      *
      */
     private void loadSpellChecker() {
-        final Map<String, Integer> ratingsMap = DatabaseService.getInstance().getRatings(selectedDictionary);
+        //TODO introduce selected language
+        final Map<String, Integer> ratingsMap = DictionaryService.getInstance().getRatings(Language.ENGLISH);
         new SpellChecker(ratingsMap, selectedDictionary);
     }
 
