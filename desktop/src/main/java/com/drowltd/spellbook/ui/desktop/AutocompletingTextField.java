@@ -215,7 +215,10 @@ public class AutocompletingTextField extends JTextField {
         // DocumentListener implementation
         @Override
         public void insertUpdate(DocumentEvent e) {
-            buildAndShowPopup();
+            // build popup only for interactive searches
+            if (e.getLength() == 1) {
+                buildAndShowPopup();
+            }
         }
 
         @Override
