@@ -7,11 +7,9 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -21,7 +19,12 @@ import javax.persistence.Table;
 @Entity(name = "Dictionary")
 @Table(name = "DICTIONARIES")
 @NamedQueries({
-    @NamedQuery(name = "Dictionary.getAllDictionaries", query = "select d from Dictionary as d")
+    @NamedQuery(
+            name = "Dictionary.getAllDictionaries",
+            query = "select d from Dictionary as d"),
+    @NamedQuery(
+            name = "Dictionary.getDictionaryByLanguages",
+            query = "select d from Dictionary d where d.fromLanguage = :fromLanguage and d.toLanguage = :toLanguage")
 })
 public class Dictionary extends AbstractEntity {
 

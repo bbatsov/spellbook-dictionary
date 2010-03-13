@@ -4,6 +4,7 @@ import com.drowltd.spellbook.ui.desktop.exam.ExamDialog;
 import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
 import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.model.Dictionary;
+import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.ui.desktop.IconManager.IconSize;
@@ -23,11 +24,14 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
@@ -205,6 +209,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
     private void onSearchChange() {
         String searchString = wordSearchField.getText();
+
+        autoCorrectDictionary(searchString);
 
         String approximation;
 
@@ -489,15 +495,17 @@ public class SpellbookFrame extends javax.swing.JFrame {
         dictionaryLabel.setFont(font);
     }
 
-    public void selectDictionary(Dictionary dictionary) {
+    public void selectDictionary(Dictionary dictionary, boolean clear) {
         // if we select the currently selected dictionary we don't have to do nothing
         if (selectedDictionary == dictionary) {
             LOGGER.info("Dictionary " + dictionary + " is already selected");
             return;
         }
 
-        // otherwise begin the switch to the new dictionary by cleaning everything in the UI
-        clear();
+        if (clear) {
+            // otherwise begin the switch to the new dictionary by cleaning everything in the UI
+            clear();
+        }
 
         setSelectedDictionary(dictionary);
 
@@ -1025,6 +1033,46 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
     }
 
+    private void autoCorrectDictionary(String searchString) {
+        Language from = selectedDictionary.getFromLanguage();
+        boolean valid = true;
+
+        for (StringTokenizer stringTokenizer = new StringTokenizer(searchString); stringTokenizer.hasMoreTokens();) {
+            String token = stringTokenizer.nextToken();
+
+            if (!from.getAlphabet().contains(token)) {
+                valid = false;
+                break;
+            }
+        }
+
+        if (!valid && dictionaryService.isComplemented(selectedDictionary)) {
+            Language to = selectedDictionary.getToLanguage();
+            valid = true;
+
+            for (StringTokenizer stringTokenizer = new StringTokenizer(searchString); stringTokenizer.hasMoreTokens();) {
+                String token = stringTokenizer.nextToken();
+
+                if (!to.getAlphabet().contains(token)) {
+                    valid = false;
+                    break;
+                }
+            }
+
+            if (valid) {
+                LOGGER.info("Auto switching to complementing dictinary...");
+                    EventQueue.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            selectDictionary(dictionaryService.getComplement(selectedDictionary), false);
+
+                        }
+                    });
+
+            }
+        }
+    }
+
     private class DictionaryItem extends JMenuItem implements ActionListener {
         private final Dictionary dictionary;
 
@@ -1041,7 +1089,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            SpellbookFrame.this.selectDictionary(dictionary);
+            SpellbookFrame.this.selectDictionary(dictionary, true);
         }
     }
 }

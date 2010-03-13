@@ -13,6 +13,7 @@
     <modules>
         <module>core</module>
         <module>desktop</module>
+        <module>swing</module>
         <module>utils</module>
     </modules>
 
@@ -43,6 +44,11 @@
             <dependency>
                 <groupId>com.drowltd.spellbook</groupId>
                 <artifactId>spellbook-core</artifactId>
+                <version>0.3-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.drowltd.spellbook</groupId>
+                <artifactId>spellbook-swing</artifactId>
                 <version>0.3-SNAPSHOT</version>
             </dependency>
             <dependency>
