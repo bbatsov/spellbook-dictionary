@@ -244,4 +244,18 @@ public class DictionaryService {
 
         return null;
     }
+
+    public boolean isComplemented(Dictionary dictionary) {
+        return !EM.createNamedQuery("Dictionary.getDictionaryByLanguages")
+                .setParameter("fromLanguage", dictionary.getToLanguage())
+                .setParameter("toLanguage", dictionary.getFromLanguage())
+                .getResultList().isEmpty();
+    }
+
+    public Dictionary getComplement(Dictionary dictionary) {
+        return (Dictionary)EM.createNamedQuery("Dictionary.getDictionaryByLanguages")
+                .setParameter("fromLanguage", dictionary.getToLanguage())
+                .setParameter("toLanguage", dictionary.getFromLanguage())
+                .getSingleResult();
+    }
 }
