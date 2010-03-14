@@ -9,7 +9,7 @@ import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.ui.desktop.IconManager.IconSize;
 import com.drowltd.spellbook.ui.desktop.spellcheck.SpellCheckFrame;
-import com.drowltd.spellbook.ui.desktop.learningWords.LearningWordsDialog;
+import com.drowltd.spellbook.ui.desktop.study.StudyWordsDialog;
 import com.drowltd.spellbook.util.SearchUtils;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -553,7 +553,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         prefsMenuItem = new javax.swing.JMenuItem();
         jDictionaryMenu = new javax.swing.JMenu();
         jMenu4 = new javax.swing.JMenu();
-        LearningWordsMenuItem = new javax.swing.JMenuItem();
+        StudyWordsMenuItem = new javax.swing.JMenuItem();
         examMenuItem = new javax.swing.JMenuItem();
         spellcheckMenuItem = new javax.swing.JMenuItem();
         jMenu5 = new javax.swing.JMenu();
@@ -649,7 +649,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 575, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 576, Short.MAX_VALUE)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addComponent(previousWordLabel)
                 .addGap(18, 18, 18)
@@ -660,7 +660,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
                 .addComponent(dictionaryLabel)
                 .addGap(18, 18, 18)
                 .addComponent(memoryUsageLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 156, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 211, Short.MAX_VALUE)
                 .addComponent(jLabel1))
         );
         jPanel3Layout.setVerticalGroup(
@@ -779,15 +779,15 @@ public class SpellbookFrame extends javax.swing.JFrame {
         jMenu4.setMnemonic('t');
         jMenu4.setText(bundle.getString("Tools(Menu)")); // NOI18N
 
-        LearningWordsMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/teacher.png"))); // NOI18N
-        LearningWordsMenuItem.setMnemonic('l');
-        LearningWordsMenuItem.setText(bundle.getString("LearningWords(MenuItem)")); // NOI18N
-        LearningWordsMenuItem.addActionListener(new java.awt.event.ActionListener() {
+        StudyWordsMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/teacher.png"))); // NOI18N
+        StudyWordsMenuItem.setMnemonic('l');
+        StudyWordsMenuItem.setText(bundle.getString("StudyWords(MenuItem)")); // NOI18N
+        StudyWordsMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                LearningWordsMenuItemActionPerformed(evt);
+                StudyWordsMenuItemActionPerformed(evt);
             }
         });
-        jMenu4.add(LearningWordsMenuItem);
+        jMenu4.add(StudyWordsMenuItem);
 
         examMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/blackboard.png"))); // NOI18N
         examMenuItem.setMnemonic('e');
@@ -952,11 +952,11 @@ public class SpellbookFrame extends javax.swing.JFrame {
         }        // TODO add your handling code here:
     }//GEN-LAST:event_wordsListValueChanged
 
-    private void LearningWordsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LearningWordsMenuItemActionPerformed
-        LearningWordsDialog learningWords = new LearningWordsDialog(this, true);
-        learningWords.setLocationRelativeTo(this);
-        learningWords.showLearningWordsDialog();
-    }//GEN-LAST:event_LearningWordsMenuItemActionPerformed
+    private void StudyWordsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StudyWordsMenuItemActionPerformed
+        StudyWordsDialog studyWords = new StudyWordsDialog(this, true);
+        studyWords.setLocationRelativeTo(this);
+        studyWords.showLearningWordsDialog();
+    }//GEN-LAST:event_StudyWordsMenuItemActionPerformed
 
     private void matchLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_matchLabelMouseClicked
         clear();
@@ -984,7 +984,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         System.gc();
     }//GEN-LAST:event_memoryUsageLabelMouseClicked
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenuItem LearningWordsMenuItem;
+    private javax.swing.JMenuItem StudyWordsMenuItem;
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JMenuItem addWordMenuItem;
     private javax.swing.JMenuItem copyMenuItem;
