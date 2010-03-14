@@ -6,6 +6,7 @@ import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.DictionaryEntry;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.model.RankEntry;
+import com.drowltd.spellbook.core.model.WordsForStudy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -215,8 +216,8 @@ public class DictionaryService {
         }
 
         List<String> words = EM.createQuery("select re.word from RankEntry re where"
-                + " re.rank > :low and re.rank <= :high and LENGTH(re.word) >=3 and " +
-                "exists (select de.word from DictionaryEntry de where de.word = re.word and de.dictionary.fromLanguage = re.language)").setParameter("low", difficulty.getLow()).setParameter("high", difficulty.getHigh()).getResultList();
+                + " re.rank > :low and re.rank <= :high and LENGTH(re.word) >=3 and "
+                + "exists (select de.word from DictionaryEntry de where de.word = re.word and de.dictionary.fromLanguage = re.language)").setParameter("low", difficulty.getLow()).setParameter("high", difficulty.getHigh()).getResultList();
 
 
         return words;
@@ -246,16 +247,57 @@ public class DictionaryService {
     }
 
     public boolean isComplemented(Dictionary dictionary) {
-        return !EM.createNamedQuery("Dictionary.getDictionaryByLanguages")
-                .setParameter("fromLanguage", dictionary.getToLanguage())
-                .setParameter("toLanguage", dictionary.getFromLanguage())
-                .getResultList().isEmpty();
+        return !EM.createNamedQuery("Dictionary.getDictionaryByLanguages").setParameter("fromLanguage", dictionary.getToLanguage()).setParameter("toLanguage", dictionary.getFromLanguage()).getResultList().isEmpty();
     }
 
     public Dictionary getComplement(Dictionary dictionary) {
-        return (Dictionary)EM.createNamedQuery("Dictionary.getDictionaryByLanguages")
-                .setParameter("fromLanguage", dictionary.getToLanguage())
-                .setParameter("toLanguage", dictionary.getFromLanguage())
-                .getSingleResult();
+        return (Dictionary) EM.createNamedQuery("Dictionary.getDictionaryByLanguages").setParameter("fromLanguage", dictionary.getToLanguage()).setParameter("toLanguage", dictionary.getFromLanguage()).getSingleResult();
+    }
+
+    //   public List<String> getWordsForStudyFrom(Dictionary selectedDic){
+    //   }
+    //   public List<String> getWordsForStudyTo(Dictionary selectedDic) {
+    //   }
+    public List<String> getWordsForStudy() {
+        return EM.createQuery("select wfs.word from WordsForStudy wfs ").getResultList();
+    }
+
+    public List<String> getTranslationForStudy() {
+        return EM.createQuery("select wfs.translation from WordsForStudy wfs").getResultList();
+    }
+
+    public Long getCountOfTheWords() {
+        return (Long) EM.createQuery("select count(*) from WordsForStudy").getSingleResult();
+    }
+
+    public void addWordForStudy(String word, String translation) {
+
+        if (word == null || word.isEmpty()) {
+            LOGGER.error("word == null || word.isEmpty()");
+            throw new IllegalArgumentException("word == null || word.isEmpty()");
+        }
+
+        if (translation == null || translation.isEmpty()) {
+            LOGGER.error("translation == null || translation.isEmpty()");
+            throw new IllegalArgumentException("word == null || word.isEmpty()");
+        }
+
+        final WordsForStudy wfs = new WordsForStudy();
+
+        wfs.setWord(word);
+        wfs.setTranslation(translation);
+
+        EntityTransaction t = EM.getTransaction();
+        t.begin();
+        EM.persist(wfs);
+        t.commit();
+    }
+
+    public void deleteWord(String word) {
+        word.replaceAll("'", "''");
+        EntityTransaction t = EM.getTransaction();
+        t.begin();
+        EM.createQuery("delete from WordsForStudy  where word= :word").setParameter("word", word).executeUpdate();
+        t.commit();
     }
 }
