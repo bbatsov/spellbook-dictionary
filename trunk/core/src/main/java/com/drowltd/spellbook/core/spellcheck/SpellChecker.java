@@ -1,6 +1,6 @@
 package com.drowltd.spellbook.core.spellcheck;
 
-import com.drowltd.spellbook.core.db.Dictionary;
+import com.drowltd.spellbook.core.model.Language;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -21,19 +21,20 @@ public final class SpellChecker {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellChecker.class);
     private static SpellChecker INSTANCE;
-    private final Dictionary dictionary;
+    //private final Dictionary dictionary;
+    private final Language language;
     private final Map<String, Integer> nWords;
 
     /**
      *
      * @param the Map<String, Integer> containing the words
      */
-    public SpellChecker(Map<String, Integer> nWords) {
-        this(nWords, Dictionary.getSelectedDictionary());
+//    public SpellChecker(Map<String, Integer> nWords) {
+//        this(nWords, Dictionary.getSelectedDictionary());
+//
+//    }
 
-    }
-
-    public SpellChecker(Map<String, Integer> nWords, Dictionary dictionary) {
+    public SpellChecker(Map<String, Integer> nWords, Language language) {
         if (nWords == null) {
             throw new NullPointerException("nWords is null");
         }
@@ -44,19 +45,19 @@ public final class SpellChecker {
 
         this.nWords = nWords;
 
-        if (dictionary == null) {
-            LOGGER.error("dictionary is null");
-            throw new NullPointerException("dictionary is null");
+        if (language == null) {
+            LOGGER.error("language is null");
+            throw new NullPointerException("language is null");
         }
 
-        this.dictionary = dictionary;
+        this.language = language;
  
         setInstance(this);
     }
 
     private final ArrayList<String> edits(String word) {
 
-        String alphabet = dictionary.getAlphabet();
+        String alphabet = language.getAlphabet();
 
         ArrayList<String> result = new ArrayList<String>();
         // Deletion
@@ -102,7 +103,7 @@ public final class SpellChecker {
      *        the word does not need correction or if
      *        no correction candidates are found.
      */
-    public final Map<Integer, String> correct(String word) {
+    public final Map<String, Integer> correct(String word) {
 
         if (word == null) {
             return Collections.emptyMap();
@@ -115,10 +116,10 @@ public final class SpellChecker {
         }
 
         ArrayList<String> list = edits(wordInLowerCase);
-        Map<Integer, String> candidates = new HashMap<Integer, String>();
+        Map<String, Integer> candidates = new HashMap<String, Integer>();
         for (String s : list) {
             if (nWords.containsKey(s)) {
-                candidates.put(nWords.get(s), s);
+                candidates.put(s,nWords.get(s));
             }
         }
         if (candidates.size() > 0) {
@@ -127,7 +128,7 @@ public final class SpellChecker {
         for (String s : list) {
             for (String w : edits(s)) {
                 if (nWords.containsKey(w)) {
-                    candidates.put(nWords.get(w), w);
+                    candidates.put(w,nWords.get(w));
                 }
             }
         }
@@ -138,9 +139,10 @@ public final class SpellChecker {
         return Collections.emptyMap();
     }
 
-    public Dictionary getDictionary() {
-        return dictionary;
+    public Language getLanguage() {
+        return language;
     }
+
 
     public synchronized static SpellChecker getInstance() {
         if (INSTANCE == null) {
