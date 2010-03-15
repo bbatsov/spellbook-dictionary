@@ -223,6 +223,28 @@ public class DictionaryService {
         return words;
     }
 
+    public void addRankEntry(String word, Language language) {
+        if (word == null || word.isEmpty()) {
+            LOGGER.error("word == null || word.isEmpty()");
+            throw new IllegalArgumentException("word == null || word.isEmpty()");
+        }
+
+        if (language == null) {
+            LOGGER.error("language is null");
+            throw new IllegalArgumentException("language is null");
+        }
+
+        RankEntry re = new RankEntry();
+        re.setLanguage(language);
+        re.setWord(word);
+        re.setRank(1);
+        
+        EntityTransaction t = EM.getTransaction();
+        t.begin();
+        EM.persist(re);
+        t.commit();
+    }
+
     public String getApproximation(Dictionary dictionary, String searchKey) {
         if (searchKey != null && !searchKey.isEmpty()) {
 
