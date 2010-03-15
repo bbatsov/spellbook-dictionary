@@ -15,6 +15,10 @@
     <description>Custom Swing components and Swing helper utils</description>
     <dependencies>
         <dependency>
+            <groupId>com.drowltd.spellbook</groupId>
+            <artifactId>spellbook-core</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
         </dependency>
