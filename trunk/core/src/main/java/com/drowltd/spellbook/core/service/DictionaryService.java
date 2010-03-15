@@ -27,6 +27,8 @@ public class DictionaryService {
     private static EntityManager EM;
     private static DictionaryService instance;
 
+    private static Map<String, List<String>> dictionaryWordsCache = new HashMap<String, List<String>>();
+
     private DictionaryService(String dictDbFile) throws DictionaryDbLockedException {
         LOGGER.info("dictionary database: " + dictDbFile.replace(".data.db", ""));
 
@@ -77,8 +79,16 @@ public class DictionaryService {
     }
 
     public List<String> getWordsFromDictionary(Dictionary d) {
-        return EM.createQuery("select de.word from DictionaryEntry de "
-                + "where de.dictionary = :dictionary order by LOWER(de.word) asc").setParameter("dictionary", d).getResultList();
+        if (!dictionaryWordsCache.containsKey(d.getName())) {
+            LOGGER.info("Caching dictionary " + d.getName());
+            dictionaryWordsCache.put(d.getName(),
+                    EM.createQuery("select de.word from DictionaryEntry de "
+                + "where de.dictionary = :dictionary order by LOWER(de.word) asc").setParameter("dictionary", d).getResultList());
+        } else {
+            LOGGER.info("Loading from cache dictionary " + d.getName());
+        }
+
+        return dictionaryWordsCache.get(d.getName());
     }
 
     public String getTranslation(String word, Dictionary d) {
