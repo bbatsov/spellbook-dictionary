@@ -72,6 +72,10 @@ public class DictionaryService {
         return EM.createNamedQuery("Dictionary.getAllDictionaries").getResultList();
     }
 
+    public Dictionary getDictionary(String dictionaryName) {
+        return (Dictionary)EM.createQuery("select d from Dictionary d where d.name = :name").setParameter("name", dictionaryName).getSingleResult();
+    }
+
     public List<String> getWordsFromDictionary(Dictionary d) {
         return EM.createQuery("select de.word from DictionaryEntry de "
                 + "where de.dictionary = :dictionary order by LOWER(de.word) asc").setParameter("dictionary", d).getResultList();
