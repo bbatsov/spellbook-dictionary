@@ -1,5 +1,6 @@
 package com.drowltd.spellbook.ui.desktop;
 
+import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.drowltd.spellbook.core.i18n.Translator;
 import java.awt.AWTException;
 import java.awt.MenuItem;

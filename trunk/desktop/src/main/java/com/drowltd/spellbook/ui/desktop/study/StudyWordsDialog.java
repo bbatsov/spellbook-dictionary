@@ -16,7 +16,7 @@ import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preferen
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.service.DictionaryService;
-import com.drowltd.spellbook.ui.desktop.IconManager;
+import com.drowltd.spellbook.ui.swing.util.IconManager;
 import java.awt.Frame;
 import java.util.List;
 import java.util.ArrayList;

@@ -2,7 +2,7 @@ package com.drowltd.spellbook.ui.desktop.exam;
 
 import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
-import com.drowltd.spellbook.ui.desktop.IconManager;
+import com.drowltd.spellbook.ui.swing.util.IconManager;
 
 /**
  *

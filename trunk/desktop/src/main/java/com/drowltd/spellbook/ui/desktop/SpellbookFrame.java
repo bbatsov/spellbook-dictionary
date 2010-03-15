@@ -1,5 +1,9 @@
 package com.drowltd.spellbook.ui.desktop;
 
+import com.drowltd.spellbook.ui.swing.util.SwingUtil;
+import com.drowltd.spellbook.ui.swing.util.IconManager;
+import com.drowltd.spellbook.ui.swing.model.ListBackedListModel;
+import com.drowltd.spellbook.ui.swing.component.AutocompletingTextField;
 import com.drowltd.spellbook.ui.desktop.exam.ExamDialog;
 import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
 import com.drowltd.spellbook.core.i18n.Translator;
@@ -7,7 +11,7 @@ import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.core.service.DictionaryService;
-import com.drowltd.spellbook.ui.desktop.IconManager.IconSize;
+import com.drowltd.spellbook.ui.swing.util.IconManager.IconSize;
 import com.drowltd.spellbook.ui.desktop.spellcheck.SpellCheckFrame;
 import com.drowltd.spellbook.ui.desktop.study.StudyWordsDialog;
 import com.drowltd.spellbook.util.SearchUtils;
@@ -573,7 +577,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         splitPane.setBorder(null);
         splitPane.setDividerLocation(180);
 
-        wordsList.setModel(new com.drowltd.spellbook.ui.desktop.ListBackedListModel(words));
+        wordsList.setModel(new com.drowltd.spellbook.ui.swing.model.ListBackedListModel(words));
         wordsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("i18n/SpellbookForm"); // NOI18N
         wordsList.setToolTipText(bundle.getString("WordsList(ToolTip)")); // NOI18N
