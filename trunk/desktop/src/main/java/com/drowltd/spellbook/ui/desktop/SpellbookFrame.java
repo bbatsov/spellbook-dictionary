@@ -24,14 +24,12 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
@@ -151,7 +149,15 @@ public class SpellbookFrame extends javax.swing.JFrame {
         wordSearchField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
-                onSearchChange();
+                // needs to be run in a separate thread
+                // because we may need to switch the dictionary
+                // based on the user input
+                EventQueue.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        onSearchChange();
+                    }
+                });
             }
 
             @Override
@@ -210,6 +216,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private void onSearchChange() {
         String searchString = wordSearchField.getText();
 
+        // switches to complementary dictionary if needed
+        // this can only happen on insert for obvious reasons
         autoCorrectDictionary(searchString);
 
         String approximation;
@@ -1061,13 +1069,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
             if (valid) {
                 LOGGER.info("Auto switching to complementing dictinary...");
-                    EventQueue.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
                             selectDictionary(dictionaryService.getComplement(selectedDictionary), false);
-
-                        }
-                    });
 
             }
         }
