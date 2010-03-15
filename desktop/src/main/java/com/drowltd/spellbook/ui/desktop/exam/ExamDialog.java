@@ -7,7 +7,7 @@ import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.Language;
-import com.drowltd.spellbook.ui.desktop.IconManager;
+import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.drowltd.spellbook.ui.desktop.PreferencesDialog;
 import com.drowltd.spellbook.ui.desktop.PreferencesExtractor;
 import com.drowltd.spellbook.ui.desktop.SpellbookFrame;

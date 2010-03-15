@@ -2,6 +2,7 @@ package com.drowltd.spellbook.ui.desktop;
 
 import com.drowltd.spellbook.core.exam.Difficulty;
 import com.drowltd.spellbook.core.i18n.Translator;
+import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.ui.desktop.exam.ExamDialog;
 import java.awt.Font;
@@ -32,7 +33,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
     private static final Translator TRANSLATOR = Translator.getTranslator("PreferencesForm");
     private static final PreferencesManager PM = PreferencesManager.getInstance();
 
-    private SupportedLanguages selectedLanguage;
+    private Language selectedLanguage;
 
     private Font selectedFont;
     
@@ -60,10 +61,10 @@ public class PreferencesDialog extends javax.swing.JDialog {
     private void initGeneralTab(final java.awt.Frame parent) {
         
 
-        selectedLanguage = SupportedLanguages.valueOf(PM.get(Preference.LANG, "EN"));
+        selectedLanguage = Language.valueOf(PM.get(Preference.UI_LANG, "ENGLISH"));
 
         // set the selected values from preferences
-        languageComboBox.setSelectedIndex(selectedLanguage == SupportedLanguages.EN ? 0 : 1);
+        languageComboBox.setSelectedIndex(selectedLanguage == Language.ENGLISH ? 0 : 1);
 
         minimizeToTrayCheckBox.setSelected(PM.getBoolean(Preference.MIN_TO_TRAY, false));
 
@@ -235,7 +236,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
                  
     }
 
-    public SupportedLanguages getSelectedLanguage() {
+    public Language getSelectedLanguage() {
         return selectedLanguage;
     }
 
@@ -759,9 +760,9 @@ public class PreferencesDialog extends javax.swing.JDialog {
 
     private void languageComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_languageComboBoxActionPerformed
         if (languageComboBox.getSelectedIndex() == 0) {
-            selectedLanguage = SupportedLanguages.EN;
+            selectedLanguage = Language.ENGLISH;
         } else {
-            selectedLanguage = SupportedLanguages.BG;
+            selectedLanguage = Language.BULGARIAN;
         }
     }//GEN-LAST:event_languageComboBoxActionPerformed
 

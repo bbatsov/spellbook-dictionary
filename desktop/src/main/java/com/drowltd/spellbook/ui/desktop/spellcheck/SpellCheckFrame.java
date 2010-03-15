@@ -4,7 +4,7 @@ import com.drowltd.spellbook.core.db.Dictionary;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.core.spellcheck.SpellChecker;
-import com.drowltd.spellbook.ui.desktop.IconManager;
+import com.drowltd.spellbook.ui.swing.util.IconManager;
 import java.awt.EventQueue;
 import java.awt.Point;
 import java.awt.event.ActionEvent;

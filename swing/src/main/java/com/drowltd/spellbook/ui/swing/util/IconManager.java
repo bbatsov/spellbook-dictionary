@@ -1,4 +1,4 @@
-package com.drowltd.spellbook.ui.desktop;
+package com.drowltd.spellbook.ui.swing.util;
 
 import javax.swing.*;
 

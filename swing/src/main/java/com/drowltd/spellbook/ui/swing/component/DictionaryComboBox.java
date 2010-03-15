@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package com.drowltd.spellbook.ui.swing.components;
+package com.drowltd.spellbook.ui.swing.component;
 
 import javax.swing.JComboBox;
 

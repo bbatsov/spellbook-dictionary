@@ -1,6 +1,6 @@
 package com.drowltd.spellbook.ui.desktop.exam;
 
-import com.drowltd.spellbook.ui.desktop.IconManager;
+import com.drowltd.spellbook.ui.swing.util.IconManager;
 import java.util.List;
 
 /**

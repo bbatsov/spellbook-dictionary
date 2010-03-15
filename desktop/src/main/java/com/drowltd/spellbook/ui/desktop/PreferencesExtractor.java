@@ -33,9 +33,9 @@ public class PreferencesExtractor {
 
     public static void extract(SpellbookFrame spellbookFrame, PreferencesDialog preferencesDialog) {
         if (preferencesDialog.showDialog()) {
-            String oldLanguage = PM.get(Preference.LANG, "EN");
+            String oldLanguage = PM.get(Preference.UI_LANG, "EN");
             final String newLanguage = preferencesDialog.getSelectedLanguage().toString();
-            PM.put(Preference.LANG, newLanguage);
+            PM.put(Preference.UI_LANG, newLanguage);
 
             if (!oldLanguage.equals(newLanguage)) {
                 LOGGER.info("Language changed from " + oldLanguage + " to " + newLanguage);

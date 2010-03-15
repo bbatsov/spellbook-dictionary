@@ -47,7 +47,7 @@ public class SpellbookApp {
 
         final PreferencesManager pm = PreferencesManager.getInstance();
 
-        if (pm.get(Preference.LANG, "EN").equals("BG")) {
+        if (pm.get(Preference.UI_LANG, "ENGLISH").equals("BULGARIAN")) {
             Locale.setDefault(new Locale("bg", "BG"));
             LOGGER.info("Selected locate is " + Locale.getDefault());
         } else {

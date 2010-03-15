@@ -79,7 +79,7 @@ public class PreferencesManager {
         TRAY_POPUP,
         CLIPBOARD_INTEGRATION,
         SHOW_MEMORY_USAGE,
-        LANG,
+        UI_LANG,
         ALWAYS_ON_TOP,
         LOOK_AND_FEEL,
         FONT_NAME,

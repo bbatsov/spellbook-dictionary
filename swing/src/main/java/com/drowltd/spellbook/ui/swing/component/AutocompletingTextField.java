@@ -1,4 +1,4 @@
-package com.drowltd.spellbook.ui.desktop;
+package com.drowltd.spellbook.ui.swing.component;
 
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
