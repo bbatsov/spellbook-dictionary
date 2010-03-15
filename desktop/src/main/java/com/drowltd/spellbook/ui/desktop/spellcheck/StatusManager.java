@@ -1,5 +1,6 @@
 package com.drowltd.spellbook.ui.desktop.spellcheck;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -13,28 +14,31 @@ public class StatusManager {
 
     private static final StatusManager INSTANCE = new StatusManager();
     private static final Logger LOGGER = LoggerFactory.getLogger(StatusManager.class);
-
     private final List<StatusObserver> observers = new LinkedList<StatusObserver>();
 
-    private StatusManager(){
-        
+    private StatusManager() {
     }
 
-    public static StatusManager getInstance(){
+    public static StatusManager getInstance() {
         return INSTANCE;
     }
 
-    public synchronized void setStatus(String message) {
+    public void setStatus(String message) {
         if (message == null || message.isEmpty()) {
             LOGGER.error("message is null or empty");
             throw new IllegalArgumentException("message is null or empty");
         }
 
-        if (observers.isEmpty()) {
-            return;
-        }
+        List<StatusObserver> currentList = null;
 
-        for (StatusObserver observer : observers) {
+        synchronized (this) {
+            if (observers.isEmpty()) {
+                return;
+            }
+            currentList = new ArrayList<StatusObserver>(observers);
+        }
+        
+        for (StatusObserver observer : currentList) {
             observer.setStatus(message);
         }
     }
