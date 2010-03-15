@@ -159,19 +159,19 @@ public class SpellbookFrame extends javax.swing.JFrame {
                 EventQueue.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        onSearchChange();
+                        onSearchChange(true);
                     }
                 });
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-                onSearchChange();
+                onSearchChange(false);
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-                onSearchChange();
+                onSearchChange(false);
             }
         });
 
@@ -217,12 +217,14 @@ public class SpellbookFrame extends javax.swing.JFrame {
         }
     }
 
-    private void onSearchChange() {
+    private void onSearchChange(boolean insert) {
         String searchString = wordSearchField.getText();
 
-        // switches to complementary dictionary if needed
-        // this can only happen on insert for obvious reasons
-        autoCorrectDictionary(searchString);
+        if (!searchString.isEmpty() && insert) {
+            // switches to complementary dictionary if needed
+            // this can only happen on insert for obvious reasons
+            autoCorrectDictionary(searchString);
+        }
 
         String approximation;
 
@@ -563,7 +565,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         pasteMenuItem = new javax.swing.JMenuItem(new DefaultEditorKit.PasteAction());
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         prefsMenuItem = new javax.swing.JMenuItem();
-        jDictionaryMenu = new javax.swing.JMenu();
+        dictionaryMenu = new javax.swing.JMenu();
         jMenu4 = new javax.swing.JMenu();
         StudyWordsMenuItem = new javax.swing.JMenuItem();
         examMenuItem = new javax.swing.JMenuItem();
@@ -784,9 +786,9 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu2);
 
-        jDictionaryMenu.setMnemonic('d');
-        jDictionaryMenu.setText(bundle.getString("Dictionaries(Menu)")); // NOI18N
-        jMenuBar1.add(jDictionaryMenu);
+        dictionaryMenu.setMnemonic('d');
+        dictionaryMenu.setText(bundle.getString("Dictionaries(Menu)")); // NOI18N
+        jMenuBar1.add(dictionaryMenu);
 
         jMenu4.setMnemonic('t');
         jMenu4.setText(bundle.getString("Tools(Menu)")); // NOI18N
@@ -1002,10 +1004,10 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem copyMenuItem;
     private javax.swing.JMenuItem cutMenuItem;
     private javax.swing.JLabel dictionaryLabel;
+    private javax.swing.JMenu dictionaryMenu;
     private javax.swing.JMenuItem examMenuItem;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenuItem helpContentsMenuItem;
-    private javax.swing.JMenu jDictionaryMenu;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
@@ -1036,11 +1038,11 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
     //Must be called after initComponents in the constructor
     private void initDictionaries() {
-        jDictionaryMenu.removeAll();
+        dictionaryMenu.removeAll();
 
         final List<Dictionary> availableDictionaries = dictionaryService.getDictionaries();
         for (Dictionary dictionary : availableDictionaries) {
-            jDictionaryMenu.add(new DictionaryItem(dictionary));
+            dictionaryMenu.add(new DictionaryItem(dictionary));
         }
 
     }
@@ -1073,21 +1075,20 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
             if (valid) {
                 LOGGER.info("Auto switching to complementing dictinary...");
-                            selectDictionary(dictionaryService.getComplement(selectedDictionary), false);
-
+                selectDictionary(dictionaryService.getComplement(selectedDictionary), false);
             }
         }
     }
 
     private class DictionaryItem extends JMenuItem implements ActionListener {
-        private final Dictionary dictionary;
+        private final String dictionaryName;
 
         public DictionaryItem(Dictionary dictionary) {
             if (dictionary == null) {
                 throw new IllegalArgumentException("dictionary is null");
             }
 
-            this.dictionary = dictionary;
+            dictionaryName = dictionary.getName();
             setIcon(IconManager.getMenuIcon(dictionary.getIconName()));
             setText(TRANSLATOR.translate(dictionary.getName() + "(Dictionary)"));
             addActionListener(this);
@@ -1095,7 +1096,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            SpellbookFrame.this.selectDictionary(dictionary, true);
+            selectDictionary(dictionaryService.getDictionary(dictionaryName), true);
         }
     }
 }

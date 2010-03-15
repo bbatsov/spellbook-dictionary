@@ -141,7 +141,7 @@
             </MenuItem>
           </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="jDictionaryMenu">
+        <Menu class="javax.swing.JMenu" name="dictionaryMenu">
           <Properties>
             <Property name="mnemonic" type="int" value="100"/>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
