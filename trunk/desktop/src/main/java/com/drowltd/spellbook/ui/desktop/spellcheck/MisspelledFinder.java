@@ -1,11 +1,7 @@
 package com.drowltd.spellbook.ui.desktop.spellcheck;
 
-import com.drowltd.spellbook.core.db.Dictionary;
 import com.drowltd.spellbook.core.spellcheck.SpellChecker;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,8 +21,7 @@ public class MisspelledFinder {
     private static final Logger LOGGER = LoggerFactory.getLogger(MisspelledFinder.class);
     private static final MisspelledFinder INSTANCE = new MisspelledFinder();
     private final MisspelledWordsRegistry registry = MisspelledWordsRegistry.getInstance();
-
-    private final Map<Dictionary, Set<String>> userMisspelledMap = new HashMap<Dictionary, Set<String>>();
+    private final Set<String> userMisspelledSet = new HashSet<String>();
     private final SpellCheckHighlighter checkHighlighter = SpellCheckHighlighter.getInstance();
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private Future<?> currentFTask;
@@ -36,15 +31,18 @@ public class MisspelledFinder {
     }
 
     private MisspelledFinder() {
-        userMisspelledMap.put(Dictionary.EN_BG, Collections.synchronizedSet(new HashSet<String>()));
-        userMisspelledMap.put(Dictionary.BG_EN, Collections.synchronizedSet(new HashSet<String>()));
+        
     }
 
     public void addUserMisspelled(String misspelled) {
-        userMisspelledMap.get(SpellChecker.getInstance().getDictionary()).add(misspelled);
+        if(misspelled == null || misspelled.isEmpty()){
+            LOGGER.error("misspelled == null || misspelled.isEmpty()");
+            throw new IllegalArgumentException("misspelled == null || misspelled.isEmpty()");
+        }
+        userMisspelledSet.add(misspelled);
     }
 
-    public synchronized void findMisspelled(SpellCheckFrame.VisibleText text, boolean clearRegistry) {
+    public void findMisspelled(SpellCheckFrame.VisibleText text, boolean clearRegistry) {
         if (text == null) {
             LOGGER.error("text is null");
             return;
@@ -87,45 +85,48 @@ public class MisspelledFinder {
 
             LOGGER.info("search started");
 
-            synchronized (registry) {
-                if (clearRegistry) {
-                    registry.clear();
+
+            if (clearRegistry) {
+                registry.clear();
+            }
+
+            Pattern p = Pattern.compile("\\pL+");
+            Matcher m = p.matcher(text.getText());
+
+            int index = 0;
+
+            while (m.find(index)) {
+                if (Thread.currentThread().isInterrupted()) {
+                    return;
                 }
+                String mWord = m.group();
 
-                Pattern p = Pattern.compile("\\pL+");
-                Matcher m = p.matcher(text.getText());
+                LOGGER.info("checking word " + mWord);
 
-                int index = 0;
+                if (isWordMisspelled(mWord)) {
 
-                while (m.find(index)) {
-                    String mWord = m.group();
+                    int start = text.getText().indexOf(mWord, index);
+                    index = start + mWord.length();
 
-                    LOGGER.info("checking word " + mWord);
+                    LOGGER.info("misspelled word found: " + mWord + " startIndex: " + (start + text.getOffset()) + " endIndex: " + (mWord.length() + start + text.getOffset()));
 
-                    if (isWordMisspelled(mWord)) {
+                    if (registry.contains(mWord)) {
+                        LOGGER.info("misspelled word already in the Factory, adding occurance");
 
-                        int start = text.getText().indexOf(mWord, index);
-                        index = start + mWord.length();
-
-                        LOGGER.info("misspelled word found: " + mWord + " startIndex: " + (start + text.getOffset()) + " endIndex: " + (mWord.length() + start + text.getOffset()));
-
-                        if (registry.contains(mWord)) {
-                            LOGGER.info("misspelled word already in the Factory, adding occurance");
-
-                            registry.addOccurance(mWord, start + text.getOffset());
-
-                        } else {
-                            LOGGER.info("misspelled word not in the Factory, adding");
-
-                            registry.addMisspelled(new MisspelledWord(mWord, start + text.getOffset()));
-                        }
+                        registry.addOccurance(mWord, start + text.getOffset());
 
                     } else {
-                        int indexOfWord = text.getText().indexOf(mWord, index);
-                        index = indexOfWord + mWord.length();
+                        LOGGER.info("misspelled word not in the Factory, adding");
+
+                        registry.addMisspelled(new MisspelledWord(mWord, start + text.getOffset()));
                     }
+
+                } else {
+                    int indexOfWord = text.getText().indexOf(mWord, index);
+                    index = indexOfWord + mWord.length();
                 }
             }
+
 
             checkHighlighter.highlightMisspelled();
             LOGGER.info("search ended");
@@ -139,10 +140,10 @@ public class MisspelledFinder {
                 return false;
             }
 
-            if (userMisspelledMap.get(SpellChecker.getInstance().getDictionary()).contains(word)) {
+            if (userMisspelledSet.contains(word)) {
                 return false;
             }
-            
+
             return !spellChecker.checkWord(word.toLowerCase());
         }
     }

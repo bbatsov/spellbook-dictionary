@@ -2,8 +2,8 @@ package com.drowltd.spellbook.ui.desktop.spellcheck;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +17,7 @@ public class MisspelledWordsRegistry {
     private static final MisspelledWordsRegistry INSTANCE = new MisspelledWordsRegistry();
     private static final Logger LOGGER = LoggerFactory.getLogger(MisspelledWordsRegistry.class);
     
-    private final Map<String, MisspelledWord> misspelled = new HashMap<String, MisspelledWord>();
+    private final Map<String, MisspelledWord> misspelled = new ConcurrentHashMap<String, MisspelledWord>();
 
     public static MisspelledWordsRegistry getInstance() {
         return INSTANCE;

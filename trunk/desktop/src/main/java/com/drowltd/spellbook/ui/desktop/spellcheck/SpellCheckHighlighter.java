@@ -54,22 +54,22 @@ public class SpellCheckHighlighter {
 
             @Override
             public void run() {
-                synchronized (registry) {
-                    LOGGER.info("Removing all highlights");
-                    removeAllHighlights();
-                    if (registry.getMisspelled().isEmpty()) {
-                        return;
-                    }
-                    for (MisspelledWord misspelledWord : registry.getMisspelled()) {
-                        for (MisspelledWord.Position position : misspelledWord.getOccurances()) {
-                            try {
-                                highlighter.addHighlight(position.getStartIndex(), position.getEndIndex() + 1, painter);
-                            } catch (BadLocationException ex) {
-                                LOGGER.error("start: " + position.getStartIndex() + " end:" + position.getEndIndex() + " " + ex.getMessage());
-                            }
+
+                LOGGER.info("Removing all highlights");
+                removeAllHighlights();
+                if (registry.getMisspelled().isEmpty()) {
+                    return;
+                }
+                for (MisspelledWord misspelledWord : registry.getMisspelled()) {
+                    for (MisspelledWord.Position position : misspelledWord.getOccurances()) {
+                        try {
+                            highlighter.addHighlight(position.getStartIndex(), position.getEndIndex() + 1, painter);
+                        } catch (BadLocationException ex) {
+                            LOGGER.error("start: " + position.getStartIndex() + " end:" + position.getEndIndex() + " " + ex.getMessage());
                         }
                     }
                 }
+
             }
         });
     }
@@ -96,7 +96,7 @@ public class SpellCheckHighlighter {
     }
 
     public void removeAllHighlights() {
-        
+
         Highlighter.Highlight[] highlights = highlighter.getHighlights();
         for (Highlighter.Highlight h : highlights) {
             highlighter.removeHighlight(h);

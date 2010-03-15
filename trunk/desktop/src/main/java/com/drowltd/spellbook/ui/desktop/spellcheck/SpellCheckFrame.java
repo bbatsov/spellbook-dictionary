@@ -1,6 +1,7 @@
 package com.drowltd.spellbook.ui.desktop.spellcheck;
 
-import com.drowltd.spellbook.core.db.Dictionary;
+//import com.drowltd.spellbook.core.db.Dictionary;
+import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.core.spellcheck.SpellChecker;
@@ -12,10 +13,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.awt.event.MouseEvent;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.accessibility.AccessibleEditableText;
+import javax.swing.JMenuItem;
 import javax.swing.JTextPane;
 import javax.swing.JViewport;
 import javax.swing.Timer;
@@ -35,13 +38,14 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
 
     private static final SpellCheckFrame INSTANCE = new SpellCheckFrame();
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellCheckFrame.class);
-    private Dictionary selectedDictionary = Dictionary.getSelectedDictionary();
+    //private Dictionary selectedDictionary = Dictionary.getSelectedDictionary();
     private UndoManager undoManager = new UndoManager();
     private SpellCheckPopupMenu popupMenu;
     private SpellCheckHighlighter checkHighlighter;
     private Timer documentChangedTimer;
     private Timer adjustmentValueTimer;
     private final int INTERVAL = 550;
+    private Language selectedLanguage = Language.ENGLISH;
 
     public static SpellCheckFrame getInstance() {
         return INSTANCE;
@@ -51,6 +55,7 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
     private SpellCheckFrame() {
         initComponents();
         init();
+        initLanguageMenu();
     }
 
     /** This method is called from within the constructor to
@@ -77,8 +82,6 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
         jCopyMenuItem = new javax.swing.JMenuItem();
         jPasteMenuItem = new javax.swing.JMenuItem();
         jDictionaryMenu = new javax.swing.JMenu();
-        jEnMenuItem = new javax.swing.JMenuItem();
-        jBgMenuItem = new javax.swing.JMenuItem();
 
         setTitle("SpellBook SpellChecker");
 
@@ -163,25 +166,6 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
         jMenuBar1.add(jMenu2);
 
         jDictionaryMenu.setText("Languages");
-
-        jEnMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/flag_great_britain.png"))); // NOI18N
-        jEnMenuItem.setText("English");
-        jEnMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jEnMenuItemActionPerformed(evt);
-            }
-        });
-        jDictionaryMenu.add(jEnMenuItem);
-
-        jBgMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/flag_bulgaria.png"))); // NOI18N
-        jBgMenuItem.setText("Bulgarian");
-        jBgMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBgMenuItemActionPerformed(evt);
-            }
-        });
-        jDictionaryMenu.add(jBgMenuItem);
-
         jMenuBar1.add(jDictionaryMenu);
 
         setJMenuBar(jMenuBar1);
@@ -217,14 +201,6 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
         //popupMenu.show(evt);
     }//GEN-LAST:event_jTextPaneMouseClicked
 
-    private void jEnMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jEnMenuItemActionPerformed
-        setSelectedDictionary(Dictionary.EN_BG);
-    }//GEN-LAST:event_jEnMenuItemActionPerformed
-
-    private void jBgMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBgMenuItemActionPerformed
-        setSelectedDictionary(Dictionary.BG_EN);
-    }//GEN-LAST:event_jBgMenuItemActionPerformed
-
     private void jUndoMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jUndoMenuItemActionPerformed
         if (undoManager.canUndo()) {
             undoManager.undo();
@@ -254,21 +230,15 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
     }//GEN-LAST:event_jExitMenuItemActionPerformed
 
     private void jLanguageLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLanguageLabelMouseClicked
-        if (selectedDictionary.equals(Dictionary.BG_EN)) {
-            setSelectedDictionary(Dictionary.EN_BG);
-        } else {
-            setSelectedDictionary(Dictionary.BG_EN);
-        }
+
     }//GEN-LAST:event_jLanguageLabelMouseClicked
     /**
      * @param args the command line arguments
      */
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenuItem jBgMenuItem;
     private javax.swing.JMenuItem jCopyMenuItem;
     private javax.swing.JMenuItem jCutMenuItem;
     private javax.swing.JMenu jDictionaryMenu;
-    private javax.swing.JMenuItem jEnMenuItem;
     private javax.swing.JMenuItem jExitMenuItem;
     private javax.swing.JLabel jLanguageLabel;
     private javax.swing.JMenu jMenu1;
@@ -347,7 +317,7 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
         });
 
         StatusManager.getInstance().addObserver(this);
-        setLanguageStatus(selectedDictionary.getLanguage());
+        setLanguageStatus(selectedLanguage.toString());
 
     }
 
@@ -381,23 +351,33 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
      */
     private void loadSpellChecker() {
         //TODO introduce selected language
-        final Map<String, Integer> ratingsMap = DictionaryService.getInstance().getRatings(Language.ENGLISH);
-        new SpellChecker(ratingsMap, selectedDictionary);
+        final Map<String, Integer> ratingsMap = DictionaryService.getInstance().getRatings(selectedLanguage);
+        new SpellChecker(ratingsMap, selectedLanguage);
     }
 
-    private void setSelectedDictionary(Dictionary dictionary) {
-        if (dictionary == null) {
-            return;
-        }
+    private void setSelectedLanguage(Language language) {
+        assert language != null : "selectedLanguage is null";
 
-        if (selectedDictionary != dictionary) {
-            selectedDictionary = dictionary;
+        if (selectedLanguage != language) {
+            selectedLanguage = language;
             loadSpellChecker();
             triggerMisspelledSearch(documentChangedTimer, true);
-            setLanguageStatus(dictionary.getLanguage());
+            setLanguageStatus(language.toString());
         }
     }
 
+//    private void setSelectedDictionary(Dictionary dictionary) {
+//        if (dictionary == null) {
+//            return;
+//        }
+//
+//        if (selectedDictionary != dictionary) {
+//            selectedDictionary = dictionary;
+//            loadSpellChecker();
+//            triggerMisspelledSearch(documentChangedTimer, true);
+//            setLanguageStatus(dictionary.getLanguage());
+//        }
+//    }
     public void setLanguageStatus(String message) {
         if (message == null || message.isEmpty()) {
             return;
@@ -523,8 +503,32 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
         });
     }
 
-    public Dictionary getSelectedDictionary() {
-        return selectedDictionary;
+//    public Dictionary getSelectedDictionary() {
+//        return selectedDictionary;
+//    }
+    private void initLanguageMenu() {
+        List<Dictionary> dictionaries = DictionaryService.getInstance().getDictionaries();
+        for (Dictionary d : dictionaries) {
+            jDictionaryMenu.add(new LanguageItem(d.getFromLanguage()));
+        }
+    }
+
+    private class LanguageItem extends JMenuItem implements ActionListener {
+
+        private Language language;
+
+        public LanguageItem(Language language) {
+
+            this.language = language;
+            setIcon(IconManager.getMenuIcon(language.getIconName()));
+            setText(language.toString());
+            addActionListener(this);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            setSelectedLanguage(language);
+        }
     }
 
     /**
