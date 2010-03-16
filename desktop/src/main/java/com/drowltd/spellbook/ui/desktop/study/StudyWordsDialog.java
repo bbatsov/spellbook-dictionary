@@ -10,17 +10,20 @@
  */
 package com.drowltd.spellbook.ui.desktop.study;
 
+import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preference;
-//import com.drowltd.spellbook.core.db.Dictionary;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.service.DictionaryService;
+import com.drowltd.spellbook.core.service.study.StudyService;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
 import java.awt.Frame;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
@@ -33,12 +36,10 @@ public class StudyWordsDialog extends javax.swing.JDialog {
 
     private int fromWordsIndex;
     private int toWordsIndex;
-    //private DatabaseService dictDb;
-    private DictionaryService dictDb;
+    private StudyService studyService;
+    private DictionaryService dictionaryService;
     private static final PreferencesManager PM = PreferencesManager.getInstance();
     private static final Translator TRANSLATOR = Translator.getTranslator("LearningWordsDialog");
-    //private Dictionary selectedDictionary = Dictionary.EN_BG;
-    private Dictionary selectedDictionary;
     private SelectedDictionary selectedDictionaryEnum = SelectedDictionary.EN_BG;
     private String word;
     private WordsDialog wordsDialog;
@@ -73,22 +74,26 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         TRANSLATOR.reset();
         this.parent = parent;
         initComponents();
-
-        dictDb = DictionaryService.getInstance();
+        try {
+            studyService = new StudyService();
+        } catch (DictionaryDbLockedException ex) {
+            Logger.getLogger(StudyWordsDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        dictionaryService = DictionaryService.getInstance();
         ButtonGroup enumerateGroup = new ButtonGroup();
         enumerateGroup.add(inReverseOrderOfInputRadioButton);
         enumerateGroup.add(inOrderOfInputRadioButton);
         enumerateGroup.add(randomRadioButton);
         inOrderOfInputRadioButton.setSelected(true);
-        dictionaries = dictDb.getDictionaries();
-        words = dictDb.getWordsFromDictionary(dictionaries.get(0));
+        dictionaries = dictionaryService.getDictionaries();
+        words = dictionaryService.getWordsFromDictionary(dictionaries.get(0));
         answerButton.setEnabled(false);
         seeAnswerButton.setEnabled(false);
         stopButton.setEnabled(false);
         correctAnswer = new Integer(0);
         wrongAnswer = new Integer(0);
         answerSeen = new Integer(0);
-        countOfWords = dictDb.getCountOfTheWords();
+        countOfWords = studyService.getCountOfTheWords();
         checkingTheDatabase();
         fromLanguageComboBox.setSelectedIndex(PM.getInt(Preference.LEARNING_WORDS_FROM_LANG, fromLanguageComboBox.getSelectedIndex()));
         toLanguageComboBox.setSelectedIndex(PM.getInt(Preference.LEARNING_WORDS_TO_LANG, toLanguageComboBox.getSelectedIndex()));
@@ -635,7 +640,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
 
     private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
         checkingTheDatabase();
-        countOfWords = dictDb.getCountOfTheWords();
+        countOfWords = studyService.getCountOfTheWords();
     }//GEN-LAST:event_formWindowGainedFocus
     /**
      * @param args the command line arguments
@@ -815,7 +820,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
     }
 
     public void checkingTheDatabase() {
-        wordsForLearning = dictDb.getWordsForStudy();
+        wordsForLearning = studyService.getWordsForStudy();
         if (wordsForLearning.isEmpty()) {
             startButton.setEnabled(false);
             warningIconLabel.setIcon(IconManager.getImageIcon("warning.png", IconManager.IconSize.SIZE24));
@@ -864,8 +869,8 @@ public class StudyWordsDialog extends javax.swing.JDialog {
             selectedDictionaryEnum = SelectedDictionary.BG_EN;
         }
         String translation = null;
-        wordsForLearning = dictDb.getWordsForStudy();
-        translationForLearning = dictDb.getTranslationForStudy();
+        wordsForLearning = studyService.getWordsForStudy();
+        translationForLearning = studyService.getTranslationForStudy();
         answerButton.setEnabled(true);
         seeAnswerButton.setEnabled(true);
         stopButton.setEnabled(true);
@@ -898,7 +903,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         }
         if (inReverseOrderOfInputRadioButton.isSelected()) {
             howToEnumerate = HowToEnumerate.IN_REVERSE_ORDER_OF_INPUT;
-            long wordIndex1 = dictDb.getCountOfTheWords() - 1;
+            long wordIndex1 = studyService.getCountOfTheWords() - 1;
             wordIndex = (int) wordIndex1;
             if (selectedDictionaryEnum == SelectedDictionary.EN_BG) {
                 word = wordsForLearning.get(wordIndex);
@@ -930,7 +935,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
     public String getTranscription(String word) {
         String translation = null;
         if (selectedDictionaryEnum == SelectedDictionary.EN_BG) {
-            translation = dictDb.getTranslation(word, dictionaries.get(0));
+            translation = dictionaryService.getTranslation(word, dictionaries.get(0));
         }
         if (selectedDictionaryEnum == SelectedDictionary.BG_EN) {
             return "";

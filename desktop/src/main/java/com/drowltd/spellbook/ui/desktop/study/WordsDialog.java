@@ -11,12 +11,16 @@
 package com.drowltd.spellbook.ui.desktop.study;
 
 import com.drowltd.spellbook.core.db.DatabaseService;
+import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.service.DictionaryService;
+import com.drowltd.spellbook.core.service.study.StudyService;
 import java.awt.Frame;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -30,8 +34,7 @@ public class WordsDialog extends javax.swing.JDialog {
     private long countOFTheWords;
     List<String> wordsForStudy = new ArrayList<String>();
     List<String> translationForStudy = new ArrayList<String>();
-    //private DatabaseService dictDb;
-    private DictionaryService dictDb;
+    private StudyService studyService;
     private Frame parent;
     private static final PreferencesManager PM = PreferencesManager.getInstance();
     private static final Translator TRANSLATOR = Translator.getTranslator("WordsDialog");
@@ -44,10 +47,14 @@ public class WordsDialog extends javax.swing.JDialog {
         this.parent = parent;
         initComponents();
         getTable().setOpaque(true);
-        dictDb = DictionaryService.getInstance();
-        countOFTheWords = dictDb.getCountOfTheWords();
+        try {
+            studyService = new StudyService();
+        } catch (DictionaryDbLockedException ex) {
+            Logger.getLogger(WordsDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        countOFTheWords = studyService.getCountOfTheWords();
         // wordsForLearning = dictDb.getWordsForLearning();
-        translationForStudy = dictDb.getTranslationForStudy();
+        translationForStudy = studyService.getTranslationForStudy();
 
         addWordField.requestFocus();
     }
@@ -233,8 +240,8 @@ public class WordsDialog extends javax.swing.JDialog {
         translation = translation.toLowerCase();
         List<String> words = new ArrayList<String>();
 
-        wordsForStudy = dictDb.getWordsForStudy();
-        translationForStudy = dictDb.getTranslationForStudy();
+        wordsForStudy = studyService.getWordsForStudy();
+        translationForStudy = studyService.getTranslationForStudy();
         words = StudyWordsDialog.getWords();
 
         if (word == null || word.isEmpty() || translation == null || translation.isEmpty()) {
@@ -243,13 +250,13 @@ public class WordsDialog extends javax.swing.JDialog {
 
         if (words.contains(word)) { //da go napravq da se proverqva spored izbranite re4nici za6toto taka se zarejdata samo dumite na angliiski i se proverqva samo s tqh a ako dobavqme duma koqto e na drug ezik primerno germanski to 6te kazva postoqno 4e dumata q nqma v bazata
             //     wordsForLearning.add(word);
-            countOFTheWords = dictDb.getCountOfTheWords();
+            countOFTheWords = studyService.getCountOfTheWords();
             if (wordsForStudy.contains(word)) {
                 JOptionPane.showMessageDialog(this, TRANSLATOR.translate("AlreadyContainedWord(Message)"), null, JOptionPane.ERROR_MESSAGE);
             }
             if (!wordsForStudy.contains(word)) {
                 countOFTheWords++;
-                dictDb.addWordForStudy(word, translation);
+                studyService.addWordForStudy(word, translation);
 
                 setWordsInTable(false);
             }
@@ -265,11 +272,11 @@ public class WordsDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_addButtonActionPerformed
 
     private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
-        long countOFTheRows = countOFTheWords = dictDb.getCountOfTheWords();
+        long countOFTheRows = countOFTheWords = studyService.getCountOfTheWords();
 
         for (int i = 0; i < countOFTheRows; i++) {
             if ((Boolean) wordsTable.getValueAt(i, 3)) {
-                dictDb.deleteWord((String) wordsTable.getValueAt(i, 1));
+                studyService.deleteWord((String) wordsTable.getValueAt(i, 1));
                 countOFTheWords--;
             }
         }
@@ -299,8 +306,8 @@ public class WordsDialog extends javax.swing.JDialog {
         String word = addWordField.getText();
         String translation = addTranslationField.getText();
         List<String> words = new ArrayList<String>();
-        wordsForStudy = dictDb.getWordsForStudy();
-        translationForStudy = dictDb.getTranslationForStudy();
+        wordsForStudy = studyService.getWordsForStudy();
+        translationForStudy = studyService.getTranslationForStudy();
         words = StudyWordsDialog.getWords();
 
         if (word == null || word.isEmpty() || translation == null || translation.isEmpty()) {
@@ -309,13 +316,13 @@ public class WordsDialog extends javax.swing.JDialog {
 
         if (words.contains(word)) {
             //     wordsForLearning.add(word);
-            countOFTheWords = dictDb.getCountOfTheWords();
+            countOFTheWords = studyService.getCountOfTheWords();
             if (wordsForStudy.contains(word)) {
                 JOptionPane.showMessageDialog(this, TRANSLATOR.translate("AlreadyContainedWord(Message)"), null, JOptionPane.ERROR_MESSAGE);
             }
             if (!wordsForStudy.contains(word)) {
                 countOFTheWords++;
-                dictDb.addWordForStudy(word, translation);
+                studyService.addWordForStudy(word, translation);
 
                 setWordsInTable(false);
             }
@@ -356,10 +363,10 @@ public class WordsDialog extends javax.swing.JDialog {
     public void setWordsInTable(Boolean select) {
         WordsTableModel model = new WordsTableModel();
         wordsTable.setModel(model);
-        wordsForStudy = dictDb.getWordsForStudy();
-        translationForStudy = dictDb.getTranslationForStudy();
+        wordsForStudy = studyService.getWordsForStudy();
+        translationForStudy = studyService.getTranslationForStudy();
         model.setColumnIdentifiers(new String[]{TRANSLATOR.translate("ID(TableColumn)"), TRANSLATOR.translate("Word(TableColumn)"), TRANSLATOR.translate("Translation(TableColumn)"), TRANSLATOR.translate("Selected(TableColumn)")});
-        countOFTheWords = dictDb.getCountOfTheWords();
+        countOFTheWords = studyService.getCountOfTheWords();
         for (int i = 0; i < countOFTheWords; i++) {
             model.addRow(new Object[]{new Integer(i + 1), wordsForStudy.get(i), translationForStudy.get(i), select});
         }
