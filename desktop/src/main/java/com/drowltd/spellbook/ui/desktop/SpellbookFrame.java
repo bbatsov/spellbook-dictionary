@@ -942,28 +942,29 @@ public class SpellbookFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_wordSearchFieldActionPerformed
 
     private void wordsListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_wordsListValueChanged
+        // TODO refine synchronization
         if (!wordsList.isSelectionEmpty()) {
-            int selectedIndex = wordsList.getSelectedIndex();
+            final int selectedIndex = wordsList.getSelectedIndex();
 
             final String selectedWord = words.get(selectedIndex);
 
             // word field needs to be updated in a separate thread
-            if (!wordSearchField.hasFocus()) {
-                EventQueue.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    if (!wordSearchField.hasFocus()) {
                         wordSearchField.setText(selectedWord);
                     }
-                });
-            }
 
-            wordTranslationTextPane.setText(SwingUtil.formatTranslation(selectedWord, dictionaryService.getTranslation(words.get(selectedIndex), selectedDictionary)));
-            wordTranslationTextPane.setCaretPosition(0);
-            matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
-            matchLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
+                    wordTranslationTextPane.setText(SwingUtil.formatTranslation(selectedWord, dictionaryService.getTranslation(words.get(selectedIndex), selectedDictionary)));
+                    wordTranslationTextPane.setCaretPosition(0);
+                    matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
+                    matchLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
 
-            updateWordMenuItem.setEnabled(true);
-        }        // TODO add your handling code here:
+                    updateWordMenuItem.setEnabled(true);
+                }
+            });
+        }
     }//GEN-LAST:event_wordsListValueChanged
 
     private void StudyWordsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StudyWordsMenuItemActionPerformed
