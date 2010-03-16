@@ -27,7 +27,7 @@ public class InitDb {
 
         em = emf.createEntityManager();
 
-        DatabaseService.init("/opt/spellbook/db/dictionary.data.db");
+        DatabaseService.init("D:/db/dictionary.data.db");
         databaseService = DatabaseService.getInstance();
 
 

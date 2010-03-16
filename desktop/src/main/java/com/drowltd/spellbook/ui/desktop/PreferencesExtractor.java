@@ -121,6 +121,16 @@ public class PreferencesExtractor {
                 PM.put(Preference.LOOK_AND_FEEL, selectedLookAndFeel);
             }
 
+            final boolean emptyLineSelected = preferencesDialog.isEmptyLineEnabled();
+
+            if (emptyLineSelected) {
+                LOGGER.info("Empty line after each meaning enabled");
+            } else {
+                LOGGER.info("Empty line after each meaning disabled");
+            }
+
+            PM.putBoolean(Preference.EMPTY_LINE, emptyLineSelected);
+
             // set the font
             final Font selectedFont = preferencesDialog.getSelectedFont();
 

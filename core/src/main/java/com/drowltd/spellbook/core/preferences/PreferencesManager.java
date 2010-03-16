@@ -85,6 +85,7 @@ public class PreferencesManager {
         FONT_NAME,
         FONT_SIZE,
         FONT_STYLE,
+        EMPTY_LINE,
         EXAM_WORDS,
         EXAM_DIFFICULTY,
         EXAM_FROM_LANG,
