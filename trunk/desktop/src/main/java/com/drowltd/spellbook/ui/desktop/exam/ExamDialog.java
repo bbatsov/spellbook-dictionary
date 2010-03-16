@@ -19,6 +19,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.swing.Timer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preference;
 
@@ -32,6 +34,7 @@ import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preferen
  */
 public class ExamDialog extends javax.swing.JDialog {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExamDialog.class);
     private ExamService answerService;
     private static final PreferencesManager PM = PreferencesManager.getInstance();
     private int seconds = 0;
@@ -49,7 +52,6 @@ public class ExamDialog extends javax.swing.JDialog {
     private int toWordsIndex;
     private boolean timerUsed;
     private String diffLabelText;
-    private static Difficulty enumDiff = Difficulty.EASY;
     private static final Translator TRANSLATOR = Translator.getTranslator("ExamDialog");
     private static List<String> wrongWords = new ArrayList<String>();
     private static List<String> correctTranslation = new ArrayList<String>();
@@ -414,6 +416,9 @@ public class ExamDialog extends javax.swing.JDialog {
         selectedDictionary = dictionaryService.getDictionary((Language) fromLanguageComboBox.getSelectedItem(), (Language) toLanguageComboBox.getSelectedItem());
         assert selectedDictionary != null;
 
+        LOGGER.info("Selected difficulty " + difficulty);
+        LOGGER.info("Timer is " + enumTimerStatus);
+
         wrongWords.clear();
         correctTranslation.clear();
         answerService = new ExamService(selectedDictionary, difficulty);
@@ -428,7 +433,6 @@ public class ExamDialog extends javax.swing.JDialog {
         examWordsCopy = examWords;
 
         if (enumTimerStatus == TimerStatus.STARTED || enumTimerStatus == TimerStatus.STOPPED) {
-            difficulty = difficulty.valueOf(PM.get(Preference.EXAM_DIFFICULTY, difficulty.name()));
 
             if (timerEnabled) {
                 seconds = difficulty.getTime();
@@ -673,7 +677,7 @@ public class ExamDialog extends javax.swing.JDialog {
 
         timerIconLabel.setVisible(timerEnabled);
 
-        diffLabelText = PM.get(Preference.EXAM_DIFFICULTY, enumDiff.name());
+        diffLabelText = PM.get(Preference.EXAM_DIFFICULTY, difficulty.name());
         diffLabelChange(diffLabelText);
 
         enumTimerStatus = timerEnabled ? TimerStatus.STOPPED : TimerStatus.DISABLED;
@@ -689,15 +693,15 @@ public class ExamDialog extends javax.swing.JDialog {
     public static void diffLabelChange(String diff) {
         if (diff.equals("EASY")) {
             difficultyLabel.setText(TRANSLATOR.translate("Easy(Label)"));
-            enumDiff = Difficulty.EASY;
+            difficulty = Difficulty.EASY;
         }
         if (diff.equals("MEDIUM")) {
             difficultyLabel.setText(TRANSLATOR.translate("Medium(Label)"));
-            enumDiff = Difficulty.MEDIUM;
+            difficulty = Difficulty.MEDIUM;
         }
         if (diff.equals("HARD")) {
             difficultyLabel.setText(TRANSLATOR.translate("Hard(Label)"));
-            enumDiff = Difficulty.HARD;
+            difficulty = Difficulty.HARD;
         }
     }
 

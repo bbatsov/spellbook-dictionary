@@ -798,6 +798,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         ok = false;
+        initExamTab();
         setVisible(false);
     }//GEN-LAST:event_cancelButtonActionPerformed
 
