@@ -43,7 +43,6 @@ public class StudyWordsDialog extends javax.swing.JDialog {
     private SelectedDictionary selectedDictionaryEnum = SelectedDictionary.EN_BG;
     private String word;
     private WordsDialog wordsDialog;
-    private static List<String> words = new ArrayList<String>();
     private List<String> wordsForLearning = new ArrayList<String>();
     private List<String> translationForLearning = new ArrayList<String>();
     private List shuffleWordsForLearning = new ArrayList<String>();
@@ -86,7 +85,6 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         enumerateGroup.add(randomRadioButton);
         inOrderOfInputRadioButton.setSelected(true);
         dictionaries = dictionaryService.getDictionaries();
-        words = dictionaryService.getWordsFromDictionary(dictionaries.get(0));
         answerButton.setEnabled(false);
         seeAnswerButton.setEnabled(false);
         stopButton.setEnabled(false);
@@ -100,13 +98,6 @@ public class StudyWordsDialog extends javax.swing.JDialog {
 
     }
 
-    public static List<String> getWords() {
-        return words;
-    }
-
-    // public int getCountOFTheWords() {
-    //     return countOFTheWords;
-    // }
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -854,6 +845,11 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         stopButton.setEnabled(false);
         wordsButton.setEnabled(true);
         startButton.setEnabled(true);
+        fromLanguageComboBox.setEnabled(true);
+        toLanguageComboBox.setEnabled(true);
+        inOrderOfInputRadioButton.setEnabled(true);
+        inReverseOrderOfInputRadioButton.setEnabled(true);
+        randomRadioButton.setEnabled(true);
         translateField.setText(null);
         transcriptionLabel.setText(null);
         answerField.setText(null);
@@ -877,6 +873,11 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         isStopedLearn = false;
         startButton.setEnabled(false);
         wordsButton.setEnabled(false);
+        fromLanguageComboBox.setEnabled(false);
+        toLanguageComboBox.setEnabled(false);
+        inOrderOfInputRadioButton.setEnabled(false);
+        inReverseOrderOfInputRadioButton.setEnabled(false);
+        randomRadioButton.setEnabled(false);
         answerField.setEditable(true);
         answerField.setText(null);
         answerStatutLabel.setText(null);

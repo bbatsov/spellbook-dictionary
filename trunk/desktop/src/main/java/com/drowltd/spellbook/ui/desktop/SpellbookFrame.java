@@ -794,7 +794,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         jMenu4.setText(bundle.getString("Tools(Menu)")); // NOI18N
 
         StudyWordsMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/teacher.png"))); // NOI18N
-        StudyWordsMenuItem.setMnemonic('l');
+        StudyWordsMenuItem.setMnemonic('s');
         StudyWordsMenuItem.setText(bundle.getString("StudyWords(MenuItem)")); // NOI18N
         StudyWordsMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
