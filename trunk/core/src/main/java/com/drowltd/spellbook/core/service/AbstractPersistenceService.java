@@ -21,30 +21,39 @@ public class AbstractPersistenceService {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractPersistenceService.class);
     protected static EntityManager EM;
 
-    protected AbstractPersistenceService(String dictDbFile) throws DictionaryDbLockedException {
+    protected AbstractPersistenceService(String dbFile) throws DictionaryDbLockedException {
         // there can be only one entity manager ;-)
         if (EM == null) {
-            LOGGER.info("dictionary database: " + dictDbFile.replace(".data.db", ""));
+            initEntityManager(dbFile);
+        } else {
+            LOGGER.info("Entity manager is already initalized");
+        }
+    }
 
-            String url = "jdbc:h2:" + dictDbFile.replace(".data.db", "");
+    private static void initEntityManager(String dbFile) throws DictionaryDbLockedException {
+        LOGGER.info("dictionary database: " + dbFile.replace(".data.db", ""));
 
-            try {
-                // we need to override the db url from persistence.xml
+        String url = "jdbc:h2:" + dbFile.replace(".data.db", "");
+
+        try {
+            // we need to override the db url from persistence.xml
+            if (dbFile != null) {
                 Map<String, String> properties = new HashMap<String, String>();
                 properties.put("hibernate.connection.url", url);
 
                 EM = Persistence.createEntityManagerFactory("Spellbook", properties).createEntityManager();
-            } catch (javax.persistence.PersistenceException e) {
-                if (e.getMessage() != null) {
-                    if (e.getMessage().contains("Cannot open connection")) {
-                        throw new DictionaryDbLockedException();
-                    }
-                }
-
-                e.printStackTrace();
+            } else {
+                // if dbFile is null use the default configuration from persistence.xml
+                EM = Persistence.createEntityManagerFactory("Spellbook").createEntityManager();
             }
-        } else {
-            LOGGER.info("Entity manager is already initalized");
+        } catch (javax.persistence.PersistenceException e) {
+            if (e.getMessage() != null) {
+                if (e.getMessage().contains("Cannot open connection")) {
+                    throw new DictionaryDbLockedException();
+                }
+            }
+
+            e.printStackTrace();
         }
     }
 }
