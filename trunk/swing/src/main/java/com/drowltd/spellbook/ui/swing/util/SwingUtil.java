@@ -1,5 +1,6 @@
 package com.drowltd.spellbook.ui.swing.util;
 
+import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import javax.swing.JComponent;
 import net.java.balloontip.BalloonTip;
 import net.java.balloontip.utils.TimingUtils;
@@ -11,6 +12,9 @@ import net.java.balloontip.utils.TimingUtils;
  * @since 0.3
  */
 public class SwingUtil {
+
+    private static String textFormatting = new String();
+    private static final PreferencesManager PM = PreferencesManager.getInstance();
     private static final int DEFAULT_BALLOONTIP_DISPLAY_TIME = 5000;
 
     public static void showBalloonTip(JComponent component, String text) {
@@ -41,14 +45,20 @@ public class SwingUtil {
     private static String formatTranslation(String translation) {
         StringBuffer result = new StringBuffer();
 
+        if (PM.getBoolean(PreferencesManager.Preference.EMPTY_LINE, false)) {
+            textFormatting = "<br/>";
+        } else {
+            textFormatting = "";
+        }
+
         String[] lines = translation.split("\n");
 
-        for (String line : lines) {
-            // some special handling for transcripts
+            for (String line : lines) {
+                // some special handling for transcripts
             if (line.startsWith("[") && line.endsWith("]")) {
                 result.append("<span style=\"color:blue\">" + line + "</span>");
             } else {
-                result.append(line);
+                result.append(line + textFormatting);
             }
 
             if (line.startsWith("[") && line.endsWith("]")) {
