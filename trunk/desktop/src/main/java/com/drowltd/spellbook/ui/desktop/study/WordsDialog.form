@@ -30,7 +30,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
                   <Component id="jPanel1" alignment="0" max="32767" attributes="0"/>
-                  <Component id="wordsScrollPane" alignment="0" pref="547" max="32767" attributes="0"/>
+                  <Component id="wordsScrollPane" alignment="0" pref="557" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -80,7 +80,7 @@
                   <EmptySpace pref="274" max="32767" attributes="0"/>
               </Group>
               <Group type="102" alignment="1" attributes="0">
-                  <EmptySpace pref="393" max="32767" attributes="0"/>
+                  <EmptySpace pref="415" max="32767" attributes="0"/>
                   <Component id="nothingButton" linkSize="2" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="allButton" linkSize="2" min="-2" max="-2" attributes="0"/>

@@ -11,9 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,34 +19,15 @@ import org.slf4j.LoggerFactory;
  *
  * @author bozhidar
  */
-public class DictionaryService {
+public class DictionaryService extends AbstractPersistenceService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DictionaryService.class);
-    private static EntityManager EM;
     private static DictionaryService instance;
 
     private static Map<String, List<String>> dictionaryWordsCache = new HashMap<String, List<String>>();
 
     private DictionaryService(String dictDbFile) throws DictionaryDbLockedException {
-        LOGGER.info("dictionary database: " + dictDbFile.replace(".data.db", ""));
-
-        String url = "jdbc:h2:" + dictDbFile.replace(".data.db", "");
-
-        try {
-            // we need to override the db url from persistence.xml
-            Map<String, String> properties = new HashMap<String, String>();
-            properties.put("hibernate.connection.url", url);
-
-            EM = Persistence.createEntityManagerFactory("Spellbook", properties).createEntityManager();
-        } catch (javax.persistence.PersistenceException e) {
-            if (e.getMessage() != null) {
-                if (e.getMessage().contains("Cannot open connection")) {
-                    throw new DictionaryDbLockedException();
-                }
-            }
-
-            e.printStackTrace();
-        }
+        super(dictDbFile);
     }
 
     /**
@@ -290,50 +269,5 @@ public class DictionaryService {
         return (Dictionary) EM.createNamedQuery("Dictionary.getDictionaryByLanguages").setParameter("fromLanguage", dictionary.getToLanguage()).setParameter("toLanguage", dictionary.getFromLanguage()).getSingleResult();
     }
 
-    //   public List<String> getWordsForStudyFrom(Dictionary selectedDic){
-    //   }
-    //   public List<String> getWordsForStudyTo(Dictionary selectedDic) {
-    //   }
-    public List<String> getWordsForStudy() {
-        return EM.createQuery("select wfs.word from WordsForStudy wfs ").getResultList();
-    }
-
-    public List<String> getTranslationForStudy() {
-        return EM.createQuery("select wfs.translation from WordsForStudy wfs").getResultList();
-    }
-
-    public Long getCountOfTheWords() {
-        return (Long) EM.createQuery("select count(*) from WordsForStudy").getSingleResult();
-    }
-
-    public void addWordForStudy(String word, String translation) {
-
-        if (word == null || word.isEmpty()) {
-            LOGGER.error("word == null || word.isEmpty()");
-            throw new IllegalArgumentException("word == null || word.isEmpty()");
-        }
-
-        if (translation == null || translation.isEmpty()) {
-            LOGGER.error("translation == null || translation.isEmpty()");
-            throw new IllegalArgumentException("word == null || word.isEmpty()");
-        }
-
-        final WordsForStudy wfs = new WordsForStudy();
-
-        wfs.setWord(word);
-        wfs.setTranslation(translation);
-
-        EntityTransaction t = EM.getTransaction();
-        t.begin();
-        EM.persist(wfs);
-        t.commit();
-    }
-
-    public void deleteWord(String word) {
-        word.replaceAll("'", "''");
-        EntityTransaction t = EM.getTransaction();
-        t.begin();
-        EM.createQuery("delete from WordsForStudy  where word= :word").setParameter("word", word).executeUpdate();
-        t.commit();
-    }
+    
 }

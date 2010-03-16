@@ -37,7 +37,7 @@
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="repeatWordCheckBox" min="-2" max="-2" attributes="1"/>
-                          <Component id="jPanel1" linkSize="17" min="-2" pref="227" max="-2" attributes="1"/>
+                          <Component id="jPanel1" linkSize="17" min="-2" pref="230" max="-2" attributes="1"/>
                       </Group>
                       <EmptySpace pref="16" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -56,7 +56,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <Component id="jPanel1" linkSize="12" min="-2" max="-2" attributes="1"/>
+                      <Component id="jPanel1" linkSize="12" min="-2" pref="185" max="-2" attributes="1"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="repeatWordCheckBox" min="-2" max="-2" attributes="0"/>
                   </Group>
@@ -109,7 +109,7 @@
                           </Group>
                       </Group>
                   </Group>
-                  <EmptySpace pref="18" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -396,17 +396,16 @@
                       <Component id="jLabel9" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="answerSeenLabel" alignment="2" min="-2" pref="14" max="-2" attributes="0"/>
                   </Group>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
-                          <EmptySpace pref="16" max="32767" attributes="0"/>
+                      <Group type="102" alignment="1" attributes="0">
                           <Component id="imoticonLabel" min="-2" pref="47" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="answerStatutLabel" min="-2" pref="20" max="-2" attributes="0"/>
                       </Group>
-                      <Group type="102" attributes="0">
-                          <EmptySpace pref="21" max="32767" attributes="0"/>
+                      <Group type="102" alignment="1" attributes="0">
                           <Component id="transcriptionLabel" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="14" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                           <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="answerField" min="-2" max="-2" attributes="0"/>
