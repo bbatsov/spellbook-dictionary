@@ -1,4 +1,4 @@
-package com.drowltd.spellbook.core.exam;
+package com.drowltd.spellbook.core.model;
 
 import com.drowltd.spellbook.core.i18n.Translator;
 

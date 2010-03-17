@@ -1,6 +1,6 @@
 package com.drowltd.spellbook.core.db;
 
-import com.drowltd.spellbook.core.exam.Difficulty;
+import com.drowltd.spellbook.core.model.Difficulty;
 import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
 import java.sql.Connection;
 import java.sql.DriverManager;

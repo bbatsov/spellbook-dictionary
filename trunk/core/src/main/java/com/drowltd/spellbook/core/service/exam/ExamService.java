@@ -2,9 +2,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.drowltd.spellbook.core.exam;
+package com.drowltd.spellbook.core.service.exam;
 
+import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
+import com.drowltd.spellbook.core.model.Difficulty;
 import com.drowltd.spellbook.core.model.Dictionary;
+import com.drowltd.spellbook.core.model.Language;
+import com.drowltd.spellbook.core.service.AbstractPersistenceService;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -12,26 +16,28 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.regex.Pattern;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author Franky
  * @since 0.2
  */
-public class ExamService {
+public class ExamService extends AbstractPersistenceService {
 
-    //private SDatabaseService dictDb;
     private DictionaryService dictionaryService;
     private List<String> words;
     private List<String> answers;
     private int examWordIndex;
     private Random random = new Random();
     private String translation;
+    private Logger LOGGER = LoggerFactory.getLogger(ExamService.class);
 
-    public ExamService(Dictionary selectedDictionary, Difficulty selectedDifficulty) {
+    public ExamService() throws DictionaryDbLockedException {
+        super(null);
+
         dictionaryService = DictionaryService.getInstance();
-        words = dictionaryService.getDifficultyWords(selectedDictionary, selectedDifficulty);
-        assert words.size() > 0;
     }
 
     /**
@@ -179,5 +185,40 @@ public class ExamService {
             }
         }
         return false;
+    }
+
+    public List<Language> getToLanguages(Language fromLanguage) {
+        if (fromLanguage == null) {
+            LOGGER.error("fromLanguage == null");
+            throw new IllegalArgumentException("fromLanguage");
+        }
+
+        List<Dictionary> dictionaries = EM.createQuery("select d from Dictionary d where d.fromLanguage = :fromLanguage").setParameter("fromLanguage", fromLanguage).getResultList();
+
+        List<Language> languagesTo = new ArrayList<Language>(dictionaries.size());
+        for (Dictionary dictionary : dictionaries) {
+            languagesTo.add(dictionary.getToLanguage());
+        }
+
+        return languagesTo;
+    }
+
+    public void getDifficultyWords(Dictionary dictionary, Difficulty difficulty) {
+        if (dictionary == null) {
+            LOGGER.error("dictionary == null");
+            throw new IllegalArgumentException("dictionary == null");
+        }
+
+        if (difficulty == null) {
+            LOGGER.error("difficulty == null");
+            throw new IllegalArgumentException("difficulty == null");
+        }
+
+        words = EM.createQuery("select re.word from RankEntry re where"
+                + " re.rank > :low and re.rank <= :high and LENGTH(re.word) >=3 and "
+                + "exists (select de.word from DictionaryEntry de where de.word = re.word and de.dictionary.fromLanguage = re.language)")
+                .setParameter("low", difficulty.getLow())
+                .setParameter("high", difficulty.getHigh())
+                .getResultList();
     }
 }

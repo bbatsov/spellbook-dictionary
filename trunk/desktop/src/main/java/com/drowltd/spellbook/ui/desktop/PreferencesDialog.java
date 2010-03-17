@@ -1,6 +1,6 @@
 package com.drowltd.spellbook.ui.desktop;
 
-import com.drowltd.spellbook.core.exam.Difficulty;
+import com.drowltd.spellbook.core.model.Difficulty;
 import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;

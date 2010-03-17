@@ -1,7 +1,8 @@
 package com.drowltd.spellbook.ui.desktop.exam;
 
-import com.drowltd.spellbook.core.exam.ExamService;
-import com.drowltd.spellbook.core.exam.Difficulty;
+import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
+import com.drowltd.spellbook.core.service.exam.ExamService;
+import com.drowltd.spellbook.core.model.Difficulty;
 import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.core.service.DictionaryService;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import javax.swing.Timer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +37,7 @@ import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preferen
 public class ExamDialog extends javax.swing.JDialog {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ExamDialog.class);
-    private ExamService answerService;
+    private ExamService examService;
     private static final PreferencesManager PM = PreferencesManager.getInstance();
     private int seconds = 0;
     private int secondsBackup = 0;
@@ -70,6 +72,13 @@ public class ExamDialog extends javax.swing.JDialog {
 
         TRANSLATOR.reset();
         this.parent = parent;
+
+        try {
+            examService = new ExamService();
+        } catch (DictionaryDbLockedException ex) {
+            java.util.logging.Logger.getLogger(ExamDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         initComponents();
         initLanguages();
         pauseButton.setEnabled(false);
@@ -421,7 +430,7 @@ public class ExamDialog extends javax.swing.JDialog {
 
         wrongWords.clear();
         correctTranslation.clear();
-        answerService = new ExamService(selectedDictionary, difficulty);
+        examService.getDifficultyWords(selectedDictionary, difficulty);
         totalWords = 0;
         correctWords = 0;
 
@@ -457,8 +466,8 @@ public class ExamDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_startButtonActionPerformed
 
     private void stopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopButtonActionPerformed
-        wrongWords.add(answerService.examWord());
-        correctTranslation.add(answerService.getTranslation());
+        wrongWords.add(examService.examWord());
+        correctTranslation.add(examService.getTranslation());
         stopExam();
         pauseButton.setText(TRANSLATOR.translate("Pause(Button)"));
 
@@ -536,7 +545,7 @@ public class ExamDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_quitButtonActionPerformed
 
     private void fromLanguageComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fromLanguageComboBoxActionPerformed
-        final List<Language> languagesTo = dictionaryService.getToLanguages((Language) fromLanguageComboBox.getSelectedItem());
+        final List<Language> languagesTo = examService.getToLanguages((Language) fromLanguageComboBox.getSelectedItem());
         toLanguageComboBox.removeAllItems();
         for (Language language : languagesTo) {
             toLanguageComboBox.addItem(language);
@@ -575,8 +584,8 @@ public class ExamDialog extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     private void callAnswerService() {
-        answerService.getExamWord(selectedDictionary);
-        translateField.setText(answerService.examWord());
+        examService.getExamWord(selectedDictionary);
+        translateField.setText(examService.examWord());
         totalWords++;
     }
 
@@ -596,7 +605,7 @@ public class ExamDialog extends javax.swing.JDialog {
     }
 
     private void displayTranslation() {
-        answerService.possibleAnswers();
+        examService.possibleAnswers();
         String str;
 
         if (examWords == 0) {
@@ -608,7 +617,7 @@ public class ExamDialog extends javax.swing.JDialog {
         wordsProgressBar.setString(str);
         wordsProgressBar.setValue(maximumWordsProgressBar - examWords + 1);
 
-        if (answerService.isCorrect(answerField.getText())) {
+        if (examService.isCorrect(answerField.getText())) {
             wordsProgressBar.setForeground(new java.awt.Color(51, 255, 51));
 
             feedbackField.setText(TRANSLATOR.translate("CorrectAnswer(String)"));
@@ -618,8 +627,8 @@ public class ExamDialog extends javax.swing.JDialog {
             wordsProgressBar.setForeground(new java.awt.Color(204, 0, 0));
             feedbackField.setText(TRANSLATOR.translate("WrongAnser(String)"));
             answerIconLabel.setIcon(IconManager.getImageIcon("bell2_red.png", IconManager.IconSize.SIZE24));
-            wrongWords.add(answerService.examWord());
-            correctTranslation.add(answerService.getTranslation());
+            wrongWords.add(examService.examWord());
+            correctTranslation.add(examService.getTranslation());
         }
 
     }
@@ -662,8 +671,8 @@ public class ExamDialog extends javax.swing.JDialog {
                     }
                 }
             } else {
-                wrongWords.add(answerService.examWord());
-                correctTranslation.add(answerService.getTranslation());
+                wrongWords.add(examService.examWord());
+                correctTranslation.add(examService.getTranslation());
                 stopExam();
                 wordsProgressBar.setValue(maximumWordsProgressBar);
             }
