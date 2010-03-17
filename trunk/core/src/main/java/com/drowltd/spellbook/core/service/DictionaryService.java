@@ -6,7 +6,6 @@ import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.DictionaryEntry;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.model.RankEntry;
-import com.drowltd.spellbook.core.model.WordsForStudy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
