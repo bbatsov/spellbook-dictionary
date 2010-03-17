@@ -1,12 +1,10 @@
 package com.drowltd.spellbook.core.service;
 
-import com.drowltd.spellbook.core.model.Difficulty;
 import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.DictionaryEntry;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.model.RankEntry;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

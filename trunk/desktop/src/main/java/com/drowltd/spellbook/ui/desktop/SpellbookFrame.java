@@ -950,24 +950,11 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private void wordsListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_wordsListValueChanged
         // TODO refine synchronization
         if (!wordsList.isSelectionEmpty()) {
-            final int selectedIndex = wordsList.getSelectedIndex();
-
-            final String selectedWord = words.get(selectedIndex);
-
             // word field needs to be updated in a separate thread
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    if (!wordSearchField.hasFocus()) {
-                        wordSearchField.setText(selectedWord);
-                    }
-
-                    wordTranslationTextPane.setText(SwingUtil.formatTranslation(selectedWord, dictionaryService.getTranslation(words.get(selectedIndex), selectedDictionary)));
-                    wordTranslationTextPane.setCaretPosition(0);
-                    matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
-                    matchLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
-
-                    updateWordMenuItem.setEnabled(true);
+                    onWordSelectionChange();
                 }
             });
         }
@@ -1105,5 +1092,22 @@ public class SpellbookFrame extends javax.swing.JFrame {
         public void actionPerformed(ActionEvent e) {
             selectDictionary(dictionaryService.getDictionary(dictionaryName), true);
         }
+    }
+
+    private synchronized void onWordSelectionChange() {
+        final int selectedIndex = wordsList.getSelectedIndex();
+
+        final String selectedWord = words.get(selectedIndex);
+
+        if (!wordSearchField.hasFocus()) {
+            wordSearchField.setText(selectedWord);
+        }
+
+        wordTranslationTextPane.setText(SwingUtil.formatTranslation(selectedWord, dictionaryService.getTranslation(words.get(selectedIndex), selectedDictionary)));
+        wordTranslationTextPane.setCaretPosition(0);
+        matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
+        matchLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
+
+        updateWordMenuItem.setEnabled(true);
     }
 }
