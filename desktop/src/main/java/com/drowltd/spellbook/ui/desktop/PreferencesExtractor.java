@@ -47,6 +47,8 @@ public class PreferencesExtractor {
                 }
             }
 
+            PM.put(Preference.DEFAULT_DICTIONARY, preferencesDialog.getDefaultDictionary());
+
             final boolean minimizeToTrayEnabled = preferencesDialog.isMinimizeToTrayEnabled();
 
             if (minimizeToTrayEnabled) {

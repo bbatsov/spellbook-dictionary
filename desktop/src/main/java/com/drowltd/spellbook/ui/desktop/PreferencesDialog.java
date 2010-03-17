@@ -4,7 +4,9 @@ import com.drowltd.spellbook.core.exam.Difficulty;
 import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
+import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.ui.desktop.exam.ExamDialog;
+import com.drowltd.spellbook.ui.swing.component.DictionaryComboBox;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
@@ -39,6 +41,8 @@ public class PreferencesDialog extends javax.swing.JDialog {
     
     private boolean ok;
 
+    private static final DictionaryService DICTIONARY_SERVICE = DictionaryService.getInstance();
+
     /** Creates new form PreferencesDialog */
     public PreferencesDialog(final java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -65,6 +69,8 @@ public class PreferencesDialog extends javax.swing.JDialog {
 
         // set the selected values from preferences
         languageComboBox.setSelectedIndex(selectedLanguage == Language.ENGLISH ? 0 : 1);
+
+        defaultDictionaryComboBox.setSelectedItem(PM.get(Preference.DEFAULT_DICTIONARY, "English-Bulgarian"));
 
         minimizeToTrayCheckBox.setSelected(PM.getBoolean(Preference.MIN_TO_TRAY, false));
 
@@ -242,6 +248,10 @@ public class PreferencesDialog extends javax.swing.JDialog {
         return selectedLanguage;
     }
 
+    public String getDefaultDictionary() {
+        return (String)defaultDictionaryComboBox.getSelectedItem();
+    }
+
     public boolean isMinimizeToTrayEnabled() {
         return minimizeToTrayCheckBox.isSelected();
     }
@@ -318,7 +328,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         lookAndFeelComboBox = new javax.swing.JComboBox();
-        defaultDictionaryComboBox = new javax.swing.JComboBox();
+        defaultDictionaryComboBox = new DictionaryComboBox(DICTIONARY_SERVICE.getDictionaries());
         jPanel2 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
@@ -396,7 +406,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
                             .addComponent(showMemoryUsageCheckBox)
                             .addComponent(alwaysOnTopCheckBox)))
                     .addComponent(emptyLineCheckBox))
-                .addContainerGap(68, Short.MAX_VALUE))
+                .addContainerGap(62, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -439,8 +449,6 @@ public class PreferencesDialog extends javax.swing.JDialog {
             }
         });
 
-        defaultDictionaryComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
         jPanel10Layout.setHorizontalGroup(
@@ -456,7 +464,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
                     .addComponent(defaultDictionaryComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(languageComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, 103, Short.MAX_VALUE)
                     .addComponent(lookAndFeelComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -607,7 +615,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab(bundle1.getString("Font(Label)"), new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/font.png")), jPanel2); // NOI18N
@@ -657,11 +665,11 @@ public class PreferencesDialog extends javax.swing.JDialog {
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addComponent(timerCheckBox)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
                         .addComponent(jLabel5))
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
                         .addComponent(easyRadioButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(mediumRadioButton)
@@ -669,7 +677,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
                         .addComponent(hardRadioButton))
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 196, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 190, Short.MAX_VALUE)
                         .addComponent(wordCountField, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -707,7 +715,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(156, Short.MAX_VALUE))
+                .addContainerGap(153, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Exam", new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/blackboard.png")), jPanel6); // NOI18N
