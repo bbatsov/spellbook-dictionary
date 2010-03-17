@@ -1,6 +1,6 @@
 package com.drowltd.spellbook.core.service;
 
-import com.drowltd.spellbook.core.exam.Difficulty;
+import com.drowltd.spellbook.core.model.Difficulty;
 import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.DictionaryEntry;
@@ -114,17 +114,6 @@ public class DictionaryServiceTest {
     public void testGetDictionary() {
 
         assertEquals("dictionaries doesn't match", dictionary, dictionaryService.getDictionary(English, Bulgarian));
-    }
-
-    @Test
-    public void testGetLanguagesTo() {
-
-        assertTrue("languages doesn't match", dictionaryService.getToLanguages(English).contains(Bulgarian));
-    }
-
-    //@Test
-    public void testGetDifficultyWords() {
-        assertTrue("word not contained", dictionaryService.getDifficultyWords(dictionary, Difficulty.EASY).contains(word));
     }
 
     private static void init() {

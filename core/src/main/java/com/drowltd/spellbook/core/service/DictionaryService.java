@@ -1,6 +1,6 @@
 package com.drowltd.spellbook.core.service;
 
-import com.drowltd.spellbook.core.exam.Difficulty;
+import com.drowltd.spellbook.core.model.Difficulty;
 import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.DictionaryEntry;
@@ -180,40 +180,7 @@ public class DictionaryService extends AbstractPersistenceService {
                 + " where d.fromLanguage = :fromLanguage and d.toLanguage = :toLanguage").setParameter("fromLanguage", languageFrom).setParameter("toLanguage", languageTo).getSingleResult();
     }
 
-    public List<Language> getToLanguages(Language fromLanguage) {
-        if (fromLanguage == null) {
-            LOGGER.error("fromLanguage == null");
-            throw new IllegalArgumentException("fromLanguage");
-        }
-
-        List<Dictionary> dictionaries = EM.createQuery("select d from Dictionary d where d.fromLanguage = :fromLanguage").setParameter("fromLanguage", fromLanguage).getResultList();
-
-        List<Language> languagesTo = new ArrayList<Language>(dictionaries.size());
-        for (Dictionary dictionary : dictionaries) {
-            languagesTo.add(dictionary.getToLanguage());
-        }
-
-        return languagesTo;
-    }
-
-    public List<String> getDifficultyWords(Dictionary dictionary, Difficulty difficulty) {
-        if (dictionary == null) {
-            LOGGER.error("dictionary == null");
-            throw new IllegalArgumentException("dictionary == null");
-        }
-
-        if (difficulty == null) {
-            LOGGER.error("difficulty == null");
-            throw new IllegalArgumentException("difficulty == null");
-        }
-
-        List<String> words = EM.createQuery("select re.word from RankEntry re where"
-                + " re.rank > :low and re.rank <= :high and LENGTH(re.word) >=3 and "
-                + "exists (select de.word from DictionaryEntry de where de.word = re.word and de.dictionary.fromLanguage = re.language)").setParameter("low", difficulty.getLow()).setParameter("high", difficulty.getHigh()).getResultList();
-
-
-        return words;
-    }
+    
 
     public void addRankEntry(String word, Language language) {
         if (word == null || word.isEmpty()) {
