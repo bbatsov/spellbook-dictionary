@@ -80,6 +80,7 @@ public class PreferencesManager {
         CLIPBOARD_INTEGRATION,
         SHOW_MEMORY_USAGE,
         UI_LANG,
+        DEFAULT_DICTIONARY,
         ALWAYS_ON_TOP,
         LOOK_AND_FEEL,
         FONT_NAME,

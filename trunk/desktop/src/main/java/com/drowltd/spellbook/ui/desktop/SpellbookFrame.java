@@ -101,8 +101,14 @@ public class SpellbookFrame extends javax.swing.JFrame {
             System.exit(0);
         }
 
-        // todo implement default dict
-        setSelectedDictionary(dictionaryService.getDictionaries().get(0));
+        // select default dictionary if set
+        String defaultDictionaryName = PM.get(Preference.DEFAULT_DICTIONARY, "NONE");
+
+        if (defaultDictionaryName.equals("NONE")) {
+            setSelectedDictionary(dictionaryService.getDictionaries().get(0));
+        } else {
+            setSelectedDictionary(dictionaryService.getDictionary(defaultDictionaryName));
+        }
 
 
         //set the frame title

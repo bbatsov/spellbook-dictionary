@@ -148,7 +148,7 @@
                                   </Group>
                                   <Component id="emptyLineCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace pref="68" max="32767" attributes="0"/>
+                              <EmptySpace pref="62" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -259,7 +259,7 @@
                                   <Component id="languageComboBox" alignment="0" pref="103" max="32767" attributes="1"/>
                                   <Component id="lookAndFeelComboBox" alignment="0" max="32767" attributes="1"/>
                               </Group>
-                              <EmptySpace pref="17" max="32767" attributes="0"/>
+                              <EmptySpace pref="15" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -333,16 +333,9 @@
                       </Events>
                     </Component>
                     <Component class="javax.swing.JComboBox" name="defaultDictionaryComboBox">
-                      <Properties>
-                        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                          <StringArray count="4">
-                            <StringItem index="0" value="Item 1"/>
-                            <StringItem index="1" value="Item 2"/>
-                            <StringItem index="2" value="Item 3"/>
-                            <StringItem index="3" value="Item 4"/>
-                          </StringArray>
-                        </Property>
-                      </Properties>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new DictionaryComboBox(DICTIONARY_SERVICE.getDictionaries())"/>
+                      </AuxValues>
                     </Component>
                   </SubComponents>
                 </Container>
@@ -378,7 +371,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="jPanel5" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="13" max="32767" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -597,7 +590,7 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jPanel7" min="-2" max="-2" attributes="1"/>
-                      <EmptySpace pref="156" max="32767" attributes="0"/>
+                      <EmptySpace pref="153" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -622,12 +615,12 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="timerCheckBox" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace pref="19" max="32767" attributes="0"/>
+                                  <EmptySpace pref="13" max="32767" attributes="0"/>
                                   <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <Group type="102" attributes="0">
                                   <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace pref="43" max="32767" attributes="0"/>
+                                  <EmptySpace pref="33" max="32767" attributes="0"/>
                                   <Component id="easyRadioButton" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Component id="mediumRadioButton" min="-2" max="-2" attributes="0"/>
@@ -636,7 +629,7 @@
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace pref="196" max="32767" attributes="0"/>
+                                  <EmptySpace pref="190" max="32767" attributes="0"/>
                                   <Component id="wordCountField" min="-2" pref="70" max="-2" attributes="0"/>
                               </Group>
                           </Group>
