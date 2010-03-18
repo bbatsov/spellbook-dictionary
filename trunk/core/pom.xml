@@ -28,6 +28,7 @@
                             <url>jdbc:h2:/opt/spellbook/db/spellbook</url>
                             <username>spellbook</username>
                             <password>spellbook</password>
+                            <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
                         </configuration>
                         <goals>
                             <goal>update</goal>
