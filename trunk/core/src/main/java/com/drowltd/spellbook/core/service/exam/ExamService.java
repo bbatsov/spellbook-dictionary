@@ -203,10 +203,10 @@ public class ExamService extends AbstractPersistenceService {
         return languagesTo;
     }
 
-    public void getDifficultyWords(Dictionary dictionary, Difficulty difficulty) {
-        if (dictionary == null) {
-            LOGGER.error("dictionary == null");
-            throw new IllegalArgumentException("dictionary == null");
+    public void getDifficultyWords(Dictionary dictionary, Language language, Difficulty difficulty) {
+        if (language == null) {
+            LOGGER.error("language == null");
+            throw new IllegalArgumentException("language == null");
         }
 
         if (difficulty == null) {
@@ -216,9 +216,14 @@ public class ExamService extends AbstractPersistenceService {
 
         words = EM.createQuery("select re.word from RankEntry re where"
                 + " re.rank > :low and re.rank <= :high and LENGTH(re.word) >=3 and "
-                + "exists (select de.word from DictionaryEntry de where de.word = re.word and de.dictionary.fromLanguage = re.language)")
+                + "exists (select de.word from DictionaryEntry de where de.word = re.word and de.dictionary.fromLanguage = re.language and re.language = :language)")
                 .setParameter("low", difficulty.getLow())
                 .setParameter("high", difficulty.getHigh())
+                .setParameter("language", language)
                 .getResultList();
+
+        if (words.isEmpty()) {
+            words = dictionaryService.getWordsFromDictionary(dictionary);
+        }
     }
 }

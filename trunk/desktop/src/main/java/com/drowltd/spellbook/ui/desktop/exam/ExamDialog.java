@@ -46,7 +46,8 @@ public class ExamDialog extends javax.swing.JDialog {
     private int maximumSecondsProgressBar = 0;
     private int maximumWordsProgressBar = 0;
     private static Difficulty difficulty = Difficulty.EASY;
-    private Dictionary selectedDictionary;
+    private static Language selectedLanguage;
+    private static Dictionary selectedDictionary;
     private final DictionaryService dictionaryService = DictionaryService.getInstance();
     private int totalWords;
     private int correctWords;
@@ -82,6 +83,7 @@ public class ExamDialog extends javax.swing.JDialog {
         initComponents();
         initLanguages();
         pauseButton.setEnabled(false);
+        answerField.setEnabled(false);
 
         setIconImage(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE16).getImage());
         setLocationRelativeTo(parent);
@@ -425,12 +427,16 @@ public class ExamDialog extends javax.swing.JDialog {
         selectedDictionary = dictionaryService.getDictionary((Language) fromLanguageComboBox.getSelectedItem(), (Language) toLanguageComboBox.getSelectedItem());
         assert selectedDictionary != null;
 
+        selectedLanguage = (Language) fromLanguageComboBox.getSelectedItem();
+        assert selectedLanguage != null;
+
         LOGGER.info("Selected difficulty " + difficulty);
         LOGGER.info("Timer is " + enumTimerStatus);
+        LOGGER.info("Selected language is " + selectedLanguage);
 
         wrongWords.clear();
         correctTranslation.clear();
-        examService.getDifficultyWords(selectedDictionary, difficulty);
+        examService.getDifficultyWords(selectedDictionary, selectedLanguage, difficulty);
         totalWords = 0;
         correctWords = 0;
 
@@ -723,6 +729,8 @@ public class ExamDialog extends javax.swing.JDialog {
         stopButton.setEnabled(!a);
         answerButton.setEnabled(!a);
         pauseButton.setEnabled(!a);
+        answerField.setEnabled(!a);
+        
     }
 
     private void timerRunButton() {
