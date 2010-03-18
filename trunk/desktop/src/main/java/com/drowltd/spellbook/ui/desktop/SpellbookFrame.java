@@ -205,7 +205,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         wordSearchField.addMouseListener(contextMenuMouseListener);
         wordTranslationTextPane.addMouseListener(contextMenuMouseListener);
 
-        updateDictionaryLabel(selectedDictionary);
+        updatedictionaryButton(selectedDictionary);
 
         // update word menu item is initially disabled
         updateWordMenuItem.setEnabled(false);
@@ -249,8 +249,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
             wordsList.setSelectedIndex(index);
             wordsList.ensureIndexIsVisible(index);
 
-            matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
-            matchLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
+            statusButton.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
+            statusButton.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
 
             exactMatch = true;
         } else if ((approximation = dictionaryService.getApproximation(selectedDictionary, searchString)) != null) {
@@ -260,20 +260,20 @@ public class SpellbookFrame extends javax.swing.JFrame {
             wordsList.setSelectedIndex(index);
             wordsList.ensureIndexIsVisible(index);
 
-            matchLabel.setIcon(IconManager.getImageIcon("bell2_gold.png", IconSize.SIZE24));
-            matchLabel.setToolTipText(TRANSLATOR.translate("PartialMatchFound(ToolTip)"));
+            statusButton.setIcon(IconManager.getImageIcon("bell2_gold.png", IconSize.SIZE24));
+            statusButton.setToolTipText(TRANSLATOR.translate("PartialMatchFound(ToolTip)"));
 
             exactMatch = false;
         } else {
-            matchLabel.setIcon(IconManager.getImageIcon("bell2_red.png", IconSize.SIZE24));
-            matchLabel.setToolTipText(TRANSLATOR.translate("NoMatchFound(ToolTip)"));
+            statusButton.setIcon(IconManager.getImageIcon("bell2_red.png", IconSize.SIZE24));
+            statusButton.setToolTipText(TRANSLATOR.translate("NoMatchFound(ToolTip)"));
 
             exactMatch = false;
         }
     }
 
     public void showMemoryUsage() {
-        memoryUsageLabel.setVisible(true);
+        memoryButton.setVisible(true);
 
         if (memoryUsageExecutorService == null) {
             Runnable memoryRunnable = new Runnable() {
@@ -286,8 +286,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
                     int usedMemInMb = (int) (totalMemory - freeMemory) / BYTES_IN_ONE_MEGABYTE;
                     int totalMemInMb = (int) totalMemory / BYTES_IN_ONE_MEGABYTE;
 
-                    memoryUsageLabel.setText(usedMemInMb + "M of " + totalMemInMb + "M");
-                    memoryUsageLabel.setToolTipText(String.format(TRANSLATOR.translate("MemoryUsage(ToolTip)"), totalMemInMb, usedMemInMb));
+                    //memoryButton.setText(usedMemInMb + "M of " + totalMemInMb + "M");
+                    memoryButton.setToolTipText(String.format(TRANSLATOR.translate("MemoryUsage(ToolTip)"), totalMemInMb, usedMemInMb));
                 }
             };
 
@@ -297,7 +297,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
     }
 
     public void hideMemoryUsage() {
-        memoryUsageLabel.setVisible(false);
+        memoryButton.setVisible(false);
     }
 
     private void clear() {
@@ -309,7 +309,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         wordsList.clearSelection();
         updateWordMenuItem.setEnabled(false);
         wordTranslationTextPane.setText(null);
-        matchLabel.setIcon(IconManager.getImageIcon("bell2_red.png", IconSize.SIZE24));
+        statusButton.setIcon(IconManager.getImageIcon("bell2_red.png", IconSize.SIZE24));
         lastTransfer = null;
     }
 
@@ -350,8 +350,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
                             match = true;
 
-                            matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
-                            matchLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
+                            statusButton.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
+                            statusButton.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
                         } else if ((approximation = dictionaryService.getApproximation(selectedDictionary, searchString)) != null) {
                             foundWord = approximation;
                             int index = words.indexOf(foundWord);
@@ -361,8 +361,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
                             match = true;
 
-                            matchLabel.setIcon(IconManager.getImageIcon("bell2_gold.png", IconSize.SIZE24));
-                            matchLabel.setToolTipText(TRANSLATOR.translate("PartialMatchFound(ToolTip)"));
+                            statusButton.setIcon(IconManager.getImageIcon("bell2_gold.png", IconSize.SIZE24));
+                            statusButton.setToolTipText(TRANSLATOR.translate("PartialMatchFound(ToolTip)"));
                         }
 
                         // the tray popup translation should appear is the main frame is either not visible or minimized
@@ -459,18 +459,18 @@ public class SpellbookFrame extends javax.swing.JFrame {
         words = dictionaryService.getWordsFromDictionary(dictionary);
     }
 
-    private void updateDictionaryLabel(Dictionary dictionary) {
-        dictionaryLabel.setToolTipText(String.format(dictionary.getName() + "dictionary containing %d words", words.size()));
-        dictionaryLabel.setIcon(IconManager.getImageIcon(dictionary.getIconName(), IconManager.IconSize.SIZE24));
+    private void updatedictionaryButton(Dictionary dictionary) {
+        dictionaryButton.setToolTipText(String.format(dictionary.getName() + "dictionary containing %d words", words.size()));
+        dictionaryButton.setIcon(IconManager.getImageIcon(dictionary.getIconName(), IconManager.IconSize.SIZE24));
 
         if (dictionary.getName().equals("English-Bulgarian")) {
-            SwingUtil.showBalloonTip(dictionaryLabel, TRANSLATOR.translate("EnBgDictLoaded(Message)"));
-            dictionaryLabel.setToolTipText(String.format(TRANSLATOR.translate("EnBgDictSize(Label)"), words.size()));
-            dictionaryLabel.setIcon(IconManager.getImageIcon(dictionary.getIconName(), IconManager.IconSize.SIZE24));
+            SwingUtil.showBalloonTip(dictionaryButton, TRANSLATOR.translate("EnBgDictLoaded(Message)"));
+            dictionaryButton.setToolTipText(String.format(TRANSLATOR.translate("EnBgDictSize(Label)"), words.size()));
+            dictionaryButton.setIcon(IconManager.getImageIcon(dictionary.getIconName(), IconManager.IconSize.SIZE24));
         } else if (dictionary.getName().equals("Bulgarian-English")) {
-            SwingUtil.showBalloonTip(dictionaryLabel, TRANSLATOR.translate("BgEnDictLoaded(Message)"));
-            dictionaryLabel.setToolTipText(String.format(TRANSLATOR.translate("BgEnDictSize(Label)"), words.size()));
-            dictionaryLabel.setIcon(IconManager.getImageIcon(dictionary.getIconName(), IconManager.IconSize.SIZE24));
+            SwingUtil.showBalloonTip(dictionaryButton, TRANSLATOR.translate("BgEnDictLoaded(Message)"));
+            dictionaryButton.setToolTipText(String.format(TRANSLATOR.translate("BgEnDictSize(Label)"), words.size()));
+            dictionaryButton.setIcon(IconManager.getImageIcon(dictionary.getIconName(), IconManager.IconSize.SIZE24));
         } else {
             throw new IllegalArgumentException("Unknown dictionary " + dictionary);
         }
@@ -512,7 +512,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         wordSearchField.setFont(font);
         wordsList.setFont(font);
         wordTranslationTextPane.setFont(font);
-        dictionaryLabel.setFont(font);
+        dictionaryButton.setFont(font);
     }
 
     public void selectDictionary(Dictionary dictionary, boolean clear) {
@@ -530,7 +530,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         setSelectedDictionary(dictionary);
 
         wordsList.setModel(new ListBackedListModel(words));
-        updateDictionaryLabel(dictionary);
+        updatedictionaryButton(dictionary);
 
     }
 
@@ -552,12 +552,12 @@ public class SpellbookFrame extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         wordTranslationTextPane = new javax.swing.JTextPane();
-        matchLabel = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        dictionaryLabel = new javax.swing.JLabel();
-        previousWordLabel = new javax.swing.JLabel();
-        nextWordLabel = new javax.swing.JLabel();
-        memoryUsageLabel = new javax.swing.JLabel();
+        jToolBar1 = new javax.swing.JToolBar();
+        backButton = new javax.swing.JButton();
+        forwardButton = new javax.swing.JButton();
+        statusButton = new javax.swing.JButton();
+        dictionaryButton = new javax.swing.JButton();
+        memoryButton = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         restartMenuItem = new javax.swing.JMenuItem();
@@ -620,7 +620,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(wordSearchField, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 422, Short.MAX_VALUE))
         );
 
         splitPane.setLeftComponent(jPanel2);
@@ -629,76 +629,73 @@ public class SpellbookFrame extends javax.swing.JFrame {
         wordTranslationTextPane.setEditable(false);
         jScrollPane1.setViewportView(wordTranslationTextPane);
 
-        matchLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/bell2_grey.png"))); // NOI18N
-        matchLabel.setToolTipText(bundle.getString("NoMatchFound(ToolTip)")); // NOI18N
-        matchLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                matchLabelMouseClicked(evt);
-            }
-        });
-
-        jLabel1.setText(bundle.getString("FuelledBy(Label)")); // NOI18N
-
-        dictionaryLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/en-bg.png"))); // NOI18N
-
-        previousWordLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/arrow_left_blue.png"))); // NOI18N
-        previousWordLabel.setToolTipText(bundle.getString("PreviousWord(Label)")); // NOI18N
-        previousWordLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                previousWordLabelMouseClicked(evt);
-            }
-        });
-
-        nextWordLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/arrow_right_blue.png"))); // NOI18N
-        nextWordLabel.setToolTipText(bundle.getString("NextWord(Label)")); // NOI18N
-        nextWordLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                nextWordLabelMouseClicked(evt);
-            }
-        });
-
-        memoryUsageLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/memory.png"))); // NOI18N
-        memoryUsageLabel.setText("Memory usage");
-        memoryUsageLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                memoryUsageLabelMouseClicked(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 576, Short.MAX_VALUE)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(previousWordLabel)
-                .addGap(18, 18, 18)
-                .addComponent(nextWordLabel)
-                .addGap(18, 18, 18)
-                .addComponent(matchLabel)
-                .addGap(18, 18, 18)
-                .addComponent(dictionaryLabel)
-                .addGap(18, 18, 18)
-                .addComponent(memoryUsageLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 211, Short.MAX_VALUE)
-                .addComponent(jLabel1))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 575, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel1)
-                        .addComponent(memoryUsageLabel))
-                    .addComponent(previousWordLabel)
-                    .addComponent(nextWordLabel)
-                    .addComponent(matchLabel)
-                    .addComponent(dictionaryLabel))
-                .addGap(9, 9, 9)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE)
         );
 
         splitPane.setRightComponent(jPanel3);
+
+        jToolBar1.setFloatable(false);
+        jToolBar1.setRollover(true);
+
+        backButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/arrow_left_blue.png"))); // NOI18N
+        backButton.setToolTipText(bundle.getString("PreviousWord(Label)")); // NOI18N
+        backButton.setFocusable(false);
+        backButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        backButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        backButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backButtonActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(backButton);
+
+        forwardButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/arrow_right_blue.png"))); // NOI18N
+        forwardButton.setToolTipText(bundle.getString("NextWord(Label)")); // NOI18N
+        forwardButton.setFocusable(false);
+        forwardButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        forwardButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        forwardButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                forwardButtonActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(forwardButton);
+
+        statusButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/bell2_grey.png"))); // NOI18N
+        statusButton.setFocusable(false);
+        statusButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        statusButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        statusButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                statusButtonActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(statusButton);
+
+        dictionaryButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/en-bg.png"))); // NOI18N
+        dictionaryButton.setFocusable(false);
+        dictionaryButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        dictionaryButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(dictionaryButton);
+
+        memoryButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/memory.png"))); // NOI18N
+        memoryButton.setFocusable(false);
+        memoryButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        memoryButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        memoryButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                memoryButtonActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(memoryButton);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -706,14 +703,17 @@ public class SpellbookFrame extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(splitPane, javax.swing.GroupLayout.DEFAULT_SIZE, 761, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(splitPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 761, Short.MAX_VALUE)
+                    .addComponent(jToolBar1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 761, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(splitPane, javax.swing.GroupLayout.DEFAULT_SIZE, 457, Short.MAX_VALUE)
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(splitPane, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -966,43 +966,45 @@ public class SpellbookFrame extends javax.swing.JFrame {
         studyWords.showLearningWordsDialog();
     }//GEN-LAST:event_StudyWordsMenuItemActionPerformed
 
-    private void matchLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_matchLabelMouseClicked
-        clear();
-    }//GEN-LAST:event_matchLabelMouseClicked
-
-    private void previousWordLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_previousWordLabelMouseClicked
-        if (searchedWords.size() > 0 && searchWordsIndex >= 1) {
-            wordSearchField.setText(searchedWords.get(--searchWordsIndex));
-        }
-    }//GEN-LAST:event_previousWordLabelMouseClicked
-
-    private void nextWordLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_nextWordLabelMouseClicked
-        if (searchedWords.size() - 1 > searchWordsIndex) {
-            wordSearchField.setText(searchedWords.get(++searchWordsIndex));
-        }
-    }//GEN-LAST:event_nextWordLabelMouseClicked
-
     private void wordsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_wordsListMouseClicked
         if (evt.getClickCount() == 2) {
             updateWordDefinition();
         }
     }//GEN-LAST:event_wordsListMouseClicked
-    private void memoryUsageLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_memoryUsageLabelMouseClicked
-        // trigger manually garbage collection
+
+    private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
+        if (searchedWords.size() > 0 && searchWordsIndex >= 1) {
+            wordSearchField.setText(searchedWords.get(--searchWordsIndex));
+        }
+    }//GEN-LAST:event_backButtonActionPerformed
+
+    private void forwardButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_forwardButtonActionPerformed
+        if (searchedWords.size() - 1 > searchWordsIndex) {
+            wordSearchField.setText(searchedWords.get(++searchWordsIndex));
+        }
+    }//GEN-LAST:event_forwardButtonActionPerformed
+
+    private void statusButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statusButtonActionPerformed
+        clear();
+    }//GEN-LAST:event_statusButtonActionPerformed
+
+    private void memoryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_memoryButtonActionPerformed
         System.gc();
-    }//GEN-LAST:event_memoryUsageLabelMouseClicked
+    }//GEN-LAST:event_memoryButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem StudyWordsMenuItem;
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JMenuItem addWordMenuItem;
+    private javax.swing.JButton backButton;
     private javax.swing.JMenuItem copyMenuItem;
     private javax.swing.JMenuItem cutMenuItem;
-    private javax.swing.JLabel dictionaryLabel;
+    private javax.swing.JButton dictionaryButton;
     private javax.swing.JMenu dictionaryMenu;
     private javax.swing.JMenuItem examMenuItem;
     private javax.swing.JMenuItem exitMenuItem;
+    private javax.swing.JButton forwardButton;
     private javax.swing.JMenuItem helpContentsMenuItem;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu4;
@@ -1015,15 +1017,14 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
-    private javax.swing.JLabel matchLabel;
-    private javax.swing.JLabel memoryUsageLabel;
-    private javax.swing.JLabel nextWordLabel;
+    private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JButton memoryButton;
     private javax.swing.JMenuItem pasteMenuItem;
     private javax.swing.JMenuItem prefsMenuItem;
-    private javax.swing.JLabel previousWordLabel;
     private javax.swing.JMenuItem restartMenuItem;
     private javax.swing.JMenuItem spellcheckMenuItem;
     private javax.swing.JSplitPane splitPane;
+    private javax.swing.JButton statusButton;
     private javax.swing.JMenuItem updateWordMenuItem;
     private javax.swing.JTextField wordSearchField;
     private javax.swing.JTextPane wordTranslationTextPane;
@@ -1105,8 +1106,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         wordTranslationTextPane.setText(SwingUtil.formatTranslation(selectedWord, dictionaryService.getTranslation(words.get(selectedIndex), selectedDictionary)));
         wordTranslationTextPane.setCaretPosition(0);
-        matchLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
-        matchLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
+        statusButton.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
+        statusButton.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
 
         updateWordMenuItem.setEnabled(true);
     }
