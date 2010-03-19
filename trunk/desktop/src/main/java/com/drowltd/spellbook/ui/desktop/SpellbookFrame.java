@@ -205,7 +205,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         wordSearchField.addMouseListener(contextMenuMouseListener);
         wordTranslationTextPane.addMouseListener(contextMenuMouseListener);
 
-        updatedictionaryButton(selectedDictionary);
+        updateDictionaryButton(selectedDictionary);
 
         // update word menu item is initially disabled
         updateWordMenuItem.setEnabled(false);
@@ -459,16 +459,16 @@ public class SpellbookFrame extends javax.swing.JFrame {
         words = dictionaryService.getWordsFromDictionary(dictionary);
     }
 
-    private void updatedictionaryButton(Dictionary dictionary) {
+    private void updateDictionaryButton(Dictionary dictionary) {
         dictionaryButton.setToolTipText(String.format(dictionary.getName() + "dictionary containing %d words", words.size()));
         dictionaryButton.setIcon(IconManager.getImageIcon(dictionary.getIconName(), IconManager.IconSize.SIZE24));
 
         if (dictionary.getName().equals("English-Bulgarian")) {
-            SwingUtil.showBalloonTip(dictionaryButton, TRANSLATOR.translate("EnBgDictLoaded(Message)"));
+            //SwingUtil.showBalloonTip(dictionaryButton, TRANSLATOR.translate("EnBgDictLoaded(Message)"));
             dictionaryButton.setToolTipText(String.format(TRANSLATOR.translate("EnBgDictSize(Label)"), words.size()));
             dictionaryButton.setIcon(IconManager.getImageIcon(dictionary.getIconName(), IconManager.IconSize.SIZE24));
         } else if (dictionary.getName().equals("Bulgarian-English")) {
-            SwingUtil.showBalloonTip(dictionaryButton, TRANSLATOR.translate("BgEnDictLoaded(Message)"));
+            //SwingUtil.showBalloonTip(dictionaryButton, TRANSLATOR.translate("BgEnDictLoaded(Message)"));
             dictionaryButton.setToolTipText(String.format(TRANSLATOR.translate("BgEnDictSize(Label)"), words.size()));
             dictionaryButton.setIcon(IconManager.getImageIcon(dictionary.getIconName(), IconManager.IconSize.SIZE24));
         } else {
@@ -530,7 +530,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         setSelectedDictionary(dictionary);
 
         wordsList.setModel(new ListBackedListModel(words));
-        updatedictionaryButton(dictionary);
+        updateDictionaryButton(dictionary);
 
     }
 
@@ -620,7 +620,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(wordSearchField, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 422, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE))
         );
 
         splitPane.setLeftComponent(jPanel2);
@@ -633,11 +633,11 @@ public class SpellbookFrame extends javax.swing.JFrame {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 575, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 592, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 451, Short.MAX_VALUE)
         );
 
         splitPane.setRightComponent(jPanel3);
@@ -684,6 +684,11 @@ public class SpellbookFrame extends javax.swing.JFrame {
         dictionaryButton.setFocusable(false);
         dictionaryButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         dictionaryButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        dictionaryButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dictionaryButtonActionPerformed(evt);
+            }
+        });
         jToolBar1.add(dictionaryButton);
 
         memoryButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/memory.png"))); // NOI18N
@@ -701,19 +706,19 @@ public class SpellbookFrame extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(splitPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 761, Short.MAX_VALUE)
-                    .addComponent(jToolBar1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 761, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jToolBar1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 778, Short.MAX_VALUE)
+                    .addComponent(splitPane, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 778, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(splitPane, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE)
+                .addComponent(splitPane, javax.swing.GroupLayout.DEFAULT_SIZE, 451, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -991,6 +996,12 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private void memoryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_memoryButtonActionPerformed
         System.gc();
     }//GEN-LAST:event_memoryButtonActionPerformed
+
+    private void dictionaryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dictionaryButtonActionPerformed
+        if (dictionaryService.isComplemented(selectedDictionary)) {
+            selectDictionary(dictionaryService.getComplement(selectedDictionary), true);
+        }
+    }//GEN-LAST:event_dictionaryButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem StudyWordsMenuItem;
