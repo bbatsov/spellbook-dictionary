@@ -563,6 +563,10 @@
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new JButton(new DefaultEditorKit.CutAction())"/>
+                <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="cutButton.setText(null);"/>
+              </AuxValues>
             </Component>
             <Component class="javax.swing.JButton" name="copyButton">
               <Properties>
@@ -576,6 +580,10 @@
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new JButton(new DefaultEditorKit.CopyAction())"/>
+                <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="copyButton.setText(null);"/>
+              </AuxValues>
             </Component>
             <Component class="javax.swing.JButton" name="pasteButton">
               <Properties>
@@ -589,6 +597,10 @@
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new JButton(new DefaultEditorKit.PasteAction())"/>
+                <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="pasteButton.setText(null);"/>
+              </AuxValues>
             </Component>
             <Component class="javax.swing.JToolBar$Separator" name="jSeparator5">
             </Component>
