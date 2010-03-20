@@ -13,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Provides Spellbook's basic dictionary related functionality like looking for dictionaries, words, adding/updating/
+ * deleting dictionary entries.
  *
  * @author bozhidar
  */
@@ -23,6 +25,12 @@ public class DictionaryService extends AbstractPersistenceService {
 
     private static Map<String, List<String>> dictionaryWordsCache = new HashMap<String, List<String>>();
 
+    /**
+     * Builds a service object.
+     *
+     * @param dictDbFile the path to the H2 database file
+     * @throws DictionaryDbLockedException
+     */
     private DictionaryService(String dictDbFile) throws DictionaryDbLockedException {
         super(dictDbFile);
     }
@@ -42,18 +50,41 @@ public class DictionaryService extends AbstractPersistenceService {
         }
     }
 
+    /**
+     * Obtains the service single instance.
+     *
+     * @return service instance
+     */
     public static DictionaryService getInstance() {
         return instance;
     }
 
+    /**
+     * Retrieve a list of all available dictionaries.
+     *
+     * @return a list of available dictionaries, emtpy list if none are available
+     */
     public List<Dictionary> getDictionaries() {
         return EM.createNamedQuery("Dictionary.getAllDictionaries").getResultList();
     }
 
+    /**
+     * Retrieves a dictionary by its name.
+     *
+     * @param dictionaryName the name of the dictionary we wish to obtain
+     * @return the dictionary corresponding to the name
+     */
     public Dictionary getDictionary(String dictionaryName) {
         return (Dictionary)EM.createQuery("select d from Dictionary d where d.name = :name").setParameter("name", dictionaryName).getSingleResult();
     }
 
+    /**
+     * Retrieves all words from the target dictionary. The words are cached for subsequent
+     * invokations of the method
+     *
+     * @param d the target dictionary
+     * @return a list of the words in the dictionary
+     */
     public List<String> getWordsFromDictionary(Dictionary d) {
         if (!dictionaryWordsCache.containsKey(d.getName())) {
             LOGGER.info("Caching dictionary " + d.getName());
@@ -67,6 +98,13 @@ public class DictionaryService extends AbstractPersistenceService {
         return dictionaryWordsCache.get(d.getName());
     }
 
+    /**
+     * Retrieves the translation of a word from the specified dictionary.
+     *
+     * @param word the target word
+     * @param d the target dictionary
+     * @return the word's translation
+     */
     public String getTranslation(String word, Dictionary d) {
         return (String) EM.createQuery("select de.translation from DictionaryEntry de"
                 + " where de.word = :word and de.dictionary = :dictionary").setParameter("word", word).setParameter("dictionary", d).getSingleResult();
@@ -101,7 +139,6 @@ public class DictionaryService extends AbstractPersistenceService {
         re.setWord(word);
         re.setRank(1);
         re.setLanguage(d.getFromLanguage());
-
 
         EntityTransaction t = EM.getTransaction();
         t.begin();
@@ -138,6 +175,16 @@ public class DictionaryService extends AbstractPersistenceService {
         t.begin();
         EM.persist(de);
         t.commit();
+    }
+
+    public void deleteWord(String word, Dictionary dictionary) {
+        EntityTransaction entityTransaction = EM.getTransaction();
+        entityTransaction.begin();
+        EM.createQuery("delete from DictionaryEntry de where de.word = :word and de.dictionary = :dictionary")
+                .setParameter("word", word)
+                .setParameter("dictionary", dictionary)
+                .executeUpdate();
+        entityTransaction.commit();
     }
 
     public boolean containsWord(String word, Dictionary d) {
