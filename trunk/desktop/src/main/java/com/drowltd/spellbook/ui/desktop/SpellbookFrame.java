@@ -1267,14 +1267,18 @@ public class SpellbookFrame extends javax.swing.JFrame {
     }
 
     private void deleteWordDefinition() {
-        String selectedWord = (String)wordsList.getSelectedValue();
-        int selectedIndex = wordsList.getSelectedIndex();
+        if (JOptionPane.showConfirmDialog(this, "Are you sure you want to delete the selected word?", "Delete word",
+                                          JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.OK_OPTION) {
 
-        words.remove(selectedWord);
-        wordsList.setModel(new ListBackedListModel(words));
-        // this selects the word after the deleted word
-        wordsList.setSelectedIndex(selectedIndex);
-        dictionaryService.deleteWord(selectedWord, selectedDictionary);
+            String selectedWord = (String) wordsList.getSelectedValue();
+            int selectedIndex = wordsList.getSelectedIndex();
+
+            words.remove(selectedWord);
+            wordsList.setModel(new ListBackedListModel(words));
+            // this selects the word after the deleted word
+            wordsList.setSelectedIndex(selectedIndex);
+            dictionaryService.deleteWord(selectedWord, selectedDictionary);
+        }
     }
 
     private class DictionaryItem extends JMenuItem implements ActionListener {
