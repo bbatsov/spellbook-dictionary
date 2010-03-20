@@ -11,6 +11,8 @@ import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JTabbedPane;
@@ -91,14 +93,16 @@ public class PreferencesDialog extends javax.swing.JDialog {
 
         // build the look and feel section
         final LookAndFeelInfo[] lookAndFeelInfos = UIManager.getInstalledLookAndFeels();
-        String[] lookAndFeelNames = new String[lookAndFeelInfos.length + 1];
-        lookAndFeelNames[0] = "System";
+        List<String> lookAndFeelNames = new ArrayList<String>();
+        lookAndFeelNames.add("System");
 
-        for (int i = 0; i < lookAndFeelInfos.length; i++) {
-            lookAndFeelNames[i + 1] = lookAndFeelInfos[i].getName();
+        for (LookAndFeelInfo lookAndFeelInfo : lookAndFeelInfos) {
+            if (!lookAndFeelInfo.getName().equals("CDE/Motif")) {
+                lookAndFeelNames.add(lookAndFeelInfo.getName());
+            }
         }
 
-        lookAndFeelComboBox.setModel(new DefaultComboBoxModel(lookAndFeelNames));
+        lookAndFeelComboBox.setModel(new DefaultComboBoxModel(lookAndFeelNames.toArray()));
 
         lookAndFeelComboBox.setSelectedItem(PM.get(Preference.LOOK_AND_FEEL, "System"));
 
