@@ -120,4 +120,36 @@
           </column>
       </modifyColumn>
   </changeSet>
+  <changeSet id="6" author="sasho">
+   <createTable tableName="STUDY_SETS">
+      <column name="id" type="bigint">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="modified" type="datetime">
+        <constraints nullable="true"/>
+      </column>
+      <column name="created" type="datetime">
+        <constraints nullable="false"/>
+      </column>
+      <column name="name" type="varchar(50)">
+        <constraints nullable="false" unique="true"/>
+      </column>
+    </createTable>
+
+    <createTable tableName="STUDY_ENTRIES">
+      <column name="id" type="bigint">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="modified" type="datetime">
+        <constraints nullable="true"/>
+      </column>
+      <column name="created" type="datetime">
+        <constraints nullable="false"/>
+      </column>
+      <column name="dictionary_entry_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    </changeSet>
 </databaseChangeLog>
