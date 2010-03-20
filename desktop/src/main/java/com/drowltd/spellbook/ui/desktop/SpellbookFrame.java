@@ -17,6 +17,7 @@ import com.drowltd.spellbook.ui.desktop.study.StudyWordsDialog;
 import com.drowltd.spellbook.util.SearchUtils;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.HeadlessException;
 import java.awt.Rectangle;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
@@ -209,6 +210,9 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         // update word menu item is initially disabled
         updateWordMenuItem.setEnabled(false);
+        updateWordButton.setEnabled(false);
+        deleteWordMenuItem.setEnabled(false);
+        deleteWordButton.setEnabled(false);
 
         setDefaultFont();
 
@@ -220,6 +224,25 @@ public class SpellbookFrame extends javax.swing.JFrame {
             showMemoryUsage();
         } else {
             hideMemoryUsage();
+        }
+    }
+
+    private void addWordDefinition() throws HeadlessException {
+        AddUpdateWordDialog addUpdateWordDialog = new AddUpdateWordDialog(this, true);
+        addUpdateWordDialog.setVisible(true);
+
+        if (addUpdateWordDialog.getReturnStatus() == AddUpdateWordDialog.RET_OK) {
+            if (words.contains(addUpdateWordDialog.getWord())) {
+                JOptionPane.showMessageDialog(null, TRANSLATOR.translate("WordAlreadyExists(Message)"), "Warning", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            
+            int insertionIndex = SearchUtils.findInsertionIndex(words, addUpdateWordDialog.getWord());
+            System.out.println("insertion index is " + insertionIndex);
+            // this is a references to the cache as well
+            words.add(insertionIndex, addUpdateWordDialog.getWord());
+            wordsList.setModel(new ListBackedListModel(words));
+            dictionaryService.addWord(addUpdateWordDialog.getWord(), addUpdateWordDialog.getTranslation(), selectedDictionary);
         }
     }
 
@@ -307,7 +330,10 @@ public class SpellbookFrame extends javax.swing.JFrame {
         wordSearchField.requestFocusInWindow();
         wordsList.ensureIndexIsVisible(0);
         wordsList.clearSelection();
+        updateWordButton.setEnabled(false);
         updateWordMenuItem.setEnabled(false);
+        deleteWordButton.setEnabled(false);
+        deleteWordMenuItem.setEnabled(false);
         wordTranslationTextPane.setText(null);
         statusButton.setIcon(IconManager.getImageIcon("bell2_red.png", IconSize.SIZE24));
         lastTransfer = null;
@@ -558,6 +584,18 @@ public class SpellbookFrame extends javax.swing.JFrame {
         statusButton = new javax.swing.JButton();
         dictionaryButton = new javax.swing.JButton();
         memoryButton = new javax.swing.JButton();
+        jSeparator3 = new javax.swing.JToolBar.Separator();
+        addWordButton = new javax.swing.JButton();
+        updateWordButton = new javax.swing.JButton();
+        deleteWordButton = new javax.swing.JButton();
+        jSeparator4 = new javax.swing.JToolBar.Separator();
+        cutButton = new javax.swing.JButton();
+        copyButton = new javax.swing.JButton();
+        pasteButton = new javax.swing.JButton();
+        jSeparator5 = new javax.swing.JToolBar.Separator();
+        studyButton = new javax.swing.JButton();
+        examButton = new javax.swing.JButton();
+        spellcheckButton = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         restartMenuItem = new javax.swing.JMenuItem();
@@ -565,6 +603,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
         addWordMenuItem = new javax.swing.JMenuItem();
         updateWordMenuItem = new javax.swing.JMenuItem();
+        deleteWordMenuItem = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         cutMenuItem = new javax.swing.JMenuItem(new DefaultEditorKit.CutAction());
         copyMenuItem = new javax.swing.JMenuItem(new DefaultEditorKit.CopyAction());
@@ -701,6 +740,78 @@ public class SpellbookFrame extends javax.swing.JFrame {
             }
         });
         jToolBar1.add(memoryButton);
+        jToolBar1.add(jSeparator3);
+
+        addWordButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/add2.png"))); // NOI18N
+        addWordButton.setFocusable(false);
+        addWordButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        addWordButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(addWordButton);
+
+        updateWordButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/edit.png"))); // NOI18N
+        updateWordButton.setFocusable(false);
+        updateWordButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        updateWordButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(updateWordButton);
+
+        deleteWordButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/delete2.png"))); // NOI18N
+        deleteWordButton.setFocusable(false);
+        deleteWordButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        deleteWordButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(deleteWordButton);
+        jToolBar1.add(jSeparator4);
+
+        cutButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/cut.png"))); // NOI18N
+        cutButton.setFocusable(false);
+        cutButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        cutButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(cutButton);
+
+        copyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/copy.png"))); // NOI18N
+        copyButton.setFocusable(false);
+        copyButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        copyButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(copyButton);
+
+        pasteButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/paste.png"))); // NOI18N
+        pasteButton.setFocusable(false);
+        pasteButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        pasteButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(pasteButton);
+        jToolBar1.add(jSeparator5);
+
+        studyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/teacher.png"))); // NOI18N
+        studyButton.setFocusable(false);
+        studyButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        studyButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        studyButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                studyButtonActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(studyButton);
+
+        examButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/blackboard.png"))); // NOI18N
+        examButton.setFocusable(false);
+        examButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        examButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        examButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                examButtonActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(examButton);
+
+        spellcheckButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/spellcheck.png"))); // NOI18N
+        spellcheckButton.setFocusable(false);
+        spellcheckButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        spellcheckButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        spellcheckButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                spellcheckButtonActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(spellcheckButton);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -767,6 +878,10 @@ public class SpellbookFrame extends javax.swing.JFrame {
             }
         });
         jMenu2.add(updateWordMenuItem);
+
+        deleteWordMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/delete2.png"))); // NOI18N
+        deleteWordMenuItem.setText("Delete word");
+        jMenu2.add(deleteWordMenuItem);
         jMenu2.add(jSeparator2);
 
         cutMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/cut.png"))); // NOI18N
@@ -910,31 +1025,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_examMenuItemActionPerformed
 
     private void addWordMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addWordMenuItemActionPerformed
-        AddUpdateWordDialog addUpdateWordDialog = new AddUpdateWordDialog(this, true);
-
-        //addUpdateWordDialog.setDictionary(selectedSDictionary);
-        addUpdateWordDialog.setVisible(true);
-
-        if (addUpdateWordDialog.getReturnStatus() == AddUpdateWordDialog.RET_OK) {
-
-            if(words.contains(addUpdateWordDialog.getWord())){
-                JOptionPane.showMessageDialog(null, TRANSLATOR.translate("WordAlreadyExists(Message)"), "Warning", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            // save word
-            int insertionIndex = SearchUtils.findInsertionIndex(words, addUpdateWordDialog.getWord());
-
-            System.out.println("insertion index is " + insertionIndex);
-
-            // this is a references to the cache as well
-            words.add(insertionIndex, addUpdateWordDialog.getWord());
-
-            wordsList.setModel(new ListBackedListModel(words));
-
-            dictionaryService.addWord(addUpdateWordDialog.getWord(), addUpdateWordDialog.getTranslation(), selectedDictionary);
-            //sDatabaseService.addWord(selectedSDictionary, addUpdateWordDialog.getWord(), addUpdateWordDialog.getTranslation());
-        }
+        addWordDefinition();
     }//GEN-LAST:event_addWordMenuItemActionPerformed
 
     private void updateWordMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateWordMenuItemActionPerformed
@@ -1003,15 +1094,36 @@ public class SpellbookFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_dictionaryButtonActionPerformed
 
+    private void studyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_studyButtonActionPerformed
+        StudyWordsDialog studyWords = new StudyWordsDialog(this, true);
+        studyWords.setLocationRelativeTo(this);
+        studyWords.showLearningWordsDialog();
+    }//GEN-LAST:event_studyButtonActionPerformed
+
+    private void examButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_examButtonActionPerformed
+        ExamDialog examDialog = new ExamDialog(this, true);
+        examDialog.showExamDialog();
+    }//GEN-LAST:event_examButtonActionPerformed
+
+    private void spellcheckButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_spellcheckButtonActionPerformed
+        SpellCheckFrame.getInstance().setVisible(true);
+    }//GEN-LAST:event_spellcheckButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem StudyWordsMenuItem;
     private javax.swing.JMenuItem aboutMenuItem;
+    private javax.swing.JButton addWordButton;
     private javax.swing.JMenuItem addWordMenuItem;
     private javax.swing.JButton backButton;
+    private javax.swing.JButton copyButton;
     private javax.swing.JMenuItem copyMenuItem;
+    private javax.swing.JButton cutButton;
     private javax.swing.JMenuItem cutMenuItem;
+    private javax.swing.JButton deleteWordButton;
+    private javax.swing.JMenuItem deleteWordMenuItem;
     private javax.swing.JButton dictionaryButton;
     private javax.swing.JMenu dictionaryMenu;
+    private javax.swing.JButton examButton;
     private javax.swing.JMenuItem examMenuItem;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JButton forwardButton;
@@ -1028,14 +1140,21 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
+    private javax.swing.JToolBar.Separator jSeparator3;
+    private javax.swing.JToolBar.Separator jSeparator4;
+    private javax.swing.JToolBar.Separator jSeparator5;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JButton memoryButton;
+    private javax.swing.JButton pasteButton;
     private javax.swing.JMenuItem pasteMenuItem;
     private javax.swing.JMenuItem prefsMenuItem;
     private javax.swing.JMenuItem restartMenuItem;
+    private javax.swing.JButton spellcheckButton;
     private javax.swing.JMenuItem spellcheckMenuItem;
     private javax.swing.JSplitPane splitPane;
     private javax.swing.JButton statusButton;
+    private javax.swing.JButton studyButton;
+    private javax.swing.JButton updateWordButton;
     private javax.swing.JMenuItem updateWordMenuItem;
     private javax.swing.JTextField wordSearchField;
     private javax.swing.JTextPane wordTranslationTextPane;
@@ -1120,6 +1239,10 @@ public class SpellbookFrame extends javax.swing.JFrame {
         statusButton.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
         statusButton.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
 
+        // words can be updated only when selected
         updateWordMenuItem.setEnabled(true);
+        updateWordButton.setEnabled(true);
+
+        deleteWordButton.setEnabled(true);
     }
 }
