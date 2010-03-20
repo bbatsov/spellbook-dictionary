@@ -743,37 +743,58 @@ public class SpellbookFrame extends javax.swing.JFrame {
         jToolBar1.add(jSeparator3);
 
         addWordButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/add2.png"))); // NOI18N
+        addWordButton.setToolTipText(bundle.getString("EditAddWord(MenuItem)")); // NOI18N
         addWordButton.setFocusable(false);
         addWordButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         addWordButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        addWordButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addWordButtonActionPerformed(evt);
+            }
+        });
         jToolBar1.add(addWordButton);
 
         updateWordButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/edit.png"))); // NOI18N
+        updateWordButton.setToolTipText(bundle.getString("EditUpdateWord(MenuItem)")); // NOI18N
         updateWordButton.setFocusable(false);
         updateWordButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         updateWordButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        updateWordButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateWordButtonActionPerformed(evt);
+            }
+        });
         jToolBar1.add(updateWordButton);
 
         deleteWordButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/delete2.png"))); // NOI18N
+        deleteWordButton.setToolTipText(bundle.getString("EditDeleteWord(MenuItem)")); // NOI18N
         deleteWordButton.setFocusable(false);
         deleteWordButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         deleteWordButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        deleteWordButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteWordButtonActionPerformed(evt);
+            }
+        });
         jToolBar1.add(deleteWordButton);
         jToolBar1.add(jSeparator4);
 
         cutButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/cut.png"))); // NOI18N
+        cutButton.setToolTipText(bundle.getString("EditCut(MenuItem)")); // NOI18N
         cutButton.setFocusable(false);
         cutButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         cutButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(cutButton);
 
         copyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/copy.png"))); // NOI18N
+        copyButton.setToolTipText(bundle.getString("EditCopy(MenuItem)")); // NOI18N
         copyButton.setFocusable(false);
         copyButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         copyButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(copyButton);
 
         pasteButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/paste.png"))); // NOI18N
+        pasteButton.setToolTipText(bundle.getString("EditPaste(MenuItem)")); // NOI18N
         pasteButton.setFocusable(false);
         pasteButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         pasteButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -781,6 +802,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         jToolBar1.add(jSeparator5);
 
         studyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/teacher.png"))); // NOI18N
+        studyButton.setToolTipText(bundle.getString("StudyWords(MenuItem)")); // NOI18N
         studyButton.setFocusable(false);
         studyButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         studyButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -792,6 +814,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         jToolBar1.add(studyButton);
 
         examButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/blackboard.png"))); // NOI18N
+        examButton.setToolTipText(bundle.getString("Exam(MenuItem)")); // NOI18N
         examButton.setFocusable(false);
         examButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         examButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -803,6 +826,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         jToolBar1.add(examButton);
 
         spellcheckButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/spellcheck.png"))); // NOI18N
+        spellcheckButton.setToolTipText(bundle.getString("SpellCheck(MenuItem)")); // NOI18N
         spellcheckButton.setFocusable(false);
         spellcheckButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         spellcheckButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -880,7 +904,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         jMenu2.add(updateWordMenuItem);
 
         deleteWordMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/delete2.png"))); // NOI18N
-        deleteWordMenuItem.setText("Delete word");
+        deleteWordMenuItem.setText(bundle.getString("EditDeleteWord(MenuItem)")); // NOI18N
         jMenu2.add(deleteWordMenuItem);
         jMenu2.add(jSeparator2);
 
@@ -1109,6 +1133,18 @@ public class SpellbookFrame extends javax.swing.JFrame {
         SpellCheckFrame.getInstance().setVisible(true);
     }//GEN-LAST:event_spellcheckButtonActionPerformed
 
+    private void addWordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addWordButtonActionPerformed
+        addWordDefinition();
+    }//GEN-LAST:event_addWordButtonActionPerformed
+
+    private void updateWordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateWordButtonActionPerformed
+        updateWordDefinition();
+    }//GEN-LAST:event_updateWordButtonActionPerformed
+
+    private void deleteWordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteWordButtonActionPerformed
+        deleteWordDefinition();
+    }//GEN-LAST:event_deleteWordButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem StudyWordsMenuItem;
     private javax.swing.JMenuItem aboutMenuItem;
@@ -1203,6 +1239,10 @@ public class SpellbookFrame extends javax.swing.JFrame {
                 selectDictionary(dictionaryService.getComplement(selectedDictionary), false);
             }
         }
+    }
+
+    private void deleteWordDefinition() {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     private class DictionaryItem extends JMenuItem implements ActionListener {
