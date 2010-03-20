@@ -242,7 +242,11 @@ public class SpellbookFrame extends javax.swing.JFrame {
             // this is a references to the cache as well
             words.add(insertionIndex, addUpdateWordDialog.getWord());
             wordsList.setModel(new ListBackedListModel(words));
+
             dictionaryService.addWord(addUpdateWordDialog.getWord(), addUpdateWordDialog.getTranslation(), selectedDictionary);
+
+            // select the freshly inserted word
+            wordsList.setSelectedIndex(insertionIndex);
         }
     }
 
@@ -472,11 +476,32 @@ public class SpellbookFrame extends javax.swing.JFrame {
         if (wordsList.isSelectionEmpty()) {
             throw new IllegalStateException("No word selected");
         }
-        addUpdateWordDialog.setWord((String) wordsList.getSelectedValue());
-        addUpdateWordDialog.setTranslation(dictionaryService.getTranslation((String) wordsList.getSelectedValue(), selectedDictionary));
+        final String originalWord = (String) wordsList.getSelectedValue();
+        addUpdateWordDialog.setWord(originalWord);
+        addUpdateWordDialog.setTranslation(dictionaryService.getTranslation( originalWord, selectedDictionary));
         addUpdateWordDialog.setVisible(true);
         if (addUpdateWordDialog.getReturnStatus() == AddUpdateWordDialog.RET_OK) {
-            // update word
+            String newWord = addUpdateWordDialog.getWord();
+            String newTranslation = addUpdateWordDialog.getTranslation();
+
+            if (!originalWord.equals(newWord)) {
+                words.remove(originalWord);
+                int insertionIndex = SearchUtils.findInsertionIndex(words, newWord);
+                System.out.println("insertion index is " + insertionIndex);
+                // this is a references to the cache as well
+                words.add(insertionIndex, newWord);
+                wordsList.setModel(new ListBackedListModel(words));
+            }
+
+            dictionaryService.updateWord(originalWord, newWord, newTranslation, selectedDictionary);
+
+            // select the freshly updated word
+            wordsList.setSelectedValue(newWord, true);
+
+            // if only the translation was changed we need to update it manually
+            if (originalWord.equals(newWord)) {
+                wordTranslationTextPane.setText(SwingUtil.formatTranslation(newWord, newTranslation));
+            }
         }
     }
 

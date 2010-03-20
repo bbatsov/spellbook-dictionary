@@ -1,6 +1,5 @@
 package com.drowltd.spellbook.core.service;
 
-import com.drowltd.spellbook.core.model.Difficulty;
 import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.DictionaryEntry;
@@ -83,15 +82,6 @@ public class DictionaryServiceTest {
         assertTrue("word not added", dictionaryService.getWordsFromDictionary(dictionary).contains(nWord));
         assertEquals("translation not added", nTranslation, dictionaryService.getTranslation(nWord, dictionary));
         assertTrue("ratings entry not inserted", dictionaryService.getRatings(English).keySet().contains(nWord));
-
-    }
-
-    @Test
-    public void testUpateWord() {
-        final String nTranslation = "new trans";
-
-        dictionaryService.upateWord(word, nTranslation, dictionary);
-        assertEquals("word not updated", nTranslation, dictionaryService.getTranslation(word, dictionary));
 
     }
 

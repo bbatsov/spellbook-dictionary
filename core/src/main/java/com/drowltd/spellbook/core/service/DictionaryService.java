@@ -148,7 +148,7 @@ public class DictionaryService extends AbstractPersistenceService {
 
     }
 
-    public void upateWord(String word, String translation, Dictionary d) {
+    public void updateWord(String word, String newWord, String translation, Dictionary d) {
         if (word == null || word.isEmpty()) {
             LOGGER.error("word == null || word.isEmpty()");
             throw new IllegalArgumentException("word == null || word.isEmpty()");
@@ -170,6 +170,7 @@ public class DictionaryService extends AbstractPersistenceService {
         DictionaryEntry de = (DictionaryEntry) EM.createQuery("select de from DictionaryEntry de "
                 + "where de.dictionary = :dictionary and de.word = :word").setParameter("dictionary", d).setParameter("word", word).getSingleResult();
 
+        de.setWord(newWord);
         de.setTranslation(translation);
         final EntityTransaction t = EM.getTransaction();
         t.begin();
