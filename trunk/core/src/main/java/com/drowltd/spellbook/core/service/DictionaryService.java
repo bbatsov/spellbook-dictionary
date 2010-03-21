@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,6 +111,13 @@ public class DictionaryService extends AbstractPersistenceService {
                 + " where de.word = :word and de.dictionary = :dictionary").setParameter("word", word).setParameter("dictionary", d).getSingleResult();
     }
 
+    /**
+     * Adds a new word to a dictionary
+     *
+     * @param word the word to add
+     * @param translation the word's translation
+     * @param d the dictionary in which the word will be added
+     */
     public void addWord(String word, String translation, Dictionary d) {
         if (word == null || word.isEmpty()) {
             LOGGER.error("word == null || word.isEmpty()");
@@ -148,6 +156,14 @@ public class DictionaryService extends AbstractPersistenceService {
 
     }
 
+    /**
+     * Updates a dictionary entry. Both the word itself and its translation can be updated.
+     *
+     * @param word the word before the update(needed to find the entry to update)
+     * @param newWord the possibly new word
+     * @param translation the new translation
+     * @param d the dictionary containing the word
+     */
     public void updateWord(String word, String newWord, String translation, Dictionary d) {
         if (word == null || word.isEmpty()) {
             LOGGER.error("word == null || word.isEmpty()");
@@ -178,6 +194,12 @@ public class DictionaryService extends AbstractPersistenceService {
         t.commit();
     }
 
+    /**
+     * Deletes a word from the specified dictionary.
+     *
+     * @param word word to delete
+     * @param dictionary the dictionary to remove the word from
+     */
     public void deleteWord(String word, Dictionary dictionary) {
         EntityTransaction entityTransaction = EM.getTransaction();
         entityTransaction.begin();
@@ -188,16 +210,28 @@ public class DictionaryService extends AbstractPersistenceService {
         entityTransaction.commit();
     }
 
+    /**
+     * Checks whether a dictionary contains a word.
+     *
+     * @param word the word for which to check
+     * @param d the dictionary in which to check
+     * @return true if the word is present, false otherwise
+     */
     public boolean containsWord(String word, Dictionary d) {
         if (d == null) {
             LOGGER.error("d == null");
             throw new IllegalArgumentException("d == null");
         }
 
+        try {
+            EM.createQuery("SELECT de FROM DictionaryEntry de "
+                    + "WHERE de.word = :word and de.dictionary = :dictionary").setParameter("word", word).setParameter("dictionary", d).getSingleResult();
 
-        long count = (Long) EM.createQuery("SELECT COUNT(de.word) FROM DictionaryEntry de "
-                + "WHERE de.word = :word and de.dictionary = :dictionary").setParameter("word", word).setParameter("dictionary", d).getSingleResult();
-        return count > 0;
+            // we don't care about the result of the query - there will be an exception if something is wrong
+            return true;
+        } catch (NoResultException ex) {
+            return false;
+        }
     }
 
     public Map<String, Integer> getRatings(Language language) {
@@ -217,6 +251,13 @@ public class DictionaryService extends AbstractPersistenceService {
         return ratingsMap;
     }
 
+    /**
+     * Retrieves a dictionary by its from and to languages.
+     *
+     * @param languageFrom from language
+     * @param languageTo to language
+     * @return the dictionary that matches the languages
+     */
     public Dictionary getDictionary(Language languageFrom, Language languageTo) {
         if (languageFrom == null || languageTo == null) {
             LOGGER.error("languageFrom == null || languageTo == null");
@@ -250,33 +291,22 @@ public class DictionaryService extends AbstractPersistenceService {
         t.commit();
     }
 
-    public String getApproximation(Dictionary dictionary, String searchKey) {
-        if (searchKey != null && !searchKey.isEmpty()) {
-
-            LOGGER.info("Getting approximation for " + searchKey);
-
-            StringBuilder builder = new StringBuilder(searchKey);
-
-            // we start looking for approximate matches of the full search key, but if we fail - we start looking
-            // for shorter matches
-            do {
-                List<String> matches = EM.createQuery("select de.word from DictionaryEntry de where de.dictionary = :dictionary and de.word like :searchKey order by de.word asc").setParameter("dictionary", dictionary).setParameter("searchKey", builder.toString() + "%").getResultList();
-
-                if (matches.size() > 0) {
-                    return matches.get(0);
-                }
-
-                builder.deleteCharAt(builder.length() - 1);
-            } while (builder.length() > 0);
-        }
-
-        return null;
-    }
-
+    /**
+     * Checks if a dictionary is complemented(dual).
+     *
+     * @param dictionary the dictionary to check
+     * @return true if the dictionary is complemented, false otherwise
+     */
     public boolean isComplemented(Dictionary dictionary) {
         return !EM.createNamedQuery("Dictionary.getDictionaryByLanguages").setParameter("fromLanguage", dictionary.getToLanguage()).setParameter("toLanguage", dictionary.getFromLanguage()).getResultList().isEmpty();
     }
 
+    /**
+     * Retrieves a dictionary complement
+     *
+     * @param dictionary the dictionary for which we need a complement
+     * @return the dictionary's complement
+     */
     public Dictionary getComplement(Dictionary dictionary) {
         return (Dictionary) EM.createNamedQuery("Dictionary.getDictionaryByLanguages").setParameter("fromLanguage", dictionary.getToLanguage()).setParameter("toLanguage", dictionary.getFromLanguage()).getSingleResult();
     }

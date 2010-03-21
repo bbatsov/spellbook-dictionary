@@ -91,11 +91,6 @@ public class DictionaryServiceTest {
     }
 
     @Test
-    public void testGetApproximation() {
-        assertEquals("approximation not found", word, dictionaryService.getApproximation(dictionary, word + "b"));
-    }
-
-    @Test
     public void testGetRatings() {
         assertTrue("ratings doesn't match", dictionaryService.getRatings(English).containsKey(ratingsWord));
     }
