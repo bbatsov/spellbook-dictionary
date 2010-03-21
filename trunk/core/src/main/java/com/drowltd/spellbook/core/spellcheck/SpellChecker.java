@@ -4,6 +4,7 @@ import com.drowltd.spellbook.core.model.Language;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +15,6 @@ import org.slf4j.LoggerFactory;
  * @since 0.2
  *
  * Implementation of the Peter Norvig Toy Spelling corrector
- * by <a href="http://raelcunha.com/spell-correct.php">Rael Cunha</a>.
  *
  */
 public final class SpellChecker {
@@ -33,7 +33,6 @@ public final class SpellChecker {
 //        this(nWords, Dictionary.getSelectedDictionary());
 //
 //    }
-
     public SpellChecker(Map<String, Integer> nWords, Language language) {
         if (nWords == null) {
             throw new NullPointerException("nWords is null");
@@ -51,13 +50,13 @@ public final class SpellChecker {
         }
 
         this.language = language;
- 
+
         setInstance(this);
     }
 
-    private final ArrayList<String> edits(String word) {
+    protected final static List<String> edits(String word, String alphabet) {
 
-        String alphabet = language.getAlphabet();
+        assert alphabet != null && !alphabet.isEmpty() : "alphabet == null  || alphabet.isEmpty()";
 
         ArrayList<String> result = new ArrayList<String>();
         // Deletion
@@ -81,6 +80,132 @@ public final class SpellChecker {
             }
         }
         return result;
+    }
+
+    protected final static List<String> edits0(String word, String alphabet) {
+        assert alphabet != null && !alphabet.isEmpty() : "alphabet == null  || alphabet.isEmpty()";
+
+        return new CSBuilder(word, alphabet).edits();
+
+    }
+    private static class CSBuilder {
+
+        private final StringBuilder builder;
+        final char[] arr;
+        String word;
+        String alphabet;
+
+        CSBuilder(String word, String alphabet) {
+
+            int capacity = word.length() + 1;
+
+            builder = new StringBuilder();
+            arr = new char[capacity];
+            this.word = word;
+            this.alphabet = alphabet;
+        }
+
+       private void setGapToArr(int gap) {
+
+            assert gap >= 0 : "gap < 0";
+
+            zeroArr();
+
+            boolean gapped = false;
+            for (int i = 0, j = 0; i < word.length(); ++i, ++j) {
+                
+
+                if (i == gap && !gapped) {
+                    arr[j] = 0x7;
+                    --i;
+                    gapped = true;
+
+                } else {
+                    arr[j] = word.charAt(i);
+                }
+            }
+        }
+
+        private void plainCopytoArr() {
+            for (int i = 0; i < word.length(); ++i) {
+                arr[i] = word.charAt(i);
+            }
+        }
+
+        private void swapChars(int c0, int c1) {
+            plainCopytoArr();
+            char t = arr[c0];
+            arr[c0] = arr[c1];
+            arr[c1] = t;
+        }
+
+        private void removeCharFromArr(int index) {
+            zeroArr();
+            for (int i = 0; i < word.length(); ++i) {
+                if (index == i) {
+                    arr[i] = 0x7;
+                } else {
+                    arr[i] = word.charAt(i);
+                }
+            }
+        }
+
+        private void zeroArr() {
+            for (int i = 0; i < arr.length; ++i) {
+                arr[i] = 0x7;
+
+            }
+        }
+
+        private String build() {
+            if (builder.length() > 0) {
+                builder.delete(0, builder.length());
+            }
+            for (char c : arr) {
+
+                if (c != 0x7) {
+
+                    builder.append(c);
+                }
+            }
+
+            return builder.toString();
+        }
+
+        public List<String> edits() {
+
+            ArrayList<String> result = new ArrayList<String>();
+            // Deletion
+            for (int i = 0; i < word.length(); ++i) {
+                removeCharFromArr(i);
+                result.add(build());
+            }
+
+            // Transposition
+            for (int i = 0; i < word.length() - 1; ++i) {
+
+                swapChars(i, i + 1);
+                result.add(build());
+            }
+
+            // Alternation
+            for (int i = 0; i < word.length(); ++i) {
+                removeCharFromArr(i);
+                for (char c = alphabet.charAt(0); c <= alphabet.charAt(alphabet.length() - 1); ++c) {
+                    arr[i] = c;
+                    result.add(build());
+                }
+            }
+            // Insertion
+            for (int i = 0; i <= word.length(); ++i) {
+                setGapToArr(i);
+                for (char c = alphabet.charAt(0); c <= alphabet.charAt(alphabet.length() - 1); ++c) {
+                    arr[i] = c;
+                    result.add(build());
+                }
+            }
+            return result;
+        }
     }
 
     /**
@@ -115,20 +240,20 @@ public final class SpellChecker {
             return Collections.emptyMap();
         }
 
-        ArrayList<String> list = edits(wordInLowerCase);
+        List<String> list = edits0(wordInLowerCase, language.getAlphabet());
         Map<String, Integer> candidates = new HashMap<String, Integer>();
         for (String s : list) {
             if (nWords.containsKey(s)) {
-                candidates.put(s,nWords.get(s));
+                candidates.put(s, nWords.get(s));
             }
         }
         if (candidates.size() > 0) {
             return candidates;
         }
         for (String s : list) {
-            for (String w : edits(s)) {
+            for (String w : edits0(s, language.getAlphabet())) {
                 if (nWords.containsKey(w)) {
-                    candidates.put(w,nWords.get(w));
+                    candidates.put(w, nWords.get(w));
                 }
             }
         }
@@ -142,7 +267,6 @@ public final class SpellChecker {
     public Language getLanguage() {
         return language;
     }
-
 
     public synchronized static SpellChecker getInstance() {
         if (INSTANCE == null) {
