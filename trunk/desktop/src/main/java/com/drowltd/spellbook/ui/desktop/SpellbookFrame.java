@@ -31,7 +31,6 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -371,6 +370,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
                         String approximation;
                         boolean match = false;
+
+                        autoCorrectDictionary(searchString);
 
                         if (words.contains(searchString)) {
                             foundWord = searchString;
@@ -1238,13 +1239,15 @@ public class SpellbookFrame extends javax.swing.JFrame {
     }
 
     private void autoCorrectDictionary(String searchString) {
+        if (searchString == null || searchString.isEmpty()) {
+            return;
+        }
+
         Language from = selectedDictionary.getFromLanguage();
         boolean valid = true;
 
-        for (StringTokenizer stringTokenizer = new StringTokenizer(searchString); stringTokenizer.hasMoreTokens();) {
-            String token = stringTokenizer.nextToken();
-
-            if (!from.getAlphabet().contains(token)) {
+        for (String letter : explodeString(searchString)) {
+            if (!from.getAlphabet().contains(letter.toLowerCase())) {
                 valid = false;
                 break;
             }
@@ -1254,10 +1257,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
             Language to = selectedDictionary.getToLanguage();
             valid = true;
 
-            for (StringTokenizer stringTokenizer = new StringTokenizer(searchString); stringTokenizer.hasMoreTokens();) {
-                String token = stringTokenizer.nextToken();
-
-                if (!to.getAlphabet().contains(token)) {
+            for (String letter : explodeString(searchString)) {
+                if (!to.getAlphabet().contains(letter.toLowerCase())) {
                     valid = false;
                     break;
                 }
@@ -1268,6 +1269,16 @@ public class SpellbookFrame extends javax.swing.JFrame {
                 selectDictionary(dictionaryService.getComplement(selectedDictionary), false);
             }
         }
+    }
+
+    private List<String> explodeString(String string) {
+        List<String> result = new ArrayList<String>();
+
+        for (int i = 0; i < string.length(); i++) {
+            result.add(string.substring(i, i + 1));
+        }
+
+        return result;
     }
 
     private void deleteWordDefinition() {
