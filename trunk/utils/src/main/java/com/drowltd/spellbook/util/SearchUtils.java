@@ -13,6 +13,6 @@ import java.util.List;
  */
 public class SearchUtils {
     public static int findInsertionIndex(List<String> list, String elem) {
-        return -(Collections.binarySearch(list, elem, new CaseInsensitiveStringComparator())) - 1;
+        return Math.abs(Collections.binarySearch(list, elem, new CaseInsensitiveStringComparator())) - 1;
     }
 }

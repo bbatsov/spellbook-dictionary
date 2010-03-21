@@ -214,6 +214,10 @@ public class SpellbookFrame extends javax.swing.JFrame {
         deleteWordMenuItem.setEnabled(false);
         deleteWordButton.setEnabled(false);
 
+        // history buttons should be disabled initially
+        forwardButton.setEnabled(false);
+        backButton.setEnabled(false);
+
         setDefaultFont();
 
         if (PM.getBoolean(Preference.CLIPBOARD_INTEGRATION, false)) {
@@ -1113,6 +1117,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
             completableJTextField.addCompletion(wordSearchField.getText());
             searchedWords.add(wordSearchField.getText());
             searchWordsIndex = searchedWords.size();
+            backButton.setEnabled(true);
+            forwardButton.setEnabled(false);
         }
     }//GEN-LAST:event_wordSearchFieldActionPerformed
 
@@ -1144,12 +1150,16 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
         if (searchedWords.size() > 0 && searchWordsIndex >= 1) {
             wordSearchField.setText(searchedWords.get(--searchWordsIndex));
+
+            updateHistoryButtonsState();
         }
     }//GEN-LAST:event_backButtonActionPerformed
 
     private void forwardButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_forwardButtonActionPerformed
         if (searchedWords.size() - 1 > searchWordsIndex) {
             wordSearchField.setText(searchedWords.get(++searchWordsIndex));
+
+            updateHistoryButtonsState();
         }
     }//GEN-LAST:event_forwardButtonActionPerformed
 
@@ -1356,5 +1366,10 @@ public class SpellbookFrame extends javax.swing.JFrame {
         updateWordButton.setEnabled(true);
 
         deleteWordButton.setEnabled(true);
+    }
+
+    private void updateHistoryButtonsState() {
+        backButton.setEnabled(searchWordsIndex > 0);
+        forwardButton.setEnabled(searchWordsIndex < searchedWords.size() - 1);
     }
 }
