@@ -280,7 +280,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
             statusButton.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
 
             exactMatch = true;
-        } else if ((approximation = dictionaryService.getApproximation(selectedDictionary, searchString)) != null) {
+        } else if ((approximation = getApproximation(searchString)) != null) {
 
             int index = words.indexOf(approximation);
 
@@ -300,6 +300,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
     }
 
     public void showMemoryUsage() {
+        lastToolbarSeparator.setVisible(true);
         memoryButton.setVisible(true);
 
         if (memoryUsageExecutorService == null) {
@@ -324,6 +325,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
     }
 
     public void hideMemoryUsage() {
+        lastToolbarSeparator.setVisible(false);
         memoryButton.setVisible(false);
     }
 
@@ -384,7 +386,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
                             statusButton.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
                             statusButton.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
-                        } else if ((approximation = dictionaryService.getApproximation(selectedDictionary, searchString)) != null) {
+                        } else if ((approximation = getApproximation(searchString)) != null) {
                             foundWord = approximation;
                             int index = words.indexOf(foundWord);
 
@@ -420,6 +422,21 @@ public class SpellbookFrame extends javax.swing.JFrame {
             LOGGER.info("Shutting down clipboard monitoring");
             clipboardExecutorService.shutdown();
         }
+    }
+
+    public String getApproximation(String searchKey) {
+        if (searchKey != null && !searchKey.isEmpty()) {
+
+            LOGGER.info("Getting approximation for " + searchKey);
+
+            String word = searchKey;
+            final int index = SearchUtils.findInsertionIndex(words, searchKey);
+
+            // special consideration must be take if the insertion index is past the last index
+            return words.get(index == words.size() ? index - 1 : index);
+        }
+
+        return null;
     }
 
     public void restart() {
@@ -610,7 +627,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
         forwardButton = new javax.swing.JButton();
         statusButton = new javax.swing.JButton();
         dictionaryButton = new javax.swing.JButton();
-        memoryButton = new javax.swing.JButton();
         jSeparator3 = new javax.swing.JToolBar.Separator();
         addWordButton = new javax.swing.JButton();
         updateWordButton = new javax.swing.JButton();
@@ -626,6 +642,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
         studyButton = new javax.swing.JButton();
         examButton = new javax.swing.JButton();
         spellcheckButton = new javax.swing.JButton();
+        lastToolbarSeparator = new javax.swing.JToolBar.Separator();
+        memoryButton = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         restartMenuItem = new javax.swing.JMenuItem();
@@ -759,17 +777,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
             }
         });
         jToolBar1.add(dictionaryButton);
-
-        memoryButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/memory.png"))); // NOI18N
-        memoryButton.setFocusable(false);
-        memoryButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        memoryButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        memoryButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                memoryButtonActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(memoryButton);
         jToolBar1.add(jSeparator3);
 
         addWordButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/add2.png"))); // NOI18N
@@ -866,6 +873,18 @@ public class SpellbookFrame extends javax.swing.JFrame {
             }
         });
         jToolBar1.add(spellcheckButton);
+        jToolBar1.add(lastToolbarSeparator);
+
+        memoryButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/memory.png"))); // NOI18N
+        memoryButton.setFocusable(false);
+        memoryButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        memoryButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        memoryButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                memoryButtonActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(memoryButton);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -1210,6 +1229,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private javax.swing.JToolBar.Separator jSeparator4;
     private javax.swing.JToolBar.Separator jSeparator5;
     private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JToolBar.Separator lastToolbarSeparator;
     private javax.swing.JButton memoryButton;
     private javax.swing.JButton pasteButton;
     private javax.swing.JMenuItem pasteMenuItem;
