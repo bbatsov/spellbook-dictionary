@@ -1271,7 +1271,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
     }
 
     private void deleteWordDefinition() {
-        if (JOptionPane.showConfirmDialog(this, "Are you sure you want to delete the selected word?", "Delete word",
+        if (JOptionPane.showConfirmDialog(this, TRANSLATOR.translate("ConfirmWordDeletion(Message)"),
+                                          TRANSLATOR.translate("ConfirmWordDeletion(Title)"),
                                           JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.OK_OPTION) {
 
             String selectedWord = (String) wordsList.getSelectedValue();
