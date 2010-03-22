@@ -724,7 +724,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 592, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -997,7 +997,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         jMenu4.setText(bundle.getString("Tools(Menu)")); // NOI18N
 
         StudyWordsMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/teacher.png"))); // NOI18N
-        StudyWordsMenuItem.setMnemonic('s');
+        StudyWordsMenuItem.setMnemonic('w');
         StudyWordsMenuItem.setText(bundle.getString("StudyWords(MenuItem)")); // NOI18N
         StudyWordsMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
