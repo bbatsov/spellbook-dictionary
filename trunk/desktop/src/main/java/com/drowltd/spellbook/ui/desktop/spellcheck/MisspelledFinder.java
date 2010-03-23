@@ -140,7 +140,7 @@ public class MisspelledFinder {
                 return false;
             }
 
-            if (userMisspelledSet.contains(word)) {
+            if (userMisspelledSet.contains(word.toLowerCase())) {
                 return false;
             }
 

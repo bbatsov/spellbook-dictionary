@@ -119,7 +119,7 @@ public class SpellCheckPopupMenu extends JPopupMenu {
                 if (corrections.get(s).equals(i)) {
                     final CorrectionItem correctionItem = new CorrectionItem(s);
                     add(correctionItem);
-                    
+                    corrections.remove(s);
                     break;
                 }
             }

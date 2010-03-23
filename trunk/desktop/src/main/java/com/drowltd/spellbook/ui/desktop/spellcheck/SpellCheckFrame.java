@@ -1,6 +1,5 @@
 package com.drowltd.spellbook.ui.desktop.spellcheck;
 
-//import com.drowltd.spellbook.core.db.Dictionary;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.service.DictionaryService;
@@ -38,7 +37,6 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
 
     private static final SpellCheckFrame INSTANCE = new SpellCheckFrame();
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellCheckFrame.class);
-    //private Dictionary selectedDictionary = Dictionary.getSelectedDictionary();
     private UndoManager undoManager = new UndoManager();
     private SpellCheckPopupMenu popupMenu;
     private SpellCheckHighlighter checkHighlighter;
@@ -230,7 +228,6 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
     }//GEN-LAST:event_jExitMenuItemActionPerformed
 
     private void jLanguageLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLanguageLabelMouseClicked
-
     }//GEN-LAST:event_jLanguageLabelMouseClicked
     /**
      * @param args the command line arguments
@@ -317,8 +314,12 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
         });
 
         StatusManager.getInstance().addObserver(this);
-        setLanguageStatus(selectedLanguage.toString());
+        setLanguageStatus(languageToLowerCase(selectedLanguage));
 
+    }
+
+    private String languageToLowerCase(Language language) {
+        return language.toString().substring(0, 1) + language.toString().substring(1).toLowerCase();
     }
 
     private void triggerMisspelledSearch(Timer timer, boolean removeHighlightOnCaret) {
@@ -362,7 +363,7 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
             selectedLanguage = language;
             loadSpellChecker();
             triggerMisspelledSearch(documentChangedTimer, true);
-            setLanguageStatus(language.toString());
+            setLanguageStatus(languageToLowerCase(language));
         }
     }
 
@@ -384,16 +385,9 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
         }
         jLanguageLabel.setText(message);
 
-        //@todo NEXT introduce Language Enum to hold lang specific data
-        if (message.equals("English")) {
-            jLanguageLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/flag_great_britain.png")));
-            return;
-        }
+        jLanguageLabel.setIcon(IconManager.getMenuIcon(selectedLanguage.getIconName()));
 
-        if (message.equals("Bulgarian")) {
-            jLanguageLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/flag_bulgaria.png")));
-            return;
-        }
+
 
     }
 
@@ -521,7 +515,7 @@ public class SpellCheckFrame extends javax.swing.JFrame implements StatusManager
 
             this.language = language;
             setIcon(IconManager.getMenuIcon(language.getIconName()));
-            setText(language.toString());
+            setText(languageToLowerCase(language));
             addActionListener(this);
         }
 
