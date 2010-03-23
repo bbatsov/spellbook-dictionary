@@ -34,15 +34,12 @@ import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preferen
  * @since 0.2
  */
 public class PreferencesDialog extends javax.swing.JDialog {
+
     private static final Translator TRANSLATOR = Translator.getTranslator("PreferencesForm");
     private static final PreferencesManager PM = PreferencesManager.getInstance();
-
     private Language selectedLanguage;
-
     private Font selectedFont;
-    
     private boolean ok;
-
     private static final DictionaryService DICTIONARY_SERVICE = DictionaryService.getInstance();
 
     /** Creates new form PreferencesDialog */
@@ -65,7 +62,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
     }
 
     private void initGeneralTab(final java.awt.Frame parent) {
-        
+
 
         selectedLanguage = Language.valueOf(PM.get(Preference.UI_LANG, "ENGLISH"));
 
@@ -173,12 +170,15 @@ public class PreferencesDialog extends javax.swing.JDialog {
         fontStyleList.setSelectedIndex(PM.getInt(Preference.FONT_STYLE, 0));
 
         previewText.setFont(generateFont());
-        
+
         currentFontField.setEnabled(false);
         currentFontField.setText(PM.get(Preference.FONT_NAME, selectedFont.getFontName()));
-        fontList.setSelectedValue(PM.get(Preference.FONT_NAME, selectedFont.getFontName()), ok);
+        fontList.setSelectedValue((PM.get(Preference.FONT_NAME, selectedFont.getFontName())).replace("bold", ""), ok);
+        //bottom line needs a little rework do be done by Franky(Ivan Spasov) and the new design is ready and fully functional
         currentStyleField.setEnabled(false);
         currentStyleField.setText(fontStyleList.getSelectedValue().toString());
+        currentFontSizeField.setEnabled(false);
+        currentFontSizeField.setText(fontSizeList.getSelectedValue().toString());
     }
 
     private Font generateFont() {
@@ -188,8 +188,8 @@ public class PreferencesDialog extends javax.swing.JDialog {
 
         selectedFont = new Font(fontName,
                 (fontStyleList.isSelectedIndex(2) ? Font.ITALIC : Font.PLAIN)
-                        | (fontStyleList.isSelectedIndex(1) ? Font.BOLD : Font.PLAIN)
-                        | (fontStyleList.isSelectedIndex(0) ? Font.PLAIN : Font.PLAIN),
+                | (fontStyleList.isSelectedIndex(1) ? Font.BOLD : Font.PLAIN)
+                | (fontStyleList.isSelectedIndex(0) ? Font.PLAIN : Font.PLAIN),
                 sizeInt);
 
         return selectedFont;
@@ -200,6 +200,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
     }
 
     private class SelectionUpdater implements ChangeListener, ListSelectionListener {
+
         @Override
         public void valueChanged(ListSelectionEvent e) {
             previewText.setFont(generateFont());
@@ -210,16 +211,23 @@ public class PreferencesDialog extends javax.swing.JDialog {
         @Override
         public void stateChanged(ChangeEvent e) {
             previewText.setFont(generateFont());
-            
+
         }
     }
 
     private void initExamTab() {
         switch (Difficulty.valueOf(PM.get(Preference.EXAM_DIFFICULTY, Difficulty.EASY.toString()))) {
-            case EASY: easyRadioButton.setSelected(true); break;
-            case MEDIUM: mediumRadioButton.setSelected(true); break;
-            case HARD: hardRadioButton.setSelected(true); break;
-            default: throw new IllegalStateException("Unknown difficulty");
+            case EASY:
+                easyRadioButton.setSelected(true);
+                break;
+            case MEDIUM:
+                mediumRadioButton.setSelected(true);
+                break;
+            case HARD:
+                hardRadioButton.setSelected(true);
+                break;
+            default:
+                throw new IllegalStateException("Unknown difficulty");
         }
 
         wordCountField.setText(String.valueOf(PM.getInt(Preference.EXAM_WORDS, 10)));
@@ -249,13 +257,15 @@ public class PreferencesDialog extends javax.swing.JDialog {
      */
     public void refreshNewSettingsToExam() {
         ExamDialog.diffLabelChange(getExamDifficulty().toString());
-        
+
         if (isExamTimerEnabled()) {
             ExamDialog.setTimerProgressbarVisible();
             ExamDialog.setEnumTimerStatus(ExamDialog.TimerStatus.STARTED);
-        } else { ExamDialog.setTimerProgressbarInvisible();
-                 ExamDialog.setEnumTimerStatus(ExamDialog.TimerStatus.DISABLED); }
-                 
+        } else {
+            ExamDialog.setTimerProgressbarInvisible();
+            ExamDialog.setEnumTimerStatus(ExamDialog.TimerStatus.DISABLED);
+        }
+
     }
 
     public Language getSelectedLanguage() {
@@ -263,7 +273,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
     }
 
     public String getDefaultDictionary() {
-        return (String)defaultDictionaryComboBox.getSelectedItem();
+        return (String) defaultDictionaryComboBox.getSelectedItem();
     }
 
     public boolean isMinimizeToTrayEnabled() {
@@ -290,7 +300,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
         return minimizeToTrayOnCloseCheckBox.isSelected();
     }
 
-    public boolean isEmptyLineEnabled(){
+    public boolean isEmptyLineEnabled() {
         return emptyLineCheckBox.isSelected();
     }
 
@@ -355,10 +365,10 @@ public class PreferencesDialog extends javax.swing.JDialog {
         fontStyleList = new javax.swing.JList();
         jLabel13 = new javax.swing.JLabel();
         fontPreviewPanel = new javax.swing.JPanel();
-        previewText = new javax.swing.JTextField();
+        previewText = new javax.swing.JLabel();
         currentFontField = new javax.swing.JTextField();
         currentStyleField = new javax.swing.JTextField();
-        fontSizeField = new javax.swing.JTextField();
+        currentFontSizeField = new javax.swing.JTextField();
         jPanel6 = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
@@ -422,7 +432,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
                             .addComponent(showMemoryUsageCheckBox)
                             .addComponent(alwaysOnTopCheckBox)))
                     .addComponent(emptyLineCheckBox))
-                .addContainerGap(156, Short.MAX_VALUE))
+                .addContainerGap(136, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -438,9 +448,9 @@ public class PreferencesDialog extends javax.swing.JDialog {
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(clipboardIntegrationCheckBox)
                     .addComponent(alwaysOnTopCheckBox))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addComponent(emptyLineCheckBox)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         jPanel10.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("Main(JPanelBorder)"))); // NOI18N
@@ -480,7 +490,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
                     .addComponent(defaultDictionaryComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(languageComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, 103, Short.MAX_VALUE)
                     .addComponent(lookAndFeelComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(55, Short.MAX_VALUE))
+                .addContainerGap(35, Short.MAX_VALUE))
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -505,9 +515,9 @@ public class PreferencesDialog extends javax.swing.JDialog {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel9, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -516,8 +526,8 @@ public class PreferencesDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(26, Short.MAX_VALUE))
+                .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -566,7 +576,6 @@ public class PreferencesDialog extends javax.swing.JDialog {
         fontPreviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Preview", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION));
 
         previewText.setText("The quick fox jumps over the lazy dog.");
-        previewText.setBorder(null);
 
         javax.swing.GroupLayout fontPreviewPanelLayout = new javax.swing.GroupLayout(fontPreviewPanel);
         fontPreviewPanel.setLayout(fontPreviewPanelLayout);
@@ -574,14 +583,14 @@ public class PreferencesDialog extends javax.swing.JDialog {
             fontPreviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(fontPreviewPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(previewText, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(145, Short.MAX_VALUE))
+                .addComponent(previewText)
+                .addContainerGap(274, Short.MAX_VALUE))
         );
         fontPreviewPanelLayout.setVerticalGroup(
             fontPreviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(fontPreviewPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(previewText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(previewText)
                 .addContainerGap(23, Short.MAX_VALUE))
         );
 
@@ -594,6 +603,8 @@ public class PreferencesDialog extends javax.swing.JDialog {
 
         currentStyleField.setEditable(false);
 
+        currentFontSizeField.setOpaque(false);
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -603,42 +614,45 @@ public class PreferencesDialog extends javax.swing.JDialog {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(fontPreviewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
-                            .addComponent(jLabel9)
-                            .addComponent(currentFontField, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel9)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
+                            .addComponent(currentFontField))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel13)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
-                            .addComponent(currentStyleField))
+                            .addComponent(currentStyleField, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel10)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
-                            .addComponent(fontSizeField))))
+                            .addComponent(currentFontSizeField)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel9)
-                            .addComponent(jLabel13))
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel9)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(currentFontField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(currentStyleField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(fontSizeField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jLabel10))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE))
+                        .addComponent(currentFontField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel10)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(currentFontSizeField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel13)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(currentStyleField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)))
                 .addGap(11, 11, 11)
                 .addComponent(fontPreviewPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -648,10 +662,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -705,13 +716,13 @@ public class PreferencesDialog extends javax.swing.JDialog {
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel7Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
                         .addComponent(timerCheckBox)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 127, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 107, Short.MAX_VALUE)
                         .addComponent(jLabel5))
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 143, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 123, Short.MAX_VALUE)
                         .addComponent(easyRadioButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(mediumRadioButton)
@@ -719,7 +730,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
                         .addComponent(hardRadioButton))
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 253, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 233, Short.MAX_VALUE)
                         .addComponent(wordCountField, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -734,8 +745,8 @@ public class PreferencesDialog extends javax.swing.JDialog {
                     .addComponent(hardRadioButton))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(timerCheckBox)
-                    .addComponent(jLabel5))
+                    .addComponent(jLabel5)
+                    .addComponent(timerCheckBox))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
@@ -749,7 +760,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
@@ -781,7 +792,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(299, Short.MAX_VALUE)
+                .addContainerGap(267, Short.MAX_VALUE)
                 .addComponent(okButton, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -801,13 +812,15 @@ public class PreferencesDialog extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(30, 30, 30)
-                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 527, Short.MAX_VALUE)
-                .addGap(12, 12, 12))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(30, 30, 30)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 507, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -855,7 +868,6 @@ public class PreferencesDialog extends javax.swing.JDialog {
 }//GEN-LAST:event_wordCountFieldFocusGained
 
     private void wordCountFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_wordCountFieldFocusLost
-
 }//GEN-LAST:event_wordCountFieldFocusLost
 
     private void easyRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_easyRadioButtonActionPerformed
@@ -873,12 +885,12 @@ public class PreferencesDialog extends javax.swing.JDialog {
     private void currentFontFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_currentFontFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_currentFontFieldActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox alwaysOnTopCheckBox;
     private javax.swing.JButton cancelButton;
     private javax.swing.JCheckBox clipboardIntegrationCheckBox;
     private javax.swing.JTextField currentFontField;
+    private javax.swing.JTextField currentFontSizeField;
     private javax.swing.JTextField currentStyleField;
     private javax.swing.JComboBox defaultDictionaryComboBox;
     private javax.swing.ButtonGroup difficultyButtonGroup;
@@ -886,7 +898,6 @@ public class PreferencesDialog extends javax.swing.JDialog {
     private javax.swing.JCheckBox emptyLineCheckBox;
     private javax.swing.JList fontList;
     private javax.swing.JPanel fontPreviewPanel;
-    private javax.swing.JTextField fontSizeField;
     private javax.swing.JList fontSizeList;
     private javax.swing.JList fontStyleList;
     private javax.swing.JRadioButton hardRadioButton;
@@ -917,7 +928,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
     private javax.swing.JCheckBox minimizeToTrayCheckBox;
     private javax.swing.JCheckBox minimizeToTrayOnCloseCheckBox;
     private javax.swing.JButton okButton;
-    private javax.swing.JTextField previewText;
+    private javax.swing.JLabel previewText;
     private javax.swing.JCheckBox showMemoryUsageCheckBox;
     private javax.swing.JTabbedPane tabbedPane;
     private static javax.swing.JCheckBox timerCheckBox;
