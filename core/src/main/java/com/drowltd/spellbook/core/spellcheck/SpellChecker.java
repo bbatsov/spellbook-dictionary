@@ -21,7 +21,6 @@ public final class SpellChecker {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellChecker.class);
     private static SpellChecker INSTANCE;
-    //private final Dictionary dictionary;
     private final Language language;
     private final Map<String, Integer> nWords;
 
@@ -250,17 +249,18 @@ public final class SpellChecker {
         if (candidates.size() > 0) {
             return candidates;
         }
-        for (String s : list) {
-            for (String w : edits0(s, language.getAlphabet())) {
-                if (nWords.containsKey(w)) {
-                    candidates.put(w, nWords.get(w));
-                }
-            }
-        }
-
-        if (candidates.size() > 0) {
-            return candidates;
-        }
+//        System.gc();
+//        for (String s : list) {
+//            for (String w : edits0(s, language.getAlphabet())) {
+//                if (nWords.containsKey(w)) {
+//                    candidates.put(w, nWords.get(w));
+//                }
+//            }
+//        }
+//
+//        if (candidates.size() > 0) {
+//            return candidates;
+//        }
         return Collections.emptyMap();
     }
 
