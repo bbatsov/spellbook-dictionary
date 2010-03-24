@@ -218,6 +218,9 @@ public class SpellbookFrame extends javax.swing.JFrame {
         forwardButton.setEnabled(false);
         backButton.setEnabled(false);
 
+        // clear button is disabled initially
+        clearButton.setEnabled(false);
+
         setDefaultFont();
 
         if (PM.getBoolean(Preference.CLIPBOARD_INTEGRATION, false)) {
@@ -255,6 +258,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
     }
 
     private void onSearchChange(boolean insert) {
+        clearButton.setEnabled(true);
+
         String searchString = wordSearchField.getText();
 
         if (!searchString.isEmpty() && insert) {
@@ -345,8 +350,10 @@ public class SpellbookFrame extends javax.swing.JFrame {
         deleteWordButton.setEnabled(false);
         deleteWordMenuItem.setEnabled(false);
         wordTranslationTextPane.setText(null);
-        statusButton.setIcon(IconManager.getImageIcon("bell2_red.png", IconSize.SIZE24));
+        statusButton.setIcon(IconManager.getImageIcon("bell2_grey.png", IconSize.SIZE24));
         lastTransfer = null;
+
+        clearButton.setEnabled(false);
     }
 
     public void activateClipboardMonitoring() {
@@ -464,6 +471,18 @@ public class SpellbookFrame extends javax.swing.JFrame {
             int fontStyle = PM.getInt(Preference.FONT_STYLE, Font.PLAIN);
 
             setSelectedFont(new Font(fontName, fontStyle, fontSize));
+        }
+    }
+
+    private void onWordSearchFieldAction() {
+        wordSearchField.selectAll();
+        AutocompletingTextField completableJTextField = (AutocompletingTextField) wordSearchField;
+        if (exactMatch) {
+            completableJTextField.addCompletion(wordSearchField.getText());
+            searchedWords.add(wordSearchField.getText());
+            searchWordsIndex = searchedWords.size();
+            backButton.setEnabled(true);
+            forwardButton.setEnabled(false);
         }
     }
 
@@ -629,6 +648,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         jToolBar1 = new javax.swing.JToolBar();
         backButton = new javax.swing.JButton();
         forwardButton = new javax.swing.JButton();
+        clearButton = new javax.swing.JButton();
         statusButton = new javax.swing.JButton();
         dictionaryButton = new javax.swing.JButton();
         jSeparator3 = new javax.swing.JToolBar.Separator();
@@ -724,7 +744,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 592, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -759,6 +779,18 @@ public class SpellbookFrame extends javax.swing.JFrame {
             }
         });
         jToolBar1.add(forwardButton);
+
+        clearButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/eraser.png"))); // NOI18N
+        clearButton.setToolTipText(bundle.getString("ClearButton(ToolTip)")); // NOI18N
+        clearButton.setFocusable(false);
+        clearButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        clearButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        clearButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearButtonActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(clearButton);
 
         statusButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/bell2_grey.png"))); // NOI18N
         statusButton.setFocusable(false);
@@ -1110,16 +1142,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_updateWordMenuItemActionPerformed
 
     private void wordSearchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_wordSearchFieldActionPerformed
-        wordSearchField.selectAll();
-        AutocompletingTextField completableJTextField = (AutocompletingTextField) wordSearchField;
-
-        if (exactMatch) {
-            completableJTextField.addCompletion(wordSearchField.getText());
-            searchedWords.add(wordSearchField.getText());
-            searchWordsIndex = searchedWords.size();
-            backButton.setEnabled(true);
-            forwardButton.setEnabled(false);
-        }
+        onWordSearchFieldAction();
     }//GEN-LAST:event_wordSearchFieldActionPerformed
 
     private void wordsListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_wordsListValueChanged
@@ -1164,7 +1187,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_forwardButtonActionPerformed
 
     private void statusButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statusButtonActionPerformed
-        clear();
+        onWordSearchFieldAction();
     }//GEN-LAST:event_statusButtonActionPerformed
 
     private void memoryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_memoryButtonActionPerformed
@@ -1204,12 +1227,17 @@ public class SpellbookFrame extends javax.swing.JFrame {
         deleteWordDefinition();
     }//GEN-LAST:event_deleteWordButtonActionPerformed
 
+    private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearButtonActionPerformed
+        clear();
+    }//GEN-LAST:event_clearButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem StudyWordsMenuItem;
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JButton addWordButton;
     private javax.swing.JMenuItem addWordMenuItem;
     private javax.swing.JButton backButton;
+    private javax.swing.JButton clearButton;
     private javax.swing.JButton copyButton;
     private javax.swing.JMenuItem copyMenuItem;
     private javax.swing.JButton cutButton;
