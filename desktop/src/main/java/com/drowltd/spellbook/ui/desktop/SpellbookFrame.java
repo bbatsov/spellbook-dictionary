@@ -154,7 +154,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         // we need to pass the completable search field a reference to the word list
         ((AutocompletingTextField) wordSearchField).setWordsList(wordsList);
-        ((AutocompletingTextField) wordSearchField).setFrame(this);
+        ((AutocompletingTextField) wordSearchField).setOwner(this);
 
         // monitor any changes in the search text field
         wordSearchField.getDocument().addDocumentListener(new DocumentListener() {

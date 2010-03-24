@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  */
 public class CreateWordsForStudyTable {
 
-    private static String url = "jdbc:h2:C:\\opt\\spellbook\\db\\spellbook";
+    private static String url = "jdbc:h2:/opt/spellbook/db/spellbook";
     private static String user = "spellbook";
     private static String password = "spellbook";
     private static String tableName = "WORDS_FOR_STUDY";

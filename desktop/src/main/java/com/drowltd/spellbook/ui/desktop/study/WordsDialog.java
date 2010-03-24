@@ -18,9 +18,9 @@ import com.drowltd.spellbook.core.service.study.StudyService;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.ui.swing.component.AutocompletingTextField;
 import com.drowltd.spellbook.ui.swing.component.DictionaryComboBox;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.Frame;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -28,6 +28,8 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 /**
  *
@@ -58,19 +60,58 @@ public class WordsDialog extends javax.swing.JDialog {
         words = dictionaryService.getWordsFromDictionary(dictionaries.get(0));
 
         initComponents();
+
+
+
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentMoved(ComponentEvent e) {
+                if (wordSearchField.hasFocus()) {
+                    ((AutocompletingTextField) wordSearchField).showCompletions();
+                }
+            }
+        });
+
         getTable().setOpaque(true);
         try {
             studyService = new StudyService();
         } catch (DictionaryDbLockedException ex) {
             Logger.getLogger(WordsDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
-        for(int i=0; i<100; i++){
-            ((AutocompletingTextField) wordSearchField).addCompletion(words.get(i));
-        }
+        
+        ((AutocompletingTextField) wordSearchField).setCompletions(words);
+        ((AutocompletingTextField) wordSearchField).setOwner(this);
+
+        wordSearchField.getDocument().addDocumentListener(new DocumentListener() {
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                updateAddButtonState();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                updateAddButtonState();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                updateAddButtonState();
+            }
+        });
+        
         countOFTheWords = studyService.getCountOfTheWords();
         // wordsForLearning = dictDb.getWordsForLearning();
         translationForStudy = studyService.getTranslationForStudy();
         wordSearchField.requestFocus();
+    }
+
+    private void updateAddButtonState() {
+        addButton.setEnabled(words.contains(wordSearchField.getText()));
+
+        if (addButton.isEnabled()) {
+            wordTranslationTextPane.setText(dictionaryService.getTranslation(wordSearchField.getText(), dictionaryService.getDictionary((String)dictionariesComboBox.getSelectedItem())));
+        }
     }
 
     public JTextField getAddWordField() {
@@ -95,8 +136,6 @@ public class WordsDialog extends javax.swing.JDialog {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         wordSearchField = new AutocompletingTextField();
-        jLabel2 = new javax.swing.JLabel();
-        addTranslationField = new javax.swing.JTextField();
         addButton = new javax.swing.JButton();
         deleteButton = new javax.swing.JButton();
         clearButton = new javax.swing.JButton();
@@ -122,14 +161,6 @@ public class WordsDialog extends javax.swing.JDialog {
         wordSearchField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 wordSearchFieldActionPerformed(evt);
-            }
-        });
-
-        jLabel2.setText(bundle.getString("EnterTranslation(Label)")); // NOI18N
-
-        addTranslationField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addTranslationFieldActionPerformed(evt);
             }
         });
 
@@ -183,19 +214,15 @@ public class WordsDialog extends javax.swing.JDialog {
                         .addComponent(allButton))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(wordSearchField, javax.swing.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE)
-                                    .addComponent(jLabel2)
-                                    .addComponent(addTranslationField)
-                                    .addComponent(dictionariesComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(addButton, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
-                                    .addComponent(deleteButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(clearButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                            .addComponent(jLabel1))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                            .addComponent(wordSearchField, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE)
+                            .addComponent(jLabel1)
+                            .addComponent(dictionariesComboBox, 0, 188, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(addButton, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
+                            .addComponent(deleteButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(clearButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(43, 43, 43)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -205,26 +232,22 @@ public class WordsDialog extends javax.swing.JDialog {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(42, 42, 42)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(wordSearchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(addButton))
+                            .addComponent(addButton)
+                            .addComponent(dictionariesComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2)
-                            .addComponent(deleteButton))
+                            .addComponent(deleteButton)
+                            .addComponent(jLabel1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(addTranslationField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(clearButton)))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(dictionariesComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(38, 38, 38)
+                            .addComponent(clearButton)
+                            .addComponent(wordSearchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE))
+                .addGap(77, 77, 77)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(allButton)
                     .addComponent(nothingButton)))
@@ -238,7 +261,7 @@ public class WordsDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(wordsScrollPane, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 569, Short.MAX_VALUE))
+                    .addComponent(wordsScrollPane, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 590, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -255,36 +278,29 @@ public class WordsDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-        String word = wordSearchField.getText();
-        String translation = addTranslationField.getText();
-
-        translation = translation.toLowerCase();
-
-        wordsForStudy = studyService.getWordsForStudy();
-        translationForStudy = studyService.getTranslationForStudy();
-
-        if (word == null || word.isEmpty() || translation == null || translation.isEmpty()) {
-            JOptionPane.showMessageDialog(this, TRANSLATOR.translate("EmptyFields(Message)"), null, JOptionPane.ERROR_MESSAGE);
-        }
-
-        if (words.contains(word)) {
-            //     wordsForLearning.add(word);
-            countOFTheWords = studyService.getCountOfTheWords();
-            if (wordsForStudy.contains(word)) {
-                JOptionPane.showMessageDialog(this, TRANSLATOR.translate("AlreadyContainedWord(Message)"), null, JOptionPane.ERROR_MESSAGE);
-            }
-            if (!wordsForStudy.contains(word)) {
-                countOFTheWords++;
-                studyService.addWordForStudy(word, translation);
-
-                setWordsInTable(false);
-            }
-
-
-
-        } else if (!words.contains(word) && !(word == null || word.isEmpty() || translation == null || translation.isEmpty())) {
-            JOptionPane.showMessageDialog(this, TRANSLATOR.translate("NotExistWord(Message)"), null, JOptionPane.ERROR_MESSAGE);
-        }
+//        String word = wordSearchField.getText();
+//
+//        wordsForStudy = studyService.getWordsForStudy();
+//        translationForStudy = studyService.getTranslationForStudy();
+//
+//        if (words.contains(word)) {
+//            //     wordsForLearning.add(word);
+//            countOFTheWords = studyService.getCountOfTheWords();
+//            if (wordsForStudy.contains(word)) {
+//                JOptionPane.showMessageDialog(this, TRANSLATOR.translate("AlreadyContainedWord(Message)"), null, JOptionPane.ERROR_MESSAGE);
+//            }
+//            if (!wordsForStudy.contains(word)) {
+//                countOFTheWords++;
+//                studyService.addWordForStudy(word, translation);
+//
+//                setWordsInTable(false);
+//            }
+//
+//
+//
+//        } else if (!words.contains(word) && !(word == null || word.isEmpty() || translation == null || translation.isEmpty())) {
+//            JOptionPane.showMessageDialog(this, TRANSLATOR.translate("NotExistWord(Message)"), null, JOptionPane.ERROR_MESSAGE);
+//        }
 
         clear();
         wordSearchField.requestFocus();
@@ -318,38 +334,8 @@ public class WordsDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_clearButtonActionPerformed
 
     private void wordSearchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_wordSearchFieldActionPerformed
-        addTranslationField.requestFocus();
+        wordSearchField.selectAll();
     }//GEN-LAST:event_wordSearchFieldActionPerformed
-
-    private void addTranslationFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addTranslationFieldActionPerformed
-        String word = wordSearchField.getText();
-        String translation = addTranslationField.getText();
-        wordsForStudy = studyService.getWordsForStudy();
-        translationForStudy = studyService.getTranslationForStudy();
-
-        if (word == null || word.isEmpty() || translation == null || translation.isEmpty()) {
-            JOptionPane.showMessageDialog(this, TRANSLATOR.translate("EmptyFields(Message)"), null, JOptionPane.ERROR_MESSAGE);
-        }
-
-        if (words.contains(word)) {
-            //     wordsForLearning.add(word);
-            countOFTheWords = studyService.getCountOfTheWords();
-            if (wordsForStudy.contains(word)) {
-                JOptionPane.showMessageDialog(this, TRANSLATOR.translate("AlreadyContainedWord(Message)"), null, JOptionPane.ERROR_MESSAGE);
-            }
-            if (!wordsForStudy.contains(word)) {
-                countOFTheWords++;
-                studyService.addWordForStudy(word, translation);
-
-                setWordsInTable(false);
-            }
-        } else if (!words.contains(word) && !(word == null || word.isEmpty() || translation == null || translation.isEmpty())) {
-            JOptionPane.showMessageDialog(this, TRANSLATOR.translate("NotExistWord(Message)"), null, JOptionPane.ERROR_MESSAGE);
-        }
-        clear();
-        wordSearchField.requestFocus();
-
-    }//GEN-LAST:event_addTranslationFieldActionPerformed
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
     }//GEN-LAST:event_formWindowClosed
@@ -358,13 +344,11 @@ public class WordsDialog extends javax.swing.JDialog {
      */
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
-    private javax.swing.JTextField addTranslationField;
     private javax.swing.JButton allButton;
     private javax.swing.JButton clearButton;
     private javax.swing.JButton deleteButton;
     private javax.swing.JComboBox dictionariesComboBox;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton nothingButton;
@@ -376,7 +360,7 @@ public class WordsDialog extends javax.swing.JDialog {
 
     public void clear() {
         wordSearchField.setText(null);
-        addTranslationField.setText(null);
+        wordTranslationTextPane.setText(null);
     }
 
     public void setWordsInTable(Boolean select) {

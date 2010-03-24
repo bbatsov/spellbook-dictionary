@@ -1,5 +1,7 @@
 package com.drowltd.spellbook.ui.swing.component;
 
+import com.drowltd.spellbook.util.SearchUtils;
+import java.awt.Window;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
@@ -9,6 +11,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultListModel;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
@@ -32,7 +35,7 @@ public class AutocompletingTextField extends JTextField {
     private JScrollPane listScroller;
     private JWindow listWindow;
     private JList wordsList;
-    private JFrame frame;
+    private Window owner;
 
     public AutocompletingTextField() {
         completer = new Completer();
@@ -53,7 +56,9 @@ public class AutocompletingTextField extends JTextField {
 
                 if (completionString != null && !completionString.isEmpty()) {
                     setText(completionString);
-                    wordsList.setSelectedValue(completionString, true);
+                    if (wordsList != null) {
+                        wordsList.setSelectedValue(completionString, true);
+                    }
                 }
             }
         });
@@ -62,7 +67,7 @@ public class AutocompletingTextField extends JTextField {
                                        ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
                                        ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-        listWindow = new JWindow(frame);
+        listWindow = new JWindow(owner);
         listWindow.getContentPane().add(listScroller);
         listWindow.setFocusable(true);
 
@@ -114,8 +119,12 @@ public class AutocompletingTextField extends JTextField {
         });
     }
 
-    public void setFrame(JFrame frame) {
-        this.frame = frame;
+    public void setOwner(Window owner) {
+        this.owner = owner;
+    }
+
+    public void setCompletions(List<String> completions) {
+        completer.setCompletions(completions);
     }
 
     public void addCompletion(String s) {
@@ -154,6 +163,10 @@ public class AutocompletingTextField extends JTextField {
             getDocument().addDocumentListener(this);
         }
 
+        public void setCompletions(List<String> completionsList) {
+            completions = completionsList;
+        }
+
         public void addCompletion(String s) {
             if (!completions.contains(s)) {
                 completions.add(s);
@@ -175,13 +188,17 @@ public class AutocompletingTextField extends JTextField {
             completionListModel.clear();
             System.out.println("buildPopup for " + completions.size() + " completions");
 
-            for (String completion : completions) {
-                if (completion.startsWith(getText()) && !completion.equals(getText())) {
+            int startIndex = SearchUtils.findInsertionIndex(completions, getText()) + 1;
+            System.out.println("Start index for " + getText() + " is " + startIndex);
+
+            for (int i = startIndex; i < completions.size(); i++) {
+                if (completions.get(i).toLowerCase().startsWith(getText().toLowerCase()) && !completions.get(i).toLowerCase().equals(getText().toLowerCase())) {
                     // add if match
-                    System.out.println("matched " + completion);
-                    completionListModel.add(completionListModel.getSize(), completion);
+                    System.out.println("matched " + completions.get(i));
+                    completionListModel.add(completionListModel.getSize(), completions.get(i));
                 } else {
-                    System.out.println("pattern " + getText() + " does not match " + completion);
+                    System.out.println("pattern " + getText() + " does not match " + completions.get(i));
+                    break;
                 }
             }
         }
