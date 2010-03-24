@@ -1352,14 +1352,16 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         final String selectedWord = words.get(selectedIndex);
 
+        // some things should happen only if the user is selecting words directly from the words list
         if (!wordSearchField.hasFocus()) {
             wordSearchField.setText(selectedWord);
+
+            statusButton.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
+            statusButton.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
         }
 
         wordTranslationTextPane.setText(SwingUtil.formatTranslation(selectedWord, dictionaryService.getTranslation(words.get(selectedIndex), selectedDictionary)));
         wordTranslationTextPane.setCaretPosition(0);
-        statusButton.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
-        statusButton.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
 
         // words can be updated only when selected
         updateWordMenuItem.setEnabled(true);
