@@ -172,9 +172,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
         previewText.setFont(generateFont());
 
         currentFontField.setEnabled(false);
-        currentFontField.setText(PM.get(Preference.FONT_NAME, selectedFont.getFontName()));
-        fontList.setSelectedValue((PM.get(Preference.FONT_NAME, selectedFont.getFontName())).replace("bold", ""), ok);
-        //bottom line needs a little rework do be done by Franky(Ivan Spasov) and the new design is ready and fully functional
+        currentFontField.setText(PM.get(Preference.FONT_NAME, selectedFont.getName()));
         currentStyleField.setEnabled(false);
         currentStyleField.setText(fontStyleList.getSelectedValue().toString());
         currentFontSizeField.setEnabled(false);

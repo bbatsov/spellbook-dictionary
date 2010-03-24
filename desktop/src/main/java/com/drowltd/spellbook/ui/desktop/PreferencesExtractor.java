@@ -136,7 +136,7 @@ public class PreferencesExtractor {
             // set the font
             final Font selectedFont = preferencesDialog.getSelectedFont();
 
-            PM.put(Preference.FONT_NAME, selectedFont.getFontName());
+            PM.put(Preference.FONT_NAME, selectedFont.getName());
             PM.putInt(Preference.FONT_SIZE, selectedFont.getSize());
             PM.putInt(Preference.FONT_STYLE, selectedFont.getStyle());
 
