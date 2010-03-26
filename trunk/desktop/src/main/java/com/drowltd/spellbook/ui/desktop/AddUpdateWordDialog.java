@@ -12,6 +12,9 @@
 package com.drowltd.spellbook.ui.desktop;
 
 import com.drowltd.spellbook.core.model.Dictionary;
+import javax.swing.Action;
+import javax.swing.SwingUtilities;
+import javax.swing.text.DefaultEditorKit;
 
 
 /**
@@ -26,12 +29,18 @@ public class AddUpdateWordDialog extends javax.swing.JDialog {
 
     private Dictionary dictionary;
 
+    private String toBeEdited;
+
+    private Action selectLine;
+
     /** Creates new form AddWordToDb */
     public AddUpdateWordDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
 
         setLocationRelativeTo(parent);
+
+        selectLine = getSelectLineAction();
     }
 
     /** @return the return status of this dialog - one of RET_OK or RET_CANCEL */
@@ -63,6 +72,10 @@ public class AddUpdateWordDialog extends javax.swing.JDialog {
         wordTextField = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         translationTextArea = new javax.swing.JTextArea();
+        newMeaningTextField = new javax.swing.JTextField();
+        addEditLabel = new javax.swing.JLabel();
+        addButton = new javax.swing.JButton();
+        editButton = new javax.swing.JButton();
 
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -87,20 +100,56 @@ public class AddUpdateWordDialog extends javax.swing.JDialog {
         jLabel1.setText("Word");
 
         translationTextArea.setColumns(20);
+        translationTextArea.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         translationTextArea.setRows(5);
+        translationTextArea.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                translationTextAreaMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(translationTextArea);
+
+        addEditLabel.setText("Add/Edit");
+
+        addButton.setText("Add");
+        addButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addButtonActionPerformed(evt);
+            }
+        });
+
+        editButton.setText("Edit");
+        editButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(wordTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addContainerGap()
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(addEditLabel)
+                                .addComponent(jLabel1))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE))
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addContainerGap()
+                            .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jScrollPane1)
+                    .addComponent(newMeaningTextField)
+                    .addComponent(wordTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -110,8 +159,17 @@ public class AddUpdateWordDialog extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(wordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(newMeaningTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(addEditLabel))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(addButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(editButton)))
                 .addContainerGap())
         );
 
@@ -160,6 +218,27 @@ public class AddUpdateWordDialog extends javax.swing.JDialog {
         doClose(RET_CANCEL);
     }//GEN-LAST:event_closeDialog
 
+    private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
+        translationTextArea.append(newMeaningTextField.getText() + "\n");
+    }//GEN-LAST:event_addButtonActionPerformed
+
+    private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
+        String editedText = translationTextArea.getText().replaceAll(toBeEdited, newMeaningTextField.getText());
+        toBeEdited = newMeaningTextField.getText();
+        System.out.println(editedText);
+        translationTextArea.setText(editedText);
+    }//GEN-LAST:event_editButtonActionPerformed
+
+    private void translationTextAreaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_translationTextAreaMouseClicked
+
+        if (SwingUtilities.isLeftMouseButton(evt) && evt.getClickCount() == 1) {
+            selectLine.actionPerformed(null);
+        }
+
+        toBeEdited = translationTextArea.getSelectedText();
+        newMeaningTextField.setText(toBeEdited);
+    }//GEN-LAST:event_translationTextAreaMouseClicked
+
     private void doClose(int retStatus) {
         returnStatus = retStatus;
         setVisible(false);
@@ -182,11 +261,29 @@ public class AddUpdateWordDialog extends javax.swing.JDialog {
         return translationTextArea.getText();
     }
 
+    private Action getSelectLineAction() {
+        Action [] action = translationTextArea.getActions();
+
+        for (int i = 0; i < action.length; i++) {
+
+            if(action[i].getValue(Action.NAME).equals(DefaultEditorKit.selectLineAction)) {
+                selectLine = action[i];
+            }
+
+        }
+
+        return selectLine;
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addButton;
+    private javax.swing.JLabel addEditLabel;
     private javax.swing.JButton cancelButton;
+    private javax.swing.JButton editButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextField newMeaningTextField;
     private javax.swing.JButton okButton;
     private javax.swing.JTextArea translationTextArea;
     private javax.swing.JTextField wordTextField;
