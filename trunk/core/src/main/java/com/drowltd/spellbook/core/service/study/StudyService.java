@@ -6,7 +6,10 @@
 package com.drowltd.spellbook.core.service.study;
 
 import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
-import com.drowltd.spellbook.core.model.WordsForStudy;
+import com.drowltd.spellbook.core.model.DictionaryEntry;
+import com.drowltd.spellbook.core.model.Dictionary;
+import com.drowltd.spellbook.core.model.StudySetEntry;
+import com.drowltd.spellbook.core.model.StudySet;
 import com.drowltd.spellbook.core.service.AbstractPersistenceService;
 import java.util.List;
 import javax.persistence.EntityTransaction;
@@ -24,47 +27,46 @@ public class StudyService extends AbstractPersistenceService {
     }
 
     public List<String> getWordsForStudy() {
-        return EM.createQuery("select wfs.word from WordsForStudy wfs ").getResultList();
+        return EM.createQuery("select de.word from DictionaryEntry de, StudySetEntry se where se.dictionary_entry_id = de.id").getResultList();
     }
 
     public List<String> getTranslationForStudy() {
-        return EM.createQuery("select wfs.translation from WordsForStudy wfs").getResultList();
+        return EM.createQuery("select de.translation from DictionaryEntry de, StudySetEntry se where se.dictionary_entry_id = de.id").getResultList();
     }
 
     public Long getCountOfTheWords() {
-        return (Long) EM.createQuery("select count(*) from WordsForStudy").getSingleResult();
+        return (Long) EM.createQuery("select count(*) from StudySetEntry").getSingleResult();
     }
 
-    public void addWordForStudy(String word, String translation) {
+    public void addWordForStudy(String word, Dictionary dictionary, String studySetName) {
 
         if (word == null || word.isEmpty()) {
             LOGGER.error("word == null || word.isEmpty()");
             throw new IllegalArgumentException("word == null || word.isEmpty()");
         }
 
-        if (translation == null || translation.isEmpty()) {
-            LOGGER.error("translation == null || translation.isEmpty()");
-            throw new IllegalArgumentException("word == null || word.isEmpty()");
-        }
+        DictionaryEntry de = (DictionaryEntry) EM.createQuery("select de from DictionaryEntry de where de.word = :word and de.dictionary = :dictionary").setParameter("word", word).setParameter("dictionary", dictionary).getSingleResult();
 
-        final WordsForStudy wfs = new WordsForStudy();
+        StudySet ss = (StudySet) EM.createQuery("select ss from StudySet ss where ss.name = :StudySetName").setParameter("StudySetName", studySetName).getSingleResult();
 
-        wfs.setWord(word);
-        wfs.setTranslation(translation);
+        StudySetEntry se = new StudySetEntry();
+        se.setDictionaryEntry(de);
+        se.setStudySet(ss);
 
         EntityTransaction t = EM.getTransaction();
         t.begin();
-        EM.persist(wfs);
+        EM.persist(se);
         t.commit();
     }
 
     public void deleteWord(String word) {
         word.replaceAll("'", "''");
+
+        long id = (Long) EM.createQuery("select de.id from DictionaryEntry de where de.word = :word").setParameter("word", word).getSingleResult();
+
         EntityTransaction t = EM.getTransaction();
         t.begin();
-        EM.createQuery("delete from WordsForStudy  where word= :word").setParameter("word", word).executeUpdate();
+        EM.createQuery("delete from StudySetEntry se where se.dictionary_entry_id = :id").setParameter("id", id).executeUpdate();
         t.commit();
     }
-
-    
 }
