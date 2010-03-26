@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity(name = "StudySetEntry")
@@ -23,23 +24,10 @@ public class StudySetEntry extends AbstractEntity {
     @ManyToOne(optional=false, fetch=FetchType.LAZY)
     private StudySet studySet;
 
-    @Column(nullable=false, unique=true)
-    private String word;
-    @Column(name="word_translation", nullable=false, length=10000)
-    private String translation;
-
-    @Column(name = "added_by_user", nullable=false)
-    private boolean addedByUser;
+    @OneToOne(optional=false, fetch=FetchType.LAZY)
+    private DictionaryEntry dictionaryEntry;
 
     public StudySetEntry() {
-    }
-
-    public boolean isAddedByUser() {
-        return addedByUser;
-    }
-
-    public void setAddedByUser(boolean addedByUser) {
-        this.addedByUser = addedByUser;
     }
 
     public StudySet getStudySet() {
@@ -50,19 +38,11 @@ public class StudySetEntry extends AbstractEntity {
         this.studySet = studySet;
     }
 
-    public String getWord() {
-        return word;
+    public DictionaryEntry getDictionaryEntry(){
+        return dictionaryEntry;
     }
 
-    public void setWord(String word) {
-        this.word = word;
-    }
-
-    public String getTranslation() {
-        return translation;
-    }
-
-    public void setTranslation(String wordTranslation) {
-        this.translation = wordTranslation;
+    public void setDictionaryEntry(DictionaryEntry dictionaryEntry){
+        this.dictionaryEntry = dictionaryEntry;
     }
 }
