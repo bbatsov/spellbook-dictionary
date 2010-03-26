@@ -225,7 +225,6 @@ public class AddUpdateWordDialog extends javax.swing.JDialog {
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
         String editedText = translationTextArea.getText().replaceAll(toBeEdited, newMeaningTextField.getText());
         toBeEdited = newMeaningTextField.getText();
-        System.out.println(editedText);
         translationTextArea.setText(editedText);
     }//GEN-LAST:event_editButtonActionPerformed
 
