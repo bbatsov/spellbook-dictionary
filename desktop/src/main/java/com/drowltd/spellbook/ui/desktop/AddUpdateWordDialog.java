@@ -8,7 +8,6 @@
  *
  * Created on Jan 8, 2010, 7:54:01 PM
  */
-
 package com.drowltd.spellbook.ui.desktop;
 
 import com.drowltd.spellbook.core.model.Dictionary;
@@ -16,12 +15,12 @@ import javax.swing.Action;
 import javax.swing.SwingUtilities;
 import javax.swing.text.DefaultEditorKit;
 
-
 /**
  *
  * @author bozhidar
  */
 public class AddUpdateWordDialog extends javax.swing.JDialog {
+
     /** A return status code - returned if Cancel button has been pressed */
     public static final int RET_CANCEL = 0;
     /** A return status code - returned if OK button has been pressed */
@@ -100,6 +99,7 @@ public class AddUpdateWordDialog extends javax.swing.JDialog {
         jLabel1.setText("Word");
 
         translationTextArea.setColumns(20);
+        translationTextArea.setEditable(false);
         translationTextArea.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         translationTextArea.setRows(5);
         translationTextArea.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -243,7 +243,7 @@ public class AddUpdateWordDialog extends javax.swing.JDialog {
         setVisible(false);
         dispose();
     }
-    
+
     public void setWord(String word) {
         wordTextField.setText(word);
     }
@@ -261,11 +261,11 @@ public class AddUpdateWordDialog extends javax.swing.JDialog {
     }
 
     private Action getSelectLineAction() {
-        Action [] action = translationTextArea.getActions();
+        Action[] action = translationTextArea.getActions();
 
         for (int i = 0; i < action.length; i++) {
 
-            if(action[i].getValue(Action.NAME).equals(DefaultEditorKit.selectLineAction)) {
+            if (action[i].getValue(Action.NAME).equals(DefaultEditorKit.selectLineAction)) {
                 selectLine = action[i];
             }
 
@@ -273,7 +273,6 @@ public class AddUpdateWordDialog extends javax.swing.JDialog {
 
         return selectLine;
     }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
     private javax.swing.JLabel addEditLabel;
@@ -287,6 +286,5 @@ public class AddUpdateWordDialog extends javax.swing.JDialog {
     private javax.swing.JTextArea translationTextArea;
     private javax.swing.JTextField wordTextField;
     // End of variables declaration//GEN-END:variables
-
     private int returnStatus = RET_CANCEL;
 }
