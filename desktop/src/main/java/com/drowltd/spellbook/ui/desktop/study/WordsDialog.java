@@ -61,8 +61,6 @@ public class WordsDialog extends javax.swing.JDialog {
 
         initComponents();
 
-
-
         addComponentListener(new ComponentAdapter() {
 
             @Override
@@ -106,7 +104,7 @@ public class WordsDialog extends javax.swing.JDialog {
 
         countOFTheWords = studyService.getCountOfTheWords();
         // wordsForLearning = dictDb.getWordsForLearning();
-        translationForStudy = studyService.getTranslationForStudy();
+        translationForStudy = studyService.getTranslationsForStudy();
         wordSearchField.requestFocus();
     }
 
@@ -382,7 +380,7 @@ public class WordsDialog extends javax.swing.JDialog {
         WordsTableModel model = new WordsTableModel();
         wordsTable.setModel(model);
         wordsForStudy = studyService.getWordsForStudy();
-        translationForStudy = studyService.getTranslationForStudy();
+        translationForStudy = studyService.getTranslationsForStudy();
         model.setColumnIdentifiers(new String[]{TRANSLATOR.translate("ID(TableColumn)"),
                     TRANSLATOR.translate("Word(TableColumn)"), TRANSLATOR.translate("Translation(TableColumn)"),
                     TRANSLATOR.translate("Selected(TableColumn)")});

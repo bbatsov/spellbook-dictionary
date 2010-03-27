@@ -22,22 +22,51 @@ import org.slf4j.LoggerFactory;
 public class StudyService extends AbstractPersistenceService {
     private static final Logger LOGGER = LoggerFactory.getLogger(StudyService.class);
 
+    /**
+     * Builds a service object.
+     *
+     * @throws DictionaryDbLockedException
+     */
     public StudyService() throws DictionaryDbLockedException {
         super(null);
     }
 
+    /**
+     * Retrieves all words for study. The words are cached for subsequent
+     * invokations of the method
+     *
+     * @return a list of the words for study
+     */
     public List<String> getWordsForStudy() {
         return EM.createQuery("select de.word from DictionaryEntry de, StudySetEntry se where se.dictionary_entry_id = de.id").getResultList();
     }
 
-    public List<String> getTranslationForStudy() {
+    /**
+     * Retrieves the translations of the words for study.
+     *
+     * @return a list of the translations for study
+     */
+    public List<String> getTranslationsForStudy() {
         return EM.createQuery("select de.translation from DictionaryEntry de, StudySetEntry se where se.dictionary_entry_id = de.id").getResultList();
     }
 
+    /**
+     * Retrieves count of the words for study.
+     *
+     * @return current number of words for study
+     */
     public Long getCountOfTheWords() {
         return (Long) EM.createQuery("select count(*) from StudySetEntry").getSingleResult();
     }
 
+    /**
+     * Adds a new word for study
+     *
+     * @param word the word to add
+     * @param dictionary dictionary from which will be taken the word
+     * @param studySetName determined StudySet's name in which will be added the word
+     * @see Dictionary
+     */
     public void addWordForStudy(String word, Dictionary dictionary, String studySetName) {
 
         if (word == null || word.isEmpty()) {
@@ -59,6 +88,11 @@ public class StudyService extends AbstractPersistenceService {
         t.commit();
     }
 
+    /**
+     * Deletes a word which no want any more to study.
+     *
+     * @param word word to delete
+     */
     public void deleteWord(String word) {
         word.replaceAll("'", "''");
 
