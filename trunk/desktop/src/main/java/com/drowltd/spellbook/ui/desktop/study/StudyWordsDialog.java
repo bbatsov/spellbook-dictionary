@@ -861,8 +861,8 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         }
         String translation = null;
         wordsForLearning = studyService.getWordsForStudy();
-        translationForLearning = studyService.getTranslationForStudy();
-        answerButton.setEnabled(true);
+        translationForLearning = studyService.getTranslationsForStudy();
+            answerButton.setEnabled(true);
         seeAnswerButton.setEnabled(true);
         stopButton.setEnabled(true);
         isStopedLearn = false;
