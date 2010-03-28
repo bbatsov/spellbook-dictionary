@@ -24,6 +24,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -39,6 +41,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.DefaultEditorKit;
@@ -121,6 +125,54 @@ public class SpellbookFrame extends javax.swing.JFrame {
         //create tray
         trayIcon = SpellbookTray.createTraySection(this);
 
+        initComponents();
+
+        initDictionaries();
+
+        addListeners();
+
+        // restore the divider location from the last session
+        splitPane.setDividerLocation(PM.getInt(Preference.DIVIDER_LOCATION, 160));
+
+        // we need to pass the completable search field a reference to the word list
+        ((AutocompletingTextField) wordSearchField).setWordsList(wordsList);
+        ((AutocompletingTextField) wordSearchField).setOwner(this);
+
+        updateDictionaryButton(selectedDictionary);
+
+        // update word menu item is initially disabled
+        updateWordMenuItem.setEnabled(false);
+        updateWordButton.setEnabled(false);
+        deleteWordMenuItem.setEnabled(false);
+        deleteWordButton.setEnabled(false);
+
+        // history buttons should be disabled initially
+        forwardButton.setEnabled(false);
+        backButton.setEnabled(false);
+
+        // clear button is disabled initially
+        clearButton.setEnabled(false);
+
+        cutButton.setEnabled(false);
+        cutMenuItem.setEnabled(false);
+        copyButton.setEnabled(false);
+        copyButton.setEnabled(false);
+
+        setDefaultFont();
+
+        if (PM.getBoolean(Preference.CLIPBOARD_INTEGRATION, false)) {
+            activateClipboardMonitoring();
+        }
+
+        if (PM.getBoolean(Preference.SHOW_MEMORY_USAGE, false)) {
+            showMemoryUsage();
+        } else {
+            hideMemoryUsage();
+        }
+    }
+
+    private void addListeners() {
+        // we need this to intercept events such as frame minimize/close
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowIconified(WindowEvent e) {
@@ -145,16 +197,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
                 }
             }
         });
-
-        initComponents();
-        initDictionaries();
-
-        // restore the divider location from the last session
-        splitPane.setDividerLocation(PM.getInt(Preference.DIVIDER_LOCATION, 160));
-
-        // we need to pass the completable search field a reference to the word list
-        ((AutocompletingTextField) wordSearchField).setWordsList(wordsList);
-        ((AutocompletingTextField) wordSearchField).setOwner(this);
 
         // monitor any changes in the search text field
         wordSearchField.getDocument().addDocumentListener(new DocumentListener() {
@@ -191,6 +233,59 @@ public class SpellbookFrame extends javax.swing.JFrame {
             }
         });
 
+        // needed to update the state of the clipboard controls
+        wordSearchField.addCaretListener(new CaretListener() {
+
+            @Override
+            public void caretUpdate(CaretEvent e) {
+                if (wordSearchField.getSelectedText() != null && !wordSearchField.getSelectedText().isEmpty()) {
+                    cutButton.setEnabled(true);
+                    cutMenuItem.setEnabled(true);
+                    copyButton.setEnabled(true);
+                    copyMenuItem.setEnabled(true);
+                } else {
+                    cutButton.setEnabled(false);
+                    cutMenuItem.setEnabled(false);
+                    copyButton.setEnabled(false);
+                    copyButton.setEnabled(false);
+                }
+            }
+        });
+
+        // paste should only work when the focus is in the search field
+        wordSearchField.addFocusListener(new FocusAdapter() {
+
+            @Override
+            public void focusGained(FocusEvent e) {
+                pasteButton.setEnabled(true);
+                pasteMenuItem.setEnabled(true);
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                pasteButton.setEnabled(false);
+                pasteMenuItem.setEnabled(false);
+                cutButton.setEnabled(false);
+                cutMenuItem.setEnabled(false);
+            }
+
+        });
+
+        wordTranslationTextPane.addCaretListener(new CaretListener() {
+
+            @Override
+            public void caretUpdate(CaretEvent e) {
+                if (wordTranslationTextPane.getSelectedText() != null && !wordTranslationTextPane.getSelectedText().isEmpty()) {
+                    copyButton.setEnabled(true);
+                    copyMenuItem.setEnabled(true);
+                } else {
+                    copyButton.setEnabled(false);
+                    copyButton.setEnabled(false);
+                }
+            }
+        });
+
+        // we have update the completion window's position when the frame moves
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentMoved(ComponentEvent e) {
@@ -205,33 +300,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         wordSearchField.addMouseListener(contextMenuMouseListener);
         wordTranslationTextPane.addMouseListener(contextMenuMouseListener);
-
-        updateDictionaryButton(selectedDictionary);
-
-        // update word menu item is initially disabled
-        updateWordMenuItem.setEnabled(false);
-        updateWordButton.setEnabled(false);
-        deleteWordMenuItem.setEnabled(false);
-        deleteWordButton.setEnabled(false);
-
-        // history buttons should be disabled initially
-        forwardButton.setEnabled(false);
-        backButton.setEnabled(false);
-
-        // clear button is disabled initially
-        clearButton.setEnabled(false);
-
-        setDefaultFont();
-
-        if (PM.getBoolean(Preference.CLIPBOARD_INTEGRATION, false)) {
-            activateClipboardMonitoring();
-        }
-
-        if (PM.getBoolean(Preference.SHOW_MEMORY_USAGE, false)) {
-            showMemoryUsage();
-        } else {
-            hideMemoryUsage();
-        }
     }
 
     private void addWordDefinition() throws HeadlessException {
