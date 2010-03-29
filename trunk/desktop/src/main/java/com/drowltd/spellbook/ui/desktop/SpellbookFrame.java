@@ -15,6 +15,8 @@ import com.drowltd.spellbook.ui.swing.util.IconManager.IconSize;
 import com.drowltd.spellbook.ui.desktop.spellcheck.SpellCheckFrame;
 import com.drowltd.spellbook.ui.desktop.study.StudyWordsDialog;
 import com.drowltd.spellbook.util.SearchUtils;
+import com.ice.tar.TarEntry;
+import com.ice.tar.TarInputStream;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.HeadlessException;
@@ -31,6 +33,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -46,6 +52,7 @@ import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.DefaultEditorKit;
+import org.apache.tools.bzip2.CBZip2InputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,6 +65,7 @@ import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preferen
  * @since 0.1
  */
 public class SpellbookFrame extends javax.swing.JFrame {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellbookFrame.class);
     private static final Translator TRANSLATOR = Translator.getTranslator("SpellbookForm");
     private static final PreferencesManager PM = PreferencesManager.getInstance();
@@ -73,6 +81,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private static final int BYTES_IN_ONE_MEGABYTE = 1024 * 1024;
     private static final String DEFAULT_DB_PATH = "/opt/spellbook/db/";
     private static final String DB_FILE_NAME = "spellbook.data.db";
+    private static final String COMPRESSED_DB_NAME = "dictionary-db.tar.bz2";
+    private static final String ARICHIVIED_DB_NAME = "dictionary-db.tar";
     private static DictionaryService dictionaryService;
     private static Dictionary selectedDictionary;
 
@@ -86,7 +96,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         // check the presence of the dictionary database
         if (!verifyDbPresence()) {
             JOptionPane.showMessageDialog(null, TRANSLATOR.translate("NoDbSelected(Message)"),
-                                          TRANSLATOR.translate("Error(Title)"), JOptionPane.ERROR_MESSAGE);
+                    TRANSLATOR.translate("Error(Title)"), JOptionPane.ERROR_MESSAGE);
             System.exit(-1);
         }
 
@@ -174,6 +184,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private void addListeners() {
         // we need this to intercept events such as frame minimize/close
         addWindowListener(new WindowAdapter() {
+
             @Override
             public void windowIconified(WindowEvent e) {
                 if (PM.getBoolean(Preference.MIN_TO_TRAY, false)) {
@@ -200,12 +211,14 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         // monitor any changes in the search text field
         wordSearchField.getDocument().addDocumentListener(new DocumentListener() {
+
             @Override
             public void insertUpdate(DocumentEvent e) {
                 // needs to be run in a separate thread
                 // because we may need to switch the dictionary
                 // based on the user input
                 EventQueue.invokeLater(new Runnable() {
+
                     @Override
                     public void run() {
                         onSearchChange(true);
@@ -225,6 +238,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         });
 
         wordSearchField.addKeyListener(new KeyAdapter() {
+
             @Override
             public void keyReleased(KeyEvent e) {
                 if (wordSearchField.getText().isEmpty()) {
@@ -268,7 +282,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
                 cutButton.setEnabled(false);
                 cutMenuItem.setEnabled(false);
             }
-
         });
 
         wordTranslationTextPane.addCaretListener(new CaretListener() {
@@ -287,6 +300,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         // we have update the completion window's position when the frame moves
         addComponentListener(new ComponentAdapter() {
+
             @Override
             public void componentMoved(ComponentEvent e) {
                 if (wordSearchField.hasFocus()) {
@@ -311,7 +325,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, TRANSLATOR.translate("WordAlreadyExists(Message)"), "Warning", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            
+
             int insertionIndex = SearchUtils.findInsertionIndex(words, addUpdateWordDialog.getWord());
             System.out.println("insertion index is " + insertionIndex);
             // this is a references to the cache as well
@@ -382,6 +396,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         if (memoryUsageExecutorService == null) {
             Runnable memoryRunnable = new Runnable() {
+
                 @Override
                 public void run() {
                     final Runtime runtime = Runtime.getRuntime();
@@ -432,6 +447,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
             clipboardIntegration = new ClipboardIntegration();
 
             Runnable clipboardRunnable = new Runnable() {
+
                 @Override
                 public void run() {
                     String transferredText = clipboardIntegration.getClipboardContents().trim();
@@ -483,7 +499,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
                                 || (SpellbookFrame.this.getState() == JFrame.ICONIFIED))
                                 && PM.getBoolean(Preference.TRAY_POPUP, false)) {
                             trayIcon.displayMessage(foundWord, dictionaryService.getTranslation((String) wordsList.getSelectedValue(), selectedDictionary),
-                                                    TrayIcon.MessageType.INFO);
+                                    TrayIcon.MessageType.INFO);
                         }
                     }
                 }
@@ -588,7 +604,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         }
         final String originalWord = (String) wordsList.getSelectedValue();
         addUpdateWordDialog.setWord(originalWord);
-        addUpdateWordDialog.setTranslation(dictionaryService.getTranslation( originalWord, selectedDictionary));
+        addUpdateWordDialog.setTranslation(dictionaryService.getTranslation(originalWord, selectedDictionary));
         addUpdateWordDialog.setVisible(true);
         if (addUpdateWordDialog.getReturnStatus() == AddUpdateWordDialog.RET_OK) {
             String newWord = addUpdateWordDialog.getWord();
@@ -643,6 +659,25 @@ public class SpellbookFrame extends javax.swing.JFrame {
         File file = new File(dbPath);
 
         if (!file.exists()) {
+
+            LOGGER.info("Checking for archivied db ...");
+            try {
+                String currentPath = new java.io.File(".").getCanonicalPath();
+                LOGGER.info("Current path: " + currentPath);
+                currentPath += "\\" + COMPRESSED_DB_NAME;
+                File archiviedDbFile = new File(currentPath);
+
+                if (archiviedDbFile.exists()) {
+                    LOGGER.info("Found the archivied db in " + currentPath);
+                    extractDbFromArchive(currentPath);
+                    return true;
+
+                }
+
+            } catch (FileNotFoundException ex) {
+            } catch (IOException e) {
+            }
+            
             if (dbPath.isEmpty()) {
                 JOptionPane.showMessageDialog(null, TRANSLATOR.translate("SelectDb(Message)"));
             } else {
@@ -655,7 +690,10 @@ public class SpellbookFrame extends javax.swing.JFrame {
             if (result == JFileChooser.APPROVE_OPTION) {
                 String selectedDbPath = fileChooser.getSelectedFile().getPath();
 
-                if (selectedDbPath.endsWith("spellbook.data.db")) {
+                if (selectedDbPath.endsWith(COMPRESSED_DB_NAME)) {
+                    extractDbFromArchive(selectedDbPath);
+                    return true;
+                } else if (selectedDbPath.endsWith(DB_FILE_NAME)) {
                     PM.put(Preference.PATH_TO_DB, selectedDbPath);
                     return true;
                 } else {
@@ -1218,6 +1256,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         if (!wordsList.isSelectionEmpty()) {
             // word field needs to be updated in a separate thread
             EventQueue.invokeLater(new Runnable() {
+
                 @Override
                 public void run() {
                     onWordSelectionChange();
@@ -1298,7 +1337,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearButtonActionPerformed
         clear();
     }//GEN-LAST:event_clearButtonActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem StudyWordsMenuItem;
     private javax.swing.JMenuItem aboutMenuItem;
@@ -1409,8 +1447,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
     private void deleteWordDefinition() {
         if (JOptionPane.showConfirmDialog(this, TRANSLATOR.translate("ConfirmWordDeletion(Message)"),
-                                          TRANSLATOR.translate("ConfirmWordDeletion(Title)"),
-                                          JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.OK_OPTION) {
+                TRANSLATOR.translate("ConfirmWordDeletion(Title)"),
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.OK_OPTION) {
 
             String selectedWord = (String) wordsList.getSelectedValue();
             int selectedIndex = wordsList.getSelectedIndex();
@@ -1423,7 +1461,96 @@ public class SpellbookFrame extends javax.swing.JFrame {
         }
     }
 
+    private void extractDbFromArchive(String pathToArchive) {
+        // Get the current path, where the database will be extracted
+        String currentPath = "";
+        try {
+            currentPath = new java.io.File(".").getCanonicalPath();
+        } catch (IOException ex) {
+        }
+        LOGGER.info("Current path: " + currentPath);
+        currentPath += "\\";
+        try {
+            //Open the archive
+            FileInputStream archiveFileStream = new FileInputStream(pathToArchive);
+            // Read two bytes from the stream before it used by CBZip2InputStream
+            int oneByte;
+            for (int i = 0; i < 2; i++) {
+                oneByte = archiveFileStream.read();
+            }
+
+            // Open the gzip file and open the output file
+            CBZip2InputStream bz2 = new CBZip2InputStream(archiveFileStream);
+            FileOutputStream out = new FileOutputStream(ARICHIVIED_DB_NAME);
+
+            LOGGER.info("Extracting the tar file...");
+            // Transfer bytes from the compressed file to the output file
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = bz2.read(buffer)) > 0) {
+                out.write(buffer, 0, len);
+            }
+
+            // Close the file and stream
+            bz2.close();
+            out.close();
+
+        } catch (FileNotFoundException e) {
+        } catch (IOException ex) {
+        }
+
+        try {
+
+            TarInputStream tarInputStream = null;
+            TarEntry tarEntry;
+            tarInputStream = new TarInputStream(new FileInputStream(ARICHIVIED_DB_NAME));
+
+            tarEntry = tarInputStream.getNextEntry();
+
+            byte[] buf1 = new byte[1024];
+
+            while (tarEntry != null) {
+                //For each entry to be extracted
+                String entryName = currentPath + tarEntry.getName();
+                entryName = entryName.replace('/', File.separatorChar);
+                entryName = entryName.replace('\\', File.separatorChar);
+
+                LOGGER.info("Extracting entry: " + entryName);
+                FileOutputStream fileOutputStream;
+                File newFile = new File(entryName);
+                if (tarEntry.isDirectory()) {
+                    if (!newFile.mkdirs()) {
+                        break;
+                    }
+                    tarEntry = tarInputStream.getNextEntry();
+                    continue;
+                }
+
+                fileOutputStream = new FileOutputStream(entryName);
+                int n;
+                while ((n = tarInputStream.read(buf1, 0, 1024)) > -1) {
+                    fileOutputStream.write(buf1, 0, n);
+                }
+
+                fileOutputStream.close();
+                tarEntry = tarInputStream.getNextEntry();
+
+            }
+            tarInputStream.close();
+        } catch (Exception e) {
+        }
+
+        currentPath += "\\db\\" + DB_FILE_NAME;
+        if (!currentPath.isEmpty()) {
+            LOGGER.info("DB placed in : " + currentPath);
+            PM.put(Preference.PATH_TO_DB, currentPath);
+        }
+
+
+    }
+
     private class DictionaryItem extends JMenuItem implements ActionListener {
+
         private final String dictionaryName;
 
         public DictionaryItem(Dictionary dictionary) {
