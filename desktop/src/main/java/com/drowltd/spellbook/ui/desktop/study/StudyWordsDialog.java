@@ -15,17 +15,23 @@ import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preference;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.i18n.Translator;
+import com.drowltd.spellbook.core.model.StudySet;
+import com.drowltd.spellbook.core.model.StudySetEntry;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.core.service.study.StudyService;
+import com.drowltd.spellbook.ui.swing.component.DictionaryComboBox;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
 import java.awt.Frame;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 
 /**
@@ -40,7 +46,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
     private DictionaryService dictionaryService;
     private static final PreferencesManager PM = PreferencesManager.getInstance();
     private static final Translator TRANSLATOR = Translator.getTranslator("LearningWordsDialog");
-    private SelectedDictionary selectedDictionaryEnum = SelectedDictionary.EN_BG;
+    private SelectedDictionary selectedDictionary = SelectedDictionary.EN_BG;
     private String word;
     private WordsDialog wordsDialog;
     private List<String> wordsForLearning = new ArrayList<String>();
@@ -57,12 +63,12 @@ public class StudyWordsDialog extends javax.swing.JDialog {
     private HowToEnumerate howToEnumerate = HowToEnumerate.IN_ORDER_OF_INPUT;
     private Frame parent;
 
-    public enum SelectedDictionary {
+    private enum SelectedDictionary {
 
         EN_BG, BG_EN
     }
 
-    public enum HowToEnumerate {
+    private enum HowToEnumerate {
 
         IN_ORDER_OF_INPUT, IN_REVERSE_ORDER_OF_INPUT, RANDOM
     }
@@ -72,29 +78,31 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         super(parent, modal);
         TRANSLATOR.reset();
         this.parent = parent;
+        dictionaryService = DictionaryService.getInstance();
+        dictionaries = dictionaryService.getDictionaries();
         initComponents();
         try {
             studyService = new StudyService();
         } catch (DictionaryDbLockedException ex) {
             Logger.getLogger(StudyWordsDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
-        dictionaryService = DictionaryService.getInstance();
+        setStudySetsInComboBox();
         ButtonGroup enumerateGroup = new ButtonGroup();
         enumerateGroup.add(inReverseOrderOfInputRadioButton);
         enumerateGroup.add(inOrderOfInputRadioButton);
         enumerateGroup.add(randomRadioButton);
         inOrderOfInputRadioButton.setSelected(true);
-        dictionaries = dictionaryService.getDictionaries();
         answerButton.setEnabled(false);
         seeAnswerButton.setEnabled(false);
         stopButton.setEnabled(false);
         correctAnswer = new Integer(0);
         wrongAnswer = new Integer(0);
         answerSeen = new Integer(0);
-        countOfWords = studyService.getCountOfTheWords();
+        String studySetName = (String) studySetsComboBox.getSelectedItem();
+        countOfWords = studyService.getCountOfTheWords(studySetName);
         checkingTheDatabase();
-        fromLanguageComboBox.setSelectedIndex(PM.getInt(Preference.LEARNING_WORDS_FROM_LANG, fromLanguageComboBox.getSelectedIndex()));
-        toLanguageComboBox.setSelectedIndex(PM.getInt(Preference.LEARNING_WORDS_TO_LANG, toLanguageComboBox.getSelectedIndex()));
+        //dictionariesComboBox.setSelectedIndex(PM.getInt(Preference.LEARNING_WORDS_FROM_LANG, dictionariesComboBox.getSelectedIndex()));
+        //studySetsComboBox.setSelectedIndex(PM.getInt(Preference.LEARNING_WORDS_TO_LANG, studySetsComboBox.getSelectedIndex()));
 
     }
 
@@ -109,14 +117,13 @@ public class StudyWordsDialog extends javax.swing.JDialog {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         wordsButton = new javax.swing.JButton();
         warningIconLabel = new javax.swing.JLabel();
         firstRowLabel = new javax.swing.JLabel();
         secondRowLabel = new javax.swing.JLabel();
-        fromLanguageComboBox = new javax.swing.JComboBox();
-        toLanguageComboBox = new javax.swing.JComboBox();
+        dictionariesComboBox = new DictionaryComboBox(dictionaries);
+        studySetsComboBox = new javax.swing.JComboBox();
         howToEnumeratePanel = new javax.swing.JPanel();
         randomRadioButton = new javax.swing.JRadioButton();
         inReverseOrderOfInputRadioButton = new javax.swing.JRadioButton();
@@ -165,9 +172,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
 
         jLabel1.setText(bundle.getString("Languages(Label)")); // NOI18N
 
-        jLabel2.setText(bundle.getString("From(Lable)")); // NOI18N
-
-        jLabel3.setText(bundle.getString("To(Label)")); // NOI18N
+        jLabel3.setText(bundle.getString("StudySet(Label)")); // NOI18N
 
         wordsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/dictionary.png"))); // NOI18N
         wordsButton.setText(bundle.getString("Words(Button)")); // NOI18N
@@ -183,27 +188,25 @@ public class StudyWordsDialog extends javax.swing.JDialog {
 
         firstRowLabel.setText(bundle.getString("AddWordsFirstLabel(Message)")); // NOI18N
 
-        fromLanguageComboBox.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+        dictionariesComboBox.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
             public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
             }
             public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
-                fromLanguageComboBoxPopupMenuWillBecomeInvisible(evt);
+                dictionariesComboBoxPopupMenuWillBecomeInvisible(evt);
             }
             public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
-                fromLanguageComboBoxPopupMenuWillBecomeVisible(evt);
+                dictionariesComboBoxPopupMenuWillBecomeVisible(evt);
             }
         });
 
-        toLanguageComboBox.addItem(bundle.getString("English(Item)"));
-        toLanguageComboBox.addItem(bundle.getString("Bulgarian(Item)"));
-        toLanguageComboBox.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+        studySetsComboBox.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
             public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
             }
             public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
-                toLanguageComboBoxPopupMenuWillBecomeInvisible(evt);
+                studySetsComboBoxPopupMenuWillBecomeInvisible(evt);
             }
             public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
-                toLanguageComboBoxPopupMenuWillBecomeVisible(evt);
+                studySetsComboBoxPopupMenuWillBecomeVisible(evt);
             }
         });
 
@@ -211,23 +214,24 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(studySetsComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(dictionariesComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(warningIconLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(warningIconLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(wordsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(secondRowLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(firstRowLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(fromLanguageComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(toLanguageComboBox, 0, 143, Short.MAX_VALUE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(firstRowLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(32, 32, 32)
+                        .addComponent(wordsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -235,30 +239,24 @@ public class StudyWordsDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(fromLanguageComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
+                .addComponent(dictionariesComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE, false)
-                    .addComponent(jLabel3)
-                    .addComponent(toLanguageComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(studySetsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(wordsButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(warningIconLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(firstRowLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(secondRowLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(warningIconLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(secondRowLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
 
         jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {firstRowLabel, secondRowLabel});
-
-        fromLanguageComboBox.addItem(bundle.getString("English(Item)"));
-        fromLanguageComboBox.addItem(bundle.getString("Bulgarian(Item)"));
-        fromLanguageComboBox.setSelectedIndex(1);
 
         howToEnumeratePanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         howToEnumeratePanel.setMaximumSize(new java.awt.Dimension(224, 159));
@@ -277,12 +275,14 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         howToEnumeratePanelLayout.setHorizontalGroup(
             howToEnumeratePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, howToEnumeratePanelLayout.createSequentialGroup()
-                .addContainerGap(40, Short.MAX_VALUE)
-                .addGroup(howToEnumeratePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(randomRadioButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(inReverseOrderOfInputRadioButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(inOrderOfInputRadioButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 176, Short.MAX_VALUE))
+                .addGap(35, 35, 35)
+                .addGroup(howToEnumeratePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(randomRadioButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE)
+                    .addComponent(inReverseOrderOfInputRadioButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE)
+                    .addComponent(inOrderOfInputRadioButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE)
+                    .addGroup(howToEnumeratePanelLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         howToEnumeratePanelLayout.setVerticalGroup(
@@ -290,13 +290,13 @@ public class StudyWordsDialog extends javax.swing.JDialog {
             .addGroup(howToEnumeratePanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(inOrderOfInputRadioButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(inReverseOrderOfInputRadioButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(randomRadioButton)
-                .addContainerGap(48, Short.MAX_VALUE))
+                .addContainerGap(32, Short.MAX_VALUE))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -377,7 +377,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
                             .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
                         .addComponent(stopButton, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(40, 40, 40)
+                .addGap(50, 50, 50)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(8, 8, 8)
@@ -394,14 +394,14 @@ public class StudyWordsDialog extends javax.swing.JDialog {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(31, 31, 31)
                         .addComponent(imoticonLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(63, Short.MAX_VALUE))
+                .addGap(142, 142, 142))
         );
 
         jPanel3Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {answerButton, seeAnswerButton, startButton, stopButton});
 
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+            .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(stopButton)
@@ -421,15 +421,14 @@ public class StudyWordsDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addComponent(imoticonLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(answerStatutLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addComponent(transcriptionLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(answerField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jLabel6))
+                    .addComponent(imoticonLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(answerStatutLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(answerField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(answerButton)
@@ -460,15 +459,15 @@ public class StudyWordsDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 476, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(repeatWordCheckBox))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(repeatMisspelledWordsCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(howToEnumeratePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(howToEnumeratePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jPanel3, 0, 484, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -478,16 +477,16 @@ public class StudyWordsDialog extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(howToEnumeratePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(howToEnumeratePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(repeatWordCheckBox)
-                    .addComponent(repeatMisspelledWordsCheckBox))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(repeatMisspelledWordsCheckBox)
+                    .addComponent(repeatWordCheckBox))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -509,14 +508,14 @@ public class StudyWordsDialog extends javax.swing.JDialog {
 
     private void answerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_answerButtonActionPerformed
 
-        if (selectedDictionaryEnum == SelectedDictionary.EN_BG) {
+        if (selectedDictionary == SelectedDictionary.EN_BG) {
             if (howToEnumerate == HowToEnumerate.RANDOM) {
                 getAnswer(shuffleWordsForLearning, shuffleTranslationForLearning);
             } else {
                 getAnswer(wordsForLearning, translationForLearning);
             }
         }
-        if (selectedDictionaryEnum == SelectedDictionary.BG_EN) {
+        if (selectedDictionary == SelectedDictionary.BG_EN) {
             if (howToEnumerate == HowToEnumerate.RANDOM) {
                 getAnswer(shuffleTranslationForLearning, shuffleWordsForLearning);
             } else {
@@ -526,7 +525,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_answerButtonActionPerformed
 
     private void seeAnswerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_seeAnswerButtonActionPerformed
-        if (selectedDictionaryEnum == SelectedDictionary.EN_BG) {
+        if (selectedDictionary == SelectedDictionary.EN_BG) {
             if (howToEnumerate == HowToEnumerate.RANDOM) {
                 word = (String) shuffleTranslationForLearning.get(wordIndex);
             } else {
@@ -535,7 +534,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
             String message = TRANSLATOR.translate("SeeAnswerMessege(Message)") + " \"" + word + "\"";
             JOptionPane.showMessageDialog(this, message, TRANSLATOR.translate("SeeAnswerPaneTittle(Title)"), JOptionPane.INFORMATION_MESSAGE);
         }
-        if (selectedDictionaryEnum == SelectedDictionary.BG_EN) {
+        if (selectedDictionary == SelectedDictionary.BG_EN) {
             if (howToEnumerate == HowToEnumerate.RANDOM) {
                 word = (String) shuffleWordsForLearning.get(wordIndex);
             } else {
@@ -552,13 +551,13 @@ public class StudyWordsDialog extends javax.swing.JDialog {
     private void stopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopButtonActionPerformed
 
         stopLearning();
-        //answerField.setText(null);
+       //answerField.setText(null);
 
     }//GEN-LAST:event_stopButtonActionPerformed
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
-        PM.putInt(Preference.LEARNING_WORDS_FROM_LANG, fromLanguageComboBox.getSelectedIndex());
-        PM.putInt(Preference.LEARNING_WORDS_TO_LANG, toLanguageComboBox.getSelectedIndex());
+        PM.putInt(Preference.LEARNING_WORDS_FROM_LANG, dictionariesComboBox.getSelectedIndex());
+        PM.putInt(Preference.LEARNING_WORDS_TO_LANG, studySetsComboBox.getSelectedIndex());
         PM.putBoolean(Preference.LEARNING_IN_ORDER, inOrderOfInputRadioButton.isSelected());
         PM.putBoolean(Preference.LEARNING_IN_REVERSE_ORDER, inReverseOrderOfInputRadioButton.isSelected());
         PM.putBoolean(Preference.LEARNING_RANDOM, randomRadioButton.isSelected());
@@ -569,14 +568,14 @@ public class StudyWordsDialog extends javax.swing.JDialog {
 
     private void answerFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_answerFieldActionPerformed
         if (!isStopedLearn) {
-            if (selectedDictionaryEnum == SelectedDictionary.EN_BG) {
+            if (selectedDictionary == SelectedDictionary.EN_BG) {
                 if (howToEnumerate == HowToEnumerate.RANDOM) {
                     getAnswer(shuffleWordsForLearning, shuffleTranslationForLearning);
                 } else {
                     getAnswer(wordsForLearning, translationForLearning);
                 }
             }
-            if (selectedDictionaryEnum == SelectedDictionary.BG_EN) {
+            if (selectedDictionary == SelectedDictionary.BG_EN) {
                 if (howToEnumerate == HowToEnumerate.RANDOM) {
                     getAnswer(shuffleTranslationForLearning, shuffleWordsForLearning);
                 } else {
@@ -604,29 +603,31 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_repeatMisspelledWordsCheckBoxActionPerformed
 
-    private void fromLanguageComboBoxPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_fromLanguageComboBoxPopupMenuWillBecomeInvisible
-        if (fromLanguageComboBox.getSelectedItem() == toLanguageComboBox.getSelectedItem()) {
-            toLanguageComboBox.setSelectedIndex(fromWordsIndex);
+    private void dictionariesComboBoxPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_dictionariesComboBoxPopupMenuWillBecomeInvisible
+        if (dictionariesComboBox.getSelectedItem() == studySetsComboBox.getSelectedItem()) {
+            studySetsComboBox.setSelectedIndex(fromWordsIndex);
         }
-    }//GEN-LAST:event_fromLanguageComboBoxPopupMenuWillBecomeInvisible
+    }//GEN-LAST:event_dictionariesComboBoxPopupMenuWillBecomeInvisible
 
-    private void fromLanguageComboBoxPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_fromLanguageComboBoxPopupMenuWillBecomeVisible
-        fromWordsIndex = fromLanguageComboBox.getSelectedIndex();
-    }//GEN-LAST:event_fromLanguageComboBoxPopupMenuWillBecomeVisible
+    private void dictionariesComboBoxPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_dictionariesComboBoxPopupMenuWillBecomeVisible
+        fromWordsIndex = dictionariesComboBox.getSelectedIndex();
+    }//GEN-LAST:event_dictionariesComboBoxPopupMenuWillBecomeVisible
 
-    private void toLanguageComboBoxPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_toLanguageComboBoxPopupMenuWillBecomeInvisible
-        if (toLanguageComboBox.getSelectedItem() == fromLanguageComboBox.getSelectedItem()) {
-            fromLanguageComboBox.setSelectedIndex(toWordsIndex);
+    private void studySetsComboBoxPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_studySetsComboBoxPopupMenuWillBecomeInvisible
+        if (studySetsComboBox.getSelectedItem() == dictionariesComboBox.getSelectedItem()) {
+            dictionariesComboBox.setSelectedIndex(toWordsIndex);
         }
-    }//GEN-LAST:event_toLanguageComboBoxPopupMenuWillBecomeInvisible
+    }//GEN-LAST:event_studySetsComboBoxPopupMenuWillBecomeInvisible
 
-    private void toLanguageComboBoxPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_toLanguageComboBoxPopupMenuWillBecomeVisible
-        toWordsIndex = toLanguageComboBox.getSelectedIndex();
-    }//GEN-LAST:event_toLanguageComboBoxPopupMenuWillBecomeVisible
+    private void studySetsComboBoxPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_studySetsComboBoxPopupMenuWillBecomeVisible
+        toWordsIndex = studySetsComboBox.getSelectedIndex();
+    }//GEN-LAST:event_studySetsComboBoxPopupMenuWillBecomeVisible
 
     private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
         checkingTheDatabase();
-        countOfWords = studyService.getCountOfTheWords();
+        setStudySetsInComboBox();
+        String studySetName = (String) studySetsComboBox.getSelectedItem();
+        countOfWords = studyService.getCountOfTheWords(studySetName);
     }//GEN-LAST:event_formWindowGainedFocus
     /**
      * @param args the command line arguments
@@ -638,14 +639,13 @@ public class StudyWordsDialog extends javax.swing.JDialog {
     private javax.swing.JLabel answerStatutLabel;
     private javax.swing.JLabel countOfTheCorrectWordsLabel;
     private javax.swing.JLabel countOfTheWrongWordsLabel;
+    private javax.swing.JComboBox dictionariesComboBox;
     private javax.swing.JLabel firstRowLabel;
-    private javax.swing.JComboBox fromLanguageComboBox;
     private javax.swing.JPanel howToEnumeratePanel;
     private javax.swing.JLabel imoticonLabel;
     private javax.swing.JRadioButton inOrderOfInputRadioButton;
     private javax.swing.JRadioButton inReverseOrderOfInputRadioButton;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -662,14 +662,14 @@ public class StudyWordsDialog extends javax.swing.JDialog {
     private javax.swing.JButton seeAnswerButton;
     private javax.swing.JButton startButton;
     private javax.swing.JButton stopButton;
-    private javax.swing.JComboBox toLanguageComboBox;
+    private javax.swing.JComboBox studySetsComboBox;
     private javax.swing.JLabel transcriptionLabel;
     private javax.swing.JTextField translateField;
     private javax.swing.JLabel warningIconLabel;
     private javax.swing.JButton wordsButton;
     // End of variables declaration//GEN-END:variables
 
-    public void getAnswer(List<String> words, List<String> translations) {
+    private void getAnswer(List<String> words, List<String> translations) {
         String wordTranslation = answerField.getText();
         wordTranslation = wordTranslation.toLowerCase();
         if (wordTranslation == null || wordTranslation.isEmpty()) {
@@ -785,7 +785,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         answerField.requestFocus();
     }
 
-    public void shuffle(List words, List translations) {
+    private void shuffle(List words, List translations) {
         if (words.size() > 0 && translations.size() > 0) {
             List copyWords = new ArrayList();
             List copyTranslations = new ArrayList();
@@ -805,19 +805,32 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         }
     }
 
-    public void checkingTheDatabase() {
-        wordsForLearning = studyService.getWordsForStudy();
-        if (wordsForLearning.isEmpty()) {
-            startButton.setEnabled(false);
-            warningIconLabel.setIcon(IconManager.getImageIcon("warning.png", IconManager.IconSize.SIZE24));
-            firstRowLabel.setText(TRANSLATOR.translate("AddWordsFirstLabel(Message)"));
-            secondRowLabel.setText(TRANSLATOR.translate("AddWordsSecondLabel(Message)"));
+    private void checkingTheDatabase() {
+        List<StudySet> studySets = new ArrayList<StudySet>();
+        studySets = studyService.getStudySets();
+
+        if (studySets.isEmpty()) {
+            reportThatDatabaseIsEmpty();
         } else {
-            startButton.setEnabled(isStopedLearn);
-            warningIconLabel.setIcon(null);
-            firstRowLabel.setText(null);
-            secondRowLabel.setText(null);
+            String studySetName = (String) studySetsComboBox.getSelectedItem();
+            StudySet studySet = studyService.getStudySet(studySetName);
+            Set<StudySetEntry> studySetEntry = studySet.getStudySetEntries();
+            if (studySetEntry.isEmpty()) {
+                reportThatDatabaseIsEmpty();
+            } else {
+                startButton.setEnabled(isStopedLearn);
+                warningIconLabel.setIcon(null);
+                firstRowLabel.setText(null);
+                secondRowLabel.setText(null);
+            }
         }
+    }
+
+    private void reportThatDatabaseIsEmpty(){
+        startButton.setEnabled(false);
+        warningIconLabel.setIcon(IconManager.getImageIcon("warning.png", IconManager.IconSize.SIZE24));
+        firstRowLabel.setText(TRANSLATOR.translate("AddWordsFirstLabel(Message)"));
+        secondRowLabel.setText(TRANSLATOR.translate("AddWordsSecondLabel(Message)"));
     }
 
     public void showLearningWordsDialog() {
@@ -832,7 +845,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
 
     }
 
-    public void stopLearning() {
+    private void stopLearning() {
 
         isStopedLearn = true;
         answerButton.setEnabled(false);
@@ -840,8 +853,8 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         stopButton.setEnabled(false);
         wordsButton.setEnabled(true);
         startButton.setEnabled(true);
-        fromLanguageComboBox.setEnabled(true);
-        toLanguageComboBox.setEnabled(true);
+        dictionariesComboBox.setEnabled(true);
+        studySetsComboBox.setEnabled(true);
         inOrderOfInputRadioButton.setEnabled(true);
         inReverseOrderOfInputRadioButton.setEnabled(true);
         randomRadioButton.setEnabled(true);
@@ -852,24 +865,25 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         startButton.requestFocus();
     }
 
-    public void startLearning() {
-        if ((fromLanguageComboBox.getSelectedIndex() == 0) && (toLanguageComboBox.getSelectedIndex() == 1)) {   //English Index = 0; Bulgarian = 1;
-            selectedDictionaryEnum = SelectedDictionary.EN_BG;
+    private void startLearning() {
+        if (dictionariesComboBox.getSelectedIndex() == 0) {   
+            selectedDictionary = SelectedDictionary.EN_BG;
         }
-        if ((fromLanguageComboBox.getSelectedIndex() == 1) && (toLanguageComboBox.getSelectedIndex() == 0)) {
-            selectedDictionaryEnum = SelectedDictionary.BG_EN;
+        if (dictionariesComboBox.getSelectedIndex() == 1) {
+            selectedDictionary = SelectedDictionary.BG_EN;
         }
         String translation = null;
-        wordsForLearning = studyService.getWordsForStudy();
-        translationForLearning = studyService.getTranslationsForStudy();
-            answerButton.setEnabled(true);
+        String studySetName = (String) studySetsComboBox.getSelectedItem();
+        wordsForLearning = studyService.getWordsForStudy(studySetName);
+        translationForLearning = studyService.getTranslationsForStudy(studySetName);
+        answerButton.setEnabled(true);
         seeAnswerButton.setEnabled(true);
         stopButton.setEnabled(true);
         isStopedLearn = false;
         startButton.setEnabled(false);
         wordsButton.setEnabled(false);
-        fromLanguageComboBox.setEnabled(false);
-        toLanguageComboBox.setEnabled(false);
+        dictionariesComboBox.setEnabled(false);
+        studySetsComboBox.setEnabled(false);
         inOrderOfInputRadioButton.setEnabled(false);
         inReverseOrderOfInputRadioButton.setEnabled(false);
         randomRadioButton.setEnabled(false);
@@ -887,7 +901,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         if (inOrderOfInputRadioButton.isSelected()) {
             howToEnumerate = HowToEnumerate.IN_ORDER_OF_INPUT;
             wordIndex = 0;
-            if (selectedDictionaryEnum == SelectedDictionary.EN_BG) {
+            if (selectedDictionary == SelectedDictionary.EN_BG) {
                 word = wordsForLearning.get(wordIndex);
                 translateField.setText(word);
                 String transcription = getTranscription(word);
@@ -899,11 +913,10 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         }
         if (inReverseOrderOfInputRadioButton.isSelected()) {
             howToEnumerate = HowToEnumerate.IN_REVERSE_ORDER_OF_INPUT;
-            long wordIndex1 = studyService.getCountOfTheWords() - 1;
+            long wordIndex1 = studyService.getCountOfTheWords(studySetName) - 1;
             wordIndex = (int) wordIndex1;
-            if (selectedDictionaryEnum == SelectedDictionary.EN_BG) {
+            if (selectedDictionary == SelectedDictionary.EN_BG) {
                 word = wordsForLearning.get(wordIndex);
-                translateField.setText(word);
                 translateField.setText(word);
                 String transcription = getTranscription(word);
                 transcriptionLabel.setText(" " + transcription);
@@ -915,9 +928,8 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         if (randomRadioButton.isSelected()) {
             howToEnumerate = HowToEnumerate.RANDOM;
             wordIndex = 0;
-            if (selectedDictionaryEnum == SelectedDictionary.EN_BG) {
+            if (selectedDictionary == SelectedDictionary.EN_BG) {
                 word = (String) shuffleWordsForLearning.get(wordIndex);
-                translateField.setText(word);
                 translateField.setText(word);
                 String transcription = getTranscription(word);
                 transcriptionLabel.setText(" " + transcription);
@@ -928,12 +940,12 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         }
     }
 
-    public String getTranscription(String word) {
+    private String getTranscription(String word) {
         String translation = null;
-        if (selectedDictionaryEnum == SelectedDictionary.EN_BG) {
+        if (selectedDictionary == SelectedDictionary.EN_BG) {
             translation = dictionaryService.getTranslation(word, dictionaries.get(0));
         }
-        if (selectedDictionaryEnum == SelectedDictionary.BG_EN) {
+        if (selectedDictionary == SelectedDictionary.BG_EN) {
             return "";
         }
         int beginIndex = translation.indexOf('[');
@@ -944,5 +956,11 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         String transcription = translation.substring(beginIndex, endIndex);
         return transcription;
 
+    }
+
+    private void setStudySetsInComboBox(){
+        List<String> namesOfStudySets = new ArrayList<String>();
+        namesOfStudySets = studyService.getNamesOfStudySets();
+        studySetsComboBox.setModel(new DefaultComboBoxModel(namesOfStudySets.toArray()));
     }
 }

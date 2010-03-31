@@ -1,9 +1,13 @@
 package com.drowltd.spellbook.core.model;
 
+import java.util.HashSet;
+import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -15,6 +19,9 @@ import javax.persistence.Table;
 public class DictionaryEntry extends AbstractEntity {
     @ManyToOne(optional=false, fetch=FetchType.LAZY)
     private Dictionary dictionary;
+
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "dictionaryEntry", fetch=FetchType.LAZY)
+    private Set<StudySetEntry> dictionaryEntries = new HashSet<StudySetEntry>();
 
     @Column(nullable=false, unique=true)
     private String word;
@@ -57,6 +64,15 @@ public class DictionaryEntry extends AbstractEntity {
 
     public void setTranslation(String wordTranslation) {
         this.translation = wordTranslation;
+    }
+
+
+    public Set<StudySetEntry> getDictionaryEntries() {
+        return dictionaryEntries;
+    }
+
+    public void setDictionaryEntries(Set<StudySetEntry> dictionaryEntries) {
+        this.dictionaryEntries = dictionaryEntries;
     }
 
     @Override

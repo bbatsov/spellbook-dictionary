@@ -16,15 +16,19 @@ import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.service.study.StudyService;
 import com.drowltd.spellbook.core.model.Dictionary;
+import com.drowltd.spellbook.core.model.StudySet;
 import com.drowltd.spellbook.ui.swing.component.AutocompletingTextField;
 import com.drowltd.spellbook.ui.swing.component.DictionaryComboBox;
 import java.awt.Frame;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -43,24 +47,38 @@ public class WordsDialog extends javax.swing.JDialog {
     private List<String> translationForStudy = new ArrayList<String>();
     private List<String> words = new ArrayList<String>();
     private List<Dictionary> dictionaries = new ArrayList<Dictionary>();
+    private List<StudySet> studySets = new ArrayList<StudySet>();
+    private Map<String, Dictionary>  dictionariesMap = new HashMap<String, Dictionary>();
     private StudyService studyService;
     private Frame parent;
     private static final PreferencesManager PM = PreferencesManager.getInstance();
     private static final Translator TRANSLATOR = Translator.getTranslator("WordsDialog");
     StudyWordsDialog studyWordsDialog = new StudyWordsDialog(parent, true);
-
+    
     /** Creates new form WordsDialog */
     public WordsDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         TRANSLATOR.reset();
         this.parent = parent;
 
+        try {
+            studyService = new StudyService();
+        } catch (DictionaryDbLockedException ex) {
+            Logger.getLogger(WordsDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        studySets = studyService.getStudySets();
         dictionaryService = DictionaryService.getInstance();
         dictionaries = dictionaryService.getDictionaries();
         words = dictionaryService.getWordsFromDictionary(dictionaries.get(0));
 
         initComponents();
 
+        setStudySetsInComboBox();
+        String dictName = null;
+        for (int i = 0; i < dictionaries.size(); i++) {
+            dictName = (String) dictionariesComboBox.getItemAt(i);
+            dictionariesMap.put(dictName, dictionaries.get(i));
+        }
         addComponentListener(new ComponentAdapter() {
 
             @Override
@@ -72,11 +90,6 @@ public class WordsDialog extends javax.swing.JDialog {
         });
 
         getTable().setOpaque(true);
-        try {
-            studyService = new StudyService();
-        } catch (DictionaryDbLockedException ex) {
-            Logger.getLogger(WordsDialog.class.getName()).log(Level.SEVERE, null, ex);
-        }
 
         ((AutocompletingTextField) wordSearchField).setCompletions(words);
         ((AutocompletingTextField) wordSearchField).setOwner(this);
@@ -102,10 +115,10 @@ public class WordsDialog extends javax.swing.JDialog {
             }
         });
 
-        countOFTheWords = studyService.getCountOfTheWords();
-        // wordsForLearning = dictDb.getWordsForLearning();
-        translationForStudy = studyService.getTranslationsForStudy();
-        wordSearchField.requestFocus();
+       // wordsForLearning = dictDb.getWordsForLearning();
+        String name = (String) studySetsComboBox.getSelectedItem();
+        translationForStudy = studyService.getTranslationsForStudy(name);
+        countOFTheWords = studyService.getCountOfTheWords(name);
     }
 
     private void updateAddButtonState() {
@@ -142,16 +155,25 @@ public class WordsDialog extends javax.swing.JDialog {
         wordSearchField = new AutocompletingTextField();
         addButton = new javax.swing.JButton();
         clearButton = new javax.swing.JButton();
-        nothingButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         wordTranslationTextPane = new javax.swing.JTextPane();
-        dictionariesComboBox = new DictionaryComboBox(dictionaries);
-        allButton = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         deleteButton = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        dictionariesComboBox = new DictionaryComboBox(dictionaries);
+        jLabel5 = new javax.swing.JLabel();
+        addStudySetField = new javax.swing.JTextField();
+        addStudySetButton = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
+        studySetsComboBox = new javax.swing.JComboBox();
+        deleteStudySetButton = new javax.swing.JButton();
+        allButton = new javax.swing.JButton();
+        nothingButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Words");
+        setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosed(java.awt.event.WindowEvent evt) {
                 formWindowClosed(evt);
@@ -159,6 +181,8 @@ public class WordsDialog extends javax.swing.JDialog {
         });
 
         wordsScrollPane.setViewportView(wordsTable);
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("i18n/WordsDialog"); // NOI18N
         jLabel1.setText(bundle.getString("EnterWord(Label)")); // NOI18N
@@ -183,21 +207,7 @@ public class WordsDialog extends javax.swing.JDialog {
             }
         });
 
-        nothingButton.setText(bundle.getString("Nothing(Button)")); // NOI18N
-        nothingButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nothingButtonActionPerformed(evt);
-            }
-        });
-
         jScrollPane1.setViewportView(wordTranslationTextPane);
-
-        allButton.setText(bundle.getString("All(Button)")); // NOI18N
-        allButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                allButtonActionPerformed(evt);
-            }
-        });
 
         jLabel2.setText("Translation:");
 
@@ -205,53 +215,40 @@ public class WordsDialog extends javax.swing.JDialog {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(nothingButton)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(wordSearchField)
-                                    .addComponent(dictionariesComboBox, 0, 168, Short.MAX_VALUE))
-                                .addGap(18, 18, 18))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(120, 120, 120)))
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(jLabel1)
+                        .addGap(120, 120, 120))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(wordSearchField)
+                        .addGap(18, 18, 18)))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(allButton, javax.swing.GroupLayout.DEFAULT_SIZE, 67, Short.MAX_VALUE)
-                    .addComponent(clearButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(addButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(331, 331, 331))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(clearButton, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE)
+                    .addComponent(addButton, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(wordSearchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(dictionariesComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(addButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(clearButton))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(11, 11, 11)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(allButton)
-                    .addComponent(nothingButton))
-                .addContainerGap())
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(wordSearchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         deleteButton.setText(bundle.getString("Delete(Button)")); // NOI18N
@@ -261,27 +258,130 @@ public class WordsDialog extends javax.swing.JDialog {
             }
         });
 
+        jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jLabel3.setText("Select langueges:");
+
+        jLabel5.setText("Enter study set's name:");
+
+        addStudySetButton.setText("Add");
+        addStudySetButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addStudySetButtonActionPerformed(evt);
+            }
+        });
+
+        jLabel6.setText("Study sets:");
+
+        deleteStudySetButton.setText("Delete");
+        deleteStudySetButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteStudySetButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(dictionariesComboBox, 0, 187, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 102, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(111, 111, 111)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(studySetsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addComponent(addStudySetButton, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(deleteStudySetButton))
+                        .addComponent(addStudySetField, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING)))
+                .addGap(36, 36, 36))
+        );
+
+        jPanel2Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {addStudySetField, dictionariesComboBox, studySetsComboBox});
+
+        jPanel2Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {addStudySetButton, deleteStudySetButton});
+
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(studySetsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(addStudySetField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(deleteStudySetButton)
+                            .addComponent(addStudySetButton)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(dictionariesComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+
+        allButton.setText(bundle.getString("All(Button)")); // NOI18N
+        allButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                allButtonActionPerformed(evt);
+            }
+        });
+
+        nothingButton.setText(bundle.getString("Nothing(Button)")); // NOI18N
+        nothingButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nothingButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, 0, 517, Short.MAX_VALUE)
-                        .addComponent(wordsScrollPane, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 517, Short.MAX_VALUE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(wordsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 535, Short.MAX_VALUE)
+                    .addComponent(deleteButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(387, 387, 387)
+                        .addComponent(nothingButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(allButton, javax.swing.GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE)))
+                .addContainerGap())
         );
+
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {allButton, deleteButton, nothingButton});
+
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(wordsScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(allButton)
+                    .addComponent(nothingButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(wordsScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(deleteButton)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -290,45 +390,37 @@ public class WordsDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-//        String word = wordSearchField.getText();
-//
-//        wordsForStudy = studyService.getWordsForStudy();
-//        translationForStudy = studyService.getTranslationForStudy();
-//
-//        if (words.contains(word)) {
-//            //     wordsForLearning.add(word);
-//            countOFTheWords = studyService.getCountOfTheWords();
-//            if (wordsForStudy.contains(word)) {
-//                JOptionPane.showMessageDialog(this, TRANSLATOR.translate("AlreadyContainedWord(Message)"), null, JOptionPane.ERROR_MESSAGE);
-//            }
-//            if (!wordsForStudy.contains(word)) {
-//                countOFTheWords++;
-//                studyService.addWordForStudy(word, translation);
-//
-//                setWordsInTable(false);
-//            }
-//
-//
-//
-//        } else if (!words.contains(word) && !(word == null || word.isEmpty() || translation == null || translation.isEmpty())) {
-//            JOptionPane.showMessageDialog(this, TRANSLATOR.translate("NotExistWord(Message)"), null, JOptionPane.ERROR_MESSAGE);
-//        }
+        String word = wordSearchField.getText();
+        String studySetName = (String) studySetsComboBox.getSelectedItem();
+        wordsForStudy = studyService.getWordsForStudy(studySetName);
+        if (words.contains(word)) {
+            countOFTheWords = studyService.getCountOfTheWords(studySetName);
+            if (wordsForStudy.contains(word)) {
+                JOptionPane.showMessageDialog(this, TRANSLATOR.translate("AlreadyContainedWord(Message)"), null, JOptionPane.ERROR_MESSAGE);
+            } else {
+                countOFTheWords++;
+                String dictName = (String) dictionariesComboBox.getSelectedItem();
+                studyService.addWord(word, dictionariesMap.get(dictName), studySetName);
 
+                setWordsInTable(false);
+            }
+        }
         clear();
         wordSearchField.requestFocus();
     }//GEN-LAST:event_addButtonActionPerformed
 
     private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
-        long countOFTheRows = countOFTheWords = studyService.getCountOfTheWords();
+        //String studySetName = (String) studySetsComboBox.getSelectedItem();
+        //long countOFTheRows = countOFTheWords = studyService.getCountOfTheWords(studySetName);
 
-        for (int i = 0; i < countOFTheRows; i++) {
-            if ((Boolean) wordsTable.getValueAt(i, 3)) {
-                studyService.deleteWord((String) wordsTable.getValueAt(i, 1));
-                countOFTheWords--;
-            }
-        }
+        //for (int i = 0; i < countOFTheRows; i++) {
+        //    if ((Boolean) wordsTable.getValueAt(i, 3)) {
+        //        studyService.deleteWord((String) wordsTable.getValueAt(i, 1), studySetName);
+        //        countOFTheWords--;
+        //    }
+        //}
 
-        setWordsInTable(false);
+        //setWordsInTable(false);
 
     }//GEN-LAST:event_deleteButtonActionPerformed
 
@@ -349,22 +441,47 @@ public class WordsDialog extends javax.swing.JDialog {
         wordSearchField.selectAll();
     }//GEN-LAST:event_wordSearchFieldActionPerformed
 
+    private void addStudySetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addStudySetButtonActionPerformed
+
+        String name = addStudySetField.getText();
+        studyService.addStudySet(name);
+        addStudySetField.setText(null);
+        setStudySetsInComboBox();
+
+    }//GEN-LAST:event_addStudySetButtonActionPerformed
+
+    private void deleteStudySetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteStudySetButtonActionPerformed
+        //String studySetName = (String) studySetsComboBox.getSelectedItem();
+        //studyService.deleteStudySet(studySetName);
+        //setStudySetsInComboBox();
+        //setWordsInTable(false);
+    }//GEN-LAST:event_deleteStudySetButtonActionPerformed
+
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+
     }//GEN-LAST:event_formWindowClosed
     /**
      * @param args the command line arguments
      */
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
+    private javax.swing.JButton addStudySetButton;
+    private javax.swing.JTextField addStudySetField;
     private javax.swing.JButton allButton;
     private javax.swing.JButton clearButton;
     private javax.swing.JButton deleteButton;
+    private javax.swing.JButton deleteStudySetButton;
     private javax.swing.JComboBox dictionariesComboBox;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton nothingButton;
+    private javax.swing.JComboBox studySetsComboBox;
     private javax.swing.JTextField wordSearchField;
     private javax.swing.JTextPane wordTranslationTextPane;
     private javax.swing.JScrollPane wordsScrollPane;
@@ -379,14 +496,21 @@ public class WordsDialog extends javax.swing.JDialog {
     public void setWordsInTable(Boolean select) {
         WordsTableModel model = new WordsTableModel();
         wordsTable.setModel(model);
-        wordsForStudy = studyService.getWordsForStudy();
-        translationForStudy = studyService.getTranslationsForStudy();
+        String studySetName = (String) studySetsComboBox.getSelectedItem();
+        wordsForStudy = studyService.getWordsForStudy(studySetName);
+        translationForStudy = studyService.getTranslationsForStudy(studySetName);
         model.setColumnIdentifiers(new String[]{TRANSLATOR.translate("ID(TableColumn)"),
                     TRANSLATOR.translate("Word(TableColumn)"), TRANSLATOR.translate("Translation(TableColumn)"),
                     TRANSLATOR.translate("Selected(TableColumn)")});
-        countOFTheWords = studyService.getCountOfTheWords();
+        countOFTheWords = studyService.getCountOfTheWords(studySetName);
         for (int i = 0; i < countOFTheWords; i++) {
             model.addRow(new Object[]{new Integer(i + 1), wordsForStudy.get(i), translationForStudy.get(i), select});
         }
+    }
+
+    private void setStudySetsInComboBox(){
+        List<String> namesOfStudySets = new ArrayList<String>();
+        namesOfStudySets = studyService.getNamesOfStudySets();
+        studySetsComboBox.setModel(new DefaultComboBoxModel(namesOfStudySets.toArray()));
     }
 }

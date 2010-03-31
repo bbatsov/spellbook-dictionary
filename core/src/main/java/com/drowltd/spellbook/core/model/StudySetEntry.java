@@ -8,8 +8,8 @@ package com.drowltd.spellbook.core.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity(name = "StudySetEntry")
@@ -21,10 +21,12 @@ import javax.persistence.Table;
  */
 public class StudySetEntry extends AbstractEntity {
 
-    @ManyToOne(optional=false, fetch=FetchType.LAZY)
+    @ManyToOne
+    @JoinColumn(name="STUDY_SET_ID")
     private StudySet studySet;
 
-    @OneToOne(optional=false, fetch=FetchType.LAZY)
+    @ManyToOne(optional=false, fetch=FetchType.LAZY)
+    @JoinColumn(name="DICTIONARY_ENTRY_ID")
     private DictionaryEntry dictionaryEntry;
 
     public StudySetEntry() {
