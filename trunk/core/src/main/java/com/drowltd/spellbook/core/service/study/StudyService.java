@@ -35,28 +35,61 @@ public class StudyService extends AbstractPersistenceService {
      * Retrieves all words for study. The words are cached for subsequent
      * invokations of the method
      *
+     * @param studySetName a name which uniquely identifies a study set from which will taken the words
      * @return a list of the words for study
      */
-    public List<String> getWordsForStudy() {
-        return EM.createQuery("select de.word from DictionaryEntry de, StudySetEntry se where se.dictionary_entry_id = de.id").getResultList();
+    public List<String> getWordsForStudy(String studySetName) {
+        return EM.createQuery("select se.dictionaryEntry.word from StudySetEntry se where se.studySet.name = :name").setParameter("name", studySetName).getResultList();
     }
 
     /**
      * Retrieves the translations of the words for study.
      *
+     * @param studySetName a name which uniquely identifies a study set from which will taken the translations
      * @return a list of the translations for study
      */
-    public List<String> getTranslationsForStudy() {
-        return EM.createQuery("select de.translation from DictionaryEntry de, StudySetEntry se where se.dictionary_entry_id = de.id").getResultList();
+    public List<String> getTranslationsForStudy(String studySetName) {
+        return EM.createQuery("select se.dictionaryEntry.translation from StudySetEntry se where se.studySet.name = :name").setParameter("name", studySetName).getResultList();
     }
 
     /**
      * Retrieves count of the words for study.
      *
-     * @return current number of words for study
+     * @param studySetName sets of which study set will be taken count of words
+     * @return current number of words for study from respective study set
      */
-    public Long getCountOfTheWords() {
-        return (Long) EM.createQuery("select count(*) from StudySetEntry").getSingleResult();
+    public Long getCountOfTheWords(String studySetName) {
+        return (Long) EM.createQuery("select count(*) from StudySetEntry se where se.studySet.name = :name").setParameter("name", studySetName).getSingleResult();
+    }
+
+    /**
+     * Retrieves all names of study sets
+     *
+     * @return a list with the names of all study sets
+     * @see StudySet
+     */
+    public List<String> getNamesOfStudySets(){
+       return EM.createQuery("select ss.name from StudySet ss").getResultList();
+    }
+
+    /**
+     * Retrieves all study sets
+     *
+     * @return a list of study sets
+     * @see StudySet
+     */
+    public List<StudySet> getStudySets(){
+        return EM.createQuery("select ss from StudySet ss").getResultList();
+    }
+
+    /**
+     * Retrieves a study set
+     *
+     * @param name determined which study set will be returned
+     * @return a StudySet
+     */
+    public StudySet getStudySet(String name){
+        return (StudySet) EM.createQuery("select ss from StudySet ss where ss.name = :name").setParameter("name", name).getSingleResult();
     }
 
     /**
@@ -64,10 +97,10 @@ public class StudyService extends AbstractPersistenceService {
      *
      * @param word the word to add
      * @param dictionary dictionary from which will be taken the word
-     * @param studySetName determined StudySet's name in which will be added the word
+     * @param studySetName a name which uniquely identifies a study set
      * @see Dictionary
      */
-    public void addWordForStudy(String word, Dictionary dictionary, String studySetName) {
+    public void addWord(String word, Dictionary dictionary, String studySetName) {
 
         if (word == null || word.isEmpty()) {
             LOGGER.error("word == null || word.isEmpty()");
@@ -89,18 +122,48 @@ public class StudyService extends AbstractPersistenceService {
     }
 
     /**
-     * Deletes a word which no want any more to study.
+     * Deletes a word which no want any more to study
      *
      * @param word word to delete
+     * @param studySetName
      */
-    public void deleteWord(String word) {
+    /*public void deleteWord(String word, String studySetName) {
         word.replaceAll("'", "''");
-
-        long id = (Long) EM.createQuery("select de.id from DictionaryEntry de where de.word = :word").setParameter("word", word).getSingleResult();
 
         EntityTransaction t = EM.getTransaction();
         t.begin();
-        EM.createQuery("delete from StudySetEntry se where se.dictionary_entry_id = :id").setParameter("id", id).executeUpdate();
+        EM.createQuery("delete from StudySetEntry se where se.dictionaryEntry.word = :word and se.studySet.name = :name").setParameter("word", word).setParameter("name", studySetName).executeUpdate();
+        t.commit();
+    }*/
+
+    /**
+     * Adds a new study set
+     * @param name study set's name
+     * @see StudySet
+     */
+    public void addStudySet(String name){
+
+        StudySet ss = new StudySet();
+        ss.setName(name);
+
+        EntityTransaction t = EM.getTransaction();
+        t.begin();
+        EM.persist(ss);
+        t.commit();
+    }
+
+    /**
+     * Deletes a study set
+     *
+     * @param studySetName determined which study set to be deleted
+     * @see StudySet
+     */
+    public void deleteStudySet(String studySetName){ 
+        EntityTransaction t = EM.getTransaction();
+        t.begin();
+        //button query has thrown grammarExeption
+        //EM.createQuery("delete from StudySetEntry se where se.studySet.name = :name").setParameter("name", studySetName).executeUpdate();
+        EM.createQuery("delete from StudySet ss where ss.name = :name").setParameter("name", studySetName).executeUpdate();
         t.commit();
     }
 }
