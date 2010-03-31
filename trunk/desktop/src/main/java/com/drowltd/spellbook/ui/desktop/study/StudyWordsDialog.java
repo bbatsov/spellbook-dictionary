@@ -188,17 +188,6 @@ public class StudyWordsDialog extends javax.swing.JDialog {
 
         firstRowLabel.setText(bundle.getString("AddWordsFirstLabel(Message)")); // NOI18N
 
-        dictionariesComboBox.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
-            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
-            }
-            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
-                dictionariesComboBoxPopupMenuWillBecomeInvisible(evt);
-            }
-            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
-                dictionariesComboBoxPopupMenuWillBecomeVisible(evt);
-            }
-        });
-
         studySetsComboBox.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
             public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
             }
@@ -206,7 +195,6 @@ public class StudyWordsDialog extends javax.swing.JDialog {
                 studySetsComboBoxPopupMenuWillBecomeInvisible(evt);
             }
             public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
-                studySetsComboBoxPopupMenuWillBecomeVisible(evt);
             }
         });
 
@@ -603,31 +591,15 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_repeatMisspelledWordsCheckBoxActionPerformed
 
-    private void dictionariesComboBoxPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_dictionariesComboBoxPopupMenuWillBecomeInvisible
-        if (dictionariesComboBox.getSelectedItem() == studySetsComboBox.getSelectedItem()) {
-            studySetsComboBox.setSelectedIndex(fromWordsIndex);
-        }
-    }//GEN-LAST:event_dictionariesComboBoxPopupMenuWillBecomeInvisible
-
-    private void dictionariesComboBoxPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_dictionariesComboBoxPopupMenuWillBecomeVisible
-        fromWordsIndex = dictionariesComboBox.getSelectedIndex();
-    }//GEN-LAST:event_dictionariesComboBoxPopupMenuWillBecomeVisible
-
     private void studySetsComboBoxPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_studySetsComboBoxPopupMenuWillBecomeInvisible
-        if (studySetsComboBox.getSelectedItem() == dictionariesComboBox.getSelectedItem()) {
-            dictionariesComboBox.setSelectedIndex(toWordsIndex);
-        }
+        checkingTheDatabase();
     }//GEN-LAST:event_studySetsComboBoxPopupMenuWillBecomeInvisible
 
-    private void studySetsComboBoxPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_studySetsComboBoxPopupMenuWillBecomeVisible
-        toWordsIndex = studySetsComboBox.getSelectedIndex();
-    }//GEN-LAST:event_studySetsComboBoxPopupMenuWillBecomeVisible
-
     private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
-        checkingTheDatabase();
         setStudySetsInComboBox();
         String studySetName = (String) studySetsComboBox.getSelectedItem();
         countOfWords = studyService.getCountOfTheWords(studySetName);
+        checkingTheDatabase();
     }//GEN-LAST:event_formWindowGainedFocus
     /**
      * @param args the command line arguments
