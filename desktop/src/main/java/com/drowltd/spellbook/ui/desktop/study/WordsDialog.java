@@ -273,6 +273,16 @@ public class WordsDialog extends javax.swing.JDialog {
 
         jLabel6.setText("Study sets:");
 
+        studySetsComboBox.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+                studySetsComboBoxPopupMenuWillBecomeInvisible(evt);
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+        });
+
         deleteStudySetButton.setText("Delete");
         deleteStudySetButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -451,15 +461,19 @@ public class WordsDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_addStudySetButtonActionPerformed
 
     private void deleteStudySetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteStudySetButtonActionPerformed
-        //String studySetName = (String) studySetsComboBox.getSelectedItem();
-        //studyService.deleteStudySet(studySetName);
-        //setStudySetsInComboBox();
-        //setWordsInTable(false);
+        String studySetName = (String) studySetsComboBox.getSelectedItem();
+        studyService.deleteStudySet(studySetName);
+        setStudySetsInComboBox();
+        setWordsInTable(false);
     }//GEN-LAST:event_deleteStudySetButtonActionPerformed
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
 
     }//GEN-LAST:event_formWindowClosed
+
+    private void studySetsComboBoxPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_studySetsComboBoxPopupMenuWillBecomeInvisible
+        setWordsInTable(false);
+    }//GEN-LAST:event_studySetsComboBoxPopupMenuWillBecomeInvisible
     /**
      * @param args the command line arguments
      */

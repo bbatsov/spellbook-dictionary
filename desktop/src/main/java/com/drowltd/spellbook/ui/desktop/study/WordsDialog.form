@@ -302,6 +302,9 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JComboBox" name="studySetsComboBox">
+          <Events>
+            <EventHandler event="popupMenuWillBecomeInvisible" listener="javax.swing.event.PopupMenuListener" parameters="javax.swing.event.PopupMenuEvent" handler="studySetsComboBoxPopupMenuWillBecomeInvisible"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="deleteStudySetButton">
           <Properties>

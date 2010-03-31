@@ -195,10 +195,6 @@
               <StringArray count="0"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="popupMenuWillBecomeInvisible" listener="javax.swing.event.PopupMenuListener" parameters="javax.swing.event.PopupMenuEvent" handler="dictionariesComboBoxPopupMenuWillBecomeInvisible"/>
-            <EventHandler event="popupMenuWillBecomeVisible" listener="javax.swing.event.PopupMenuListener" parameters="javax.swing.event.PopupMenuEvent" handler="dictionariesComboBoxPopupMenuWillBecomeVisible"/>
-          </Events>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new DictionaryComboBox(dictionaries)"/>
             <AuxValue name="JavaCodeGenerator_SerializeTo" type="java.lang.String" value="LearningWordsDialog_fromLanguageComboBox"/>
@@ -207,7 +203,6 @@
         <Component class="javax.swing.JComboBox" name="studySetsComboBox">
           <Events>
             <EventHandler event="popupMenuWillBecomeInvisible" listener="javax.swing.event.PopupMenuListener" parameters="javax.swing.event.PopupMenuEvent" handler="studySetsComboBoxPopupMenuWillBecomeInvisible"/>
-            <EventHandler event="popupMenuWillBecomeVisible" listener="javax.swing.event.PopupMenuListener" parameters="javax.swing.event.PopupMenuEvent" handler="studySetsComboBoxPopupMenuWillBecomeVisible"/>
           </Events>
         </Component>
       </SubComponents>
