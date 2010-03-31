@@ -30,6 +30,9 @@ public class AbstractPersistenceService {
         }
     }
 
+    protected AbstractPersistenceService(){
+    }
+
     private static void initEntityManager(String dbFile) throws DictionaryDbLockedException {
         LOGGER.info("dictionary database: " + dbFile.replace(".data.db", ""));
 
