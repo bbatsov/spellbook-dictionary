@@ -114,10 +114,11 @@ public class StudyService extends AbstractPersistenceService {
         StudySetEntry se = new StudySetEntry();
         se.setDictionaryEntry(de);
         se.setStudySet(ss);
-
+        ss.setStudySetEntry(se);
         EntityTransaction t = EM.getTransaction();
         t.begin();
         EM.persist(se);
+        EM.persist(ss);
         t.commit();
     }
 

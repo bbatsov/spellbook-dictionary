@@ -29,6 +29,10 @@ public class StudySet extends AbstractEntity  {
     @Column(nullable = false)
     private String name;
 
+    public void setStudySetEntry(StudySetEntry studySetEntries) {
+        this.studySetEntries.add(studySetEntries);
+    }
+
     public String getName() {
         return name;
     }
