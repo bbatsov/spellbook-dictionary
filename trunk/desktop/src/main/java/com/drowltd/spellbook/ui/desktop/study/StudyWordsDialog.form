@@ -4,7 +4,7 @@
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="2"/>
     <Property name="title" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-      <ResourceString bundle="i18n/LearningWordsDialog.properties" key="LearningWordsDialog(Title)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+      <ResourceString bundle="i18n/StudyWordsDialog.properties" key="LearningWordsDialog(Title)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
     </Property>
     <Property name="resizable" type="boolean" value="false"/>
   </Properties>
@@ -30,21 +30,21 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="jPanel3" alignment="0" pref="502" max="32767" attributes="1"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jPanel1" linkSize="20" min="-2" max="-2" attributes="1"/>
                           <Component id="repeatWordCheckBox" min="-2" max="-2" attributes="1"/>
+                          <Component id="jPanel1" linkSize="24" min="-2" max="-2" attributes="1"/>
                       </Group>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <EmptySpace pref="32" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="repeatMisspelledWordsCheckBox" min="-2" pref="205" max="-2" attributes="1"/>
-                          <Component id="howToEnumeratePanel" linkSize="20" min="-2" max="-2" attributes="1"/>
+                          <Component id="howToEnumeratePanel" linkSize="24" min="-2" max="-2" attributes="1"/>
                       </Group>
                   </Group>
-                  <Component id="jPanel3" alignment="0" min="0" pref="484" max="32767" attributes="1"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -54,18 +54,18 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Component id="howToEnumeratePanel" max="32767" attributes="1"/>
-                  <Component id="jPanel1" alignment="0" pref="184" max="32767" attributes="1"/>
+                  <Component id="jPanel1" alignment="0" max="32767" attributes="1"/>
+              </Group>
+              <EmptySpace pref="4" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="repeatWordCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="repeatMisspelledWordsCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="repeatMisspelledWordsCheckBox" min="-2" max="-2" attributes="0"/>
-                  <Component id="repeatWordCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
-              </Group>
+              <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jPanel3" min="-2" pref="232" max="-2" attributes="0"/>
-              <EmptySpace min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -87,28 +87,33 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                          <Component id="studySetsComboBox" alignment="0" max="32767" attributes="1"/>
-                          <Component id="dictionariesComboBox" alignment="0" max="32767" attributes="1"/>
-                          <Component id="jLabel1" alignment="0" pref="180" max="32767" attributes="1"/>
-                      </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="warningIconLabel" min="-2" pref="34" max="-2" attributes="1"/>
+                      <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="secondRowLabel" alignment="0" max="32767" attributes="1"/>
-                              <Component id="firstRowLabel" alignment="0" min="-2" pref="161" max="-2" attributes="1"/>
+                          <Component id="warningIconLabel" min="-2" max="-2" attributes="1"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="firstRowLabel" pref="181" max="32767" attributes="1"/>
+                              <Component id="secondRowLabel" alignment="0" pref="181" max="32767" attributes="1"/>
                           </Group>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
-                          <Component id="wordsButton" min="-2" pref="110" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                                  <Component id="jLabel3" alignment="0" max="32767" attributes="1"/>
+                                  <Component id="studySetsComboBox" alignment="0" max="32767" attributes="1"/>
+                                  <Component id="jLabel1" alignment="0" pref="180" max="32767" attributes="1"/>
+                                  <Component id="dictionariesComboBox" alignment="0" max="32767" attributes="1"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
+                                  <Component id="wordsButton" min="-2" pref="110" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
                       </Group>
                   </Group>
-                  <EmptySpace pref="18" max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -127,12 +132,12 @@
                   <Component id="wordsButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="warningIconLabel" max="32767" attributes="1"/>
-                      <Group type="102" attributes="0">
+                      <Group type="102" alignment="1" attributes="0">
                           <Component id="firstRowLabel" linkSize="8" min="-2" pref="12" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                           <Component id="secondRowLabel" linkSize="8" min="-2" pref="10" max="-2" attributes="0"/>
                       </Group>
+                      <Component id="warningIconLabel" max="32767" attributes="1"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -143,14 +148,14 @@
         <Component class="javax.swing.JLabel" name="jLabel1">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="i18n/LearningWordsDialog.properties" key="Languages(Label)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="i18n/StudyWordsDialog.properties" key="Languages(Label)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel3">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="i18n/LearningWordsDialog.properties" key="StudySet(Label)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="i18n/StudyWordsDialog.properties" key="StudySet(Label)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
         </Component>
@@ -160,7 +165,7 @@
               <Image iconType="3" name="/icons/16x16/dictionary.png"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="i18n/LearningWordsDialog.properties" key="Words(Button)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="i18n/StudyWordsDialog.properties" key="Words(Button)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[109, 25]"/>
@@ -183,7 +188,7 @@
         <Component class="javax.swing.JLabel" name="firstRowLabel">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="i18n/LearningWordsDialog.properties" key="AddWordsFirstLabel(Message)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="i18n/StudyWordsDialog.properties" key="AddWordsFirstLabel(Message)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
         </Component>
@@ -226,7 +231,7 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
-                  <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
                       <Component id="randomRadioButton" alignment="0" pref="184" max="32767" attributes="1"/>
                       <Component id="inReverseOrderOfInputRadioButton" alignment="0" pref="184" max="32767" attributes="1"/>
@@ -251,7 +256,7 @@
                   <Component id="inReverseOrderOfInputRadioButton" min="-2" pref="23" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="randomRadioButton" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="32" max="32767" attributes="0"/>
+                  <EmptySpace pref="27" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -260,28 +265,28 @@
         <Component class="javax.swing.JRadioButton" name="randomRadioButton">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="i18n/LearningWordsDialog.properties" key="Random(Label)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="i18n/StudyWordsDialog.properties" key="Random(Label)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JRadioButton" name="inReverseOrderOfInputRadioButton">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="i18n/LearningWordsDialog.properties" key="InReverseOrderOfInput(Label)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="i18n/StudyWordsDialog.properties" key="InReverseOrderOfInput(Label)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JRadioButton" name="inOrderOfInputRadioButton">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="i18n/LearningWordsDialog.properties" key="InOrderOfInput(Label)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="i18n/StudyWordsDialog.properties" key="InOrderOfInput(Label)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel5">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="i18n/LearningWordsDialog.properties" key="Enumerate(Label)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="i18n/StudyWordsDialog.properties" key="Enumerate(Label)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
         </Component>
@@ -331,21 +336,25 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jLabel8" alignment="1" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel9" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel8" alignment="1" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel7" alignment="1" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="countOfTheCorrectWordsLabel" alignment="0" min="-2" pref="41" max="-2" attributes="1"/>
-                              <Component id="countOfTheWrongWordsLabel" alignment="0" pref="43" max="32767" attributes="1"/>
-                              <Component id="answerSeenLabel" alignment="0" pref="43" max="32767" attributes="1"/>
+                              <Component id="answerSeenLabel" pref="41" max="32767" attributes="1"/>
+                              <Component id="countOfTheWrongWordsLabel" pref="43" max="32767" attributes="1"/>
+                              <Component id="countOfTheCorrectWordsLabel" alignment="0" pref="41" max="32767" attributes="1"/>
                           </Group>
+                          <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="answerStatutLabel" alignment="0" min="-2" pref="123" max="-2" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
                           <Component id="imoticonLabel" min="-2" pref="53" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="8" pref="8" max="8" attributes="0"/>
+                          <Component id="answerStatutLabel" min="-2" pref="123" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace min="-2" pref="142" max="-2" attributes="0"/>
@@ -357,16 +366,16 @@
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
-                      <Component id="stopButton" linkSize="14" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="startButton" linkSize="14" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="stopButton" linkSize="14" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel7" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="countOfTheCorrectWordsLabel" alignment="2" min="-2" pref="14" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="2" attributes="0">
-                      <Component id="jLabel4" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="jLabel8" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="countOfTheWrongWordsLabel" alignment="2" min="-2" pref="14" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabel8" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="countOfTheWrongWordsLabel" min="-2" pref="14" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
@@ -378,15 +387,15 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <Component id="transcriptionLabel" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="29" max="32767" attributes="0"/>
+                          <EmptySpace pref="35" max="32767" attributes="0"/>
                           <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Component id="imoticonLabel" alignment="0" min="-2" pref="47" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
-                      <Component id="answerStatutLabel" alignment="2" min="-2" pref="20" max="-2" attributes="0"/>
                       <Component id="answerField" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="answerStatutLabel" alignment="2" min="-2" pref="20" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
@@ -405,7 +414,7 @@
               <Image iconType="3" name="/icons/16x16/media_play_green.png"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="i18n/LearningWordsDialog.properties" key="Start(Button)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="i18n/StudyWordsDialog.properties" key="Start(Button)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Events>
@@ -415,7 +424,7 @@
         <Component class="javax.swing.JLabel" name="jLabel4">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="i18n/LearningWordsDialog.properties" key="OverTranslateField(Label)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="i18n/StudyWordsDialog.properties" key="OverTranslateField(Label)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
         </Component>
@@ -427,7 +436,7 @@
         <Component class="javax.swing.JLabel" name="jLabel6">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="i18n/LearningWordsDialog.properties" key="OverAnswerField(Label)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="i18n/StudyWordsDialog.properties" key="OverAnswerField(Label)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
         </Component>
@@ -445,7 +454,7 @@
               <Image iconType="3" name="/icons/16x16/status_SuggestedAnswer.gif"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="i18n/LearningWordsDialog.properties" key="Answer(Button)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="i18n/StudyWordsDialog.properties" key="Answer(Button)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Events>
@@ -457,14 +466,14 @@
         <Component class="javax.swing.JLabel" name="jLabel7">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="i18n/LearningWordsDialog.properties" key="Correct(Label)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="i18n/StudyWordsDialog.properties" key="Correct(Label)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel8">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="i18n/LearningWordsDialog.properties" key="Wrong(Label)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="i18n/StudyWordsDialog.properties" key="Wrong(Label)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
         </Component>
@@ -478,7 +487,7 @@
               <Image iconType="3" name="/icons/16x16/Bulb On.gif"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="i18n/LearningWordsDialog.properties" key="SeeAnswer(Button)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="i18n/StudyWordsDialog.properties" key="SeeAnswer(Button)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Events>
@@ -491,7 +500,7 @@
               <Image iconType="3" name="/icons/16x16/media_stop_red.png"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="i18n/LearningWordsDialog.properties" key="Stop(Button)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="i18n/StudyWordsDialog.properties" key="Stop(Button)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Events>
@@ -501,7 +510,7 @@
         <Component class="javax.swing.JLabel" name="jLabel9">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="i18n/LearningWordsDialog.properties" key="AnswerSeen(Label)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="i18n/StudyWordsDialog.properties" key="AnswerSeen(Label)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
         </Component>
@@ -519,7 +528,7 @@
     <Component class="javax.swing.JCheckBox" name="repeatMisspelledWordsCheckBox">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="i18n/LearningWordsDialog.properties" key="RepeatMisspelledWords(CheckBox)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+          <ResourceString bundle="i18n/StudyWordsDialog.properties" key="RepeatMisspelledWords(CheckBox)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
         </Property>
       </Properties>
       <Events>
@@ -529,7 +538,7 @@
     <Component class="javax.swing.JCheckBox" name="repeatWordCheckBox">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="i18n/LearningWordsDialog.properties" key="RepeatWords(CheckBox)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+          <ResourceString bundle="i18n/StudyWordsDialog.properties" key="RepeatWords(CheckBox)" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
         </Property>
       </Properties>
       <Events>

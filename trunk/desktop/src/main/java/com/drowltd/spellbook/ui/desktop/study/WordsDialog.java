@@ -122,9 +122,9 @@ public class WordsDialog extends javax.swing.JDialog {
     }
 
     private void updateAddButtonState() {
-        addButton.setEnabled(words.contains(wordSearchField.getText()));
+        addWordButton.setEnabled(words.contains(wordSearchField.getText()));
 
-        if (addButton.isEnabled()) {
+        if (addWordButton.isEnabled()) {
             wordTranslationTextPane.setText(dictionaryService.getTranslation(wordSearchField.getText(),
                     dictionaryService.getDictionary((String) dictionariesComboBox.getSelectedItem())));
             wordTranslationTextPane.setCaretPosition(0);
@@ -153,12 +153,12 @@ public class WordsDialog extends javax.swing.JDialog {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         wordSearchField = new AutocompletingTextField();
-        addButton = new javax.swing.JButton();
+        addWordButton = new javax.swing.JButton();
         clearButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         wordTranslationTextPane = new javax.swing.JTextPane();
         jLabel2 = new javax.swing.JLabel();
-        deleteButton = new javax.swing.JButton();
+        deleteWordButton = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         dictionariesComboBox = new DictionaryComboBox(dictionaries);
@@ -168,8 +168,8 @@ public class WordsDialog extends javax.swing.JDialog {
         jLabel6 = new javax.swing.JLabel();
         studySetsComboBox = new javax.swing.JComboBox();
         deleteStudySetButton = new javax.swing.JButton();
-        allButton = new javax.swing.JButton();
-        nothingButton = new javax.swing.JButton();
+        selectAllButton = new javax.swing.JButton();
+        selectNothingButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Words");
@@ -193,10 +193,10 @@ public class WordsDialog extends javax.swing.JDialog {
             }
         });
 
-        addButton.setText(bundle.getString("Add(Button)")); // NOI18N
-        addButton.addActionListener(new java.awt.event.ActionListener() {
+        addWordButton.setText(bundle.getString("Add(Button)")); // NOI18N
+        addWordButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addButtonActionPerformed(evt);
+                addWordButtonActionPerformed(evt);
             }
         });
 
@@ -209,7 +209,7 @@ public class WordsDialog extends javax.swing.JDialog {
 
         jScrollPane1.setViewportView(wordTranslationTextPane);
 
-        jLabel2.setText("Translation:");
+        jLabel2.setText(bundle.getString("Òranslation(Label)")); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -224,13 +224,13 @@ public class WordsDialog extends javax.swing.JDialog {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(wordSearchField)
                         .addGap(18, 18, 18)))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(clearButton, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE)
-                    .addComponent(addButton, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE))
+                    .addComponent(addWordButton, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -243,7 +243,7 @@ public class WordsDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(addButton)
+                        .addComponent(addWordButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(clearButton))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -251,27 +251,27 @@ public class WordsDialog extends javax.swing.JDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        deleteButton.setText(bundle.getString("Delete(Button)")); // NOI18N
-        deleteButton.addActionListener(new java.awt.event.ActionListener() {
+        deleteWordButton.setText(bundle.getString("Delete(Button)")); // NOI18N
+        deleteWordButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deleteButtonActionPerformed(evt);
+                deleteWordButtonActionPerformed(evt);
             }
         });
 
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jLabel3.setText("Select langueges:");
+        jLabel3.setText(bundle.getString("SelectLangueges(Label)")); // NOI18N
 
-        jLabel5.setText("Enter study set's name:");
+        jLabel5.setText(bundle.getString("EnterName(Label)")); // NOI18N
 
-        addStudySetButton.setText("Add");
+        addStudySetButton.setText(bundle.getString("AddStudySet(Button)")); // NOI18N
         addStudySetButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addStudySetButtonActionPerformed(evt);
             }
         });
 
-        jLabel6.setText("Study sets:");
+        jLabel6.setText(bundle.getString("StudySets(Label)")); // NOI18N
 
         studySetsComboBox.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
             public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
@@ -283,7 +283,7 @@ public class WordsDialog extends javax.swing.JDialog {
             }
         });
 
-        deleteStudySetButton.setText("Delete");
+        deleteStudySetButton.setText(bundle.getString("DeleteStudySet(Button)")); // NOI18N
         deleteStudySetButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 deleteStudySetButtonActionPerformed(evt);
@@ -307,7 +307,7 @@ public class WordsDialog extends javax.swing.JDialog {
                     .addComponent(jLabel6)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addComponent(addStudySetButton, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(addStudySetButton, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(deleteStudySetButton))
                         .addComponent(addStudySetField, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -343,17 +343,17 @@ public class WordsDialog extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
-        allButton.setText(bundle.getString("All(Button)")); // NOI18N
-        allButton.addActionListener(new java.awt.event.ActionListener() {
+        selectAllButton.setText(bundle.getString("All(Button)")); // NOI18N
+        selectAllButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                allButtonActionPerformed(evt);
+                selectAllButtonActionPerformed(evt);
             }
         });
 
-        nothingButton.setText(bundle.getString("Nothing(Button)")); // NOI18N
-        nothingButton.addActionListener(new java.awt.event.ActionListener() {
+        selectNothingButton.setText(bundle.getString("Nothing(Button)")); // NOI18N
+        selectNothingButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nothingButtonActionPerformed(evt);
+                selectNothingButtonActionPerformed(evt);
             }
         });
 
@@ -367,16 +367,16 @@ public class WordsDialog extends javax.swing.JDialog {
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(wordsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 535, Short.MAX_VALUE)
-                    .addComponent(deleteButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(deleteWordButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(387, 387, 387)
-                        .addComponent(nothingButton)
+                        .addComponent(selectNothingButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(allButton, javax.swing.GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE)))
+                        .addComponent(selectAllButton, javax.swing.GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {allButton, deleteButton, nothingButton});
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {deleteWordButton, selectAllButton, selectNothingButton});
 
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -387,19 +387,19 @@ public class WordsDialog extends javax.swing.JDialog {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(allButton)
-                    .addComponent(nothingButton))
+                    .addComponent(selectAllButton)
+                    .addComponent(selectNothingButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(wordsScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(deleteButton)
+                .addComponent(deleteWordButton)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
+    private void addWordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addWordButtonActionPerformed
         String word = wordSearchField.getText();
         String studySetName = (String) studySetsComboBox.getSelectedItem();
         wordsForStudy = studyService.getWordsForStudy(studySetName);
@@ -417,9 +417,9 @@ public class WordsDialog extends javax.swing.JDialog {
         }
         clear();
         wordSearchField.requestFocus();
-    }//GEN-LAST:event_addButtonActionPerformed
+    }//GEN-LAST:event_addWordButtonActionPerformed
 
-    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
+    private void deleteWordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteWordButtonActionPerformed
         //String studySetName = (String) studySetsComboBox.getSelectedItem();
         //long countOFTheRows = countOFTheWords = studyService.getCountOfTheWords(studySetName);
 
@@ -432,15 +432,15 @@ public class WordsDialog extends javax.swing.JDialog {
 
         //setWordsInTable(false);
 
-    }//GEN-LAST:event_deleteButtonActionPerformed
+    }//GEN-LAST:event_deleteWordButtonActionPerformed
 
-    private void nothingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nothingButtonActionPerformed
+    private void selectNothingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectNothingButtonActionPerformed
         setWordsInTable(false);
-    }//GEN-LAST:event_nothingButtonActionPerformed
+    }//GEN-LAST:event_selectNothingButtonActionPerformed
 
-    private void allButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_allButtonActionPerformed
+    private void selectAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectAllButtonActionPerformed
         setWordsInTable(true);
-    }//GEN-LAST:event_allButtonActionPerformed
+    }//GEN-LAST:event_selectAllButtonActionPerformed
 
     private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearButtonActionPerformed
         clear();
@@ -478,13 +478,12 @@ public class WordsDialog extends javax.swing.JDialog {
      * @param args the command line arguments
      */
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton addButton;
     private javax.swing.JButton addStudySetButton;
     private javax.swing.JTextField addStudySetField;
-    private javax.swing.JButton allButton;
+    private javax.swing.JButton addWordButton;
     private javax.swing.JButton clearButton;
-    private javax.swing.JButton deleteButton;
     private javax.swing.JButton deleteStudySetButton;
+    private javax.swing.JButton deleteWordButton;
     private javax.swing.JComboBox dictionariesComboBox;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -494,7 +493,8 @@ public class WordsDialog extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JButton nothingButton;
+    private javax.swing.JButton selectAllButton;
+    private javax.swing.JButton selectNothingButton;
     private javax.swing.JComboBox studySetsComboBox;
     private javax.swing.JTextField wordSearchField;
     private javax.swing.JTextPane wordTranslationTextPane;
