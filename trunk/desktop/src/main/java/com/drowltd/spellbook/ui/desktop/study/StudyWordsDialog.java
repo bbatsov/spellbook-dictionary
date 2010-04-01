@@ -271,9 +271,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
                     .addComponent(randomRadioButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE)
                     .addComponent(inReverseOrderOfInputRadioButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE)
                     .addComponent(inOrderOfInputRadioButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE)
-                    .addGroup(howToEnumeratePanelLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE))
                 .addContainerGap())
         );
         howToEnumeratePanelLayout.setVerticalGroup(
@@ -544,8 +542,8 @@ public class StudyWordsDialog extends javax.swing.JDialog {
 
     private void stopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopButtonActionPerformed
 
-        stopLearning();
-       //answerField.setText(null);
+        setComponentsEnable(true);
+        //answerField.setText(null);
 
     }//GEN-LAST:event_stopButtonActionPerformed
 
@@ -647,13 +645,97 @@ public class StudyWordsDialog extends javax.swing.JDialog {
     private javax.swing.JButton wordsButton;
     // End of variables declaration//GEN-END:variables
 
+    private void startLearning() {
+        if (dictionariesComboBox.getSelectedIndex() == 0) {
+            selectedDictionary = SelectedDictionary.EN_BG;
+        }
+        if (dictionariesComboBox.getSelectedIndex() == 1) {
+            selectedDictionary = SelectedDictionary.BG_EN;
+        }
+
+        String studySetName = (String) studySetsComboBox.getSelectedItem();
+        wordsForLearning = studyService.getWordsForStudy(studySetName);
+        translationForLearning = studyService.getTranslationsForStudy(studySetName);
+
+        setComponentsEnable(false);
+
+        answerField.requestFocus();
+        answerStatutLabel.setText(null);
+
+        countOfTheCorrectWordsLabel.setText("0");
+        countOfTheWrongWordsLabel.setText("0");
+        answerSeenLabel.setText("0");
+
+        correctAnswer = new Integer(0);
+        wrongAnswer = new Integer(0);
+        answerSeen = new Integer(0);
+
+        if (inOrderOfInputRadioButton.isSelected()) {
+            howToEnumerate = HowToEnumerate.IN_ORDER_OF_INPUT;
+            wordIndex = 0;
+            showWordWhenStartTheStudy(wordsForLearning, translationForLearning);
+        }
+        if (inReverseOrderOfInputRadioButton.isSelected()) {
+            howToEnumerate = HowToEnumerate.IN_REVERSE_ORDER_OF_INPUT;
+
+            long wordIndex1 = studyService.getCountOfTheWords(studySetName) - 1;
+            wordIndex = (int) wordIndex1;
+
+            showWordWhenStartTheStudy(wordsForLearning, translationForLearning);
+        }
+        if (randomRadioButton.isSelected()) {
+            shuffle(wordsForLearning, translationForLearning);
+            howToEnumerate = HowToEnumerate.RANDOM;
+            wordIndex = 0;
+            showWordWhenStartTheStudy(shuffleWordsForLearning, shuffleTranslationForLearning);
+        }
+    }
+
+    private void showWordWhenStartTheStudy(List<String> words, List<String> translations) {
+        String translation = null;
+        if (selectedDictionary == SelectedDictionary.EN_BG) {
+            word = words.get(wordIndex);
+            translateField.setText(word);
+            String transcription = getTranscription(word);
+            transcriptionLabel.setText(" " + transcription);
+        } else {
+            translation = translations.get(wordIndex);
+            translateField.setText(translation);
+        }
+    }
+
+    private void shuffle(List words, List translations) {
+        if (words.size() > 0 && translations.size() > 0) {
+
+            List copyWords = new ArrayList();
+            List copyTranslations = new ArrayList();
+
+            for (Object object : words) {
+                copyWords.add(object);
+            }
+            for (Object object : translations) {
+                copyTranslations.add(object);
+            }
+
+            Random generator = new Random();
+
+            do {
+                int index = (int) (generator.nextDouble() * (double) copyWords.size());
+                shuffleWordsForLearning.add(copyWords.remove(index));
+                shuffleTranslationForLearning.add(copyTranslations.remove(index));
+            } while (copyWords.size() > 0);
+        }
+    }
+
     private void getAnswer(List<String> words, List<String> translations) {
         String wordTranslation = answerField.getText();
         wordTranslation = wordTranslation.toLowerCase();
+
         if (wordTranslation == null || wordTranslation.isEmpty()) {
             JOptionPane.showMessageDialog(this, TRANSLATOR.translate("AnswerFeild(Message)"), null, JOptionPane.ERROR_MESSAGE);
             answerField.requestFocus();
         }
+
         List<String> possibleAnswers = new ArrayList<String>();
         String translation = translations.get(wordIndex);
         translation = translation.toLowerCase();
@@ -670,15 +752,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
             possibleAnswers.add(answer);
         }
         if (repeatWordCheckBox.isSelected() && !wordTranslation.isEmpty()) {
-            if (howToEnumerate == HowToEnumerate.IN_ORDER_OF_INPUT) {
-                wordIndex--;
-            }
-            if (howToEnumerate == HowToEnumerate.IN_REVERSE_ORDER_OF_INPUT) {
-                wordIndex++;
-            }
-            if (howToEnumerate == HowToEnumerate.RANDOM) {
-                wordIndex--;
-            }
+            repeatWordIndex();
         }
 
         if (possibleAnswers.contains(wordTranslation)) {
@@ -701,15 +775,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
             countOfTheWrongWordsLabel.setText(wrongAnswer.toString());
 
             if (repeatMisspelledWordsCheckBox.isSelected() && !wordTranslation.isEmpty()) {
-                if (howToEnumerate == HowToEnumerate.IN_ORDER_OF_INPUT) {
-                    wordIndex--;
-                }
-                if (howToEnumerate == HowToEnumerate.IN_REVERSE_ORDER_OF_INPUT) {
-                    wordIndex++;
-                }
-                if (howToEnumerate == HowToEnumerate.RANDOM) {
-                    wordIndex--;
-                }
+                repeatWordIndex();
             }
         }
         if (howToEnumerate == HowToEnumerate.IN_ORDER_OF_INPUT) {
@@ -717,14 +783,11 @@ public class StudyWordsDialog extends javax.swing.JDialog {
                 wordIndex++;
             }
             if (wordIndex < countOfWords) {
-                word = words.get(wordIndex);
-                translateField.setText(word);
-                String transcription = getTranscription(word);
-                transcriptionLabel.setText(" " + transcription);
-                answerField.setText(null);
+                showNextWord(words);
             }
             if (wordIndex == countOfWords) {
-                stopLearning();
+                //stop study
+                setComponentsEnable(true);
             }
 
             //answerField.setText(null);
@@ -733,14 +796,11 @@ public class StudyWordsDialog extends javax.swing.JDialog {
                 wordIndex--;
             }
             if (wordIndex >= 0) {
-                word = words.get(wordIndex);
-                translateField.setText(word);
-                String transcription = getTranscription(word);
-                transcriptionLabel.setText(" " + transcription);
-                answerField.setText(null);
+                showNextWord(words);
             }
             if (wordIndex == -1) {
-                stopLearning();
+                //stop study
+                setComponentsEnable(true);
             }
 
             //answerField.setText(null);
@@ -749,38 +809,75 @@ public class StudyWordsDialog extends javax.swing.JDialog {
                 wordIndex++;
             }
             if (wordIndex < countOfWords) {
-                word = words.get(wordIndex);
-                translateField.setText(word);
-                String transcription = getTranscription(word);
-                transcriptionLabel.setText(" " + transcription);
-                answerField.setText(null);
+                showNextWord(words);
             }
             if (wordIndex == countOfWords) {
-                stopLearning();
+                //stop study
+                setComponentsEnable(true);
             }
-            //answerField.setText(null);
         }
         answerField.requestFocus();
     }
 
-    private void shuffle(List words, List translations) {
-        if (words.size() > 0 && translations.size() > 0) {
-            List copyWords = new ArrayList();
-            List copyTranslations = new ArrayList();
-            for (Object object : words) {
-                copyWords.add(object);
-            }
-            for (Object object : translations) {
-                copyTranslations.add(object);
-            }
-            Random generator = new Random();
-
-            do {
-                int index = (int) (generator.nextDouble() * (double) copyWords.size());
-                shuffleWordsForLearning.add(copyWords.remove(index));
-                shuffleTranslationForLearning.add(copyTranslations.remove(index));
-            } while (copyWords.size() > 0);
+    private void repeatWordIndex() {
+        if (howToEnumerate == HowToEnumerate.IN_ORDER_OF_INPUT) {
+            wordIndex--;
         }
+        if (howToEnumerate == HowToEnumerate.IN_REVERSE_ORDER_OF_INPUT) {
+            wordIndex++;
+        }
+        if (howToEnumerate == HowToEnumerate.RANDOM) {
+            wordIndex--;
+        }
+    }
+
+    private void showNextWord(List<String> words) {
+        word = words.get(wordIndex);
+        translateField.setText(word);
+        String transcription = getTranscription(word);
+        transcriptionLabel.setText(" " + transcription);
+        answerField.setText(null);
+    }
+
+    private String getTranscription(String word) {
+        String translation = null;
+
+        if (selectedDictionary == SelectedDictionary.EN_BG) {
+            translation = dictionaryService.getTranslation(word, dictionaries.get(0));
+        }
+        if (selectedDictionary == SelectedDictionary.BG_EN) {
+            return " ";
+        }
+
+        int beginIndex = translation.indexOf('[');
+        int endIndex = translation.indexOf(']') + 1;
+
+        if (beginIndex == -1 && endIndex == 0) {
+            return " ";
+        }
+
+        String transcription = translation.substring(beginIndex, endIndex);
+        return transcription;
+    }
+
+    private void setComponentsEnable(boolean enable) {
+
+        isStopedLearn = enable;
+        answerButton.setEnabled(!enable);
+        seeAnswerButton.setEnabled(!enable);
+        stopButton.setEnabled(!enable);
+        wordsButton.setEnabled(enable);
+        startButton.setEnabled(enable);
+        dictionariesComboBox.setEnabled(enable);
+        studySetsComboBox.setEnabled(enable);
+        inOrderOfInputRadioButton.setEnabled(enable);
+        inReverseOrderOfInputRadioButton.setEnabled(enable);
+        randomRadioButton.setEnabled(enable);
+        transcriptionLabel.setText(" ");
+        translateField.setText(null);
+        answerField.setText(null);
+        answerField.setEditable(!enable);
+        startButton.requestFocus();
     }
 
     private void checkingTheDatabase() {
@@ -804,7 +901,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         }
     }
 
-    private void reportThatDatabaseIsEmpty(){
+    private void reportThatDatabaseIsEmpty() {
         startButton.setEnabled(false);
         warningIconLabel.setIcon(IconManager.getImageIcon("warning.png", IconManager.IconSize.SIZE24));
         firstRowLabel.setText(TRANSLATOR.translate("AddWordsFirstLabel(Message)"));
@@ -823,120 +920,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
 
     }
 
-    private void stopLearning() {
-
-        isStopedLearn = true;
-        answerButton.setEnabled(false);
-        seeAnswerButton.setEnabled(false);
-        stopButton.setEnabled(false);
-        wordsButton.setEnabled(true);
-        startButton.setEnabled(true);
-        dictionariesComboBox.setEnabled(true);
-        studySetsComboBox.setEnabled(true);
-        inOrderOfInputRadioButton.setEnabled(true);
-        inReverseOrderOfInputRadioButton.setEnabled(true);
-        randomRadioButton.setEnabled(true);
-        translateField.setText(null);
-        transcriptionLabel.setText(" ");
-        answerField.setText(null);
-        answerField.setEditable(false);
-        startButton.requestFocus();
-    }
-
-    private void startLearning() {
-        if (dictionariesComboBox.getSelectedIndex() == 0) {   
-            selectedDictionary = SelectedDictionary.EN_BG;
-        }
-        if (dictionariesComboBox.getSelectedIndex() == 1) {
-            selectedDictionary = SelectedDictionary.BG_EN;
-        }
-        String translation = null;
-        String studySetName = (String) studySetsComboBox.getSelectedItem();
-        wordsForLearning = studyService.getWordsForStudy(studySetName);
-        translationForLearning = studyService.getTranslationsForStudy(studySetName);
-        answerButton.setEnabled(true);
-        seeAnswerButton.setEnabled(true);
-        stopButton.setEnabled(true);
-        isStopedLearn = false;
-        startButton.setEnabled(false);
-        wordsButton.setEnabled(false);
-        dictionariesComboBox.setEnabled(false);
-        studySetsComboBox.setEnabled(false);
-        inOrderOfInputRadioButton.setEnabled(false);
-        inReverseOrderOfInputRadioButton.setEnabled(false);
-        randomRadioButton.setEnabled(false);
-        answerField.setEditable(true);
-        answerField.setText(null);
-        answerStatutLabel.setText(null);
-        answerField.requestFocus();
-        countOfTheCorrectWordsLabel.setText("0");
-        countOfTheWrongWordsLabel.setText("0");
-        answerSeenLabel.setText("0");
-        correctAnswer = new Integer(0);
-        wrongAnswer = new Integer(0);
-        answerSeen = new Integer(0);
-        shuffle(wordsForLearning, translationForLearning);
-        if (inOrderOfInputRadioButton.isSelected()) {
-            howToEnumerate = HowToEnumerate.IN_ORDER_OF_INPUT;
-            wordIndex = 0;
-            if (selectedDictionary == SelectedDictionary.EN_BG) {
-                word = wordsForLearning.get(wordIndex);
-                translateField.setText(word);
-                String transcription = getTranscription(word);
-                transcriptionLabel.setText(" " + transcription);
-            } else {
-                translation = translationForLearning.get(wordIndex);
-                translateField.setText(translation);
-            }
-        }
-        if (inReverseOrderOfInputRadioButton.isSelected()) {
-            howToEnumerate = HowToEnumerate.IN_REVERSE_ORDER_OF_INPUT;
-            long wordIndex1 = studyService.getCountOfTheWords(studySetName) - 1;
-            wordIndex = (int) wordIndex1;
-            if (selectedDictionary == SelectedDictionary.EN_BG) {
-                word = wordsForLearning.get(wordIndex);
-                translateField.setText(word);
-                String transcription = getTranscription(word);
-                transcriptionLabel.setText(" " + transcription);
-            } else {
-                translation = translationForLearning.get(wordIndex);
-                translateField.setText(translation);
-            }
-        }
-        if (randomRadioButton.isSelected()) {
-            howToEnumerate = HowToEnumerate.RANDOM;
-            wordIndex = 0;
-            if (selectedDictionary == SelectedDictionary.EN_BG) {
-                word = (String) shuffleWordsForLearning.get(wordIndex);
-                translateField.setText(word);
-                String transcription = getTranscription(word);
-                transcriptionLabel.setText(" " + transcription);
-            } else {
-                translation = (String) shuffleTranslationForLearning.get(wordIndex);
-                translateField.setText(translation);
-            }
-        }
-    }
-
-    private String getTranscription(String word) {
-        String translation = null;
-        if (selectedDictionary == SelectedDictionary.EN_BG) {
-            translation = dictionaryService.getTranslation(word, dictionaries.get(0));
-        }
-        if (selectedDictionary == SelectedDictionary.BG_EN) {
-            return " ";
-        }
-        int beginIndex = translation.indexOf('[');
-        int endIndex = translation.indexOf(']') + 1;
-        if (beginIndex == -1 && endIndex == 0) {
-            return " ";
-        }
-        String transcription = translation.substring(beginIndex, endIndex);
-        return transcription;
-
-    }
-
-    private void setStudySetsInComboBox(){
+    private void setStudySetsInComboBox() {
         List<String> namesOfStudySets = new ArrayList<String>();
         namesOfStudySets = studyService.getNamesOfStudySets();
         studySetsComboBox.setModel(new DefaultComboBoxModel(namesOfStudySets.toArray()));

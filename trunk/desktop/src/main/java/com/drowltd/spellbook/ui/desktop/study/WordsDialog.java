@@ -48,13 +48,13 @@ public class WordsDialog extends javax.swing.JDialog {
     private List<String> words = new ArrayList<String>();
     private List<Dictionary> dictionaries = new ArrayList<Dictionary>();
     private List<StudySet> studySets = new ArrayList<StudySet>();
-    private Map<String, Dictionary>  dictionariesMap = new HashMap<String, Dictionary>();
+    private Map<String, Dictionary> dictionariesMap = new HashMap<String, Dictionary>();
     private StudyService studyService;
     private Frame parent;
     private static final PreferencesManager PM = PreferencesManager.getInstance();
     private static final Translator TRANSLATOR = Translator.getTranslator("WordsDialog");
     StudyWordsDialog studyWordsDialog = new StudyWordsDialog(parent, true);
-    
+
     /** Creates new form WordsDialog */
     public WordsDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -115,7 +115,7 @@ public class WordsDialog extends javax.swing.JDialog {
             }
         });
 
-       // wordsForLearning = dictDb.getWordsForLearning();
+        // wordsForLearning = dictDb.getWordsForLearning();
         String name = (String) studySetsComboBox.getSelectedItem();
         translationForStudy = studyService.getTranslationsForStudy(name);
         countOFTheWords = studyService.getCountOfTheWords(name);
@@ -409,23 +409,20 @@ public class WordsDialog extends javax.swing.JDialog {
                 setWordsInTable(false);
             }
         }
-                clear();
+        clear();
         wordSearchField.requestFocus();
     }//GEN-LAST:event_addWordButtonActionPerformed
 
     private void deleteWordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteWordButtonActionPerformed
         //String studySetName = (String) studySetsComboBox.getSelectedItem();
         //long countOFTheRows = countOFTheWords = studyService.getCountOfTheWords(studySetName);
-
         //for (int i = 0; i < countOFTheRows; i++) {
         //    if ((Boolean) wordsTable.getValueAt(i, 3)) {
         //        studyService.deleteWord((String) wordsTable.getValueAt(i, 1), studySetName);
         //        countOFTheWords--;
         //    }
         //}
-
         //setWordsInTable(false);
-
     }//GEN-LAST:event_deleteWordButtonActionPerformed
 
     private void selectNothingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectNothingButtonActionPerformed
@@ -462,7 +459,6 @@ public class WordsDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_deleteStudySetButtonActionPerformed
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
-
     }//GEN-LAST:event_formWindowClosed
 
     private void studySetsComboBoxPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_studySetsComboBoxPopupMenuWillBecomeInvisible
@@ -516,7 +512,7 @@ public class WordsDialog extends javax.swing.JDialog {
         }
     }
 
-    private void setStudySetsInComboBox(){
+    private void setStudySetsInComboBox() {
         List<String> namesOfStudySets = new ArrayList<String>();
         namesOfStudySets = studyService.getNamesOfStudySets();
         studySetsComboBox.setModel(new DefaultComboBoxModel(namesOfStudySets.toArray()));
