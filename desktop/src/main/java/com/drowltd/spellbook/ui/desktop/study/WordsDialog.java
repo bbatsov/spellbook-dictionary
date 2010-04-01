@@ -209,7 +209,7 @@ public class WordsDialog extends javax.swing.JDialog {
 
         jScrollPane1.setViewportView(wordTranslationTextPane);
 
-        jLabel2.setText(bundle.getString("Òranslation(Label)")); // NOI18N
+        jLabel2.setText(bundle.getString("Translation(Label)")); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
