@@ -3,6 +3,7 @@ package com.drowltd.spellbook.core.service;
 import com.drowltd.spellbook.core.exception.UpdateServiceException;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.DictionaryEntry;
+import com.drowltd.spellbook.core.model.LastUpdateEntity;
 import com.drowltd.spellbook.core.model.RemoteDictionaryEntry;
 import com.drowltd.spellbook.core.model.UpdateEntry;
 import java.util.Date;
@@ -52,8 +53,23 @@ public class UpdateService extends AbstractPersistenceService {
             }
         }
     }
-    private Date updateFromDate;
+    private LastUpdateEntity lastUpdate;
     private final Map<String, Dictionary> dictMap = new HashMap<String, Dictionary>();
+
+    private LastUpdateEntity getLastUpdateEntity() {
+        LastUpdateEntity lastUEntity;
+        try {
+            lastUEntity = (LastUpdateEntity) EM.createQuery("select lue from LastUpdateEntity lue").getSingleResult();
+        } catch (javax.persistence.PersistenceException e) {
+            lastUEntity = new LastUpdateEntity();
+            lastUEntity.setModified(new Date(0));
+            EntityTransaction t = EM.getTransaction();
+            t.begin();
+            EM.persist(lastUEntity);
+            t.commit();
+        }
+        return lastUEntity;
+    }
 
     private void initDictMap() {
         List<Dictionary> dictionaries = DictionaryService.getInstance().getDictionaries();
@@ -62,31 +78,34 @@ public class UpdateService extends AbstractPersistenceService {
         }
     }
 
-    public boolean checkForUpdates(Date date) {
-        if (date == null) {
-            throw new IllegalArgumentException("date is null");
-        }
-        if (!EM_REMOTE.createNamedQuery("UpdateEntry.checkForUpdates").setParameter("date", date).getResultList().isEmpty()) {
-            this.updateFromDate = date;
+    public boolean checkForUpdates() {
+        LastUpdateEntity lastUpdate = getLastUpdateEntity();
+
+        if (!EM_REMOTE.createNamedQuery("UpdateEntry.checkForUpdates").setParameter("date", lastUpdate.getModified()).getResultList().isEmpty()) {
+            this.lastUpdate = lastUpdate;
             return true;
         }
+        this.lastUpdate = null;
         return false;
     }
 
     public void update() {
-        if (updateFromDate == null) {
+        if (lastUpdate == null) {
             return;
         }
         initDictMap();
-        List<UpdateEntry> Entries = EM_REMOTE.createNamedQuery("UpdateEntry.checkForUpdates").setParameter("date", updateFromDate).getResultList();
+        List<UpdateEntry> Entries = EM_REMOTE.createNamedQuery("UpdateEntry.checkForUpdates").setParameter("date", lastUpdate.getModified()).getResultList();
 
         DictionaryService service = DictionaryService.getInstance();
         EntityTransaction t = EM.getTransaction();
         t.begin();
+        Date lastDate = new Date(0);
         for (UpdateEntry updateEntry : Entries) {
-
+            if (lastDate.before(updateEntry.getCreated())) {
+                lastDate = updateEntry.getCreated();
+            }
             List<RemoteDictionaryEntry> remoteDictionaryEntries = EM_REMOTE.createNamedQuery("UpdateEntry.getRemoteEntries").setParameter("updateEntry", updateEntry).getResultList();
-            if(remoteDictionaryEntries.isEmpty()){
+            if (remoteDictionaryEntries.isEmpty()) {
                 LOGGER.info("No remoteDictionaryEntries found");
                 throw new IllegalStateException("No remoteDictionaryEntries found");
             }
@@ -112,6 +131,7 @@ public class UpdateService extends AbstractPersistenceService {
 
             }
         }
+        lastUpdate.setModified(lastDate);
         t.commit();
     }
 }
