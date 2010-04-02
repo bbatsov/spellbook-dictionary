@@ -30,9 +30,12 @@ public class UpdateServiceTest {
     static EntityManager em;
     private static Dictionary dictionary;
     static UpdateEntry updateEntry;
+    static UpdateEntry updateEntry0;
     static RemoteDictionaryEntry entry;
+    static RemoteDictionaryEntry entry0;
     static UpdateService updateService;
     static String word = "remoteEntry0";
+    static String word0 = "remoteEntry00";
     static String translation = "translation0";
     static String dictionaryName = "English-Bulgarian";
     static Date testDate;
@@ -67,11 +70,21 @@ public class UpdateServiceTest {
         entry.setDictionary(dictionary);
         entry.setWord(word);
         entry.setTranslation(translation);
+
+        updateEntry0 = new UpdateEntry();
+        entry0 = new RemoteDictionaryEntry();
+        entry0.setUpdateEntry(updateEntry0);
+        entry0.setWord(word0);
+        entry0.setTranslation(translation);
+        entry0.setDictionary(dictionary);
      
         em.persist(dictionary);
         em.persist(updateEntry);
         em.persist(entry);
-        
+        Thread.sleep(2000);
+        em.persist(updateEntry0);
+        em.persist(entry0);
+       
         t.commit();
 
     }
@@ -88,7 +101,7 @@ public class UpdateServiceTest {
 
     @Test
     public void testUpdate(){
-        assertTrue("no updates available",updateService.checkForUpdates(testDate));
+        assertTrue("no updates available",updateService.checkForUpdates());
         updateService.update();
         DictionaryService service = DictionaryService.getInstance();
         service.getTranslation(word, service.getDictionary(dictionaryName));
