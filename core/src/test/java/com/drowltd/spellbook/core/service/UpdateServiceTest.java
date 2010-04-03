@@ -5,6 +5,7 @@
 package com.drowltd.spellbook.core.service;
 
 import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
+import com.drowltd.spellbook.core.exception.UpdateServiceException;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.model.RemoteDictionaryEntry;
@@ -44,7 +45,7 @@ public class UpdateServiceTest {
     }
 
     @BeforeClass
-    public static void init() throws Exception, DictionaryDbLockedException {
+    public static void init() throws UpdateServiceException, DictionaryDbLockedException, InterruptedException {
         testDate = new Date();
         translation = translation+(new Random().nextLong());
         
@@ -100,7 +101,7 @@ public class UpdateServiceTest {
 
 
     @Test
-    public void testUpdate(){
+    public void testUpdate() throws InterruptedException{
         assertTrue("no updates available",updateService.checkForUpdates());
         updateService.update();
         DictionaryService service = DictionaryService.getInstance();
