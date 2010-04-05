@@ -66,7 +66,7 @@ public class DictionaryService extends AbstractPersistenceService {
      * @return a list of available dictionaries, emtpy list if none are available
      */
     public List<Dictionary> getDictionaries() {
-        return EM.createNamedQuery("Dictionary.getAllDictionaries").getResultList();
+        return EM.createNamedQuery("Dictionary.getAllDictionaries", Dictionary.class).getResultList();
     }
 
     /**
@@ -76,7 +76,7 @@ public class DictionaryService extends AbstractPersistenceService {
      * @return the dictionary corresponding to the name
      */
     public Dictionary getDictionary(String dictionaryName) {
-        return (Dictionary)EM.createQuery("select d from Dictionary d where d.name = :name").setParameter("name", dictionaryName).getSingleResult();
+        return EM.createQuery("select d from Dictionary d where d.name = :name", Dictionary.class).setParameter("name", dictionaryName).getSingleResult();
     }
 
     /**
@@ -107,8 +107,8 @@ public class DictionaryService extends AbstractPersistenceService {
      * @return the word's translation
      */
     public String getTranslation(String word, Dictionary d) {
-        return (String) EM.createQuery("select de.translation from DictionaryEntry de"
-                + " where de.word = :word and de.dictionary = :dictionary").setParameter("word", word).setParameter("dictionary", d).getSingleResult();
+        return EM.createQuery("select de.translation from DictionaryEntry de"
+                + " where de.word = :word and de.dictionary = :dictionary", String.class).setParameter("word", word).setParameter("dictionary", d).getSingleResult();
     }
 
     /**
@@ -183,8 +183,8 @@ public class DictionaryService extends AbstractPersistenceService {
             return;
         }
 
-        DictionaryEntry de = (DictionaryEntry) EM.createQuery("select de from DictionaryEntry de "
-                + "where de.dictionary = :dictionary and de.word = :word").setParameter("dictionary", d).setParameter("word", word).getSingleResult();
+        DictionaryEntry de = EM.createQuery("select de from DictionaryEntry de "
+                + "where de.dictionary = :dictionary and de.word = :word", DictionaryEntry.class).setParameter("dictionary", d).setParameter("word", word).getSingleResult();
 
         de.setWord(newWord);
         de.setTranslation(translation);
@@ -241,7 +241,7 @@ public class DictionaryService extends AbstractPersistenceService {
         }
 
         final List<RankEntry> ratingslist = EM.createQuery("select re from RankEntry re "
-                + " where re.language = :language").setParameter("language", language).getResultList();
+                + " where re.language = :language", RankEntry.class).setParameter("language", language).getResultList();
 
         Map<String, Integer> ratingsMap = new HashMap<String, Integer>();
         for (RankEntry re : ratingslist) {
@@ -263,8 +263,8 @@ public class DictionaryService extends AbstractPersistenceService {
             LOGGER.error("languageFrom == null || languageTo == null");
             throw new IllegalArgumentException("languageFrom == null || languageTo == null");
         }
-        return (Dictionary) EM.createQuery("select d from Dictionary d "
-                + " where d.fromLanguage = :fromLanguage and d.toLanguage = :toLanguage").setParameter("fromLanguage", languageFrom).setParameter("toLanguage", languageTo).getSingleResult();
+        return EM.createQuery("select d from Dictionary d "
+                + " where d.fromLanguage = :fromLanguage and d.toLanguage = :toLanguage", Dictionary.class).setParameter("fromLanguage", languageFrom).setParameter("toLanguage", languageTo).getSingleResult();
     }
 
     
@@ -308,7 +308,7 @@ public class DictionaryService extends AbstractPersistenceService {
      * @return the dictionary's complement
      */
     public Dictionary getComplement(Dictionary dictionary) {
-        return (Dictionary) EM.createNamedQuery("Dictionary.getDictionaryByLanguages").setParameter("fromLanguage", dictionary.getToLanguage()).setParameter("toLanguage", dictionary.getFromLanguage()).getSingleResult();
+        return EM.createNamedQuery("Dictionary.getDictionaryByLanguages", Dictionary.class).setParameter("fromLanguage", dictionary.getToLanguage()).setParameter("toLanguage", dictionary.getFromLanguage()).getSingleResult();
     }
 
     
