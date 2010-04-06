@@ -10,8 +10,8 @@ Spellbook is an open source dictionary written in Java. In order to run the appl
 
 
  * Supported Dictionaries
-    # English - Bulgarian containing more then 45000 words.
-    # Bulgarian - English containing more then 43000 words.
+    # English - Bulgarian containing more than 45000 words.
+    # Bulgarian - English containing more than 43000 words.
 
 <br />
 ----
