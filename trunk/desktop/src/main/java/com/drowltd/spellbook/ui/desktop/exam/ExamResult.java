@@ -1,8 +1,13 @@
 package com.drowltd.spellbook.ui.desktop.exam;
 
+import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
 import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
+import com.drowltd.spellbook.core.service.exam.ExamService;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.lang.Math;
 
 /**
  *
@@ -11,16 +16,22 @@ import com.drowltd.spellbook.ui.swing.util.IconManager;
  *
  */
 public class ExamResult extends javax.swing.JDialog {
-    
+
     private static final PreferencesManager PM = PreferencesManager.getInstance();
     private static final Translator TRANSLATOR = Translator.getTranslator("ExamResult");
     private boolean scoreboardVisibility = false;
+    private ExamService examService;
 
     /** Creates new form ExamResult */
     public ExamResult(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         TRANSLATOR.reset();
         initComponents();
+        try {
+            examService = new ExamService();
+        } catch (DictionaryDbLockedException ex) {
+            Logger.getLogger(ExamResult.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         setLocationRelativeTo(parent);
         setIconImage(IconManager.getImageIcon("teacher.png", IconManager.IconSize.SIZE16).getImage());
@@ -35,6 +46,9 @@ public class ExamResult extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        entityManager = java.beans.Beans.isDesignTime() ? null : javax.persistence.Persistence.createEntityManagerFactory("jdbc:h2:C:\\opt\\spellbook\\db\\spellbookPU").createEntityManager();
+        scoreboardEntryQuery = java.beans.Beans.isDesignTime() ? null : entityManager.createQuery("SELECT s FROM ScoreboardEntry s");
+        scoreboardEntryList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : scoreboardEntryQuery.getResultList();
         jPanel1 = new javax.swing.JPanel();
         okResultButton = new javax.swing.JButton();
         correctWordsLabel = new javax.swing.JLabel();
@@ -59,6 +73,7 @@ public class ExamResult extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("i18n/ExamResult"); // NOI18N
         setTitle(bundle.getString("ExamResult(Title)")); // NOI18N
+        setResizable(false);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -92,7 +107,7 @@ public class ExamResult extends javax.swing.JDialog {
         successRateResultLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         successRateResultLabel.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
 
-        endLabel.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        endLabel.setFont(new java.awt.Font("Tahoma", 1, 12));
         endLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         endLabel.setAlignmentY(0.0F);
 
@@ -196,7 +211,7 @@ public class ExamResult extends javax.swing.JDialog {
 
         scoreboardButton.setForeground(new java.awt.Color(0, 0, 255));
         scoreboardButton.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        scoreboardButton.setText("See Scoreboard");
+        scoreboardButton.setText("Show Scoreboard");
         scoreboardButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         scoreboardButton.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         scoreboardButton.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -344,17 +359,21 @@ public class ExamResult extends javax.swing.JDialog {
     }//GEN-LAST:event_scoreboardButtonMouseClicked
 
     private void submitScoreButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitScoreButtonActionPerformed
-       scoreboardFilling();
+        if (scoreboardNameField.getText().equals(null)) {
+            scoreboardFilling();
+        }
     }//GEN-LAST:event_submitScoreButtonActionPerformed
 
     private void scoreboardNameFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_scoreboardNameFieldActionPerformed
-        scoreboardFilling();
+        if (scoreboardNameField.getText().equals(null)) {
+            scoreboardFilling();
+        }
     }//GEN-LAST:event_scoreboardNameFieldActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel correctWordsLabel;
     private javax.swing.JLabel correctWrodsResultLabel;
     private javax.swing.JLabel endLabel;
+    private javax.persistence.EntityManager entityManager;
     private javax.swing.JLabel iconLabel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -365,6 +384,8 @@ public class ExamResult extends javax.swing.JDialog {
     private javax.swing.JButton okResultButton;
     private javax.swing.JTable scoreboarTable;
     private javax.swing.JLabel scoreboardButton;
+    private java.util.List<com.drowltd.spellbook.core.model.ScoreboardEntry> scoreboardEntryList;
+    private javax.persistence.Query scoreboardEntryQuery;
     private javax.swing.JTextField scoreboardNameField;
     private javax.swing.JButton seeWrongWords;
     private javax.swing.JButton submitScoreButton;
@@ -376,10 +397,10 @@ public class ExamResult extends javax.swing.JDialog {
 
     public void showExamResult(int correctWords, int totalWords) {
 
-        setSize(289, 353);
+        setSize(279, 353);
 
         int uspeh = ((correctWords * 100) / totalWords);
-        
+
         correctWrodsResultLabel.setText(Integer.toString(correctWords));
         wrongWrodsResultLabel.setText(Integer.toString(totalWords - correctWords));
         successRateResultLabel.setText(Integer.toString(uspeh) + "%");
@@ -398,29 +419,53 @@ public class ExamResult extends javax.swing.JDialog {
 
         if (scoreboardVisibility == false) {
             scoreboardButton.setText("Hide Scoreboard");
-            setSize(554, 353);
             scoreboardVisibility = true;
+            setTable();
+            setSize(544, 353);
         } else {
             scoreboardButton.setText("See Scoreboard");
-            setSize(289, 353);
+            setSize(279, 353);
             scoreboardVisibility = false;
         }
 
     }
 
     public void scoreboardFilling() {
-
-        int i = 0;
-        while ((scoreboarTable.getValueAt(i, 1) != null)) {
-            i++;     if (i == 14) {  break; }
-        }
-        scoreboarTable.setValueAt(scoreboardNameField.getText(), i, 1);
-        scoreboarTable.setValueAt(successRateResultLabel.getText() + " " + "(" + ExamDialog.returnDiffLabelText() + ")", i, 2);
+        addScore();
         scoreboardNameField.setText(null);
 
         if (scoreboardVisibility == false) {
             scoreboardViewStatus();
         }
 
+    }
+
+    public void addScore() {
+
+        Double examWordsForScoreboard = Double.parseDouble(correctWrodsResultLabel.getText()) + Double.parseDouble(wrongWrodsResultLabel.getText());
+        examService.addScoreboardResult(scoreboardNameField.getText(), examWordsForScoreboard, Double.parseDouble(wrongWrodsResultLabel.getText()), ExamDialog.returnDiffLabelText());
+
+    }
+
+    public void setTable() {
+        int i = 0;
+
+        try {
+            while (examService.getScoreboardUsername().get(i) != null) {
+                scoreboarTable.setValueAt(examService.getScoreboardUsername().get(i), i, 1);
+                scoreboarTable.setValueAt(Math.floor(successRateForTable(i)) + "% (" + examService.getScoreboardDifficulty().get(i) + ")", i, 2);
+                if (i == 14) {
+                    break;
+                }
+                i++;
+            }
+        } catch (Exception e) {
+        }
+
+    }
+
+    public double successRateForTable(int sr) {
+        return (((((examService.getScoreboardExamword().get(sr)) - (examService.getScoreboardWrongword().get(sr))))
+                * 100) / examService.getScoreboardExamword().get(sr));
     }
 }
