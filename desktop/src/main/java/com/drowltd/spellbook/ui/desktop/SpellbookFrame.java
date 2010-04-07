@@ -32,11 +32,14 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -658,52 +661,77 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         File file = new File(dbPath);
 
+        String currentPath = "";
+        try {
+            currentPath = new java.io.File(".").getCanonicalPath();
+            LOGGER.info("Current path: " + currentPath);
+            currentPath += "\\" + COMPRESSED_DB_NAME;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
         if (!file.exists()) {
 
             LOGGER.info("Checking for archivied db ...");
-            try {
-                String currentPath = new java.io.File(".").getCanonicalPath();
-                LOGGER.info("Current path: " + currentPath);
-                currentPath += "\\" + COMPRESSED_DB_NAME;
-                File archiviedDbFile = new File(currentPath);
 
-                if (archiviedDbFile.exists()) {
-                    LOGGER.info("Found the archivied db in " + currentPath);
-                    extractDbFromArchive(currentPath);
-                    return true;
+            File archiviedDbFile = new File(currentPath);
 
-                }
+            if (archiviedDbFile.exists()) {
+                LOGGER.info("Found the archivied db in " + currentPath);
+                extractDbFromArchive(currentPath);
+                return true;
 
-            } catch (FileNotFoundException ex) {
-            } catch (IOException e) {
             }
-            
+
             if (dbPath.isEmpty()) {
-                JOptionPane.showMessageDialog(null, TRANSLATOR.translate("SelectDb(Message)"));
-            } else {
-                JOptionPane.showMessageDialog(null, TRANSLATOR.translate("MissingDb(Message)"));
-            }
 
-            JFileChooser fileChooser = new JFileChooser();
-            final int result = fileChooser.showDialog(null, TRANSLATOR.translate("SelectDb(Title)"));
+                Object[] options = {"Download from internet!",
+                    "Find in the filesystem!",};
 
-            if (result == JFileChooser.APPROVE_OPTION) {
-                String selectedDbPath = fileChooser.getSelectedFile().getPath();
+                int choice = JOptionPane.showOptionDialog(null, "What to do?", "Missing Db!", JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 
-                if (selectedDbPath.endsWith(COMPRESSED_DB_NAME)) {
-                    extractDbFromArchive(selectedDbPath);
-                    return true;
-                } else if (selectedDbPath.endsWith(DB_FILE_NAME)) {
-                    PM.put(Preference.PATH_TO_DB, selectedDbPath);
-                    return true;
+                // JOptionPane.showMessageDialog(null, TRANSLATOR.translate("MissingDb(Message)"));
+                if (choice == 1) {
+                    JFileChooser fileChooser = new JFileChooser();
+                    final int result = fileChooser.showDialog(null, TRANSLATOR.translate("SelectDb(Title)"));
+
+                    if (result == JFileChooser.APPROVE_OPTION) {
+                        String selectedDbPath = fileChooser.getSelectedFile().getPath();
+
+                        if (selectedDbPath.endsWith(COMPRESSED_DB_NAME)) {
+                            extractDbFromArchive(selectedDbPath);
+                            return true;
+                        } else if (selectedDbPath.endsWith(DB_FILE_NAME)) {
+                            PM.put(Preference.PATH_TO_DB, selectedDbPath);
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    } else {
+                        return false;
+                    }
                 } else {
-                    return false;
+                    try {
+                        BufferedInputStream in = new BufferedInputStream(new URL("http://spellbook-dictionary.googlecode.com/files/dictionary-db.tar.bz2").openStream());
+                        FileOutputStream fos = new FileOutputStream(COMPRESSED_DB_NAME);
+                        BufferedOutputStream bout = new BufferedOutputStream(fos, 1024);
+                        byte[] data = new byte[1024];
+                        int x = 0;
+                        LOGGER.info("Downloading db ...");
+                        while ((x = in.read(data, 0, 1024)) >= 0) {
+                            bout.write(data, 0, x);
+                        }
+                        bout.close();
+                        in.close();
+                    } catch (FileNotFoundException e) {
+                    } catch (IOException ex) {
+                    }
+
+                    extractDbFromArchive(currentPath);
                 }
-            } else {
-                return false;
             }
         }
-
         return true;
     }
 
