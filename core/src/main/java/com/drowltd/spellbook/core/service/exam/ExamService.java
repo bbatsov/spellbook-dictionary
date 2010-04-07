@@ -8,6 +8,7 @@ import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
 import com.drowltd.spellbook.core.model.Difficulty;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.Language;
+import com.drowltd.spellbook.core.model.ScoreboardEntry;
 import com.drowltd.spellbook.core.service.AbstractPersistenceService;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import java.util.ArrayList;
@@ -16,6 +17,10 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.regex.Pattern;
+import javax.persistence.Column;
+import javax.persistence.EntityTransaction;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +34,7 @@ public class ExamService extends AbstractPersistenceService {
     private DictionaryService dictionaryService;
     private List<String> words;
     private List<String> answers;
+    private List<String> asd;
     private int examWordIndex;
     private Random random = new Random();
     private String translation;
@@ -216,14 +222,40 @@ public class ExamService extends AbstractPersistenceService {
 
         words = EM.createQuery("select re.word from RankEntry re where"
                 + " re.rank > :low and re.rank <= :high and LENGTH(re.word) >=3 and "
-                + "exists (select de.word from DictionaryEntry de where de.word = re.word and de.dictionary.fromLanguage = re.language and re.language = :language)")
-                .setParameter("low", difficulty.getLow())
-                .setParameter("high", difficulty.getHigh())
-                .setParameter("language", language)
-                .getResultList();
+                + "exists (select de.word from DictionaryEntry de where de.word = re.word and de.dictionary.fromLanguage = re.language and re.language = :language)").setParameter("low", difficulty.getLow()).setParameter("high", difficulty.getHigh()).setParameter("language", language).getResultList();
 
         if (words.isEmpty()) {
             words = dictionaryService.getWordsFromDictionary(dictionary);
         }
+    }
+
+    public void addScoreboardResult(String username, Double examWords, Double wrongWords, String difficulty) {
+
+        ScoreboardEntry se = new ScoreboardEntry();
+        se.setUsername(username);
+        se.setExamWords(examWords);
+        se.setWrongWords(wrongWords);
+        se.setDifficulty(difficulty);
+
+        EntityTransaction t = EM.getTransaction();
+        t.begin();
+        EM.persist(se);
+        t.commit();
+    }
+
+    public List<String> getScoreboardUsername() {
+        return EM.createQuery("select se.username from ScoreboardEntry se").getResultList();
+    }
+
+    public List<Double> getScoreboardWrongword() {
+        return EM.createQuery("select se.wrongWords from ScoreboardEntry se").getResultList();
+    }
+
+    public List<Double> getScoreboardExamword() {
+        return EM.createQuery("select se.examWords from ScoreboardEntry se").getResultList();
+    }
+
+    public List<String> getScoreboardDifficulty() {
+        return EM.createQuery("select se.difficulty from ScoreboardEntry se").getResultList();
     }
 }
