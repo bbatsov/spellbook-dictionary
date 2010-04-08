@@ -5,9 +5,18 @@ import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.core.service.exam.ExamService;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
+import com.drowltd.spellbook.ui.swing.util.SwingUtil;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.lang.Math;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -46,7 +55,9 @@ public class ExamResult extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-     
+        entityManager = java.beans.Beans.isDesignTime() ? null : javax.persistence.Persistence.createEntityManagerFactory("jdbc:h2:C:\\opt\\spellbook\\db\\spellbookPU").createEntityManager();
+        scoreboardEntryQuery = java.beans.Beans.isDesignTime() ? null : entityManager.createQuery("SELECT s FROM ScoreboardEntry s");
+        scoreboardEntryList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : scoreboardEntryQuery.getResultList();
         jPanel1 = new javax.swing.JPanel();
         okResultButton = new javax.swing.JButton();
         correctWordsLabel = new javax.swing.JLabel();
@@ -254,31 +265,31 @@ public class ExamResult extends javax.swing.JDialog {
 
         scoreboarTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {" 1", null, null},
-                {" 2", null, null},
-                {" 3", null, null},
-                {" 4", null, null},
-                {" 5", null, null},
-                {" 6", null, null},
-                {" 7", null, null},
-                {" 8", null, null},
-                {" 9", null, null},
-                {"10", null, null},
-                {"11", null, null},
-                {"12", null, null},
-                {"13", null, null},
-                {"14", null, null},
-                {"15", null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
                 "", "Name", "Result"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.String.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                true, false, false
+                false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -289,10 +300,13 @@ public class ExamResult extends javax.swing.JDialog {
                 return canEdit [columnIndex];
             }
         });
+        scoreboarTable.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(scoreboarTable);
         scoreboarTable.getColumnModel().getColumn(0).setMinWidth(20);
         scoreboarTable.getColumnModel().getColumn(0).setPreferredWidth(20);
         scoreboarTable.getColumnModel().getColumn(0).setMaxWidth(20);
+        scoreboarTable.getColumnModel().getColumn(1).setResizable(false);
+        scoreboarTable.getColumnModel().getColumn(2).setResizable(false);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -357,14 +371,18 @@ public class ExamResult extends javax.swing.JDialog {
     }//GEN-LAST:event_scoreboardButtonMouseClicked
 
     private void submitScoreButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitScoreButtonActionPerformed
-        if (!scoreboardNameField.getText().equals(null)) {
+        if (!scoreboardNameField.getText().isEmpty()) {
             scoreboardFilling();
+        } else {
+            SwingUtil.showBalloonTip(scoreboardNameField, "Please enter a name");
         }
     }//GEN-LAST:event_submitScoreButtonActionPerformed
 
     private void scoreboardNameFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_scoreboardNameFieldActionPerformed
-        if (!scoreboardNameField.getText().equals(null)) {
+        if (!scoreboardNameField.getText().isEmpty()) {
             scoreboardFilling();
+        } else {
+            SwingUtil.showBalloonTip(scoreboardNameField, "Please enter a name");
         }
     }//GEN-LAST:event_scoreboardNameFieldActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -434,6 +452,8 @@ public class ExamResult extends javax.swing.JDialog {
 
         if (scoreboardVisibility == false) {
             scoreboardViewStatus();
+        } else {
+            setTable();
         }
 
     }
@@ -447,11 +467,11 @@ public class ExamResult extends javax.swing.JDialog {
 
     public void setTable() {
         int i = 0;
-
         try {
-            while (examService.getScoreboardUsername().get(i) != null) {
+            while (!examService.getScoreboardUsername().get(i).isEmpty()) {
                 scoreboarTable.setValueAt(examService.getScoreboardUsername().get(i), i, 1);
                 scoreboarTable.setValueAt(Math.floor(successRateForTable(i)) + "% (" + examService.getScoreboardDifficulty().get(i) + ")", i, 2);
+
                 if (i == 14) {
                     break;
                 }
@@ -460,6 +480,20 @@ public class ExamResult extends javax.swing.JDialog {
         } catch (Exception e) {
         }
 
+        scoreboarTableSorting();
+    }
+
+    public void scoreboarTableSorting() {
+        // next 3 lines are sorting the table with 3th column
+        scoreboarTable.setAutoCreateRowSorter(true);
+        scoreboarTable.getRowSorter().toggleSortOrder(2);
+        scoreboarTable.getRowSorter().toggleSortOrder(2);
+
+        for (int j = 1; j <= 15; j++) {
+            scoreboarTable.setValueAt(j, j - 1, 0);
+        }
+
+        scoreboarTable.setAutoCreateRowSorter(false);
     }
 
     public double successRateForTable(int sr) {
