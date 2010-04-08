@@ -22,7 +22,7 @@ import javax.persistence.Table;
     query = "select rde from RemoteDictionaryEntry rde where rde.updateEntry = :updateEntry")})
 public class UpdateEntry extends AbstractEntity {
 
-    @OneToMany(mappedBy = "updateEntry", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "updateEntry", fetch = FetchType.EAGER)
     private Set<RemoteDictionaryEntry> remoteDictionaryEntries = new HashSet<RemoteDictionaryEntry>();
 
     public UpdateEntry() {

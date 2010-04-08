@@ -35,7 +35,7 @@ public class UpdateServiceTest {
     static RemoteDictionaryEntry entry;
     static RemoteDictionaryEntry entry0;
     static UpdateService updateService;
-    static String word = "remoteEntry0";
+    static String word = "upadded";
     static String word0 = "remoteEntry00";
     static String translation = "translation0";
     static String dictionaryName = "English-Bulgarian";
@@ -47,8 +47,11 @@ public class UpdateServiceTest {
     @BeforeClass
     public static void init() throws UpdateServiceException, DictionaryDbLockedException, InterruptedException {
         testDate = new Date();
-        translation = translation+(new Random().nextLong());
-        
+        Random random = new Random();
+        translation = translation+(random.nextLong());
+        word = word+random.nextLong();
+        word0 = word0+random.nextLong();
+
         DictionaryService.init("/opt/spellbook/db/spellbook.data.db");
         updateService = UpdateService.getInstance();
         
@@ -94,9 +97,9 @@ public class UpdateServiceTest {
     public static void tearDownClass() throws Exception {
     }
 
-    //@Test
+   // @Test
     public void testRemoteEntry(){
-        assertTrue(!updateEntry.getRemoteDictionaryEntries().isEmpty());
+        //assertTrue(!updateEntry.getRemoteDictionaryEntries().isEmpty());
     }
 
 
