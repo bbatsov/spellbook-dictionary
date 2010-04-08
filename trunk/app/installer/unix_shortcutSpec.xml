@@ -14,13 +14,11 @@
         applications="no"
         startMenu="yes"
         startup="no"
-        target="$INSTALL_PATH\spellbook-ui-0.3-SNAPSHOT-jar-with-dependencies.jar
-        commandLine=""
+        target="$INSTALL_PATH\spellbook-ui-0.3-SNAPSHOT-jar-with-dependencies.jar"
         description="Spellbook Desktop Edition"
         iconFile="$INSTALL_PATH\dictionary.png"
         iconIndex="0"
         initialState="normal"
-		
 		encoding="UTF-8"
 		terminal="true">
 
