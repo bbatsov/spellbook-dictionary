@@ -78,6 +78,7 @@
             <file src="Readme.txt" targetdir="$INSTALL_PATH"/>
             <file src="Licence.txt" targetdir="$INSTALL_PATH"/>
             <file src="dictionary.png" targetdir="$INSTALL_PATH"/>
+			<file src="dictionary.ico" targetdir="$INSTALL_PATH"/>
             <file src="spellbook-ui-0.3-SNAPSHOT-jar-with-dependencies.jar" targetdir="$INSTALL_PATH"/>
             
         </pack>
