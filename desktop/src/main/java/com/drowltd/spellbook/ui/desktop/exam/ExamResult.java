@@ -55,9 +55,6 @@ public class ExamResult extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        entityManager = java.beans.Beans.isDesignTime() ? null : javax.persistence.Persistence.createEntityManagerFactory("jdbc:h2:C:\\opt\\spellbook\\db\\spellbookPU").createEntityManager();
-        scoreboardEntryQuery = java.beans.Beans.isDesignTime() ? null : entityManager.createQuery("SELECT s FROM ScoreboardEntry s");
-        scoreboardEntryList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : scoreboardEntryQuery.getResultList();
         jPanel1 = new javax.swing.JPanel();
         okResultButton = new javax.swing.JButton();
         correctWordsLabel = new javax.swing.JLabel();
