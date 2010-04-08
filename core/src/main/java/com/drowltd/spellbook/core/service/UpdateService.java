@@ -6,6 +6,7 @@ import com.drowltd.spellbook.core.model.DictionaryEntry;
 import com.drowltd.spellbook.core.model.LastUpdateEntity;
 import com.drowltd.spellbook.core.model.RemoteDictionaryEntry;
 import com.drowltd.spellbook.core.model.UpdateEntry;
+import java.sql.DriverManager;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -43,15 +44,13 @@ public class UpdateService extends AbstractPersistenceService {
     }
 
     public static UpdateService getInstance() throws UpdateServiceException {
-        if (INSTANCE == null) {
-            INSTANCE = new UpdateService();
-            return INSTANCE;
-        }
-        return INSTANCE;
+          return new UpdateService();
     }
 
     protected static void initRemoteEntityManager() throws UpdateServiceException {
         try {
+            Class.forName("com.mysql.jdbc.Driver");
+            DriverManager.getConnection("jdbc:mysql://localhost:3306/SpellbookRemote", "iivalchev", "").close();
             EM_REMOTE = Persistence.createEntityManagerFactory("SpellbookRemote").createEntityManager();
         } catch (Exception e) {
             throw new UpdateServiceException();
@@ -103,6 +102,7 @@ public class UpdateService extends AbstractPersistenceService {
     public boolean checkForUpdates() {
         LastUpdateEntity lastUpdate = getLastUpdateEntity();
 
+        LOGGER.info("Last update on: "+lastUpdate.getModified());
         if (!EM_REMOTE.createNamedQuery("UpdateEntry.checkForUpdates").setParameter("date", lastUpdate.getModified()).getResultList().isEmpty()) {
             this.lastUpdate = lastUpdate;
             return true;
