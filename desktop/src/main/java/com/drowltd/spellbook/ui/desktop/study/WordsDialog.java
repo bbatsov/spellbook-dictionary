@@ -24,9 +24,7 @@ import java.awt.HeadlessException;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
@@ -49,7 +47,6 @@ public class WordsDialog extends javax.swing.JDialog {
     private List<String> words = new ArrayList<String>();
     private List<Dictionary> dictionaries = new ArrayList<Dictionary>();
     private List<StudySet> studySets = new ArrayList<StudySet>();
-    private Map<String, Dictionary> dictionariesMap = new HashMap<String, Dictionary>();
     private StudyService studyService;
     private Frame parent;
     private static final PreferencesManager PM = PreferencesManager.getInstance();
@@ -75,13 +72,7 @@ public class WordsDialog extends javax.swing.JDialog {
         initComponents();
 
         setStudySetsInComboBox();
-        //int index = PM.getInt(Preference.STUDY_SETS, studySetsComboBox.getSelectedIndex());
-        //studySetsComboBox.setSelectedIndex(index);
-        String dictName = null;
-        for (int i = 0; i < dictionaries.size(); i++) {
-            dictName = (String) dictionariesComboBox.getItemAt(i);
-            dictionariesMap.put(dictName, dictionaries.get(i));
-        }
+
         addComponentListener(new ComponentAdapter() {
 
             @Override
@@ -129,7 +120,7 @@ public class WordsDialog extends javax.swing.JDialog {
 
         if (addWordButton.isEnabled()) {
             wordTranslationTextPane.setText(dictionaryService.getTranslation(wordSearchField.getText(),
-                    dictionaryService.getDictionary((String) dictionariesComboBox.getSelectedItem())));
+                    (Dictionary) dictionariesComboBox.getSelectedItem()));
             wordTranslationTextPane.setCaretPosition(0);
         }
     }
@@ -507,8 +498,7 @@ public class WordsDialog extends javax.swing.JDialog {
                 JOptionPane.showMessageDialog(this, TRANSLATOR.translate("AlreadyContainedWord(Message)"), null, JOptionPane.ERROR_MESSAGE);
             } else {
                 countOFTheWords++;
-                String dictName = (String) dictionariesComboBox.getSelectedItem();
-                studyService.addWord(word, dictionariesMap.get(dictName), studySetName);
+                studyService.addWord(word, (Dictionary)dictionariesComboBox.getSelectedItem(), studySetName);
                 boolean selectAllWords = false;
                 setWordsInTable(selectAllWords);
             }
