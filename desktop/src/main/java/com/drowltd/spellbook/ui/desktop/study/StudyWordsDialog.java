@@ -40,8 +40,6 @@ import javax.swing.JOptionPane;
  */
 public class StudyWordsDialog extends javax.swing.JDialog {
 
-    private int fromWordsIndex;
-    private int toWordsIndex;
     private StudyService studyService;
     private DictionaryService dictionaryService;
     private static final PreferencesManager PM = PreferencesManager.getInstance();
@@ -98,12 +96,11 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         correctAnswer = new Integer(0);
         wrongAnswer = new Integer(0);
         answerSeen = new Integer(0);
+        int index = PM.getInt(Preference.DICTIONARIES, dictionariesComboBox.getSelectedIndex());
+        dictionariesComboBox.setSelectedIndex(index);
         String studySetName = (String) studySetsComboBox.getSelectedItem();
         countOfWords = studyService.getCountOfTheWords(studySetName);
         checkingTheDatabase();
-        //dictionariesComboBox.setSelectedIndex(PM.getInt(Preference.LEARNING_WORDS_FROM_LANG, dictionariesComboBox.getSelectedIndex()));
-        //studySetsComboBox.setSelectedIndex(PM.getInt(Preference.LEARNING_WORDS_TO_LANG, studySetsComboBox.getSelectedIndex()));
-
     }
 
     /** This method is called from within the constructor to
@@ -159,6 +156,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
                 formWindowGainedFocus(evt);
             }
             public void windowLostFocus(java.awt.event.WindowEvent evt) {
+                formWindowLostFocus(evt);
             }
         });
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -549,7 +547,6 @@ public class StudyWordsDialog extends javax.swing.JDialog {
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
         PM.putInt(Preference.DICTIONARIES, dictionariesComboBox.getSelectedIndex());
-        PM.putInt(Preference.STUDY_SETS, studySetsComboBox.getSelectedIndex());
         PM.putBoolean(Preference.LEARNING_IN_ORDER, inOrderOfInputRadioButton.isSelected());
         PM.putBoolean(Preference.LEARNING_IN_REVERSE_ORDER, inReverseOrderOfInputRadioButton.isSelected());
         PM.putBoolean(Preference.LEARNING_RANDOM, randomRadioButton.isSelected());
@@ -601,10 +598,16 @@ public class StudyWordsDialog extends javax.swing.JDialog {
 
     private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
         setStudySetsInComboBox();
+        int index = PM.getInt(Preference.STUDY_SETS, studySetsComboBox.getSelectedIndex());
+        studySetsComboBox.setSelectedIndex(index);
         String studySetName = (String) studySetsComboBox.getSelectedItem();
         countOfWords = studyService.getCountOfTheWords(studySetName);
         checkingTheDatabase();
     }//GEN-LAST:event_formWindowGainedFocus
+
+    private void formWindowLostFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowLostFocus
+        PM.putInt(Preference.STUDY_SETS, studySetsComboBox.getSelectedIndex());
+    }//GEN-LAST:event_formWindowLostFocus
     /**
      * @param args the command line arguments
      */
@@ -924,5 +927,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         List<String> namesOfStudySets = new ArrayList<String>();
         namesOfStudySets = studyService.getNamesOfStudySets();
         studySetsComboBox.setModel(new DefaultComboBoxModel(namesOfStudySets.toArray()));
+        //int index = PM.getInt(Preference.STUDY_SETS, studySetsComboBox.getSelectedIndex());
+        //studySetsComboBox.setSelectedIndex(index);
     }
 }
