@@ -5,6 +5,7 @@
 package com.drowltd.spellbook.ui.desktop;
 
 import com.drowltd.spellbook.core.i18n.Translator;
+import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import java.awt.Font;
 import java.util.logging.Level;
@@ -33,8 +34,8 @@ public class PreferencesExtractor {
 
     public static void extract(SpellbookFrame spellbookFrame, PreferencesDialog preferencesDialog) {
         if (preferencesDialog.showDialog()) {
-            String oldLanguage = PM.get(Preference.UI_LANG, "EN");
-            final String newLanguage = preferencesDialog.getSelectedLanguage().toString();
+            String oldLanguage = PM.get(Preference.UI_LANG, Language.ENGLISH.getName());
+            final String newLanguage = preferencesDialog.getSelectedLanguage().getName();
             PM.put(Preference.UI_LANG, newLanguage);
 
             if (!oldLanguage.equals(newLanguage)) {

@@ -2,6 +2,7 @@ package com.drowltd.spellbook.ui.desktop;
 
 import com.drowltd.spellbook.core.model.Difficulty;
 import com.drowltd.spellbook.core.i18n.Translator;
+import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.core.service.DictionaryService;
@@ -37,7 +38,6 @@ public class PreferencesDialog extends javax.swing.JDialog {
 
     private static final Translator TRANSLATOR = Translator.getTranslator("PreferencesForm");
     private static final PreferencesManager PM = PreferencesManager.getInstance();
-    private Language selectedLanguage;
     private Font selectedFont;
     private boolean ok;
     private static final DictionaryService DICTIONARY_SERVICE = DictionaryService.getInstance();
@@ -62,14 +62,28 @@ public class PreferencesDialog extends javax.swing.JDialog {
     }
 
     private void initGeneralTab(final java.awt.Frame parent) {
+        Language[] availableLangs = Language.values();
 
+        Language selectedLanguage = null;
+        String selectedLanguageName = PM.get(Preference.UI_LANG, Language.ENGLISH.getName());
 
-        selectedLanguage = Language.valueOf(PM.get(Preference.UI_LANG, "ENGLISH"));
+        System.out.println("Selected lang is " + selectedLanguageName);
+
+        for (Language language : availableLangs) {
+            if (language.getName().equals(selectedLanguageName)) {
+                selectedLanguage = language;
+                break;
+            }
+        }
+
+        if (selectedLanguage == null) {
+            throw new IllegalStateException("null UI lang");
+        }
 
         // set the selected values from preferences
-        languageComboBox.setSelectedIndex(selectedLanguage == Language.ENGLISH ? 0 : 1);
+        languageComboBox.setSelectedItem(selectedLanguage);
 
-        defaultDictionaryComboBox.setSelectedItem(PM.get(Preference.DEFAULT_DICTIONARY, "English-Bulgarian"));
+        defaultDictionaryComboBox.setSelectedItem(PM.get(Preference.DEFAULT_DICTIONARY, null));
 
         minimizeToTrayCheckBox.setSelected(PM.getBoolean(Preference.MIN_TO_TRAY, false));
 
@@ -267,11 +281,11 @@ public class PreferencesDialog extends javax.swing.JDialog {
     }
 
     public Language getSelectedLanguage() {
-        return selectedLanguage;
+        return (Language) languageComboBox.getSelectedItem();
     }
 
     public String getDefaultDictionary() {
-        return (String) defaultDictionaryComboBox.getSelectedItem();
+        return ((Dictionary) defaultDictionaryComboBox.getSelectedItem()).getName();
     }
 
     public boolean isMinimizeToTrayEnabled() {
@@ -430,7 +444,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
                             .addComponent(showMemoryUsageCheckBox)
                             .addComponent(alwaysOnTopCheckBox)))
                     .addComponent(emptyLineCheckBox))
-                .addContainerGap(171, Short.MAX_VALUE))
+                .addContainerGap(165, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -455,12 +469,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
 
         jLabel1.setText(bundle.getString("Language(Label)")); // NOI18N
 
-        languageComboBox.setModel(new DefaultComboBoxModel(new String[] {TRANSLATOR.translate("English(Item)"), TRANSLATOR.translate("Bulgarian(Item)")}));
-        languageComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                languageComboBoxActionPerformed(evt);
-            }
-        });
+        languageComboBox.setModel(new DefaultComboBoxModel(new Language[] {Language.ENGLISH, Language.BULGARIAN}));
 
         jLabel2.setText(bundle.getString("LookAndFeel(Label)")); // NOI18N
 
@@ -488,7 +497,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
                     .addComponent(defaultDictionaryComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(languageComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, 103, Short.MAX_VALUE)
                     .addComponent(lookAndFeelComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(120, Short.MAX_VALUE))
+                .addContainerGap(118, Short.MAX_VALUE))
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -577,7 +586,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
             .addGroup(fontPreviewPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(previewText)
-                .addContainerGap(309, Short.MAX_VALUE))
+                .addContainerGap(302, Short.MAX_VALUE))
         );
         fontPreviewPanelLayout.setVerticalGroup(
             fontPreviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -633,19 +642,19 @@ public class PreferencesDialog extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(currentFontField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel10)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(currentFontSizeField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel13)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(currentStyleField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)))
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)))
                 .addGap(11, 11, 11)
                 .addComponent(fontPreviewPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -711,7 +720,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
                         .addComponent(timerCheckBox)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 119, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 123, Short.MAX_VALUE)
                         .addComponent(jLabel5))
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addComponent(jLabel4)
@@ -723,7 +732,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
                         .addComponent(hardRadioButton))
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 296, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 300, Short.MAX_VALUE)
                         .addComponent(wordCountField, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -759,7 +768,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(168, Short.MAX_VALUE))
+                .addContainerGap(165, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Exam", new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/blackboard.png")), jPanel6); // NOI18N
@@ -822,14 +831,6 @@ public class PreferencesDialog extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void languageComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_languageComboBoxActionPerformed
-        if (languageComboBox.getSelectedIndex() == 0) {
-            selectedLanguage = Language.ENGLISH;
-        } else {
-            selectedLanguage = Language.BULGARIAN;
-        }
-    }//GEN-LAST:event_languageComboBoxActionPerformed
 
     private void clipboardIntegrationCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clipboardIntegrationCheckBoxActionPerformed
         if (clipboardIntegrationCheckBox.isSelected()) {

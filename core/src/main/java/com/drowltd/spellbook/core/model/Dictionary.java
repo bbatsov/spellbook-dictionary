@@ -1,5 +1,6 @@
 package com.drowltd.spellbook.core.model;
 
+import com.drowltd.spellbook.core.i18n.Translator;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Column;
@@ -27,6 +28,7 @@ import javax.persistence.Table;
             query = "select d from Dictionary d where d.fromLanguage = :fromLanguage and d.toLanguage = :toLanguage")
 })
 public class Dictionary extends AbstractEntity {
+    public static final Translator TRANSLATOR = Translator.getTranslator("Model");
 
     @OneToMany(mappedBy = "dictionary", fetch = FetchType.LAZY)
     private Set<DictionaryEntry> dictionaryEntries = new HashSet<DictionaryEntry>();
@@ -117,5 +119,10 @@ public class Dictionary extends AbstractEntity {
         hash = 73 * hash + (this.fromLanguage != null ? this.fromLanguage.hashCode() : 0);
         hash = 73 * hash + (this.toLanguage != null ? this.toLanguage.hashCode() : 0);
         return hash;
+    }
+
+    @Override
+    public String toString() {
+        return TRANSLATOR.translate(name + "(Dictionary)");
     }
 }
