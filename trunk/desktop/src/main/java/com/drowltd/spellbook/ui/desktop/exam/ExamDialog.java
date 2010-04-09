@@ -12,7 +12,6 @@ import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.drowltd.spellbook.ui.desktop.PreferencesDialog;
 import com.drowltd.spellbook.ui.desktop.PreferencesExtractor;
 import com.drowltd.spellbook.ui.desktop.SpellbookFrame;
-import com.drowltd.spellbook.ui.swing.component.LanguageListCellRenderer;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
