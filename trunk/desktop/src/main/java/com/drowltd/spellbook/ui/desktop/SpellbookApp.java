@@ -2,6 +2,8 @@ package com.drowltd.spellbook.ui.desktop;
 
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.core.exception.SpellbookDefaultExceptionHandler;
+import com.drowltd.spellbook.core.model.Dictionary;
+import com.drowltd.spellbook.core.model.Language;
 import java.awt.Dimension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,12 +49,15 @@ public class SpellbookApp {
 
         final PreferencesManager pm = PreferencesManager.getInstance();
 
-        if (pm.get(Preference.UI_LANG, "ENGLISH").equals("BULGARIAN")) {
+        if (pm.get(Preference.UI_LANG, Language.ENGLISH.getName()).equals(Language.BULGARIAN.getName())) {
             Locale.setDefault(new Locale("bg", "BG"));
             LOGGER.info("Selected locate is " + Locale.getDefault());
         } else {
             Locale.setDefault(Locale.ENGLISH);
         }
+
+        Language.TRANSLATOR.reset();
+        Dictionary.TRANSLATOR.reset();
 
         try {
             String selectedLookAndFeel = pm.get(Preference.LOOK_AND_FEEL, "System");
