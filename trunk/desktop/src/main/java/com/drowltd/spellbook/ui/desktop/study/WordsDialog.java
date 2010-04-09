@@ -20,6 +20,7 @@ import com.drowltd.spellbook.core.model.StudySet;
 import com.drowltd.spellbook.ui.swing.component.AutocompletingTextField;
 import com.drowltd.spellbook.ui.swing.component.DictionaryComboBox;
 import java.awt.Frame;
+import java.awt.HeadlessException;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
@@ -74,6 +75,8 @@ public class WordsDialog extends javax.swing.JDialog {
         initComponents();
 
         setStudySetsInComboBox();
+        //int index = PM.getInt(Preference.STUDY_SETS, studySetsComboBox.getSelectedIndex());
+        //studySetsComboBox.setSelectedIndex(index);
         String dictName = null;
         for (int i = 0; i < dictionaries.size(); i++) {
             dictName = (String) dictionariesComboBox.getItemAt(i);
@@ -207,6 +210,7 @@ public class WordsDialog extends javax.swing.JDialog {
             }
         });
 
+        wordTranslationTextPane.setEditable(false);
         jScrollPane1.setViewportView(wordTranslationTextPane);
 
         jLabel2.setText(bundle.getString("Translation(Label)")); // NOI18N
@@ -394,23 +398,7 @@ public class WordsDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addWordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addWordButtonActionPerformed
-        String word = wordSearchField.getText();
-        String studySetName = (String) studySetsComboBox.getSelectedItem();
-        wordsForStudy = studyService.getWordsForStudy(studySetName);
-        if (words.contains(word)) {
-            countOFTheWords = studyService.getCountOfTheWords(studySetName);
-            if (wordsForStudy.contains(word)) {
-                JOptionPane.showMessageDialog(this, TRANSLATOR.translate("AlreadyContainedWord(Message)"), null, JOptionPane.ERROR_MESSAGE);
-            } else {
-                countOFTheWords++;
-                String dictName = (String) dictionariesComboBox.getSelectedItem();
-                studyService.addWord(word, dictionariesMap.get(dictName), studySetName);
-
-                setWordsInTable(false);
-            }
-        }
-        clear();
-        wordSearchField.requestFocus();
+        addWord();
     }//GEN-LAST:event_addWordButtonActionPerformed
 
     private void deleteWordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteWordButtonActionPerformed
@@ -426,11 +414,13 @@ public class WordsDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_deleteWordButtonActionPerformed
 
     private void selectNothingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectNothingButtonActionPerformed
-        setWordsInTable(false);
+        boolean selectAllWords = false;
+        setWordsInTable(selectAllWords);
     }//GEN-LAST:event_selectNothingButtonActionPerformed
 
     private void selectAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectAllButtonActionPerformed
-        setWordsInTable(true);
+        boolean selectAllWords = true;
+        setWordsInTable(selectAllWords);
     }//GEN-LAST:event_selectAllButtonActionPerformed
 
     private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearButtonActionPerformed
@@ -445,24 +435,33 @@ public class WordsDialog extends javax.swing.JDialog {
     private void addStudySetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addStudySetButtonActionPerformed
 
         String name = addStudySetField.getText();
-        studyService.addStudySet(name);
-        addStudySetField.setText(null);
-        setStudySetsInComboBox();
-
+        if (name != null && !name.isEmpty()) {
+            studyService.addStudySet(name);
+            addStudySetField.setText(null);
+            setStudySetsInComboBox();
+            studySetsComboBox.setSelectedItem(name);
+            boolean selectAllWords = false;
+            setWordsInTable(selectAllWords);
+            wordSearchField.requestFocus();
+        } else {
+            addStudySetField.requestFocus();
+        }
     }//GEN-LAST:event_addStudySetButtonActionPerformed
 
     private void deleteStudySetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteStudySetButtonActionPerformed
         String studySetName = (String) studySetsComboBox.getSelectedItem();
         studyService.deleteStudySet(studySetName);
         setStudySetsInComboBox();
-        setWordsInTable(false);
+        boolean selectAllWords = false;
+        setWordsInTable(selectAllWords);
     }//GEN-LAST:event_deleteStudySetButtonActionPerformed
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
     }//GEN-LAST:event_formWindowClosed
 
     private void studySetsComboBoxPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_studySetsComboBoxPopupMenuWillBecomeInvisible
-        setWordsInTable(false);
+        boolean selectAllWords = false;
+        setWordsInTable(selectAllWords);
     }//GEN-LAST:event_studySetsComboBoxPopupMenuWillBecomeInvisible
     /**
      * @param args the command line arguments
@@ -492,6 +491,32 @@ public class WordsDialog extends javax.swing.JDialog {
     private javax.swing.JTable wordsTable;
     // End of variables declaration//GEN-END:variables
 
+    private void setStudySetsInComboBox() {
+        List<String> namesOfStudySets = new ArrayList<String>();
+        namesOfStudySets = studyService.getNamesOfStudySets();
+        studySetsComboBox.setModel(new DefaultComboBoxModel(namesOfStudySets.toArray()));
+    }
+
+    private void addWord() throws HeadlessException {
+        String word = wordSearchField.getText();
+        String studySetName = (String) studySetsComboBox.getSelectedItem();
+        wordsForStudy = studyService.getWordsForStudy(studySetName);
+        if (words.contains(word)) {
+            countOFTheWords = studyService.getCountOfTheWords(studySetName);
+            if (wordsForStudy.contains(word)) {
+                JOptionPane.showMessageDialog(this, TRANSLATOR.translate("AlreadyContainedWord(Message)"), null, JOptionPane.ERROR_MESSAGE);
+            } else {
+                countOFTheWords++;
+                String dictName = (String) dictionariesComboBox.getSelectedItem();
+                studyService.addWord(word, dictionariesMap.get(dictName), studySetName);
+                boolean selectAllWords = false;
+                setWordsInTable(selectAllWords);
+            }
+        }
+        clear();
+        wordSearchField.requestFocus();
+    }
+
     public void clear() {
         wordSearchField.setText(null);
         wordTranslationTextPane.setText(null);
@@ -500,21 +525,18 @@ public class WordsDialog extends javax.swing.JDialog {
     public void setWordsInTable(Boolean select) {
         WordsTableModel model = new WordsTableModel();
         wordsTable.setModel(model);
+
         String studySetName = (String) studySetsComboBox.getSelectedItem();
         wordsForStudy = studyService.getWordsForStudy(studySetName);
         translationForStudy = studyService.getTranslationsForStudy(studySetName);
+
         model.setColumnIdentifiers(new String[]{TRANSLATOR.translate("ID(TableColumn)"),
                     TRANSLATOR.translate("Word(TableColumn)"), TRANSLATOR.translate("Translation(TableColumn)"),
                     TRANSLATOR.translate("Selected(TableColumn)")});
+
         countOFTheWords = studyService.getCountOfTheWords(studySetName);
         for (int i = 0; i < countOFTheWords; i++) {
             model.addRow(new Object[]{new Integer(i + 1), wordsForStudy.get(i), translationForStudy.get(i), select});
         }
-    }
-
-    private void setStudySetsInComboBox() {
-        List<String> namesOfStudySets = new ArrayList<String>();
-        namesOfStudySets = studyService.getNamesOfStudySets();
-        studySetsComboBox.setModel(new DefaultComboBoxModel(namesOfStudySets.toArray()));
     }
 }
