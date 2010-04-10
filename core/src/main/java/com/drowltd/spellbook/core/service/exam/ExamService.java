@@ -17,10 +17,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.regex.Pattern;
-import javax.persistence.Column;
 import javax.persistence.EntityTransaction;
-import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -181,6 +178,8 @@ public class ExamService extends AbstractPersistenceService {
     public boolean isCorrect(String guess) {
 
         for (String possibleAnswers : answers) {
+
+            possibleAnswers = possibleAnswers.trim();
 
             if (possibleAnswers.isEmpty()) {
                 continue;
