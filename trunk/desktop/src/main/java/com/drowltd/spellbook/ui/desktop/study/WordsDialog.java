@@ -73,8 +73,8 @@ public class WordsDialog extends javax.swing.JDialog {
         initComponents();
 
         setStudySetsInComboBox();
-        int index = PM.getInt(Preference.STUDY_SETS, studySetsComboBox.getSelectedIndex());
-        studySetsComboBox.setSelectedIndex(index);
+        //int index = PM.getInt(Preference.STUDY_SETS, studySetsComboBox.getSelectedIndex());
+        //studySetsComboBox.setSelectedIndex(index);
 
         addComponentListener(new ComponentAdapter() {
 
@@ -392,7 +392,14 @@ public class WordsDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addWordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addWordButtonActionPerformed
-        addWord();
+        
+        if(!studySets.isEmpty()){
+            addWord();
+        } else {
+            JOptionPane.showMessageDialog(this, TRANSLATOR.translate("AddStudySetFirt(Message)"), null, JOptionPane.WARNING_MESSAGE);
+            clear();
+            addStudySetField.requestFocus();
+        }
     }//GEN-LAST:event_addWordButtonActionPerformed
 
     private void deleteWordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteWordButtonActionPerformed
@@ -448,6 +455,7 @@ public class WordsDialog extends javax.swing.JDialog {
         setStudySetsInComboBox();
         boolean selectAllWords = false;
         setWordsInTable(selectAllWords);
+        studySets = studyService.getStudySets();
     }//GEN-LAST:event_deleteStudySetButtonActionPerformed
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
