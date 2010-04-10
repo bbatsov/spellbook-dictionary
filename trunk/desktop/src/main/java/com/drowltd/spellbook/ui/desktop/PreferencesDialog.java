@@ -64,7 +64,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
     private void initGeneralTab(final java.awt.Frame parent) {
         Language[] availableLangs = Language.values();
 
-        Language selectedLanguage = null;
+        Language selectedLanguage = Language.ENGLISH;
         String selectedLanguageName = PM.get(Preference.UI_LANG, Language.ENGLISH.getName());
 
         System.out.println("Selected lang is " + selectedLanguageName);
