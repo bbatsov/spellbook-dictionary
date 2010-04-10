@@ -4,7 +4,6 @@
  */
 package com.drowltd.spellbook.core.service;
 
-import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
 import com.drowltd.spellbook.core.exception.UpdateServiceException;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.Language;
@@ -45,7 +44,7 @@ public class UpdateServiceTest {
     }
 
     @BeforeClass
-    public static void init() throws UpdateServiceException, DictionaryDbLockedException, InterruptedException {
+    public static void init() throws UpdateServiceException, InterruptedException {
         testDate = new Date();
         Random random = new Random();
         translation = translation+(random.nextLong());

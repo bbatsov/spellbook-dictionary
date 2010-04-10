@@ -1,6 +1,5 @@
 package com.drowltd.spellbook.ui.desktop.exam;
 
-import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
 import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.core.service.exam.ExamService;
@@ -27,11 +26,8 @@ public class ExamResult extends javax.swing.JDialog {
         super(parent, modal);
         TRANSLATOR.reset();
         initComponents();
-        try {
-            examService = new ExamService();
-        } catch (DictionaryDbLockedException ex) {
-            Logger.getLogger(ExamResult.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
+        examService = new ExamService();
 
         setLocationRelativeTo(parent);
         setIconImage(IconManager.getImageIcon("teacher.png", IconManager.IconSize.SIZE16).getImage());
