@@ -31,7 +31,6 @@ public class ExamService extends AbstractPersistenceService {
     private DictionaryService dictionaryService;
     private List<String> words;
     private List<String> answers;
-    private List<String> asd;
     private int examWordIndex;
     private Random random = new Random();
     private String translation;
