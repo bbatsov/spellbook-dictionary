@@ -392,7 +392,7 @@ public class WordsDialog extends javax.swing.JDialog {
         if(!studySets.isEmpty()){
             addWord();
         } else {
-            JOptionPane.showMessageDialog(this, TRANSLATOR.translate("AddStudySetFirt(Message)"), null, JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, TRANSLATOR.translate("AddStudySetFirst(Message)"), null, JOptionPane.WARNING_MESSAGE);
             clear();
             addStudySetField.requestFocus();
         }
@@ -437,6 +437,7 @@ public class WordsDialog extends javax.swing.JDialog {
             addStudySetField.setText(null);
             setStudySetsInComboBox();
             studySetsComboBox.setSelectedItem(name);
+            studySets = studyService.getStudySets();
             boolean selectAllWords = false;
             setWordsInTable(selectAllWords);
             wordSearchField.requestFocus();
