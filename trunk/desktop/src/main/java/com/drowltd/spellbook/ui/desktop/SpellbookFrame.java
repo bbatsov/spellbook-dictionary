@@ -5,7 +5,6 @@ import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.drowltd.spellbook.ui.swing.model.ListBackedListModel;
 import com.drowltd.spellbook.ui.swing.component.AutocompletingTextField;
 import com.drowltd.spellbook.ui.desktop.exam.ExamDialog;
-import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
 import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.Language;
@@ -103,19 +102,20 @@ public class SpellbookFrame extends javax.swing.JFrame {
             System.exit(-1);
         }
 
+        DictionaryService.init(PM.get(Preference.PATH_TO_DB, ""));
+        dictionaryService = DictionaryService.getInstance();
+
+        // the first invocation of a db related method is special - we have to check
+        // if another process is not using the connection already
         try {
-            DictionaryService.init(PM.get(Preference.PATH_TO_DB, ""));
-            dictionaryService = DictionaryService.getInstance();
-        } catch (DictionaryDbLockedException ex) {
+            if (dictionaryService.getDictionaries().size() == 0) {
+                // todo add translation
+                JOptionPane.showMessageDialog(null, "No Dictionaries available", "Warning", JOptionPane.WARNING_MESSAGE);
+
+                System.exit(0);
+            }
+        } catch (Exception exception) {
             JOptionPane.showMessageDialog(null, TRANSLATOR.translate("AlreadyRunning(Message)"), "Warning", JOptionPane.WARNING_MESSAGE);
-            System.exit(0);
-        }
-
-
-        if (dictionaryService.getDictionaries().size() == 0) {
-            // todo add translation
-            JOptionPane.showMessageDialog(null, "No Dictionaries available", "Warning", JOptionPane.WARNING_MESSAGE);
-
             System.exit(0);
         }
 

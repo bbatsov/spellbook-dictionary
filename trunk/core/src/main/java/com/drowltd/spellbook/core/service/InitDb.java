@@ -1,7 +1,6 @@
 package com.drowltd.spellbook.core.service;
 
 import com.drowltd.spellbook.core.db.DatabaseService;
-import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.DictionaryEntry;
 import com.drowltd.spellbook.core.model.Language;
@@ -22,7 +21,7 @@ public class InitDb {
     private static EntityManager em;
     private static DatabaseService databaseService;
 
-    public static void main(String[] args) throws DictionaryDbLockedException {
+    public static void main(String[] args) {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("Spellbook");
 
         em = emf.createEntityManager();

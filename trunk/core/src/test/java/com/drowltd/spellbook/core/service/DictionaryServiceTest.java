@@ -1,6 +1,5 @@
 package com.drowltd.spellbook.core.service;
 
-import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.DictionaryEntry;
 import com.drowltd.spellbook.core.model.Language;
@@ -35,7 +34,7 @@ public class DictionaryServiceTest {
     }
 
     @BeforeClass
-    public static void setUpClass() throws Exception, DictionaryDbLockedException {
+    public static void setUpClass() throws Exception {
         DictionaryService.init("mem:db1.data.db");
         dictionaryService = DictionaryService.getInstance();
 

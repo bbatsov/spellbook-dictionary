@@ -10,7 +10,6 @@
  */
 package com.drowltd.spellbook.ui.desktop.study;
 
-import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.core.preferences.PreferencesManager.Preference;
@@ -60,11 +59,8 @@ public class WordsDialog extends javax.swing.JDialog {
         TRANSLATOR.reset();
         this.parent = parent;
 
-        try {
-            studyService = new StudyService();
-        } catch (DictionaryDbLockedException ex) {
-            Logger.getLogger(WordsDialog.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        studyService = new StudyService();
+
         studySets = studyService.getStudySets();
         dictionaryService = DictionaryService.getInstance();
         dictionaries = dictionaryService.getDictionaries();

@@ -1,7 +1,6 @@
 package com.drowltd.spellbook.core.db;
 
 import com.drowltd.spellbook.core.model.Difficulty;
-import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -34,7 +33,7 @@ public class DatabaseService {
     private Map<Dictionary, Map<String, Integer>> spellCheckerCache = new HashMap<Dictionary, Map<String, Integer>>();
     private Map<Dictionary, Map<Difficulty, ArrayList<String>>> examCache = new HashMap<Dictionary, Map<Difficulty, ArrayList<String>>>();
 
-    private DatabaseService(String dictDbFile) throws DictionaryDbLockedException {
+    private DatabaseService(String dictDbFile) {
         LOGGER.info("dictionary database: " + dictDbFile.replace(".data.db", ""));
 
         String url = "jdbc:h2:" + dictDbFile.replace(".data.db", "");
@@ -44,11 +43,6 @@ public class DatabaseService {
         try {
             connection = DriverManager.getConnection(url, user, password);
         } catch (SQLException e) {
-            if (e.getMessage() != null) {
-                if (e.getMessage().contains("Database may be already in use: Locked by another process.")) {
-                    throw new DictionaryDbLockedException();
-                }
-            }
 
             e.printStackTrace();
         }
@@ -61,7 +55,8 @@ public class DatabaseService {
      *
      * @throws DictionaryDbLockedException if another process is already using the db file
      */
-    public static void init(String dictDbFile) throws DictionaryDbLockedException {
+    public static void init(String dictDbFile)
+    {
         if (instance == null) {
             instance = new DatabaseService(dictDbFile);
         } else {

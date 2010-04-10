@@ -4,7 +4,6 @@
  */
 package com.drowltd.spellbook.core.service.exam;
 
-import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
 import com.drowltd.spellbook.core.model.Difficulty;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.Language;
@@ -36,7 +35,7 @@ public class ExamService extends AbstractPersistenceService {
     private String translation;
     private Logger LOGGER = LoggerFactory.getLogger(ExamService.class);
 
-    public ExamService() throws DictionaryDbLockedException {
+    public ExamService() {
         super(null);
 
         dictionaryService = DictionaryService.getInstance();

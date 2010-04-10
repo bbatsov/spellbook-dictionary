@@ -5,7 +5,6 @@
 
 package com.drowltd.spellbook.core.service.study;
 
-import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
 import com.drowltd.spellbook.core.model.DictionaryEntry;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.StudySetEntry;
@@ -27,7 +26,7 @@ public class StudyService extends AbstractPersistenceService {
      *
      * @throws DictionaryDbLockedException
      */
-    public StudyService() throws DictionaryDbLockedException {
+    public StudyService() {
         super(null);
     }
 

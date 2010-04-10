@@ -10,7 +10,6 @@
  */
 package com.drowltd.spellbook.ui.desktop.study;
 
-import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preference;
 import com.drowltd.spellbook.core.model.Dictionary;
@@ -24,11 +23,8 @@ import com.drowltd.spellbook.ui.swing.util.IconManager;
 import java.awt.Frame;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
@@ -79,11 +75,8 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         dictionaryService = DictionaryService.getInstance();
         dictionaries = dictionaryService.getDictionaries();
         initComponents();
-        try {
-            studyService = new StudyService();
-        } catch (DictionaryDbLockedException ex) {
-            Logger.getLogger(StudyWordsDialog.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
+        studyService = new StudyService();
         setStudySetsInComboBox();
         ButtonGroup enumerateGroup = new ButtonGroup();
         enumerateGroup.add(inReverseOrderOfInputRadioButton);

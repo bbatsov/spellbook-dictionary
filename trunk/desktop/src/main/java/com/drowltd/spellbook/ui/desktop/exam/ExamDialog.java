@@ -1,6 +1,5 @@
 package com.drowltd.spellbook.ui.desktop.exam;
 
-import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
 import com.drowltd.spellbook.core.service.exam.ExamService;
 import com.drowltd.spellbook.core.model.Difficulty;
 import com.drowltd.spellbook.core.i18n.Translator;
@@ -74,11 +73,7 @@ public class ExamDialog extends javax.swing.JDialog {
         TRANSLATOR.reset();
         this.parent = parent;
 
-        try {
-            examService = new ExamService();
-        } catch (DictionaryDbLockedException ex) {
-            java.util.logging.Logger.getLogger(ExamDialog.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        examService = new ExamService();
 
         initComponents();
         initLanguages();

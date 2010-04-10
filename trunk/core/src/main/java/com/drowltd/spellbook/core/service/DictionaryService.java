@@ -1,6 +1,5 @@
 package com.drowltd.spellbook.core.service;
 
-import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.DictionaryEntry;
 import com.drowltd.spellbook.core.model.Language;
@@ -32,7 +31,7 @@ public class DictionaryService extends AbstractPersistenceService {
      * @param dictDbFile the path to the H2 database file
      * @throws DictionaryDbLockedException
      */
-    private DictionaryService(String dictDbFile) throws DictionaryDbLockedException {
+    private DictionaryService(String dictDbFile) {
         super(dictDbFile);
     }
 
@@ -43,7 +42,7 @@ public class DictionaryService extends AbstractPersistenceService {
      *
      * @throws DictionaryDbLockedException if another process is already using the db file
      */
-    public static void init(String dictDbFile) throws DictionaryDbLockedException {
+    public static void init(String dictDbFile) {
         if (instance == null) {
             instance = new DictionaryService(dictDbFile);
         } else {
