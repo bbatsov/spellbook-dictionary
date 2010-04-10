@@ -13,6 +13,7 @@ package com.drowltd.spellbook.ui.desktop.study;
 import com.drowltd.spellbook.core.exception.DictionaryDbLockedException;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
+import com.drowltd.spellbook.core.preferences.PreferencesManager.Preference;
 import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.service.study.StudyService;
 import com.drowltd.spellbook.core.model.Dictionary;
@@ -72,6 +73,8 @@ public class WordsDialog extends javax.swing.JDialog {
         initComponents();
 
         setStudySetsInComboBox();
+        int index = PM.getInt(Preference.STUDY_SETS, studySetsComboBox.getSelectedIndex());
+        studySetsComboBox.setSelectedIndex(index);
 
         addComponentListener(new ComponentAdapter() {
 

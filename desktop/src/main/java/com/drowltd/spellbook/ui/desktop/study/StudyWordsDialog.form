@@ -13,7 +13,6 @@
   </SyntheticProperties>
   <Events>
     <EventHandler event="windowGainedFocus" listener="java.awt.event.WindowFocusListener" parameters="java.awt.event.WindowEvent" handler="formWindowGainedFocus"/>
-    <EventHandler event="windowLostFocus" listener="java.awt.event.WindowFocusListener" parameters="java.awt.event.WindowEvent" handler="formWindowLostFocus"/>
     <EventHandler event="windowClosed" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="formWindowClosed"/>
   </Events>
   <AuxValues>
@@ -36,14 +35,14 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="jPanel3" alignment="0" pref="513" max="32767" attributes="1"/>
                   <Group type="102" alignment="0" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="repeatWordCheckBox" min="-2" max="-2" attributes="1"/>
-                          <Component id="jPanel1" linkSize="24" min="-2" max="-2" attributes="1"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="repeatWordCheckBox" max="32767" attributes="1"/>
+                          <Component id="jPanel1" linkSize="24" alignment="0" max="32767" attributes="1"/>
                       </Group>
-                      <EmptySpace pref="32" max="32767" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="repeatMisspelledWordsCheckBox" min="-2" pref="205" max="-2" attributes="1"/>
-                          <Component id="howToEnumeratePanel" linkSize="24" min="-2" max="-2" attributes="1"/>
+                      <EmptySpace pref="39" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="repeatMisspelledWordsCheckBox" max="32767" attributes="1"/>
+                          <Component id="howToEnumeratePanel" linkSize="24" alignment="0" max="32767" attributes="1"/>
                       </Group>
                   </Group>
               </Group>
@@ -59,7 +58,7 @@
                   <Component id="howToEnumeratePanel" max="32767" attributes="1"/>
                   <Component id="jPanel1" alignment="0" max="32767" attributes="1"/>
               </Group>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="repeatWordCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="repeatMisspelledWordsCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -94,8 +93,8 @@
                           <Component id="warningIconLabel" min="-2" max="-2" attributes="1"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="firstRowLabel" pref="181" max="32767" attributes="1"/>
-                              <Component id="secondRowLabel" alignment="0" pref="181" max="32767" attributes="1"/>
+                              <Component id="secondRowLabel" pref="183" max="32767" attributes="1"/>
+                              <Component id="firstRowLabel" alignment="0" pref="183" max="32767" attributes="1"/>
                           </Group>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
@@ -132,15 +131,15 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="wordsButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="1" attributes="0">
-                      <Group type="102" alignment="1" attributes="0">
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Group type="102" attributes="0">
                           <Component id="firstRowLabel" linkSize="8" min="-2" pref="12" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Component id="secondRowLabel" linkSize="8" min="-2" pref="10" max="-2" attributes="0"/>
                       </Group>
                       <Component id="warningIconLabel" max="32767" attributes="1"/>
                   </Group>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -254,7 +253,7 @@
                   <Component id="inReverseOrderOfInputRadioButton" min="-2" pref="23" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="randomRadioButton" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="47" max="32767" attributes="0"/>
+                  <EmptySpace pref="27" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
