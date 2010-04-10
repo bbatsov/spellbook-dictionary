@@ -459,7 +459,7 @@ public class ExamDialog extends javax.swing.JDialog {
         wordsProgressBar.setString("1/" + examWords);
         wordsProgressBar.setValue(1);
         feedbackField.setText(TRANSLATOR.translate("ExamStarted(Label)"));
-
+        answerField.requestFocus();
     }//GEN-LAST:event_startButtonActionPerformed
 
     private void stopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopButtonActionPerformed
@@ -497,6 +497,7 @@ public class ExamDialog extends javax.swing.JDialog {
     private void answerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_answerButtonActionPerformed
         answered();
         seconds = secondsBackup;
+        answerField.requestFocus();
     }//GEN-LAST:event_answerButtonActionPerformed
 
     private void fromLanguageComboBoxPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_fromLanguageComboBoxPopupMenuWillBecomeInvisible
