@@ -60,7 +60,6 @@ public class WordsDialog extends javax.swing.JDialog {
         this.parent = parent;
 
         studyService = new StudyService();
-
         studySets = studyService.getStudySets();
         dictionaryService = DictionaryService.getInstance();
         dictionaries = dictionaryService.getDictionaries();
@@ -68,10 +67,13 @@ public class WordsDialog extends javax.swing.JDialog {
 
         initComponents();
 
+        studyService = new StudyService();
+        studySets = studyService.getStudySets();
         setStudySetsInComboBox();
-        //int index = PM.getInt(Preference.STUDY_SETS, studySetsComboBox.getSelectedIndex());
-        //studySetsComboBox.setSelectedIndex(index);
-
+        if (!studySets.isEmpty()) {
+            int index = PM.getInt(Preference.STUDY_SETS, studySetsComboBox.getSelectedIndex());
+            studySetsComboBox.setSelectedIndex(index);
+        }
         addComponentListener(new ComponentAdapter() {
 
             @Override

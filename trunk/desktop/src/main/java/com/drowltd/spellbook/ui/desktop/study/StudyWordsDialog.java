@@ -48,6 +48,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
     private List shuffleWordsForLearning = new ArrayList<String>();
     private List shuffleTranslationForLearning = new ArrayList<String>();
     private List<Dictionary> dictionaries = new ArrayList<Dictionary>();
+    private List<StudySet> studySets = new ArrayList<StudySet>();
     private int wordIndex = 0;
     private long countOfWords;
     private Integer correctAnswer;
@@ -77,6 +78,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         initComponents();
 
         studyService = new StudyService();
+        studySets = studyService.getStudySets();
         setStudySetsInComboBox();
         ButtonGroup enumerateGroup = new ButtonGroup();
         enumerateGroup.add(inReverseOrderOfInputRadioButton);
@@ -590,9 +592,12 @@ public class StudyWordsDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_studySetsComboBoxPopupMenuWillBecomeInvisible
 
     private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
+        studySets = studyService.getStudySets();
         setStudySetsInComboBox();
-        int index = PM.getInt(Preference.STUDY_SETS, studySetsComboBox.getSelectedIndex());
-        studySetsComboBox.setSelectedIndex(index);
+        if (!studySets.isEmpty()) {
+            int index = PM.getInt(Preference.STUDY_SETS, studySetsComboBox.getSelectedIndex());
+            studySetsComboBox.setSelectedIndex(index);
+        }
         String studySetName = (String) studySetsComboBox.getSelectedItem();
         countOfWords = studyService.getCountOfTheWords(studySetName);
         checkingTheDatabase();
@@ -873,13 +878,15 @@ public class StudyWordsDialog extends javax.swing.JDialog {
     }
 
     private void checkingTheDatabase() {
-        List<StudySet> studySets = new ArrayList<StudySet>();
-        studySets = studyService.getStudySets();
 
         if (studySets.isEmpty()) {
             reportThatDatabaseIsEmpty();
         } else {
             String studySetName = (String) studySetsComboBox.getSelectedItem();
+            if(studySetName == null){
+                studySetsComboBox.setSelectedIndex(0);
+                studySetName = (String) studySetsComboBox.getSelectedItem();
+            }
             StudySet studySet = studyService.getStudySet(studySetName);
             Set<StudySetEntry> studySetEntry = studySet.getStudySetEntries();
             if (studySetEntry.isEmpty()) {
