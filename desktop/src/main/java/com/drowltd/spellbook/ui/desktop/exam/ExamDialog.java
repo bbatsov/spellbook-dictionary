@@ -595,6 +595,7 @@ public class ExamDialog extends javax.swing.JDialog {
         }
 
         answerField.setText(null);
+        answerField.requestFocusInWindow();
     }
 
     private void displayTranslation() {
