@@ -241,18 +241,18 @@ public class ExamService extends AbstractPersistenceService {
     }
 
     public List<String> getScoreboardUsername() {
-        return EM.createQuery("select se.username from ScoreboardEntry se").getResultList();
+        return EM.createQuery("select se.username from ScoreboardEntry se order by ((se.examWords - se.wrongWords)*100)/se.examWords desc").getResultList();
     }
 
     public List<Double> getScoreboardWrongword() {
-        return EM.createQuery("select se.wrongWords from ScoreboardEntry se").getResultList();
+        return EM.createQuery("select se.wrongWords from ScoreboardEntry se order by ((se.examWords - se.wrongWords)*100)/se.examWords desc").getResultList();
     }
 
     public List<Double> getScoreboardExamword() {
-        return EM.createQuery("select se.examWords from ScoreboardEntry se").getResultList();
+        return EM.createQuery("select se.examWords from ScoreboardEntry se order by ((se.examWords - se.wrongWords)*100)/se.examWords desc").getResultList();
     }
 
     public List<String> getScoreboardDifficulty() {
-        return EM.createQuery("select se.difficulty from ScoreboardEntry se").getResultList();
+        return EM.createQuery("select se.difficulty from ScoreboardEntry se order by ((se.examWords - se.wrongWords)*100)/se.examWords desc").getResultList();
     }
 }

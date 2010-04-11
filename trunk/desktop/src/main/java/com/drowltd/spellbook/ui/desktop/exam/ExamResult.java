@@ -42,6 +42,9 @@ public class ExamResult extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        entityManager = java.beans.Beans.isDesignTime() ? null : javax.persistence.Persistence.createEntityManagerFactory("jdbc:h2:F:\\opt\\spellbook\\db\\spellbookPU").createEntityManager();
+        scoreboardEntryQuery = java.beans.Beans.isDesignTime() ? null : entityManager.createQuery("SELECT s FROM ScoreboardEntry s");
+        scoreboardEntryList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : scoreboardEntryQuery.getResultList();
         jPanel1 = new javax.swing.JPanel();
         okResultButton = new javax.swing.JButton();
         correctWordsLabel = new javax.swing.JLabel();
@@ -77,7 +80,7 @@ public class ExamResult extends javax.swing.JDialog {
             }
         });
 
-        correctWordsLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        correctWordsLabel.setFont(new java.awt.Font("Tahoma", 1, 11));
         correctWordsLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         java.util.ResourceBundle bundle1 = java.util.ResourceBundle.getBundle("i18n/ExamDialog"); // NOI18N
         correctWordsLabel.setText(bundle1.getString("CorrectWords(String)")); // NOI18N
@@ -86,14 +89,14 @@ public class ExamResult extends javax.swing.JDialog {
         correctWrodsResultLabel.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
         correctWrodsResultLabel.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
 
-        wrongWordsLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        wrongWordsLabel.setFont(new java.awt.Font("Tahoma", 1, 11));
         wrongWordsLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         wrongWordsLabel.setText(bundle1.getString("WrongWords(String)")); // NOI18N
 
         wrongWrodsResultLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         wrongWrodsResultLabel.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
 
-        successRateLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        successRateLabel.setFont(new java.awt.Font("Tahoma", 1, 11));
         successRateLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         successRateLabel.setText(bundle.getString("Success(Label)")); // NOI18N
 
@@ -245,21 +248,21 @@ public class ExamResult extends javax.swing.JDialog {
 
         scoreboarTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {new Integer(1), null, null},
+                {new Integer(2), null, null},
+                {new Integer(3), null, null},
+                {new Integer(4), null, null},
+                {new Integer(5), null, null},
+                {new Integer(6), null, null},
+                {new Integer(7), null, null},
+                {new Integer(8), null, null},
+                {new Integer(9), null, null},
+                {new Integer(10), null, null},
+                {new Integer(11), null, null},
+                {new Integer(12), null, null},
+                {new Integer(13), null, null},
+                {new Integer(14), null, null},
+                {new Integer(15), null, null}
             },
             new String [] {
                 "", "Name", "Result"
@@ -369,6 +372,7 @@ public class ExamResult extends javax.swing.JDialog {
     private javax.swing.JLabel correctWordsLabel;
     private javax.swing.JLabel correctWrodsResultLabel;
     private javax.swing.JLabel endLabel;
+    private javax.persistence.EntityManager entityManager;
     private javax.swing.JLabel iconLabel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
@@ -379,6 +383,8 @@ public class ExamResult extends javax.swing.JDialog {
     private javax.swing.JLabel result;
     private javax.swing.JTable scoreboarTable;
     private javax.swing.JLabel scoreboardButton;
+    private java.util.List<com.drowltd.spellbook.core.model.ScoreboardEntry> scoreboardEntryList;
+    private javax.persistence.Query scoreboardEntryQuery;
     private javax.swing.JTextField scoreboardNameField;
     private javax.swing.JButton seeWrongWords;
     private javax.swing.JButton submitScoreButton;
@@ -457,20 +463,6 @@ public class ExamResult extends javax.swing.JDialog {
         } catch (Exception e) {
         }
 
-        scoreboarTableSorting();
-    }
-
-    public void scoreboarTableSorting() {
-        // next 3 lines are sorting the table with 3th column
-        scoreboarTable.setAutoCreateRowSorter(true);
-        scoreboarTable.getRowSorter().toggleSortOrder(2);
-        scoreboarTable.getRowSorter().toggleSortOrder(2);
-
-        for (int j = 1; j <= 15; j++) {
-            scoreboarTable.setValueAt(j, j - 1, 0);
-        }
-
-        scoreboarTable.setAutoCreateRowSorter(false);
     }
 
     public double successRateForTable(int sr) {
