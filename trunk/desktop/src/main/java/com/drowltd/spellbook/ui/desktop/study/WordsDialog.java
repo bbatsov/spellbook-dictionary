@@ -59,8 +59,6 @@ public class WordsDialog extends javax.swing.JDialog {
         TRANSLATOR.reset();
         this.parent = parent;
 
-        studyService = new StudyService();
-        studySets = studyService.getStudySets();
         dictionaryService = DictionaryService.getInstance();
         dictionaries = dictionaryService.getDictionaries();
         words = dictionaryService.getWordsFromDictionary(dictionaries.get(0));
