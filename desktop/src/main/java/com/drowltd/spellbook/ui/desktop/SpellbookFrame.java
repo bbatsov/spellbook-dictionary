@@ -566,10 +566,13 @@ public class SpellbookFrame extends javax.swing.JFrame {
         AutocompletingTextField completableJTextField = (AutocompletingTextField) wordSearchField;
         if (exactMatch) {
             completableJTextField.addCompletion(wordSearchField.getText());
-            searchedWords.add(wordSearchField.getText());
-            searchWordsIndex = searchedWords.size();
-            backButton.setEnabled(true);
-            forwardButton.setEnabled(false);
+            // don't add consecutively the same word
+            if (searchedWords.isEmpty() || !searchedWords.get(searchedWords.size() - 1).equals(wordSearchField.getText())) {
+                searchedWords.add(wordSearchField.getText());
+                searchWordsIndex = searchedWords.size();
+                backButton.setEnabled(true);
+                forwardButton.setEnabled(false);
+            }
         }
     }
 
