@@ -565,7 +565,10 @@ public class SpellbookFrame extends javax.swing.JFrame {
         wordSearchField.selectAll();
         AutocompletingTextField completableJTextField = (AutocompletingTextField) wordSearchField;
         if (exactMatch) {
+            LOGGER.info("Attempting to add " + wordSearchField.getText() + " to completions list");
+            
             completableJTextField.addCompletion(wordSearchField.getText());
+            
             // don't add consecutively the same word
             if (searchedWords.isEmpty() || !searchedWords.get(searchedWords.size() - 1).equals(wordSearchField.getText())) {
                 searchedWords.add(wordSearchField.getText());

@@ -11,8 +11,6 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultListModel;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -50,6 +48,7 @@ public class AutocompletingTextField extends JTextField {
             public void mouseClicked(MouseEvent e) {
                 LOGGER.info("Mouse pressed in completion list");
 
+                // hide the completions window
                 listWindow.setVisible(false);
 
                 final String completionString = (String) completionList.getSelectedValue();
@@ -71,6 +70,8 @@ public class AutocompletingTextField extends JTextField {
         listWindow.getContentPane().add(listScroller);
         listWindow.setFocusable(true);
 
+        // the key events actually occur in the search field
+        // although to the user it may appear that they happen in completions list
         addKeyListener(new KeyAdapter() {
 
             @Override
@@ -104,6 +105,9 @@ public class AutocompletingTextField extends JTextField {
 
                     if (!completionList.isSelectionEmpty()) {
                         setText((String)completionList.getSelectedValue());
+
+                        // hide the windows on selection
+                        listWindow.setVisible(false);
                     }
                 }
             }
@@ -169,6 +173,8 @@ public class AutocompletingTextField extends JTextField {
 
         public void addCompletion(String s) {
             if (!completions.contains(s)) {
+                LOGGER.info("Added " + s + " to completions list");
+
                 completions.add(s);
             }
         }
@@ -188,7 +194,7 @@ public class AutocompletingTextField extends JTextField {
             completionListModel.clear();
             System.out.println("buildPopup for " + completions.size() + " completions");
 
-            int startIndex = SearchUtils.findInsertionIndex(completions, getText()) + 1;
+            int startIndex = SearchUtils.findInsertionIndex(completions, getText());
             System.out.println("Start index for " + getText() + " is " + startIndex);
 
             for (int i = startIndex; i < completions.size(); i++) {
