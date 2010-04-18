@@ -25,11 +25,8 @@ public class AddUpdateWordDialog extends javax.swing.JDialog {
     public static final int RET_CANCEL = 0;
     /** A return status code - returned if OK button has been pressed */
     public static final int RET_OK = 1;
-
     private Dictionary dictionary;
-
     private String toBeEdited;
-
     private Action selectLine;
 
     /** Creates new form AddWordToDb */
@@ -226,6 +223,9 @@ public class AddUpdateWordDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_addButtonActionPerformed
 
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
+        if (toBeEdited == null) {
+            return;
+        }
         String editedText = translationTextArea.getText().replaceAll(toBeEdited, newMeaningTextField.getText());
         toBeEdited = newMeaningTextField.getText();
         translationTextArea.setText(editedText);
