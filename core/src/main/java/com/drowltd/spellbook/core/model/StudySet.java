@@ -7,10 +7,8 @@ package com.drowltd.spellbook.core.model;
 
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -23,7 +21,7 @@ import javax.persistence.Table;
 @Table(name = "STUDY_SETS")
 public class StudySet extends AbstractEntity  {
 
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "studySet")
+    @OneToMany(mappedBy = "studySet")
     private Set<StudySetEntry> studySetEntries = new HashSet<StudySetEntry>();
 
     @Column(nullable = false)
