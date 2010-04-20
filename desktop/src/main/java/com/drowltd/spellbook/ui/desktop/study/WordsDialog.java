@@ -17,6 +17,7 @@ import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.service.study.StudyService;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.StudySet;
+import com.drowltd.spellbook.core.service.exam.ExamService;
 import com.drowltd.spellbook.ui.swing.component.AutocompletingTextField;
 import com.drowltd.spellbook.ui.swing.component.DictionaryComboBox;
 import java.awt.Frame;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -43,7 +45,7 @@ public class WordsDialog extends javax.swing.JDialog {
     private long countOFTheWords;
     private DictionaryService dictionaryService;
     private List<String> wordsForStudy = new ArrayList<String>();
-    private List<String> translationForStudy = new ArrayList<String>();
+    private List<String> translationsForStudy = new ArrayList<String>();
     private List<String> words = new ArrayList<String>();
     private List<Dictionary> dictionaries = new ArrayList<Dictionary>();
     private List<StudySet> studySets = new ArrayList<StudySet>();
@@ -110,7 +112,7 @@ public class WordsDialog extends javax.swing.JDialog {
 
         // wordsForLearning = dictDb.getWordsForLearning();
         String name = (String) studySetsComboBox.getSelectedItem();
-        translationForStudy = studyService.getTranslationsForStudy(name);
+        translationsForStudy = studyService.getTranslationsForStudy(name);
         countOFTheWords = studyService.getCountOfTheWords(name);
     }
 
@@ -399,15 +401,15 @@ public class WordsDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_addWordButtonActionPerformed
 
     private void deleteWordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteWordButtonActionPerformed
-        //String studySetName = (String) studySetsComboBox.getSelectedItem();
-        //long countOFTheRows = countOFTheWords = studyService.getCountOfTheWords(studySetName);
-        //for (int i = 0; i < countOFTheRows; i++) {
-        //    if ((Boolean) wordsTable.getValueAt(i, 3)) {
-        //        studyService.deleteWord((String) wordsTable.getValueAt(i, 1), studySetName);
-        //        countOFTheWords--;
-        //    }
-        //}
-        //setWordsInTable(false);
+        String studySetName = (String) studySetsComboBox.getSelectedItem();
+        long countOFTheRows = countOFTheWords = studyService.getCountOfTheWords(studySetName);
+        for (int i = 0; i < countOFTheRows; i++) {
+            if ((Boolean) wordsTable.getValueAt(i, 3)) {
+                studyService.deleteWord((String) wordsTable.getValueAt(i, 1), studySetName);
+                countOFTheWords--;
+            }
+        }
+        setWordsInTable(false);
     }//GEN-LAST:event_deleteWordButtonActionPerformed
 
     private void selectNothingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectNothingButtonActionPerformed
@@ -526,15 +528,19 @@ public class WordsDialog extends javax.swing.JDialog {
 
         String studySetName = (String) studySetsComboBox.getSelectedItem();
         wordsForStudy = studyService.getWordsForStudy(studySetName);
-        translationForStudy = studyService.getTranslationsForStudy(studySetName);
+        translationsForStudy = studyService.getTranslationsForStudy(studySetName);
 
         model.setColumnIdentifiers(new String[]{TRANSLATOR.translate("ID(TableColumn)"),
                     TRANSLATOR.translate("Word(TableColumn)"), TRANSLATOR.translate("Translation(TableColumn)"),
                     TRANSLATOR.translate("Selected(TableColumn)")});
 
         countOFTheWords = studyService.getCountOfTheWords(studySetName);
+        //String translation = null;
         for (int i = 0; i < countOFTheWords; i++) {
-            model.addRow(new Object[]{new Integer(i + 1), wordsForStudy.get(i), translationForStudy.get(i), select});
+            //studyService.possibleAnswers(translationsForStudy.get(i));
+            ////studyService.possibleTranslations(translationsForStudy.get(i));
+            //translation = studyService.getTranslations();
+            model.addRow(new Object[]{new Integer(i + 1), wordsForStudy.get(i), translationsForStudy.get(i), select});
         }
     }
 }
