@@ -305,7 +305,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
             }
         });
 
-        answerButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/status_SuggestedAnswer.gif"))); // NOI18N
+        answerButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/check.png"))); // NOI18N
         answerButton.setText(bundle.getString("Answer(Button)")); // NOI18N
         answerButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -317,7 +317,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
 
         jLabel8.setText(bundle.getString("Wrong(Label)")); // NOI18N
 
-        seeAnswerButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/Bulb On.gif"))); // NOI18N
+        seeAnswerButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/lightbulb_on.png"))); // NOI18N
         seeAnswerButton.setText(bundle.getString("SeeAnswer(Button)")); // NOI18N
         seeAnswerButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
