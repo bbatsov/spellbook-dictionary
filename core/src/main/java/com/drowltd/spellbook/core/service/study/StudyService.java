@@ -167,7 +167,6 @@ public class StudyService extends AbstractPersistenceService {
     public void deleteStudySet(String studySetName) {
         EntityTransaction t = EM.getTransaction();
         t.begin();
-        //button query has thrown grammarExeption
         EM.createNativeQuery("delete from Study_Entries where study_set_id = (select ss.id from Study_Sets ss where ss.name = :name)").setParameter("name", studySetName).executeUpdate();
         EM.createQuery("delete from StudySet ss where ss.name = :name").setParameter("name", studySetName).executeUpdate();
         t.commit();
