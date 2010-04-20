@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.drowltd.spellbook.core.service.study;
 
 import com.drowltd.spellbook.core.model.DictionaryEntry;
@@ -10,15 +9,19 @@ import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.StudySetEntry;
 import com.drowltd.spellbook.core.model.StudySet;
 import com.drowltd.spellbook.core.service.AbstractPersistenceService;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 /**
  *
  * @author Sasho
  */
 public class StudyService extends AbstractPersistenceService {
+
+    private List<String> translations = new ArrayList<String>();
     private static final Logger LOGGER = LoggerFactory.getLogger(StudyService.class);
 
     /**
@@ -67,8 +70,8 @@ public class StudyService extends AbstractPersistenceService {
      * @return a list with the names of all study sets
      * @see StudySet
      */
-    public List<String> getNamesOfStudySets(){
-       return EM.createQuery("select ss.name from StudySet ss").getResultList();
+    public List<String> getNamesOfStudySets() {
+        return EM.createQuery("select ss.name from StudySet ss").getResultList();
     }
 
     /**
@@ -77,7 +80,7 @@ public class StudyService extends AbstractPersistenceService {
      * @return a list of study sets
      * @see StudySet
      */
-    public List<StudySet> getStudySets(){
+    public List<StudySet> getStudySets() {
         return EM.createQuery("select ss from StudySet ss").getResultList();
     }
 
@@ -87,7 +90,7 @@ public class StudyService extends AbstractPersistenceService {
      * @param name determined which study set will be returned
      * @return a StudySet
      */
-    public StudySet getStudySet(String name){
+    public StudySet getStudySet(String name) {
         return (StudySet) EM.createQuery("select ss from StudySet ss where ss.name = :name").setParameter("name", name).getSingleResult();
     }
 
@@ -127,21 +130,24 @@ public class StudyService extends AbstractPersistenceService {
      * @param word word to delete
      * @param studySetName
      */
-    /*public void deleteWord(String word, String studySetName) {
+    public void deleteWord(String word, String studySetName) {
         word.replaceAll("'", "''");
+
+        long wordID = (Long) EM.createQuery("select id from DictionaryEntry where word = :word").setParameter("word", word).getSingleResult();
+        long studySetID = (Long) EM.createQuery("select id from StudySet where name = :name").setParameter("name", studySetName).getSingleResult();
 
         EntityTransaction t = EM.getTransaction();
         t.begin();
-        EM.createQuery("delete from StudySetEntry se where se.dictionaryEntry.word = :word and se.studySet.name = :name").setParameter("word", word).setParameter("name", studySetName).executeUpdate();
+        EM.createNativeQuery("delete from Study_Entries  where study_set_id = :studySetID and dictionary_entry_id = :wordID").setParameter("studySetID", studySetID).setParameter("wordID", wordID).executeUpdate();
         t.commit();
-    }*/
+    }
 
     /**
      * Adds a new study set
      * @param name study set's name
      * @see StudySet
      */
-    public void addStudySet(String name){
+    public void addStudySet(String name) {
 
         StudySet ss = new StudySet();
         ss.setName(name);
@@ -158,12 +164,31 @@ public class StudyService extends AbstractPersistenceService {
      * @param studySetName determined which study set to be deleted
      * @see StudySet
      */
-    public void deleteStudySet(String studySetName){ 
+    public void deleteStudySet(String studySetName) {
         EntityTransaction t = EM.getTransaction();
         t.begin();
         //button query has thrown grammarExeption
         EM.createNativeQuery("delete from Study_Entries where study_set_id = (select ss.id from Study_Sets ss where ss.name = :name)").setParameter("name", studySetName).executeUpdate();
         EM.createQuery("delete from StudySet ss where ss.name = :name").setParameter("name", studySetName).executeUpdate();
         t.commit();
+    }
+
+    //not completed
+    public void possibleTranslations(String translation) {
+        translations = new ArrayList<String>();
+        translation = translation.toLowerCase();
+        if (translation.contains("1")) {
+            List<String> rowsOfPossibleTranslation = new ArrayList<String>();
+            int beginIndex = 0, endIndex = 0;
+            Integer cipher = new Integer(1);
+            while (translation.indexOf(cipher.toString(), endIndex) != -1) {
+                beginIndex = translation.indexOf(cipher.toString(), endIndex);
+                endIndex = translation.indexOf("\n", beginIndex);
+                String translationRow = translation.substring(beginIndex, endIndex);
+                rowsOfPossibleTranslation.add(translationRow);
+                endIndex++;
+                cipher++;
+            }
+        }
     }
 }
