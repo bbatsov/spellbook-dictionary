@@ -11,11 +11,11 @@ import javax.persistence.Table;
  * @author iivalchev
  */
 @Entity(name = "RemoteDictionaryEntry")
-@Table(name = "REMOTE_DICTIOONARY_ENTRY")
+@Table(name = "REMOTE_DICTIONARY_ENTRY")
 public class RemoteDictionaryEntry extends AbstractEntity {
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Dictionary dictionary;
+    private RemoteDictionary remoteDictionary;
     @Column(nullable = false, unique = true)
     private String word;
     @Column(name = "word_translation", nullable = false, length = 10000)
@@ -34,13 +34,14 @@ public class RemoteDictionaryEntry extends AbstractEntity {
         this.updateEntry = updateEntry;
     }
 
-    public Dictionary getDictionary() {
-        return dictionary;
+    public RemoteDictionary getRemoteDictionary() {
+        return remoteDictionary;
     }
 
-    public void setDictionary(Dictionary dictionary) {
-        this.dictionary = dictionary;
+    public void setRemoteDictionary(RemoteDictionary remoteDictionary) {
+        this.remoteDictionary = remoteDictionary;
     }
+
 
     public String getTranslation() {
         return translation;
@@ -65,5 +66,14 @@ public class RemoteDictionaryEntry extends AbstractEntity {
         de.setTranslation(this.getTranslation());
 
         return de;
+    }
+
+    public RankEntry toRankEntry(){
+        RankEntry re = new RankEntry();
+        re.setWord(word);
+        re.setRank(1);
+        re.setLanguage(remoteDictionary.getFromLanguage());
+
+        return re;
     }
 }

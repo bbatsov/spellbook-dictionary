@@ -197,4 +197,28 @@
             </column>
         </createTable>
     </changeSet>
+    <changeSet id="10" author="iivalchev">
+        <createTable tableName="UNCOMMITTED_ENTRIES">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="modified" type="datetime">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="committed" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="UNCOMMITTED_DICTIONARY_ENTRIES">
+            <column name="uncommitted_id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="dictionary_entry_id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>

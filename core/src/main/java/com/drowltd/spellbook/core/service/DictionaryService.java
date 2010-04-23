@@ -4,11 +4,13 @@ import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.DictionaryEntry;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.model.RankEntry;
+import com.drowltd.spellbook.core.model.UncommittedEntries;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +24,6 @@ public class DictionaryService extends AbstractPersistenceService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DictionaryService.class);
     private static DictionaryService instance;
-
     private static Map<String, List<String>> dictionaryWordsCache = new HashMap<String, List<String>>();
 
     /**
@@ -90,7 +91,7 @@ public class DictionaryService extends AbstractPersistenceService {
             LOGGER.info("Caching dictionary " + d.getName());
             dictionaryWordsCache.put(d.getName(),
                     EM.createQuery("select de.word from DictionaryEntry de "
-                + "where de.dictionary = :dictionary order by LOWER(de.word) asc").setParameter("dictionary", d).getResultList());
+                    + "where de.dictionary = :dictionary order by LOWER(de.word) asc").setParameter("dictionary", d).getResultList());
         } else {
             LOGGER.info("Loading from cache dictionary " + d.getName());
         }
@@ -108,6 +109,36 @@ public class DictionaryService extends AbstractPersistenceService {
     public String getTranslation(String word, Dictionary d) {
         return EM.createQuery("select de.translation from DictionaryEntry de"
                 + " where de.word = :word and de.dictionary = :dictionary", String.class).setParameter("word", word).setParameter("dictionary", d).getSingleResult();
+    }
+
+    protected UncommittedEntries getUncommitted() {
+        UncommittedEntries uncommittedEntry = null;
+        try {
+            uncommittedEntry = EM.createNamedQuery("UncommittedEntries.getUncommittedEntries", UncommittedEntries.class).getSingleResult();
+        } catch (NoResultException e) {
+            LOGGER.info("getting the last uncommitted entry");
+
+            uncommittedEntry = new UncommittedEntries();
+            uncommittedEntry.setCommitted(false);
+            EM.getTransaction().begin();
+            EM.persist(uncommittedEntry);
+            EM.getTransaction().commit();
+        } catch (NonUniqueResultException e) {
+            LOGGER.warn("more than one uncommitted entry returned");
+
+            List<UncommittedEntries> resultList = EM.createNamedQuery("UncommittedEntries.getUncommittedEntries", UncommittedEntries.class).getResultList();
+            uncommittedEntry = resultList.get(0);
+            EM.getTransaction().begin();
+            for (UncommittedEntries ue : resultList) {
+                if (ue != uncommittedEntry) {
+                    uncommittedEntry.getDictionaryEntries().addAll(ue.getDictionaryEntries());
+                    EM.remove(ue);
+                }
+            }
+            EM.getTransaction().commit();
+
+        }
+        return uncommittedEntry;
     }
 
     /**
@@ -133,6 +164,7 @@ public class DictionaryService extends AbstractPersistenceService {
         }
 
         if (containsWord(word, d)) {
+            LOGGER.warn("word already exists: " + word);
             return;
         }
 
@@ -146,6 +178,8 @@ public class DictionaryService extends AbstractPersistenceService {
         re.setWord(word);
         re.setRank(1);
         re.setLanguage(d.getFromLanguage());
+
+        getUncommitted().addDicionaryEntry(de);
 
         EntityTransaction t = EM.getTransaction();
         t.begin();
@@ -187,9 +221,13 @@ public class DictionaryService extends AbstractPersistenceService {
 
         de.setWord(newWord);
         de.setTranslation(translation);
+
+        getUncommitted().addDicionaryEntry(de);
+
+
         final EntityTransaction t = EM.getTransaction();
         t.begin();
-        EM.persist(de);
+        EM.merge(de);
         t.commit();
     }
 
@@ -202,10 +240,7 @@ public class DictionaryService extends AbstractPersistenceService {
     public void deleteWord(String word, Dictionary dictionary) {
         EntityTransaction entityTransaction = EM.getTransaction();
         entityTransaction.begin();
-        EM.createQuery("delete from DictionaryEntry de where de.word = :word and de.dictionary = :dictionary")
-                .setParameter("word", word)
-                .setParameter("dictionary", dictionary)
-                .executeUpdate();
+        EM.createQuery("delete from DictionaryEntry de where de.word = :word and de.dictionary = :dictionary").setParameter("word", word).setParameter("dictionary", dictionary).executeUpdate();
         entityTransaction.commit();
     }
 
@@ -266,8 +301,6 @@ public class DictionaryService extends AbstractPersistenceService {
                 + " where d.fromLanguage = :fromLanguage and d.toLanguage = :toLanguage", Dictionary.class).setParameter("fromLanguage", languageFrom).setParameter("toLanguage", languageTo).getSingleResult();
     }
 
-    
-
     public void addRankEntry(String word, Language language) {
         if (word == null || word.isEmpty()) {
             LOGGER.error("word == null || word.isEmpty()");
@@ -283,7 +316,7 @@ public class DictionaryService extends AbstractPersistenceService {
         re.setLanguage(language);
         re.setWord(word);
         re.setRank(1);
-        
+
         EntityTransaction t = EM.getTransaction();
         t.begin();
         EM.persist(re);
@@ -309,6 +342,4 @@ public class DictionaryService extends AbstractPersistenceService {
     public Dictionary getComplement(Dictionary dictionary) {
         return EM.createNamedQuery("Dictionary.getDictionaryByLanguages", Dictionary.class).setParameter("fromLanguage", dictionary.getToLanguage()).setParameter("toLanguage", dictionary.getFromLanguage()).getSingleResult();
     }
-
-    
 }

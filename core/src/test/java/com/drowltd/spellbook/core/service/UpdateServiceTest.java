@@ -4,9 +4,10 @@
  */
 package com.drowltd.spellbook.core.service;
 
+import com.drowltd.spellbook.core.exception.AuthenticationException;
 import com.drowltd.spellbook.core.exception.UpdateServiceException;
-import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.Language;
+import com.drowltd.spellbook.core.model.RemoteDictionary;
 import com.drowltd.spellbook.core.model.RemoteDictionaryEntry;
 import com.drowltd.spellbook.core.model.UpdateEntry;
 import java.util.Date;
@@ -28,7 +29,7 @@ import static org.junit.Assert.*;
 public class UpdateServiceTest {
 
     static EntityManager em;
-    private static Dictionary dictionary;
+    private static RemoteDictionary dictionary;
     static UpdateEntry updateEntry;
     static UpdateEntry updateEntry0;
     static RemoteDictionaryEntry entry;
@@ -44,15 +45,29 @@ public class UpdateServiceTest {
     }
 
     @BeforeClass
-    public static void init() throws UpdateServiceException, InterruptedException {
+    public static void initEM() throws AuthenticationException, UpdateServiceException{
+        DictionaryService.init("/opt/spellbook/db/spellbook.data.db");
+        updateService = UpdateService.getInstance("iivalchev", "pass");
+
+        dictionary = new RemoteDictionary();
+        dictionary.setName("English-Bulgarian");
+        dictionary.setFromLanguage(Language.ENGLISH);
+        dictionary.setToLanguage(Language.BULGARIAN);
+
+        UpdateService.EM_REMOTE.getTransaction().begin();
+        UpdateService.EM_REMOTE.persist(dictionary);
+        UpdateService.EM_REMOTE.getTransaction().commit();
+    }
+
+    //@BeforeClass
+    public static void init() throws UpdateServiceException, InterruptedException, AuthenticationException {
         testDate = new Date();
         Random random = new Random();
         translation = translation+(random.nextLong());
         word = word+random.nextLong();
         word0 = word0+random.nextLong();
 
-        DictionaryService.init("/opt/spellbook/db/spellbook.data.db");
-        updateService = UpdateService.getInstance();
+        initEM();
         
         em = UpdateService.EM_REMOTE;
 
@@ -61,16 +76,13 @@ public class UpdateServiceTest {
         
         updateEntry = new UpdateEntry();
 
-        dictionary = new Dictionary();
-        dictionary.setName("English-Bulgarian");
-        dictionary.setIconName("en-bg.png");
-        dictionary.setFromLanguage(Language.ENGLISH);
-        dictionary.setToLanguage(Language.BULGARIAN);
+        
+
 
         entry = new RemoteDictionaryEntry();
         entry.setUpdateEntry(updateEntry);
         
-        entry.setDictionary(dictionary);
+        entry.setRemoteDictionary(dictionary);
         entry.setWord(word);
         entry.setTranslation(translation);
 
@@ -79,9 +91,9 @@ public class UpdateServiceTest {
         entry0.setUpdateEntry(updateEntry0);
         entry0.setWord(word0);
         entry0.setTranslation(translation);
-        entry0.setDictionary(dictionary);
+        entry0.setRemoteDictionary(dictionary);
      
-        em.persist(dictionary);
+        
         em.persist(updateEntry);
         em.persist(entry);
         Thread.sleep(2000);
@@ -102,11 +114,25 @@ public class UpdateServiceTest {
     }
 
 
-    @Test
+    //@Test
     public void testUpdate() throws InterruptedException{
+        DictionaryService.init("/opt/spellbook/db/spellbook.data.db");
+        try {
+            updateService = UpdateService.getInstance();
+        } catch (UpdateServiceException ex) {
+            ex.getCause().printStackTrace();
+        }
         assertTrue("no updates available",updateService.checkForUpdates());
+        //assertFalse("no updates available",updateService.checkForUpdates());
         updateService.update();
         DictionaryService service = DictionaryService.getInstance();
         service.getTranslation(word, service.getDictionary(dictionaryName));
+        assertTrue(service.getRatings(Language.ENGLISH).containsKey(word));
+    }
+
+    @Test
+    public void testCommit(){
+        updateService.commit();
+        assertTrue("no updates available",updateService.checkForUpdates());
     }
 }

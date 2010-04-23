@@ -1,10 +1,14 @@
 package com.drowltd.spellbook.core.service;
 
+import com.drowltd.spellbook.core.exception.AuthenticationException;
 import com.drowltd.spellbook.core.exception.UpdateServiceException;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.DictionaryEntry;
 import com.drowltd.spellbook.core.model.LastUpdateEntity;
+import com.drowltd.spellbook.core.model.RankEntry;
+import com.drowltd.spellbook.core.model.RemoteDictionary;
 import com.drowltd.spellbook.core.model.RemoteDictionaryEntry;
+import com.drowltd.spellbook.core.model.UncommittedEntries;
 import com.drowltd.spellbook.core.model.UpdateEntry;
 import java.sql.DriverManager;
 import java.util.Date;
@@ -33,8 +37,8 @@ import org.slf4j.LoggerFactory;
 public class UpdateService extends AbstractPersistenceService {
 
     protected static EntityManager EM_REMOTE;
-    private static UpdateService INSTANCE;
     private static Logger LOGGER = LoggerFactory.getLogger(UpdateService.class);
+    private static boolean isAuthenticated = false;
 
     private UpdateService() throws UpdateServiceException {
         if (EM == null) {
@@ -43,21 +47,48 @@ public class UpdateService extends AbstractPersistenceService {
         initRemoteEntityManager();
     }
 
+    private UpdateService(String userName, String password) throws AuthenticationException, UpdateServiceException{
+        initRemoteEntityManager(userName,password);
+    }
+
     public static UpdateService getInstance() throws UpdateServiceException {
-          return new UpdateService();
+        return new UpdateService();
+    }
+
+    public static UpdateService getInstance(String userName, String password) throws AuthenticationException, UpdateServiceException{
+        return new UpdateService(userName, password);
+    }
+
+    public static void initRemoteEntityManager(String userName, String password) throws AuthenticationException, UpdateServiceException {
+        if (userName == null || userName.isEmpty() || password == null || password.isEmpty()) {
+            throw new AuthenticationException();
+        }
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            DriverManager.getConnection("jdbc:mysql://localhost:3306/SpellbookRemote", userName, password).close();
+            Map<String, String> properties = new HashMap<String, String>();
+            properties.put("hibernate.connection.username", userName);
+            properties.put("hibernate.connection.password", password);
+            EM_REMOTE = Persistence.createEntityManagerFactory("SpellbookRemote", properties).createEntityManager();
+            isAuthenticated = true;
+        } catch (Exception e) {
+            throw new UpdateServiceException(e);
+        }
     }
 
     protected static void initRemoteEntityManager() throws UpdateServiceException {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            DriverManager.getConnection("jdbc:mysql://localhost:3306/SpellbookRemote", "iivalchev", "").close();
+            DriverManager.getConnection("jdbc:mysql://localhost:3306/SpellbookRemote", "spellbook", "").close();
             EM_REMOTE = Persistence.createEntityManagerFactory("SpellbookRemote").createEntityManager();
+            isAuthenticated = false;
         } catch (Exception e) {
-            throw new UpdateServiceException();
+            throw new UpdateServiceException(e);
         }
     }
     private LastUpdateEntity lastUpdate;
     private final Map<String, Dictionary> dictMap = new HashMap<String, Dictionary>();
+    private final Map<String, RemoteDictionary> remoteDictMap = new HashMap<String, RemoteDictionary>();
 
     /*
      * Getting the single LastUpdateEntity
@@ -93,16 +124,22 @@ public class UpdateService extends AbstractPersistenceService {
         }
     }
 
+    private void initRemoteDictMap() {
+        List<RemoteDictionary> dictionaries = EM_REMOTE.createNamedQuery("RemoteDictionary.gerRemoteDictionaries", RemoteDictionary.class).getResultList();
+        for (RemoteDictionary d : dictionaries) {
+            remoteDictMap.put(d.getName(), d);
+        }
+    }
+
     /**
      * Checks for updates. Must be called before update().
      *
      * @return true if updates are available
      */
-
     public boolean checkForUpdates() {
         LastUpdateEntity lastUpdate = getLastUpdateEntity();
 
-        LOGGER.info("Last update on: "+lastUpdate.getModified());
+        LOGGER.info("Last update on: " + lastUpdate.getModified());
         if (!EM_REMOTE.createNamedQuery("UpdateEntry.checkForUpdates").setParameter("date", lastUpdate.getModified()).getResultList().isEmpty()) {
             this.lastUpdate = lastUpdate;
             return true;
@@ -144,13 +181,14 @@ public class UpdateService extends AbstractPersistenceService {
                  * Checking for interruption, will be called frequently
                  * keeping us responive.
                  */
-                if(Thread.interrupted()){
+                if (Thread.interrupted()) {
+                    LOGGER.warn("update interrupted");
                     t.rollback();
                     throw new InterruptedException();
                 }
 
                 //try to get the local Dictionary
-                Dictionary dictionary = dictMap.get(entry.getDictionary().getName());
+                Dictionary dictionary = dictMap.get(entry.getRemoteDictionary().getName());
                 if (dictionary == null) {
                     /*
                      * This will happen if more dictionaries are available in the
@@ -176,8 +214,12 @@ public class UpdateService extends AbstractPersistenceService {
                     DictionaryEntry de = entry.toDictionaryEntry();
                     de.setDictionary(dictionary);
 
+                    //Adding RankEntry
+                    RankEntry re = entry.toRankEntry();
+
                     LOGGER.info("adding DictionaryEntry");
                     EM.persist(de);
+                    EM.persist(re);
                 }
 
             }
@@ -185,5 +227,41 @@ public class UpdateService extends AbstractPersistenceService {
         //Keep track of the latest update date
         lastUpdate.setModified(latestDate);
         t.commit();
+    }
+
+    public void commit() {
+        if (!isAuthenticated) {
+            return;
+        }
+        UncommittedEntries uncommitted = DictionaryService.getInstance().getUncommitted();
+        
+        initRemoteDictMap();
+
+        EM_REMOTE.getTransaction().begin();
+
+        UpdateEntry updateEntry = new UpdateEntry();
+        EM_REMOTE.persist(updateEntry);
+        
+        for (DictionaryEntry de : uncommitted.getDictionaryEntries()) {
+            RemoteDictionaryEntry rde = new RemoteDictionaryEntry();
+            rde.setWord(de.getWord());
+            rde.setTranslation(de.getTranslation());
+            rde.setUpdateEntry(updateEntry);
+
+            //We don't treat a case where we don't hava the dictionary in the remote db
+            assert remoteDictMap.get(de.getDictionary().getName()) != null : "dictionary not in the remote db";
+            rde.setRemoteDictionary(remoteDictMap.get(de.getDictionary().getName()));
+            
+            EM_REMOTE.persist(rde);
+        }
+
+        
+        EM_REMOTE.getTransaction().commit();
+
+        uncommitted.setCommitted(true);
+
+        EM.getTransaction().begin();
+        EM.merge(uncommitted);
+        EM.getTransaction().commit();
     }
 }
