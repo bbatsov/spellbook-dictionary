@@ -17,7 +17,6 @@ import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.service.study.StudyService;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.StudySet;
-import com.drowltd.spellbook.core.service.exam.ExamService;
 import com.drowltd.spellbook.ui.swing.component.AutocompletingTextField;
 import com.drowltd.spellbook.ui.swing.component.DictionaryComboBox;
 import java.awt.Frame;
@@ -26,15 +25,15 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.regex.Pattern;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import java.util.logging.Level;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -42,6 +41,7 @@ import javax.swing.event.DocumentListener;
  */
 public class WordsDialog extends javax.swing.JDialog {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(WordsDialog.class);
     private long countOFTheWords;
     private DictionaryService dictionaryService;
     private List<String> wordsForStudy = new ArrayList<String>();
@@ -390,8 +390,8 @@ public class WordsDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addWordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addWordButtonActionPerformed
-        
-        if(!studySets.isEmpty()){
+
+        if (!studySets.isEmpty()) {
             addWord();
         } else {
             JOptionPane.showMessageDialog(this, TRANSLATOR.translate("AddStudySetFirst(Message)"), null, JOptionPane.WARNING_MESSAGE);
@@ -508,7 +508,7 @@ public class WordsDialog extends javax.swing.JDialog {
                 JOptionPane.showMessageDialog(this, TRANSLATOR.translate("AlreadyContainedWord(Message)"), null, JOptionPane.ERROR_MESSAGE);
             } else {
                 countOFTheWords++;
-                studyService.addWord(word, (Dictionary)dictionariesComboBox.getSelectedItem(), studySetName);
+                studyService.addWord(word, (Dictionary) dictionariesComboBox.getSelectedItem(), studySetName);
                 boolean selectAllWords = false;
                 setWordsInTable(selectAllWords);
             }
@@ -535,12 +535,18 @@ public class WordsDialog extends javax.swing.JDialog {
                     TRANSLATOR.translate("Selected(TableColumn)")});
 
         countOFTheWords = studyService.getCountOfTheWords(studySetName);
-        //String translation = null;
+
+        List<String> translations = new ArrayList<String>();
+        String translationsForTheTable = null;
+
         for (int i = 0; i < countOFTheWords; i++) {
-            //studyService.possibleAnswers(translationsForStudy.get(i));
-            ////studyService.possibleTranslations(translationsForStudy.get(i));
-            //translation = studyService.getTranslations();
-            model.addRow(new Object[]{new Integer(i + 1), wordsForStudy.get(i), translationsForStudy.get(i), select});
+            translations = studyService.getPossiblesTranslations(translationsForStudy.get(i));
+            translationsForTheTable = studyService.combinePossiblesTranslationsForTheTable(translations);
+
+            if (translationsForTheTable.isEmpty()) {
+                translationsForTheTable = translationsForStudy.get(i);
+            }
+            model.addRow(new Object[]{new Integer(i + 1), wordsForStudy.get(i), translationsForTheTable, select});
         }
     }
 }
