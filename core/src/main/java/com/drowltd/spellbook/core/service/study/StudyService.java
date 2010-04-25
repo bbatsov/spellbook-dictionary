@@ -10,7 +10,10 @@ import com.drowltd.spellbook.core.model.StudySetEntry;
 import com.drowltd.spellbook.core.model.StudySet;
 import com.drowltd.spellbook.core.service.AbstractPersistenceService;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.regex.Pattern;
 import javax.persistence.EntityTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +25,11 @@ import org.slf4j.LoggerFactory;
 public class StudyService extends AbstractPersistenceService {
 
     private List<String> translations = new ArrayList<String>();
+    String[] identificatorsForRowsWithPossibleTranslations = {
+        "1.", "2.", "3.", "4.", "5.", "6.", "7.", "8.", "9.", "10.", "11.", "12.", "13.", "14.", "15.", "16.", "17.", "18.", "19.", "20.",
+        "n", "pl", "a", "adv", "v", "и", "int", "обик.",
+        "i.", "ii.", "iii.", "iv.", "v.", "vi.", "vii.", "viii.", "ix.", "x.", "xi.", "xii.", "xiii.", "xiv.", "xv."
+    };
     private static final Logger LOGGER = LoggerFactory.getLogger(StudyService.class);
 
     /**
@@ -31,6 +39,10 @@ public class StudyService extends AbstractPersistenceService {
      */
     public StudyService() {
         super(null);
+    }
+
+    public List<String> getAnothersPossiblesAnswers() {
+        return translations;
     }
 
     /**
@@ -172,22 +184,241 @@ public class StudyService extends AbstractPersistenceService {
         t.commit();
     }
 
-    //not completed
-    public void possibleTranslations(String translation) {
-        translations = new ArrayList<String>();
+    public List<String> getPossiblesTranslations(String translation) {
         translation = translation.toLowerCase();
-        if (translation.contains("1")) {
-            List<String> rowsOfPossibleTranslation = new ArrayList<String>();
-            int beginIndex = 0, endIndex = 0;
-            Integer cipher = new Integer(1);
-            while (translation.indexOf(cipher.toString(), endIndex) != -1) {
-                beginIndex = translation.indexOf(cipher.toString(), endIndex);
-                endIndex = translation.indexOf("\n", beginIndex);
-                String translationRow = translation.substring(beginIndex, endIndex);
-                rowsOfPossibleTranslation.add(translationRow);
-                endIndex++;
-                cipher++;
+
+        List<String> rows = new ArrayList<String>();
+        rows = splitTranslationOfRows(translation);
+
+        List<String> rowsWithPossiblesTranslations = new ArrayList<String>();
+        rowsWithPossiblesTranslations = getRowsWithPossiblesTranslations(rows);
+
+        List<String> rowsWithPossiblesTranslationsWithoutUnneededThings = new ArrayList<String>();
+        rowsWithPossiblesTranslationsWithoutUnneededThings = removingAllUnneededThings(rowsWithPossiblesTranslations);
+
+        List<String> possibleTranslations = new ArrayList<String>();
+        possibleTranslations = splitAllTranslations(rowsWithPossiblesTranslationsWithoutUnneededThings);
+
+        return possibleTranslations;
+    }
+
+    private List<String> splitTranslationOfRows(String translation) {
+        List<String> rows = new ArrayList<String>();
+        int endIndex = 0;
+        while (translation.contains("\n")) {
+            endIndex = translation.indexOf("\n");
+            rows.add(translation.substring(0, endIndex));
+            translation = translation.substring(endIndex + 1);
+        }
+
+        return rows;
+    }
+
+    private List<String> getRowsWithPossiblesTranslations(List<String> rows) {
+        List<String> rowsWithPossiblesTranslations = new ArrayList<String>();
+        String id1 = " ";
+        String id2 = " ";
+        int beginIndex = 0;
+        int endIndex = 0;
+        for (String row : rows) {
+            endIndex = row.indexOf(" ");
+            if (endIndex != -1) {
+                id1 = row.substring(0, endIndex);
+                beginIndex = endIndex + 1;
+                endIndex = row.indexOf(" ", beginIndex);
+                if (endIndex != -1) {
+                    id2 = row.substring(beginIndex, endIndex);
+                }
+                for (String identificator : identificatorsForRowsWithPossibleTranslations) {
+                    if (id1.equals(identificator) || id2.equals(identificator)) {
+                        rowsWithPossiblesTranslations.add(row);
+                        break;
+                    }
+                }
             }
         }
+        return rowsWithPossiblesTranslations;
+    }
+
+    private List<String> removingAllUnneededThings(List<String> rowsWithPossiblesTranslations) {
+        List<String> rowsWithPossiblesTranslationsWithoutAbbreviations = new ArrayList<String>();
+        String rowWithoutAbbreviations = null;
+        int beginIndex = 0;
+        int endIndex = 0;
+        int countOfBrackets = 0;
+        String inTheBrackets = null;
+        for (String row : rowsWithPossiblesTranslations) {
+            rowWithoutAbbreviations = removeAllAbbreviations(row);
+            rowWithoutAbbreviations = rowWithoutAbbreviations.replaceAll("[a-z]", "");
+            while (rowWithoutAbbreviations.indexOf("(", beginIndex) != -1) {
+                beginIndex = rowWithoutAbbreviations.indexOf("(", beginIndex) + 1;
+                countOfBrackets++;
+            }
+            for (int i = 0; i < countOfBrackets; i++) {
+                beginIndex = rowWithoutAbbreviations.indexOf("(");
+                if (beginIndex != -1) {
+                    endIndex = rowWithoutAbbreviations.indexOf(")") + 1;
+                    inTheBrackets = rowWithoutAbbreviations.substring(beginIndex, endIndex);
+                    if (!inTheBrackets.equals("( )")) {
+                        rowWithoutAbbreviations = rowWithoutAbbreviations.replaceAll(inTheBrackets, "");
+                    }
+                    rowWithoutAbbreviations = rowWithoutAbbreviations.replaceFirst("\\(", "");
+                    rowWithoutAbbreviations = rowWithoutAbbreviations.replaceFirst("\\)", "");
+                }
+            }
+            rowsWithPossiblesTranslationsWithoutAbbreviations.add(rowWithoutAbbreviations);
+        }
+        return rowsWithPossiblesTranslationsWithoutAbbreviations;
+    }
+
+    private String removeAllAbbreviations(String translation) {
+        int beginIndex = 0, endIndex = 0;
+
+        String str = null;
+        StringBuilder strForRegularExpression = new StringBuilder();
+        while (translation.contains(".")) {
+            endIndex = translation.indexOf(".");
+            beginIndex = endIndex;
+            while (translation.charAt(beginIndex) != ' ' && translation.charAt(beginIndex) != '\n' && translation.charAt(beginIndex) != '(' && translation.charAt(beginIndex) != ')' && beginIndex != 0) {
+                beginIndex--;
+            }
+            if (beginIndex == 0) {
+                translation = translation.substring(endIndex + 1);
+            } else {
+                str = translation.substring(beginIndex + 1, endIndex);
+                if (str.isEmpty()) {
+                    translation = translation.replaceFirst("\\.", "");
+                } else {
+                    strForRegularExpression = new StringBuilder();
+                    strForRegularExpression.append(str);
+                    strForRegularExpression.append("\\.");
+                    translation = translation.replaceAll(strForRegularExpression.toString(), "");
+                }
+            }
+        }
+        //translation = removeSpacesInTheBeginningAndEnd(translation);
+        return translation;
+    }
+
+    private List<String> splitAllTranslations(List<String> rowsWithPossiblesTranslationsWithoutAbbreviations) {
+        String[] translationsFromRow = null;
+        List<String> possibleTranslations = new ArrayList<String>();
+        for (String row : rowsWithPossiblesTranslationsWithoutAbbreviations) {
+            translationsFromRow = row.split("[,]+");
+            for (String possibleTranslation : translationsFromRow) {
+                //if (!possibleTranslation.isEmpty()) {
+
+                possibleTranslation = removeSpacesInTheBeginningAndEnd(possibleTranslation);
+                if (!possibleTranslation.isEmpty()) {
+                    possibleTranslations.add(possibleTranslation);
+                }
+                //}
+            }
+        }
+        return possibleTranslations;
+    }
+
+    public String removeSpacesInTheBeginningAndEnd(String word) {
+        while (word.length() != 0 && word.charAt(0) == ' ') {
+            word = word.substring(1);
+        }
+        int endIndex = word.length() - 1;
+        while (word.length() != 0 && word.charAt(endIndex) == ' ') {
+            endIndex--;
+        }
+        if (endIndex != word.length() - 1) {
+            word = word.substring(0, endIndex + 1);
+        }
+        return word;
+    }
+
+    public void possibleAnswers(String translation) {
+
+        translations = new ArrayList<String>();
+        translation = translation.toLowerCase();
+
+        //Removes the uneeded characters from the translation
+        String t = translation.replaceAll("\\b(n|a|v|(attr)|(adv)|[0-9]+)\\b\\s?", "");
+
+        //Splits the translation around matches of the pattern
+        String[] s = Pattern.compile("\\s*[,|;|.|\\n]\\s*").split(t, 0);
+
+        for (int i = 0; i < s.length; i++) {
+
+            if (s[i].isEmpty()) {
+                continue;
+            }
+
+            if (s[i].contains("(")) {
+                //removes the parenthesis and everything inside them
+                slash(s[i].replaceAll("\\(([^()]*)\\)?", ""));
+                //removes the parenthesis only
+                slash(s[i].replaceAll("\\(([^()]*)\\)", "$1"));
+            } else {
+                slash(s[i]);
+            }
+        }
+    }
+
+    private void slash(String s) {
+        String first = new String();
+        String last = new String();
+
+        if (s.contains("/")) {
+            String[] slash = s.split("/");
+            //Using this loop we make all possible combinations for correct answer
+            for (int j = 0; j < slash.length; j++) {
+                translations.add(slash[j]);
+
+                if (j != slash.length - 1) {
+
+                    //Combines the whole last string(the string after the last forward slash) with every other string
+                    translations.add(slash[j] + " " + slash[slash.length - 1]);
+                }
+            }
+
+            //removes the last word from the first string
+            if ((slash[0].contains(" "))) {
+                first = slash[0].substring(0, slash[0].lastIndexOf(" "));
+            }
+
+            //removes the first word from the last string
+            if ((slash[slash.length - 1].contains(" "))) {
+                last = slash[slash.length - 1].substring(slash[slash.length - 1].indexOf(" ") + 1);
+            }
+
+            if (!(first.isEmpty())) {
+
+                //Combines the new fist string with every other string
+                for (int j = 0; j < slash.length; j++) {
+                    translations.add(first + " " + slash[j]);
+                }
+            }
+
+            if (!(last.isEmpty())) {
+
+                //Combines the new last string with every other string
+                for (int j = 0; j < slash.length; j++) {
+                    translations.add(slash[j] + " " + last);
+                }
+            }
+        } else {
+            translations.add(s);
+        }
+
+        Set<String> set = new LinkedHashSet<String>(translations);
+        translations = new ArrayList<String>(set);
+    }
+
+    public String combinePossiblesTranslationsForTheTable(List<String> translations) {
+        StringBuilder translation = new StringBuilder();
+
+        for (int i = 0; i < translations.size(); i++) {
+            translation.append(translations.get(i));
+            if (i != translations.size() - 1) {
+                translation.append(", ");
+            }
+        }
+        return translation.toString();
     }
 }

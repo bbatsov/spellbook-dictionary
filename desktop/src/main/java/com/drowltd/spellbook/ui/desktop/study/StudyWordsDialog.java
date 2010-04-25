@@ -41,7 +41,6 @@ public class StudyWordsDialog extends javax.swing.JDialog {
     private static final PreferencesManager PM = PreferencesManager.getInstance();
     private static final Translator TRANSLATOR = Translator.getTranslator("LearningWordsDialog");
     private SelectedDictionary selectedDictionary = SelectedDictionary.EN_BG;
-    private String word;
     private WordsDialog wordsDialog;
     private List<String> wordsForLearning = new ArrayList<String>();
     private List<String> translationForLearning = new ArrayList<String>();
@@ -509,6 +508,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_answerButtonActionPerformed
 
     private void seeAnswerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_seeAnswerButtonActionPerformed
+        String word = null;
         if (selectedDictionary == SelectedDictionary.EN_BG) {
             if (howToEnumerate == HowToEnumerate.RANDOM) {
                 word = (String) shuffleTranslationForLearning.get(wordIndex);
@@ -546,7 +546,6 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         PM.putBoolean(Preference.LEARNING_RANDOM, randomRadioButton.isSelected());
         PM.putBoolean(Preference.REPEAT_MISSPELLED_WORDS, repeatMisspelledWordsCheckBox.isSelected());
         PM.putBoolean(Preference.REPEAT_WORDS, repeatWordCheckBox.isSelected());
-
     }//GEN-LAST:event_formWindowClosed
 
     private void answerFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_answerFieldActionPerformed
@@ -601,6 +600,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         String studySetName = (String) studySetsComboBox.getSelectedItem();
         countOfWords = studyService.getCountOfTheWords(studySetName);
         checkingTheDatabase();
+        PM.putInt(Preference.STUDY_SETS, studySetsComboBox.getSelectedIndex());
     }//GEN-LAST:event_formWindowGainedFocus
     /**
      * @param args the command line arguments
@@ -657,15 +657,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         setComponentsEnable(false);
 
         answerField.requestFocus();
-        answerStatutLabel.setText(null);
-
-        countOfTheCorrectWordsLabel.setText("0");
-        countOfTheWrongWordsLabel.setText("0");
-        answerSeenLabel.setText("0");
-
-        correctAnswer = new Integer(0);
-        wrongAnswer = new Integer(0);
-        answerSeen = new Integer(0);
+        resetToZeroCounters();
 
         if (inOrderOfInputRadioButton.isSelected()) {
             howToEnumerate = HowToEnumerate.IN_ORDER_OF_INPUT;
@@ -688,8 +680,18 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         }
     }
 
+    private void resetToZeroCounters() {
+        answerStatutLabel.setText(null);
+        countOfTheCorrectWordsLabel.setText("0");
+        countOfTheWrongWordsLabel.setText("0");
+        answerSeenLabel.setText("0");
+        correctAnswer = new Integer(0);
+        wrongAnswer = new Integer(0);
+        answerSeen = new Integer(0);
+    }
+
     private void showWordWhenStartTheStudy(List<String> words, List<String> translations) {
-        String translation = null;
+        String translation = null, word = null;
         if (selectedDictionary == SelectedDictionary.EN_BG) {
             word = words.get(wordIndex);
             translateField.setText(word);
@@ -728,6 +730,9 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         String wordTranslation = answerField.getText();
         wordTranslation = wordTranslation.toLowerCase();
 
+        String[] ourAnswers = null;
+        ourAnswers = wordTranslation.split("[,]+");
+
         if (wordTranslation == null || wordTranslation.isEmpty()) {
             JOptionPane.showMessageDialog(this, TRANSLATOR.translate("AnswerFeild(Message)"), null, JOptionPane.ERROR_MESSAGE);
             answerField.requestFocus();
@@ -735,46 +740,16 @@ public class StudyWordsDialog extends javax.swing.JDialog {
 
         List<String> possibleAnswers = new ArrayList<String>();
         String translation = translations.get(wordIndex);
-        translation = translation.toLowerCase();
-        translation = translation.replaceAll("\\b(n|a|v|(attr)|(adv)|[0-9]+)\\b\\s?", "");
+        possibleAnswers = studyService.getPossiblesTranslations(translation);
+        studyService.possibleAnswers(translation);
+        List<String> anotherPossibleAnswers = new ArrayList<String>();
+        anotherPossibleAnswers = studyService.getAnothersPossiblesAnswers();
 
-        int i = 0;
-        while (translation.charAt(i) == ' ') {
-            translation = translation.substring(1);
-        }
-
-        String[] answers = Pattern.compile("\\s*[,|;|.|\\n]\\s*").split(translation, 0);
-
-        for (String answer : answers) {
-            possibleAnswers.add(answer);
-        }
         if (repeatWordCheckBox.isSelected() && !wordTranslation.isEmpty()) {
             repeatWordIndex();
         }
+        checkingWhetherAnswerIsCorrect(ourAnswers, possibleAnswers, anotherPossibleAnswers, wordTranslation);
 
-        if (possibleAnswers.contains(wordTranslation)) {
-            answerStatutLabel.setText(TRANSLATOR.translate("CorrectAnswer(Message)"));
-            correctAnswer++;
-            countOfTheCorrectWordsLabel.setText(correctAnswer.toString());
-            imoticonLabel.setIcon(IconManager.getImageIcon("laugh.gif", IconManager.IconSize.SIZE48));
-        } else {
-            if (!wordTranslation.isEmpty()) {
-                answerStatutLabel.setText(TRANSLATOR.translate("WrongAnswer(Message)"));
-                imoticonLabel.setIcon(IconManager.getImageIcon("shy.gif", IconManager.IconSize.SIZE48));
-                answerField.setText(null);
-            }
-            if (wordTranslation.isEmpty()) {
-                answerStatutLabel.setText(null);
-            }
-            if (!wordTranslation.isEmpty()) {
-                wrongAnswer++;
-            }
-            countOfTheWrongWordsLabel.setText(wrongAnswer.toString());
-
-            if (repeatMisspelledWordsCheckBox.isSelected() && !wordTranslation.isEmpty()) {
-                repeatWordIndex();
-            }
-        }
         if (howToEnumerate == HowToEnumerate.IN_ORDER_OF_INPUT) {
             if (!wordTranslation.isEmpty()) {
                 wordIndex++;
@@ -787,7 +762,6 @@ public class StudyWordsDialog extends javax.swing.JDialog {
                 setComponentsEnable(true);
             }
 
-            //answerField.setText(null);
         } else if (howToEnumerate == HowToEnumerate.IN_REVERSE_ORDER_OF_INPUT) {
             if (!wordTranslation.isEmpty()) {
                 wordIndex--;
@@ -800,7 +774,6 @@ public class StudyWordsDialog extends javax.swing.JDialog {
                 setComponentsEnable(true);
             }
 
-            //answerField.setText(null);
         } else {
             if (!wordTranslation.isEmpty()) {
                 wordIndex++;
@@ -828,8 +801,46 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         }
     }
 
+    private void checkingWhetherAnswerIsCorrect(String[] ourAnswers, List<String> possibleAnswers, List<String> anotherPossibleAnswers, String wordTranslation) {
+        boolean isCorrectAnswer = false;
+        for (String answer : ourAnswers) {
+            answer = studyService.removeSpacesInTheBeginningAndEnd(answer);
+            if (possibleAnswers.contains(answer)) {
+                isCorrectAnswer = true;
+                continue;
+            } else if (anotherPossibleAnswers.contains(answer)) {
+                isCorrectAnswer = true;
+                continue;
+            } else {
+                isCorrectAnswer = false;
+                break;
+            }
+        }
+        if (isCorrectAnswer) {
+            answerStatutLabel.setText(TRANSLATOR.translate("CorrectAnswer(Message)"));
+            correctAnswer++;
+            countOfTheCorrectWordsLabel.setText(correctAnswer.toString());
+            imoticonLabel.setIcon(IconManager.getImageIcon("laugh.gif", IconManager.IconSize.SIZE48));
+        } else {
+            if (!wordTranslation.isEmpty()) {
+                answerStatutLabel.setText(TRANSLATOR.translate("WrongAnswer(Message)"));
+                imoticonLabel.setIcon(IconManager.getImageIcon("shy.gif", IconManager.IconSize.SIZE48));
+                answerField.setText(null);
+                wrongAnswer++;
+            }
+            if (wordTranslation.isEmpty()) {
+                answerStatutLabel.setText(null);
+            }
+            countOfTheWrongWordsLabel.setText(wrongAnswer.toString());
+            if (repeatMisspelledWordsCheckBox.isSelected() && !wordTranslation.isEmpty()) {
+                repeatWordIndex();
+            }
+        }
+    }
+
     private void showNextWord(List<String> words) {
-        word = words.get(wordIndex);
+
+        String word = words.get(wordIndex);
         translateField.setText(word);
         String transcription = getTranscription(word);
         transcriptionLabel.setText(" " + transcription);
@@ -883,7 +894,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
             reportThatDatabaseIsEmpty();
         } else {
             String studySetName = (String) studySetsComboBox.getSelectedItem();
-            if(studySetName == null){
+            if (studySetName == null) {
                 studySetsComboBox.setSelectedIndex(0);
                 studySetName = (String) studySetsComboBox.getSelectedItem();
             }
