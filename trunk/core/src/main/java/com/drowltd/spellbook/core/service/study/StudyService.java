@@ -304,7 +304,7 @@ public class StudyService extends AbstractPersistenceService {
         String[] translationsFromRow = null;
         List<String> possibleTranslations = new ArrayList<String>();
         for (String row : rowsWithPossiblesTranslationsWithoutAbbreviations) {
-            translationsFromRow = row.split("[,]+");
+            translationsFromRow = row.split("[,|!|?]+");
             for (String possibleTranslation : translationsFromRow) {
                 //if (!possibleTranslation.isEmpty()) {
 
