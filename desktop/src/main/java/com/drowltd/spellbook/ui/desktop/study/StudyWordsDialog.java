@@ -699,7 +699,11 @@ public class StudyWordsDialog extends javax.swing.JDialog {
             transcriptionLabel.setText(" " + transcription);
         } else {
             translation = translations.get(wordIndex);
+            List<String> possiblesTranslations = new ArrayList<String>();
+            possiblesTranslations = studyService.getPossiblesTranslations(translation);
+            translation = studyService.combinePossiblesTranslationsForTheTable(possiblesTranslations);
             translateField.setText(translation);
+            translateField.setCaretPosition(0);
         }
     }
 
@@ -841,7 +845,14 @@ public class StudyWordsDialog extends javax.swing.JDialog {
     private void showNextWord(List<String> words) {
 
         String word = words.get(wordIndex);
+        if (selectedDictionary == SelectedDictionary.BG_EN){
+            List<String> possiblesTranslations = new ArrayList<String>();
+            possiblesTranslations = studyService.getPossiblesTranslations(word);
+            word = studyService.combinePossiblesTranslationsForTheTable(possiblesTranslations);
+        }
         translateField.setText(word);
+        translateField.setCaretPosition(0);
+
         String transcription = getTranscription(word);
         transcriptionLabel.setText(" " + transcription);
         answerField.setText(null);
