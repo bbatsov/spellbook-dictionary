@@ -31,9 +31,6 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import java.util.logging.Level;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -41,7 +38,6 @@ import org.slf4j.LoggerFactory;
  */
 public class WordsDialog extends javax.swing.JDialog {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(WordsDialog.class);
     private long countOFTheWords;
     private DictionaryService dictionaryService;
     private List<String> wordsForStudy = new ArrayList<String>();
