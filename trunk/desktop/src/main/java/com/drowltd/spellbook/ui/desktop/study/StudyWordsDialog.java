@@ -595,7 +595,11 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         setStudySetsInComboBox();
         if (!studySets.isEmpty()) {
             int index = PM.getInt(Preference.STUDY_SETS, studySetsComboBox.getSelectedIndex());
-            studySetsComboBox.setSelectedIndex(index);
+            if (studySets.size() >= index) {
+                studySetsComboBox.setSelectedIndex(index);
+            } else {
+                studySetsComboBox.setSelectedIndex(0);
+            }
         }
         String studySetName = (String) studySetsComboBox.getSelectedItem();
         countOfWords = studyService.getCountOfTheWords(studySetName);
@@ -845,7 +849,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
     private void showNextWord(List<String> words) {
 
         String word = words.get(wordIndex);
-        if (selectedDictionary == SelectedDictionary.BG_EN){
+        if (selectedDictionary == SelectedDictionary.BG_EN) {
             List<String> possiblesTranslations = new ArrayList<String>();
             possiblesTranslations = studyService.getPossiblesTranslations(word);
             word = studyService.combinePossiblesTranslationsForTheTable(possiblesTranslations);
