@@ -677,6 +677,8 @@ public class StudyWordsDialog extends javax.swing.JDialog {
             showWordWhenStartTheStudy(wordsForLearning, translationForLearning);
         }
         if (randomRadioButton.isSelected()) {
+            shuffleWordsForLearning = new ArrayList();
+            shuffleTranslationForLearning = new ArrayList();
             shuffle(wordsForLearning, translationForLearning);
             howToEnumerate = HowToEnumerate.RANDOM;
             wordIndex = 0;
