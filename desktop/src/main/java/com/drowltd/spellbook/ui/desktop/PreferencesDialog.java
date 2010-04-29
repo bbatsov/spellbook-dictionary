@@ -67,8 +67,6 @@ public class PreferencesDialog extends javax.swing.JDialog {
         Language selectedLanguage = Language.ENGLISH;
         String selectedLanguageName = PM.get(Preference.UI_LANG, Language.ENGLISH.getName());
 
-        System.out.println("Selected lang is " + selectedLanguageName);
-
         for (Language language : availableLangs) {
             if (language.getName().equals(selectedLanguageName)) {
                 selectedLanguage = language;
