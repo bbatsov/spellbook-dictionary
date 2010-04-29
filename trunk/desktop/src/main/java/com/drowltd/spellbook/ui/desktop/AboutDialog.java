@@ -95,7 +95,7 @@ public class AboutDialog extends javax.swing.JDialog {
         dictionaryLabel.setForeground(new java.awt.Color(0, 0, 102));
         dictionaryLabel.setText(bundle.getString("Dictionary(Label)")); // NOI18N
 
-        versionLabel.setFont(new java.awt.Font("All Times New Roman", 2, 14)); // NOI18N
+        versionLabel.setFont(new java.awt.Font("All Times New Roman", 2, 14));
         versionLabel.setForeground(new java.awt.Color(0, 0, 102));
         versionLabel.setText(bundle.getString("Version(Label)")); // NOI18N
 
@@ -129,31 +129,25 @@ public class AboutDialog extends javax.swing.JDialog {
                 .addContainerGap(28, Short.MAX_VALUE))
         );
 
-        jScrollPane1.setBorder(null);
+        jScrollPane1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jScrollPane1.setEnabled(false);
 
-        infoTextPane.setBackground(new java.awt.Color(224, 223, 227));
-        infoTextPane.setBorder(null);
         infoTextPane.setContentType("text/html");
         infoTextPane.setEditable(false);
-        infoTextPane.setFont(new java.awt.Font("All Times New Roman", 0, 11));
-        String text = String.format("<html>\n  <head>\n\n  </head>\n  <body>\n    <p style=\"margin-top: 0\"; style=\"text-align:center\">\n      \t\n\t%s<br />\n\t%s<br />\n\t%s\n    </p>\n  </body>\n</html>\n",
-            TRANSLATOR_TEXT.translate("Multiplatform"),
-            TRANSLATOR_TEXT.translate("License"),
-            TRANSLATOR_TEXT.translate("Copyright"));
-        infoTextPane.setText(text);
-        infoTextPane.setCaret(null);
+        infoTextPane.setText(bundle.getString("Multiplatform")); // NOI18N
         infoTextPane.addHyperlinkListener(new javax.swing.event.HyperlinkListener() {
             public void hyperlinkUpdate(javax.swing.event.HyperlinkEvent evt) {
                 infoTextPaneHyperlinkUpdate(evt);
             }
         });
         jScrollPane1.setViewportView(infoTextPane);
+        infoTextPane.getAccessibleContext().setAccessibleDescription("text/html");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(nameAndLogoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
+            .addComponent(nameAndLogoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 401, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addGap(56, 56, 56)
                 .addComponent(creditsButton)
@@ -162,10 +156,7 @@ public class AboutDialog extends javax.swing.JDialog {
                 .addGap(18, 18, 18)
                 .addComponent(closeButton)
                 .addContainerGap(84, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 401, Short.MAX_VALUE)
         );
 
         layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {closeButton, creditsButton, licenseButton});
@@ -174,9 +165,9 @@ public class AboutDialog extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(nameAndLogoPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(licenseButton)
                     .addComponent(creditsButton)
@@ -247,6 +238,7 @@ public class AboutDialog extends javax.swing.JDialog {
             }
         }
     }//GEN-LAST:event_infoTextPaneHyperlinkUpdate
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton closeButton;
     private javax.swing.JButton creditsButton;
