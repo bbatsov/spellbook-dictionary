@@ -27,7 +27,7 @@ public class StudyService extends AbstractPersistenceService {
     private List<String> translations = new ArrayList<String>();
     String[] identificatorsForRowsWithPossibleTranslations = {
         "1.", "2.", "3.", "4.", "5.", "6.", "7.", "8.", "9.", "10.", "11.", "12.", "13.", "14.", "15.", "16.", "17.", "18.", "19.", "20.",
-        "n", "pl", "a", "adv", "v", "и", "int", "обик.",
+        "n", "pl", "a", "adv", "v", "int",
         "i.", "ii.", "iii.", "iv.", "v.", "vi.", "vii.", "viii.", "ix.", "x.", "xi.", "xii.", "xiii.", "xiv.", "xv."
     };
     private static final Logger LOGGER = LoggerFactory.getLogger(StudyService.class);
