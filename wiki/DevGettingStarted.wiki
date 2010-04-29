@@ -2,7 +2,7 @@
 
 = Introduction =
 
-To develop Spellbook you'll need a couple of tools - Java 6 SE JDK, Maven 2, NetBeans 6.8+.
+To develop Spellbook you'll need a couple of tools - Java 6 SE JDK, Maven 2, NetBeans IDE 6.8+.
 You may eventually need a Google account as well(in case you happen to join the official Spellbook team)
 
 = Obtaining the necessary software =
