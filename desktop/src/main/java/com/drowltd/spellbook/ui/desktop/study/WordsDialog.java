@@ -17,8 +17,8 @@ import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.service.study.StudyService;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.StudySet;
-import com.drowltd.spellbook.ui.swing.component.AutocompletingTextField;
 import com.drowltd.spellbook.ui.swing.component.DictionaryComboBox;
+import com.jidesoft.hints.ListDataIntelliHints;
 import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.awt.event.ComponentAdapter;
@@ -70,20 +70,11 @@ public class WordsDialog extends javax.swing.JDialog {
             int index = PM.getInt(Preference.STUDY_SETS, studySetsComboBox.getSelectedIndex());
             studySetsComboBox.setSelectedIndex(index);
         }
-        addComponentListener(new ComponentAdapter() {
-
-            @Override
-            public void componentMoved(ComponentEvent e) {
-                if (wordSearchField.hasFocus()) {
-                    ((AutocompletingTextField) wordSearchField).showCompletions();
-                }
-            }
-        });
 
         getTable().setOpaque(true);
 
-        ((AutocompletingTextField) wordSearchField).setCompletions(words);
-        ((AutocompletingTextField) wordSearchField).setOwner(this);
+        ListDataIntelliHints intellihints = new ListDataIntelliHints(wordSearchField, words);
+        intellihints.setCaseSensitive(false);
 
         wordSearchField.getDocument().addDocumentListener(new DocumentListener() {
 
@@ -143,7 +134,7 @@ public class WordsDialog extends javax.swing.JDialog {
         wordsTable = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        wordSearchField = new AutocompletingTextField();
+        wordSearchField = new javax.swing.JTextField();
         addWordButton = new javax.swing.JButton();
         clearButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -210,7 +201,7 @@ public class WordsDialog extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(wordSearchField, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
+                    .addComponent(wordSearchField, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -218,8 +209,8 @@ public class WordsDialog extends javax.swing.JDialog {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(clearButton, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE)
-                    .addComponent(addWordButton, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE))
+                    .addComponent(clearButton, javax.swing.GroupLayout.DEFAULT_SIZE, 82, Short.MAX_VALUE)
+                    .addComponent(addWordButton, javax.swing.GroupLayout.DEFAULT_SIZE, 82, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -286,7 +277,7 @@ public class WordsDialog extends javax.swing.JDialog {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
                     .addComponent(dictionariesComboBox, 0, 187, Short.MAX_VALUE))
                 .addGap(111, 111, 111)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -352,13 +343,13 @@ public class WordsDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(wordsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 535, Short.MAX_VALUE)
+                    .addComponent(wordsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 547, Short.MAX_VALUE)
                     .addComponent(deleteWordButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(387, 387, 387)
                         .addComponent(selectNothingButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(selectAllButton, javax.swing.GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE)))
+                        .addComponent(selectAllButton, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 

@@ -34,7 +34,9 @@
             </plugin>
         </plugins>
     </build>
+
     <dependencies>
+        <!-- internal -->
         <dependency>
             <groupId>com.drowltd.spellbook</groupId>
             <artifactId>spellbook-core</artifactId>
@@ -47,6 +49,12 @@
             <groupId>com.drowltd.spellbook</groupId>
             <artifactId>spellbook-utils</artifactId>
         </dependency>
+
+        <!-- external -->
+        <dependency>
+            <groupId>com.jidesoft</groupId>
+            <artifactId>jide-oss</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
@@ -54,15 +62,6 @@
         <dependency>
             <groupId>net.java.balloontip</groupId>
             <artifactId>balloontip</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.drowltd.spellbook</groupId>
-            <artifactId>spellbook-swing</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.ant</groupId>
