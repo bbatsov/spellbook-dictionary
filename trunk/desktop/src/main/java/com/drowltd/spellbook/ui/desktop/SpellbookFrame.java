@@ -44,7 +44,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -674,10 +673,12 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
             }
 
-            Object[] options = {"Download from internet!",
-                "Find in the filesystem!",};
+            Object[] options = {TRANSLATOR.translate("DownloadDb(Button)"),
+                TRANSLATOR.translate("SelectDb(Button)")};
 
-            int choice = JOptionPane.showOptionDialog(null, "What to do?", "Missing Db!", JOptionPane.YES_NO_OPTION,
+            int choice = JOptionPane.showOptionDialog(null, 
+                    dbPath.isEmpty() ? TRANSLATOR.translate("SelectDb(Message") : TRANSLATOR.translate("MissingDb(Message)"),
+                    TRANSLATOR.translate("SelectDb(Title)"), JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 
             if (choice == 1) {
@@ -1498,7 +1499,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         } catch (IOException ex) {
         }
         LOGGER.info("Current path: " + currentPath);
-        currentPath += "\\";
+        currentPath += File.separator;
         try {
             //Open the archive
             FileInputStream archiveFileStream = new FileInputStream(pathToArchive);
@@ -1529,7 +1530,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
         }
 
         try {
-
             TarInputStream tarInputStream = null;
             TarEntry tarEntry;
             tarInputStream = new TarInputStream(new FileInputStream(ARICHIVIED_DB_NAME));
@@ -1569,13 +1569,12 @@ public class SpellbookFrame extends javax.swing.JFrame {
         } catch (Exception e) {
         }
 
-        currentPath += "\\db\\" + DB_FILE_NAME;
+        currentPath += File.separator + "db" + File.separator + DB_FILE_NAME;
+
         if (!currentPath.isEmpty()) {
             LOGGER.info("DB placed in : " + currentPath);
             PM.put(Preference.PATH_TO_DB, currentPath);
         }
-
-
     }
 
     private class DictionaryItem extends JMenuItem implements ActionListener {
