@@ -27,10 +27,11 @@
     <class>com.drowltd.spellbook.core.model.RemoteDictionaryEntry</class>
     <class>com.drowltd.spellbook.core.model.UpdateEntry</class>
     <class>com.drowltd.spellbook.core.model.RemoteDictionary</class>
+    <class>com.drowltd.spellbook.core.model.RevisionEntry</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
-      <!--<property name="hibernate.connection.username" value="spellbook"/>-->
-      <property name="hibernate.connection.username" value="iivalchev"/>
+      <property name="hibernate.connection.username" value="spellbook"/>
+      <!--<property name="hibernate.connection.username" value="iivalchev"/>-->
       <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
       <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
       <property name="hibernate.connection.password" value=""/>
