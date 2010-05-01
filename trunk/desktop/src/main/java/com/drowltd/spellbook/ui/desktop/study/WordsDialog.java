@@ -31,6 +31,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.TableColumn;
 
 /**
  *
@@ -517,9 +518,9 @@ public class WordsDialog extends javax.swing.JDialog {
         wordsForStudy = studyService.getWordsForStudy(studySetName);
         translationsForStudy = studyService.getTranslationsForStudy(studySetName);
 
-        model.setColumnIdentifiers(new String[]{TRANSLATOR.translate("ID(TableColumn)"),
+        model.setColumnIdentifiers(new String[]{"",
                     TRANSLATOR.translate("Word(TableColumn)"), TRANSLATOR.translate("Translation(TableColumn)"),
-                    TRANSLATOR.translate("Selected(TableColumn)")});
+                    ""});
 
         countOFTheWords = studyService.getCountOfTheWords(studySetName);
 
@@ -534,6 +535,29 @@ public class WordsDialog extends javax.swing.JDialog {
                 translationsForTheTable = translationsForStudy.get(i);
             }
             model.addRow(new Object[]{new Integer(i + 1), wordsForStudy.get(i), translationsForTheTable, select});
+        }
+        setPreferredColumnWidth();
+    }
+
+    private void setPreferredColumnWidth() {
+        TableColumn column;
+        for (int i = 0; i < 4; i++) {
+            column = wordsTable.getColumnModel().getColumn(i);
+            if (i == 0) {
+                column.setMinWidth(1);
+                column.setMaxWidth(35);
+                column.setPreferredWidth(31);
+            }
+            if (i == 1) {
+                column.setMinWidth(1);
+                column.setMaxWidth(150);
+                column.setPreferredWidth(100);
+            }
+            if (i == 3) {
+                column.setMinWidth(1);
+                column.setMaxWidth(25);
+                column.setPreferredWidth(16);
+            }
         }
     }
 }
