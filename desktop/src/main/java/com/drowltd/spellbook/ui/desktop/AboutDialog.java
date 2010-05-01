@@ -196,18 +196,19 @@ public class AboutDialog extends javax.swing.JDialog {
 
     private void creditsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_creditsButtonActionPerformed
         String team = String.format("<html>\n  <head>\n\n  </head>\n  <body>\n    <p style=\"margin-top: 0\"; style=\"text-align:center\">\n"
-                + "\n\t %s <br />"
+                + "\n\t <b>%s</b> <br />"
                 + "\n\t <a href=\"mailto:bozhidar@drowltd.com?subject=Spellbook\">%s</a> <br />"
-                + "\n\t %s <br />"
+                + "\n\t <b>%s</b> <br />"
                 + "\n\t <a href=\"mailto:iivalchev@gmail.com?subject=Spellbook\">%s</a> <br />"
-                + "\n\t %s <br />"
+                + "\n\t <b>%s</b> <br />"
                 + "\n\t <a \nhref=\"mailto:frankeys89@gmail.com?subject=Spellbook\">%s</a> <br />"
                 + "\n\t <a href=\"mailto:mireflame@gmail.com?subject=Spellbook\">%s</a> <br />"
                 + "\n\t <a \nhref=\"mailto:george.angelow@gmail.com?subject=Spellbook\">%s</a> <br />"
                 + "\n\t <a href=\"mailto:bmeshkova@gmail.com?subject=Spellbook\">%s</a> <br />"
                 + "\n\t <a \nhref=\"mailto:cvetie@abv.bg?subject=Spellbook\">%s</a> <br />"
-                + "\n\t <a href=\"mailto:nikolay@dimitrovi.net?subject=Spellbook\">%s</a> <br />"
-                + "\n\t %s <br />"
+                + "\n\t <b>%s</b> <br /> "
+                + "\n\t <a href=\"mailto:AlexanderNikolovNikolov@gmail.com?subject=Spellbook\">%s</a> <br />"
+                + "\n\t <b>%s</b> <br />"
                 + "\n\t <a href=\"mailto:strannika@gmail.com?subject=Spellbook\">%s</a> <br />"
                 + "\n\t   \n\t</p>\n\t\n  </body>\n</html>\n",
                 TRANSLATOR.translate("ProjectLead"),
@@ -220,7 +221,8 @@ public class AboutDialog extends javax.swing.JDialog {
                 TRANSLATOR.translate("GeorgiAngelov"),
                 TRANSLATOR.translate("BilyanaMeshkova"),
                 TRANSLATOR.translate("TsvetelinaNikolova"),
-                TRANSLATOR.translate("NikolayDimitrov"),
+                TRANSLATOR.translate("StudyModule"),
+                TRANSLATOR.translate("AlexanderNikolov"),
                 TRANSLATOR.translate("AboutDialog"),
                 TRANSLATOR.translate("AlexanderValchev"));
 
