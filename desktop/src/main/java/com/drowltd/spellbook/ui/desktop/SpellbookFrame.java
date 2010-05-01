@@ -52,7 +52,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private static final PreferencesManager PM = PreferencesManager.getInstance();
     private List<String> words;
     private ClipboardIntegration clipboardIntegration;
-    private String lastTransfer;
     private ScheduledExecutorService clipboardExecutorService;
     private ScheduledExecutorService memoryUsageExecutorService;
     private TrayIcon trayIcon;
@@ -405,7 +404,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
         deleteWordMenuItem.setEnabled(false);
         wordTranslationTextPane.setText(null);
         statusButton.setIcon(IconManager.getImageIcon("bell2_grey.png", IconSize.SIZE24));
-        lastTransfer = null;
 
         clearButton.setEnabled(false);
     }
@@ -423,18 +421,15 @@ public class SpellbookFrame extends javax.swing.JFrame {
                 public void run() {
                     String transferredText = clipboardIntegration.getClipboardContents().trim();
 
-                    if (lastTransfer == null) {
-                        lastTransfer = transferredText;
-                    }
+                    clipboardIntegration.setClipboardContents("");
 
-                    if (!transferredText.equalsIgnoreCase(lastTransfer)) {
+                    if (!transferredText.isEmpty()) {
                         LOGGER.info("'" + transferredText + "' received from clipboard");
                         String searchString = transferredText.split("\\W")[0].toLowerCase();
                         String foundWord = "";
                         LOGGER.info("Search string from clipboard is " + searchString);
                         wordSearchField.setText(searchString);
                         wordSearchField.selectAll();
-                        lastTransfer = transferredText;
 
                         String approximation;
                         boolean match = false;
@@ -696,9 +691,13 @@ public class SpellbookFrame extends javax.swing.JFrame {
                 }
             } else {
                 try {
-                    BufferedInputStream in = new BufferedInputStream(new URL("http://spellbook-dictionary.googlecode.com/files/dictionary-db.tar.bz2").openStream());
+                    URL dbUrl = new URL("http://spellbook-dictionary.googlecode.com/files/dictionary-db.tar.bz2");
+
+                    final int contentLength = dbUrl.openConnection().getContentLength();
+
+                    final BufferedInputStream in = new BufferedInputStream(new URL("http://spellbook-dictionary.googlecode.com/files/dictionary-db.tar.bz2").openStream());
                     FileOutputStream fos = new FileOutputStream(COMPRESSED_DB_NAME);
-                    BufferedOutputStream bout = new BufferedOutputStream(fos, 1024);
+                    final BufferedOutputStream bout = new BufferedOutputStream(fos, 1024);
                     byte[] data = new byte[1024];
                     int x = 0;
                     LOGGER.info("Downloading db ...");
