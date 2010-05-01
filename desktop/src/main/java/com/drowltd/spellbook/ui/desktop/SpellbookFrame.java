@@ -1,60 +1,41 @@
 package com.drowltd.spellbook.ui.desktop;
 
-import com.drowltd.spellbook.ui.swing.util.SwingUtil;
-import com.drowltd.spellbook.ui.swing.util.IconManager;
-import com.drowltd.spellbook.ui.swing.model.ListBackedListModel;
-import com.drowltd.spellbook.ui.desktop.exam.ExamDialog;
 import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.core.service.DictionaryService;
-import com.drowltd.spellbook.ui.swing.util.IconManager.IconSize;
+import com.drowltd.spellbook.ui.desktop.exam.ExamDialog;
 import com.drowltd.spellbook.ui.desktop.spellcheck.SpellCheckFrame;
 import com.drowltd.spellbook.ui.desktop.study.StudyWordsDialog;
+import com.drowltd.spellbook.ui.swing.model.ListBackedListModel;
+import com.drowltd.spellbook.ui.swing.util.IconManager;
+import com.drowltd.spellbook.ui.swing.util.IconManager.IconSize;
+import com.drowltd.spellbook.ui.swing.util.SwingUtil;
 import com.drowltd.spellbook.util.SearchUtils;
 import com.jidesoft.hints.ListDataIntelliHints;
 import com.jidesoft.swing.FolderChooser;
+import org.apache.tools.bzip2.CBZip2InputStream;
 import org.apache.tools.tar.TarEntry;
 import org.apache.tools.tar.TarInputStream;
-import java.awt.EventQueue;
-import java.awt.Font;
-import java.awt.HeadlessException;
-import java.awt.Rectangle;
-import java.awt.TrayIcon;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.*;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.DefaultEditorKit;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.text.DefaultEditorKit;
-import org.apache.tools.bzip2.CBZip2InputStream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preference;
 
@@ -448,7 +429,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
                     if (!transferredText.equalsIgnoreCase(lastTransfer)) {
                         LOGGER.info("'" + transferredText + "' received from clipboard");
-                        String searchString = transferredText.split("\\PL")[0].toLowerCase();
+                        String searchString = transferredText.split("\\W")[0].toLowerCase();
                         String foundWord = "";
                         LOGGER.info("Search string from clipboard is " + searchString);
                         wordSearchField.setText(searchString);
