@@ -203,9 +203,6 @@
               <ResourceString bundle="i18n/AboutDialog.properties" key="Multiplatform" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
-          <AccessibilityProperties>
-            <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value="text/html"/>
-          </AccessibilityProperties>
           <Events>
             <EventHandler event="hyperlinkUpdate" listener="javax.swing.event.HyperlinkListener" parameters="javax.swing.event.HyperlinkEvent" handler="infoTextPaneHyperlinkUpdate"/>
           </Events>

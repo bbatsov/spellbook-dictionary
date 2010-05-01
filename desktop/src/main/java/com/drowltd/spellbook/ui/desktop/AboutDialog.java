@@ -227,6 +227,7 @@ public class AboutDialog extends javax.swing.JDialog {
                 TRANSLATOR.translate("AlexanderValchev"));
 
         infoTextPane.setText(team);
+        infoTextPane.setCaretPosition(0);
     }//GEN-LAST:event_creditsButtonActionPerformed
 
     private void infoTextPaneHyperlinkUpdate(javax.swing.event.HyperlinkEvent evt) {//GEN-FIRST:event_infoTextPaneHyperlinkUpdate
