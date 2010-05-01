@@ -3,7 +3,6 @@ package com.drowltd.spellbook.ui.desktop;
 import com.drowltd.spellbook.ui.swing.util.SwingUtil;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.drowltd.spellbook.ui.swing.model.ListBackedListModel;
-import com.drowltd.spellbook.ui.swing.component.AutocompletingTextField;
 import com.drowltd.spellbook.ui.desktop.exam.ExamDialog;
 import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.model.Dictionary;
@@ -14,6 +13,7 @@ import com.drowltd.spellbook.ui.swing.util.IconManager.IconSize;
 import com.drowltd.spellbook.ui.desktop.spellcheck.SpellCheckFrame;
 import com.drowltd.spellbook.ui.desktop.study.StudyWordsDialog;
 import com.drowltd.spellbook.util.SearchUtils;
+import com.jidesoft.hints.ListDataIntelliHints;
 import org.apache.tools.tar.TarEntry;
 import org.apache.tools.tar.TarInputStream;
 import java.awt.EventQueue;
@@ -23,8 +23,6 @@ import java.awt.Rectangle;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
@@ -147,10 +145,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
         // restore the divider location from the last session
         splitPane.setDividerLocation(PM.getInt(Preference.DIVIDER_LOCATION, 160));
 
-        // we need to pass the completable search field a reference to the word list
-        ((AutocompletingTextField) wordSearchField).setWordsList(wordsList);
-        ((AutocompletingTextField) wordSearchField).setOwner(this);
-
         updateDictionaryButton(selectedDictionary);
 
         // update word menu item is initially disabled
@@ -170,6 +164,10 @@ public class SpellbookFrame extends javax.swing.JFrame {
         cutMenuItem.setEnabled(false);
         copyButton.setEnabled(false);
         copyButton.setEnabled(false);
+
+        // setup intellihints for words search field
+        ListDataIntelliHints<String> intelliHints = new ListDataIntelliHints<String>(wordSearchField, searchedWords);
+        intelliHints.setCaseSensitive(false);
 
         setDefaultFont();
 
@@ -297,17 +295,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
                 } else {
                     copyButton.setEnabled(false);
                     copyButton.setEnabled(false);
-                }
-            }
-        });
-
-        // we have update the completion window's position when the frame moves
-        addComponentListener(new ComponentAdapter() {
-
-            @Override
-            public void componentMoved(ComponentEvent e) {
-                if (wordSearchField.hasFocus()) {
-                    ((AutocompletingTextField) wordSearchField).showCompletions();
                 }
             }
         });
@@ -563,11 +550,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
     private void onWordSearchFieldAction() {
         wordSearchField.selectAll();
-        AutocompletingTextField completableJTextField = (AutocompletingTextField) wordSearchField;
         if (exactMatch) {
             LOGGER.info("Attempting to add " + wordSearchField.getText() + " to completions list");
-            
-            completableJTextField.addCompletion(wordSearchField.getText());
             
             // don't add consecutively the same word
             if (searchedWords.isEmpty() || !searchedWords.get(searchedWords.size() - 1).equals(wordSearchField.getText())) {
@@ -781,7 +765,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         wordsList = new javax.swing.JList();
-        wordSearchField = new AutocompletingTextField();
+        wordSearchField = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         wordTranslationTextPane = new javax.swing.JTextPane();
@@ -884,7 +868,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 592, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1069,7 +1053,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jToolBar1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 778, Short.MAX_VALUE)
+                    .addComponent(jToolBar1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 778, Short.MAX_VALUE)
                     .addComponent(splitPane, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 778, Short.MAX_VALUE))
                 .addContainerGap())
         );
