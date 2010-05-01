@@ -14,6 +14,7 @@ import com.drowltd.spellbook.ui.desktop.spellcheck.SpellCheckFrame;
 import com.drowltd.spellbook.ui.desktop.study.StudyWordsDialog;
 import com.drowltd.spellbook.util.SearchUtils;
 import com.jidesoft.hints.ListDataIntelliHints;
+import com.jidesoft.swing.FolderChooser;
 import org.apache.tools.tar.TarEntry;
 import org.apache.tools.tar.TarInputStream;
 import java.awt.EventQueue;
@@ -552,7 +553,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         wordSearchField.selectAll();
         if (exactMatch) {
             LOGGER.info("Attempting to add " + wordSearchField.getText() + " to completions list");
-            
+
             // don't add consecutively the same word
             if (searchedWords.isEmpty() || !searchedWords.get(searchedWords.size() - 1).equals(wordSearchField.getText())) {
                 searchedWords.add(wordSearchField.getText());
@@ -660,9 +661,9 @@ public class SpellbookFrame extends javax.swing.JFrame {
             ex.printStackTrace();
         }
 
-        if (!file.exists()) {
+        if (!file.exists() || file.isDirectory()) {
 
-            LOGGER.info("Checking for archivied db ...");
+            LOGGER.info("Checking for archived db ...");
 
             File archiviedDbFile = new File(currentPath);
 
@@ -673,54 +674,64 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
             }
 
-            if (dbPath.isEmpty()) {
+            Object[] options = {"Download from internet!",
+                "Find in the filesystem!",};
 
-                Object[] options = {"Download from internet!",
-                    "Find in the filesystem!",};
+            int choice = JOptionPane.showOptionDialog(null, "What to do?", "Missing Db!", JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 
-                int choice = JOptionPane.showOptionDialog(null, "What to do?", "Missing Db!", JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+            if (choice == 1) {
+                FolderChooser folderChooser = new FolderChooser();
+                folderChooser.setFileHidingEnabled(true); // show hidden folders
+                int result = folderChooser.showOpenDialog(this);
 
-                // JOptionPane.showMessageDialog(null, TRANSLATOR.translate("MissingDb(Message)"));
-                if (choice == 1) {
-                    JFileChooser fileChooser = new JFileChooser();
-                    final int result = fileChooser.showDialog(null, TRANSLATOR.translate("SelectDb(Title)"));
+                if (result == FolderChooser.APPROVE_OPTION) {
+                    String selectedDbFolderPath = folderChooser.getSelectedFile().getPath();
 
-                    if (result == JFileChooser.APPROVE_OPTION) {
-                        String selectedDbPath = fileChooser.getSelectedFile().getPath();
+                    File dbFile = new File(selectedDbFolderPath + File.separator + COMPRESSED_DB_NAME);
 
-                        if (selectedDbPath.endsWith(COMPRESSED_DB_NAME)) {
-                            extractDbFromArchive(selectedDbPath);
-                            return true;
-                        } else if (selectedDbPath.endsWith(DB_FILE_NAME)) {
-                            PM.put(Preference.PATH_TO_DB, selectedDbPath);
-                            return true;
-                        } else {
-                            return false;
-                        }
+                    LOGGER.info("Looking for compressed spellbook database " + dbFile.getPath());
+
+                    if (dbFile.exists()) {
+                        extractDbFromArchive(dbFile.getPath());
+
+                        return true;
+                    }
+
+                    dbFile = new File(selectedDbFolderPath + File.separator + DB_FILE_NAME);
+
+                    LOGGER.info("Looking for spellbook db " + dbFile.getPath());
+
+                    if (dbFile.exists()) {
+                        PM.put(Preference.PATH_TO_DB, dbFile.getPath());
+
+                        return true;
                     } else {
                         return false;
                     }
                 } else {
-                    try {
-                        BufferedInputStream in = new BufferedInputStream(new URL("http://spellbook-dictionary.googlecode.com/files/dictionary-db.tar.bz2").openStream());
-                        FileOutputStream fos = new FileOutputStream(COMPRESSED_DB_NAME);
-                        BufferedOutputStream bout = new BufferedOutputStream(fos, 1024);
-                        byte[] data = new byte[1024];
-                        int x = 0;
-                        LOGGER.info("Downloading db ...");
-                        while ((x = in.read(data, 0, 1024)) >= 0) {
-                            bout.write(data, 0, x);
-                        }
-                        bout.close();
-                        in.close();
-                    } catch (FileNotFoundException e) {
-                    } catch (IOException ex) {
-                    }
-
-                    extractDbFromArchive(currentPath);
+                    return false;
                 }
+            } else {
+                try {
+                    BufferedInputStream in = new BufferedInputStream(new URL("http://spellbook-dictionary.googlecode.com/files/dictionary-db.tar.bz2").openStream());
+                    FileOutputStream fos = new FileOutputStream(COMPRESSED_DB_NAME);
+                    BufferedOutputStream bout = new BufferedOutputStream(fos, 1024);
+                    byte[] data = new byte[1024];
+                    int x = 0;
+                    LOGGER.info("Downloading db ...");
+                    while ((x = in.read(data, 0, 1024)) >= 0) {
+                        bout.write(data, 0, x);
+                    }
+                    bout.close();
+                    in.close();
+                } catch (FileNotFoundException e) {
+                } catch (IOException ex) {
+                }
+
+                extractDbFromArchive(currentPath);
             }
+
         }
         return true;
     }
