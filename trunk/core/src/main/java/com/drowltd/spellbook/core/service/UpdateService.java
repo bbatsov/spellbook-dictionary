@@ -8,6 +8,7 @@ import com.drowltd.spellbook.core.model.LastUpdateEntity;
 import com.drowltd.spellbook.core.model.RankEntry;
 import com.drowltd.spellbook.core.model.RemoteDictionary;
 import com.drowltd.spellbook.core.model.RemoteDictionaryEntry;
+import com.drowltd.spellbook.core.model.RevisionEntry;
 import com.drowltd.spellbook.core.model.UncommittedEntries;
 import com.drowltd.spellbook.core.model.UpdateEntry;
 import java.sql.DriverManager;
@@ -15,6 +16,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
@@ -47,15 +49,15 @@ public class UpdateService extends AbstractPersistenceService {
         initRemoteEntityManager();
     }
 
-    private UpdateService(String userName, String password) throws AuthenticationException, UpdateServiceException{
-        initRemoteEntityManager(userName,password);
+    private UpdateService(String userName, String password) throws AuthenticationException, UpdateServiceException {
+        initRemoteEntityManager(userName, password);
     }
 
     public static UpdateService getInstance() throws UpdateServiceException {
         return new UpdateService();
     }
 
-    public static UpdateService getInstance(String userName, String password) throws AuthenticationException, UpdateServiceException{
+    public static UpdateService getInstance(String userName, String password) throws AuthenticationException, UpdateServiceException {
         return new UpdateService(userName, password);
     }
 
@@ -170,7 +172,7 @@ public class UpdateService extends AbstractPersistenceService {
                 latestDate = updateEntry.getCreated();
             }
             //get all RemoteDictionaryEntries in the current UpdateEntry
-            List<RemoteDictionaryEntry> remoteDictionaryEntries = EM_REMOTE.createNamedQuery("UpdateEntry.getRemoteEntries").setParameter("updateEntry", updateEntry).getResultList();
+            Set<RemoteDictionaryEntry> remoteDictionaryEntries = updateEntry.getRemoteDictionaryEntries();
             if (remoteDictionaryEntries.isEmpty()) {
                 LOGGER.info("No remoteDictionaryEntries found");
                 throw new IllegalStateException("No remoteDictionaryEntries found");
@@ -199,23 +201,29 @@ public class UpdateService extends AbstractPersistenceService {
                     continue;
                 }
 
+                //Getting the last revision
+                RevisionEntry revisionEntry = EM_REMOTE.createNamedQuery("RemoteDictionaryEntry.getLastRevision", RevisionEntry.class).setParameter("remoteDictionaryEntry", entry).getSingleResult();
+
                 try {
                     service.getTranslation(entry.getWord(), dictionary);
 
                     //Checking if the dictionary entry translation is being updated
                     DictionaryEntry de = (DictionaryEntry) EM.createQuery("select de from DictionaryEntry de where de.word = :word and de.dictionary = :dictionary").setParameter("word", entry.getWord()).setParameter("dictionary", dictionary).getSingleResult();
-                    de.setTranslation(entry.getTranslation());
+
+                    //@todo here must check for conflicts with uncommited entries
+
+                    de.setTranslation(revisionEntry.getTranslation());
 
                     LOGGER.info("updating DictionaryEntry");
                     EM.persist(de);
                 } catch (NoResultException e) {
 
                     //Not an update adding new dictionary entry
-                    DictionaryEntry de = entry.toDictionaryEntry();
+                    DictionaryEntry de = revisionEntry.toDictionaryEntry();
                     de.setDictionary(dictionary);
 
                     //Adding RankEntry
-                    RankEntry re = entry.toRankEntry();
+                    RankEntry re = revisionEntry.toRankEntry();
 
                     LOGGER.info("adding DictionaryEntry");
                     EM.persist(de);
@@ -234,28 +242,38 @@ public class UpdateService extends AbstractPersistenceService {
             return;
         }
         UncommittedEntries uncommitted = DictionaryService.getInstance().getUncommitted();
-        
+
         initRemoteDictMap();
 
         EM_REMOTE.getTransaction().begin();
 
         UpdateEntry updateEntry = new UpdateEntry();
         EM_REMOTE.persist(updateEntry);
-        
+
         for (DictionaryEntry de : uncommitted.getDictionaryEntries()) {
-            RemoteDictionaryEntry rde = new RemoteDictionaryEntry();
-            rde.setWord(de.getWord());
-            rde.setTranslation(de.getTranslation());
-            rde.setUpdateEntry(updateEntry);
+            RemoteDictionaryEntry rde;
+            try {
+                rde = EM_REMOTE.createNamedQuery("RemoteDictionaryEntry.getRemoteDictionaryEntry", RemoteDictionaryEntry.class).setParameter("word", de.getWord()).getSingleResult();
+            } catch (NoResultException e) {
+                rde = new RemoteDictionaryEntry();
+                rde.setWord(de.getWord());
+            }
+
+            RevisionEntry revisionEntry = new RevisionEntry();
+            revisionEntry.setTranslation(de.getTranslation());
+            revisionEntry.setRemoteDictionaryEntry(rde);
+
+            updateEntry.addRemoteDictionaryEntry(rde);
 
             //We don't treat a case where we don't hava the dictionary in the remote db
             assert remoteDictMap.get(de.getDictionary().getName()) != null : "dictionary not in the remote db";
             rde.setRemoteDictionary(remoteDictMap.get(de.getDictionary().getName()));
-            
+
             EM_REMOTE.persist(rde);
+            EM_REMOTE.persist(revisionEntry);
         }
 
-        
+
         EM_REMOTE.getTransaction().commit();
 
         uncommitted.setCommitted(true);
@@ -263,5 +281,9 @@ public class UpdateService extends AbstractPersistenceService {
         EM.getTransaction().begin();
         EM.merge(uncommitted);
         EM.getTransaction().commit();
+    }
+
+    public static EntityManager getEM_REMOTE() {
+        return EM_REMOTE;
     }
 }

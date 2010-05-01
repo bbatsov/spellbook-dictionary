@@ -1,10 +1,12 @@
 package com.drowltd.spellbook.core.model;
 
+import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -23,8 +25,8 @@ public class RemoteDictionary extends AbstractEntity {
 
     @Column(nullable = false)
     private String name;
-    @OneToMany(mappedBy = "remoteDictionary")
-    private Set<RemoteDictionaryEntry> remoteDictionaryEntries;
+    @OneToMany(mappedBy = "remoteDictionary", fetch=FetchType.LAZY)
+    private Set<RemoteDictionaryEntry> remoteDictionaryEntries = new HashSet<RemoteDictionaryEntry>();
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "from_language")
     private Language fromLanguage;
