@@ -6,9 +6,15 @@ import org.apache.tools.tar.TarInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
+ * A simple util class for dealing with archives.
+ *
  * @author Miroslava Stancheva
  * @author Bozhidar Batsov
  *
@@ -20,6 +26,12 @@ public class ArchiveUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ArchiveUtils.class);
 
+    /**
+     * Extract a tar.bz2 archive.
+     *
+     * @param pathToArchive the full path to the file to be extracted
+     * @return the full path to the extracted file
+     */
     public static String extractDbFromArchive(String pathToArchive) {
         // Get the current path, where the database will be extracted
         String currentPath = "";
