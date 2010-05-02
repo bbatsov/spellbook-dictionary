@@ -4,12 +4,30 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jidesoft.swing.FolderChooser;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
+import javax.swing.ProgressMonitor;
+import javax.swing.SwingWorker;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
 
 public class DownloadDialog extends JDialog implements PropertyChangeListener {
@@ -18,8 +36,8 @@ public class DownloadDialog extends JDialog implements PropertyChangeListener {
     private JButton buttonCancel;
     private JButton downloadButton;
     private JButton changeFolderButton;
-    private JLabel downloadUrlLabel;
-    private JLabel downloadFolderLabel;
+    private JTextField downloadUrlTextField;
+    private JTextField downloadFolderTextField;
     private ProgressMonitor progressMonitor;
     private Task task;
     private boolean ok;
@@ -37,7 +55,7 @@ public class DownloadDialog extends JDialog implements PropertyChangeListener {
 
         try {
             downloadFolder = currentDir.getCanonicalPath();
-            downloadFolderLabel.setText(downloadFolder);
+            downloadFolderTextField.setText(downloadFolder);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -83,7 +101,7 @@ public class DownloadDialog extends JDialog implements PropertyChangeListener {
 
                 if (result == FolderChooser.APPROVE_OPTION) {
                     downloadFolder = folderChooser.getSelectedFolder().getAbsolutePath();
-                    downloadFolderLabel.setText(downloadFolder);
+                    downloadFolderTextField.setText(downloadFolder);
                 }
             }
         });
@@ -120,7 +138,7 @@ public class DownloadDialog extends JDialog implements PropertyChangeListener {
 
     public boolean showDialog(String url) {
         this.url = url;
-        downloadUrlLabel.setText(url);
+        downloadUrlTextField.setText(url);
         progressMonitor = new ProgressMonitor(this, "Downloading url " + url, "Downloading", 0, 100);
 
         pack();
@@ -179,12 +197,12 @@ public class DownloadDialog extends JDialog implements PropertyChangeListener {
         changeFolderButton = new JButton();
         changeFolderButton.setText("Change folder");
         panel3.add(changeFolderButton, cc.xy(5, 3));
-        downloadUrlLabel = new JLabel();
-        downloadUrlLabel.setText("Label");
-        panel3.add(downloadUrlLabel, cc.xy(3, 1, CellConstraints.LEFT, CellConstraints.DEFAULT));
-        downloadFolderLabel = new JLabel();
-        downloadFolderLabel.setText("Label");
-        panel3.add(downloadFolderLabel, cc.xy(3, 3));
+        downloadUrlTextField = new JTextField();
+        downloadUrlTextField.setEditable(false);
+        panel3.add(downloadUrlTextField, cc.xy(3, 1, CellConstraints.FILL, CellConstraints.DEFAULT));
+        downloadFolderTextField = new JTextField();
+        downloadFolderTextField.setEditable(false);
+        panel3.add(downloadFolderTextField, cc.xy(3, 3, CellConstraints.FILL, CellConstraints.DEFAULT));
     }
 
     /**
