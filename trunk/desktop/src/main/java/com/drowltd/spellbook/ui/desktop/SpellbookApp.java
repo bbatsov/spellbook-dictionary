@@ -1,10 +1,9 @@
 package com.drowltd.spellbook.ui.desktop;
 
-import com.drowltd.spellbook.core.preferences.PreferencesManager;
-import com.drowltd.spellbook.core.exception.SpellbookDefaultExceptionHandler;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.Language;
-import java.awt.Dimension;
+import com.drowltd.spellbook.core.preferences.PreferencesManager;
+import com.drowltd.spellbook.ui.swing.component.SpellbookDefaultExceptionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,6 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.util.Locale;

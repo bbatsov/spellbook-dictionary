@@ -1316,6 +1316,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
     private void deleteWordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteWordButtonActionPerformed
         deleteWordDefinition();
+        throw new NullPointerException("test");
     }//GEN-LAST:event_deleteWordButtonActionPerformed
 
     private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearButtonActionPerformed
