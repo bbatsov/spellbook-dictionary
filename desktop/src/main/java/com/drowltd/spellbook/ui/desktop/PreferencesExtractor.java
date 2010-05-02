@@ -7,16 +7,17 @@ package com.drowltd.spellbook.ui.desktop;
 import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
-import java.awt.Font;
-import java.util.logging.Level;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.awt.Font;
+import java.util.logging.Level;
 
 import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preference;
 
@@ -75,10 +76,8 @@ public class PreferencesExtractor {
             final boolean clipboardIntegrationEnabled = preferencesDialog.isClipboardIntegrationEnabled();
 
             if (clipboardIntegrationEnabled) {
-                spellbookFrame.activateClipboardMonitoring();
                 LOGGER.info("Clipboard integration is enabled");
             } else {
-                spellbookFrame.shutdownClipboardMonitoring();
                 LOGGER.info("Clipboard integration is disabled");
             }
 

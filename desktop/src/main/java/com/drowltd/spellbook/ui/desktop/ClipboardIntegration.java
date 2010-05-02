@@ -1,20 +1,33 @@
 package com.drowltd.spellbook.ui.desktop;
 
-import java.awt.*;
-import java.awt.datatransfer.*;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public final class ClipboardIntegration implements ClipboardOwner {
-    private boolean firstRun = true;
+    private SpellbookFrame spellbookFrame;
+
+    public ClipboardIntegration(SpellbookFrame spellbookFrame) {
+        this.spellbookFrame = spellbookFrame;
+    }
 
     /**
      * Empty implementation of the ClipboardOwner interface.
      */
     @Override
     public void lostOwnership(Clipboard clipboard, Transferable contents) {
-        //do nothing
+        System.out.println("Clipboard contents replaced");
+
+        spellbookFrame.clipboardCallback();
+
+        setClipboardContents(getClipboardContents());
     }
 
     /**
@@ -36,8 +49,6 @@ public final class ClipboardIntegration implements ClipboardOwner {
      *         empty String.
      */
     public String getClipboardContents() {
-        // ignore the contents that were in the clipboard before we started Spellbook
-        if (!firstRun) {
             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 
             final DataFlavor stringFlavor = DataFlavor.stringFlavor;
@@ -55,9 +66,7 @@ public final class ClipboardIntegration implements ClipboardOwner {
                     Logger.getLogger(ClipboardIntegration.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        } else {
-            firstRun = false;
-        }
+
 
         return "";
     }
