@@ -41,6 +41,7 @@ public class UpdateService extends AbstractPersistenceService {
     protected static EntityManager EM_REMOTE;
     private static Logger LOGGER = LoggerFactory.getLogger(UpdateService.class);
     private static boolean isAuthenticated = false;
+    private ConflictHandler handler;
 
     private UpdateService() throws UpdateServiceException {
         if (EM == null) {
@@ -210,9 +211,16 @@ public class UpdateService extends AbstractPersistenceService {
                     //Checking if the dictionary entry translation is being updated
                     DictionaryEntry de = (DictionaryEntry) EM.createQuery("select de from DictionaryEntry de where de.word = :word and de.dictionary = :dictionary").setParameter("word", entry.getWord()).setParameter("dictionary", dictionary).getSingleResult();
 
-                    //@todo here must check for conflicts with uncommited entries
+                    UncommittedEntries uncommitted = DictionaryService.getInstance().getUncommitted();
 
-                    de.setTranslation(revisionEntry.getTranslation());
+                    String translation = null;
+                    if (uncommitted.getDictionaryEntries().contains(de) && handler != null) {
+                        translation = handler.handle(de.getTranslation(), revisionEntry.getTranslation());
+                    } else {
+                        translation = revisionEntry.getTranslation();
+                    }
+
+                    de.setTranslation(translation);
 
                     LOGGER.info("updating DictionaryEntry");
                     EM.persist(de);
@@ -285,5 +293,17 @@ public class UpdateService extends AbstractPersistenceService {
 
     public static EntityManager getEM_REMOTE() {
         return EM_REMOTE;
+    }
+
+    public void setHandler(ConflictHandler handler) {
+        if (handler == null) {
+            return;
+        }
+        this.handler = handler;
+    }
+
+    public static interface ConflictHandler {
+
+        String handle(String base, String remote);
     }
 }
