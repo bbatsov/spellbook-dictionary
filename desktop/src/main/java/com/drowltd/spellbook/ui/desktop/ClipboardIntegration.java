@@ -23,6 +23,11 @@ public final class ClipboardIntegration implements ClipboardOwner {
      */
     @Override
     public void lostOwnership(Clipboard clipboard, Transferable contents) {
+        try {
+            Thread.currentThread().sleep(200);
+        } catch (Exception e) {
+            System.out.println("Exception: " + e);
+        }
         System.out.println("Clipboard contents replaced");
 
         spellbookFrame.clipboardCallback();
