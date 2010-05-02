@@ -1,5 +1,8 @@
 package com.drowltd.spellbook.ui.desktop;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
@@ -8,10 +11,10 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public final class ClipboardIntegration implements ClipboardOwner {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClipboardIntegration.class);
+
     private SpellbookFrame spellbookFrame;
 
     public ClipboardIntegration(SpellbookFrame spellbookFrame) {
@@ -19,19 +22,25 @@ public final class ClipboardIntegration implements ClipboardOwner {
     }
 
     /**
-     * Empty implementation of the ClipboardOwner interface.
+     * A nasty hack occurs here - Spellbook uses this method to get notified of sys clipboard
+     * changes by grabbing its ownership and waiting to other apps to request it.
      */
     @Override
     public void lostOwnership(Clipboard clipboard, Transferable contents) {
         try {
-            Thread.currentThread().sleep(200);
+            // this delay in necessary - otherwise all sort of nasty things happen
+            Thread.sleep(300);
         } catch (Exception e) {
             System.out.println("Exception: " + e);
         }
-        System.out.println("Clipboard contents replaced");
 
+        LOGGER.info("Clipboard ownership lost");
+
+        // call the frame callback
         spellbookFrame.clipboardCallback();
 
+        // replace the contents in the clipboard with the same contents
+        // just to restore the ownership to Spellbook
         setClipboardContents(getClipboardContents());
     }
 
@@ -66,9 +75,9 @@ public final class ClipboardIntegration implements ClipboardOwner {
                         return text;
                     }
                 } catch (UnsupportedFlavorException ex) {
-                    Logger.getLogger(ClipboardIntegration.class.getName()).log(Level.SEVERE, null, ex);
+                    ex.printStackTrace();
                 } catch (IOException ex) {
-                    Logger.getLogger(ClipboardIntegration.class.getName()).log(Level.SEVERE, null, ex);
+                    ex.printStackTrace();
                 }
             }
 
