@@ -8,16 +8,15 @@ import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.ui.desktop.exam.ExamDialog;
 import com.drowltd.spellbook.ui.desktop.spellcheck.SpellCheckFrame;
 import com.drowltd.spellbook.ui.desktop.study.StudyWordsDialog;
+import com.drowltd.spellbook.ui.swing.component.DownloadDialog;
 import com.drowltd.spellbook.ui.swing.model.ListBackedListModel;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.drowltd.spellbook.ui.swing.util.IconManager.IconSize;
 import com.drowltd.spellbook.ui.swing.util.SwingUtil;
+import com.drowltd.spellbook.util.ArchiveUtils;
 import com.drowltd.spellbook.util.SearchUtils;
 import com.jidesoft.hints.ListDataIntelliHints;
 import com.jidesoft.swing.FolderChooser;
-import org.apache.tools.bzip2.CBZip2InputStream;
-import org.apache.tools.tar.TarEntry;
-import org.apache.tools.tar.TarInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,8 +28,8 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.DefaultEditorKit;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
-import java.net.URL;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -61,8 +60,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private static final int BYTES_IN_ONE_MEGABYTE = 1024 * 1024;
     private static final String DEFAULT_DB_PATH = "/opt/spellbook/db/";
     private static final String DB_FILE_NAME = "spellbook.data.db";
-    private static final String COMPRESSED_DB_NAME = "dictionary-db.tar.bz2";
-    private static final String ARICHIVIED_DB_NAME = "dictionary-db.tar";
+    private static final String COMPRESSED_DB_NAME = "spellbook-db.tar.bz2";
+    private static final String DB_URL = "http://spellbook-dictionary.googlecode.com/files/spellbook-db.tar.bz2";
     private static DictionaryService dictionaryService;
     private static Dictionary selectedDictionary;
 
@@ -490,7 +489,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
             LOGGER.info("Getting approximation for " + searchKey);
 
-            String word = searchKey;
             final int index = SearchUtils.findInsertionIndex(words, searchKey);
 
             // special consideration must be take if the insertion index is past the last index
@@ -631,7 +629,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         try {
             currentPath = new java.io.File(".").getCanonicalPath();
             LOGGER.info("Current path: " + currentPath);
-            currentPath += "\\" + COMPRESSED_DB_NAME;
+            currentPath += File.separator + COMPRESSED_DB_NAME;
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -640,11 +638,12 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
             LOGGER.info("Checking for archived db ...");
 
-            File archiviedDbFile = new File(currentPath);
+            File archivedDbFile = new File(currentPath);
 
-            if (archiviedDbFile.exists()) {
-                LOGGER.info("Found the archivied db in " + currentPath);
-                extractDbFromArchive(currentPath);
+            if (archivedDbFile.exists()) {
+                LOGGER.info("Found the archived db in " + currentPath);
+
+                PM.put(Preference.PATH_TO_DB, ArchiveUtils.extractDbFromArchive(currentPath));
                 return true;
 
             }
@@ -670,7 +669,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
                     LOGGER.info("Looking for compressed spellbook database " + dbFile.getPath());
 
                     if (dbFile.exists()) {
-                        extractDbFromArchive(dbFile.getPath());
+                        PM.put(Preference.PATH_TO_DB, ArchiveUtils.extractDbFromArchive(currentPath));
 
                         return true;
                     }
@@ -690,27 +689,11 @@ public class SpellbookFrame extends javax.swing.JFrame {
                     return false;
                 }
             } else {
-                try {
-                    URL dbUrl = new URL("http://spellbook-dictionary.googlecode.com/files/dictionary-db.tar.bz2");
+                DownloadDialog downloadDialog = new DownloadDialog();
 
-                    final int contentLength = dbUrl.openConnection().getContentLength();
-
-                    final BufferedInputStream in = new BufferedInputStream(new URL("http://spellbook-dictionary.googlecode.com/files/dictionary-db.tar.bz2").openStream());
-                    FileOutputStream fos = new FileOutputStream(COMPRESSED_DB_NAME);
-                    final BufferedOutputStream bout = new BufferedOutputStream(fos, 1024);
-                    byte[] data = new byte[1024];
-                    int x = 0;
-                    LOGGER.info("Downloading db ...");
-                    while ((x = in.read(data, 0, 1024)) >= 0) {
-                        bout.write(data, 0, x);
-                    }
-                    bout.close();
-                    in.close();
-                } catch (FileNotFoundException e) {
-                } catch (IOException ex) {
+                if (downloadDialog.showDialog(DB_URL)) {
+                    PM.put(Preference.PATH_TO_DB, ArchiveUtils.extractDbFromArchive(downloadDialog.getDownloadPath()));
                 }
-
-                extractDbFromArchive(currentPath);
             }
 
         }
@@ -1471,91 +1454,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         }
     }
 
-    private void extractDbFromArchive(String pathToArchive) {
-        // Get the current path, where the database will be extracted
-        String currentPath = "";
-        try {
-            currentPath = new java.io.File(".").getCanonicalPath();
-        } catch (IOException ex) {
-        }
-        LOGGER.info("Current path: " + currentPath);
-        currentPath += File.separator;
-        try {
-            //Open the archive
-            FileInputStream archiveFileStream = new FileInputStream(pathToArchive);
-            // Read two bytes from the stream before it used by CBZip2InputStream
-            int oneByte;
-            for (int i = 0; i < 2; i++) {
-                oneByte = archiveFileStream.read();
-            }
 
-            // Open the gzip file and open the output file
-            CBZip2InputStream bz2 = new CBZip2InputStream(archiveFileStream);
-            FileOutputStream out = new FileOutputStream(ARICHIVIED_DB_NAME);
-
-            LOGGER.info("Extracting the tar file...");
-            // Transfer bytes from the compressed file to the output file
-            byte[] buffer = new byte[1024];
-            int len;
-            while ((len = bz2.read(buffer)) > 0) {
-                out.write(buffer, 0, len);
-            }
-
-            // Close the file and stream
-            bz2.close();
-            out.close();
-
-        } catch (FileNotFoundException e) {
-        } catch (IOException ex) {
-        }
-
-        try {
-            TarInputStream tarInputStream = null;
-            TarEntry tarEntry;
-            tarInputStream = new TarInputStream(new FileInputStream(ARICHIVIED_DB_NAME));
-
-            tarEntry = tarInputStream.getNextEntry();
-
-            byte[] buf1 = new byte[1024];
-
-            while (tarEntry != null) {
-                //For each entry to be extracted
-                String entryName = currentPath + tarEntry.getName();
-                entryName = entryName.replace('/', File.separatorChar);
-                entryName = entryName.replace('\\', File.separatorChar);
-
-                LOGGER.info("Extracting entry: " + entryName);
-                FileOutputStream fileOutputStream;
-                File newFile = new File(entryName);
-                if (tarEntry.isDirectory()) {
-                    if (!newFile.mkdirs()) {
-                        break;
-                    }
-                    tarEntry = tarInputStream.getNextEntry();
-                    continue;
-                }
-
-                fileOutputStream = new FileOutputStream(entryName);
-                int n;
-                while ((n = tarInputStream.read(buf1, 0, 1024)) > -1) {
-                    fileOutputStream.write(buf1, 0, n);
-                }
-
-                fileOutputStream.close();
-                tarEntry = tarInputStream.getNextEntry();
-
-            }
-            tarInputStream.close();
-        } catch (Exception e) {
-        }
-
-        currentPath += File.separator + "db" + File.separator + DB_FILE_NAME;
-
-        if (!currentPath.isEmpty()) {
-            LOGGER.info("DB placed in : " + currentPath);
-            PM.put(Preference.PATH_TO_DB, currentPath);
-        }
-    }
 
     private class DictionaryItem extends JMenuItem implements ActionListener {
 
