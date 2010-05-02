@@ -78,7 +78,9 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private static DictionaryService dictionaryService;
     private static Dictionary selectedDictionary;
 
-    /** Creates new form SpellbookFrame */
+    /**
+     * Creates new form SpellbookFrame
+     */
     public SpellbookFrame() {
         TRANSLATOR.reset();
 
@@ -424,55 +426,52 @@ public class SpellbookFrame extends javax.swing.JFrame {
     public void clipboardCallback() {
         String transferredText = clipboardIntegration.getClipboardContents().trim();
 
-                    clipboardIntegration.setClipboardContents("");
+        if (!transferredText.isEmpty()) {
+            LOGGER.info("'" + transferredText + "' received from clipboard");
+            String searchString = transferredText.split("\\W")[0].toLowerCase();
+            String foundWord = "";
+            LOGGER.info("Search string from clipboard is " + searchString);
+            wordSearchField.setText(searchString);
+            wordSearchField.selectAll();
 
-                    if (!transferredText.isEmpty()) {
-                        LOGGER.info("'" + transferredText + "' received from clipboard");
-                        String searchString = transferredText.split("\\W")[0].toLowerCase();
-                        String foundWord = "";
-                        LOGGER.info("Search string from clipboard is " + searchString);
-                        wordSearchField.setText(searchString);
-                        wordSearchField.selectAll();
+            String approximation;
+            boolean match = false;
 
-                        String approximation;
-                        boolean match = false;
+            autoCorrectDictionary(searchString);
 
-                        autoCorrectDictionary(searchString);
+            if (words.contains(searchString)) {
+                foundWord = searchString;
+                int index = words.indexOf(foundWord);
 
-                        if (words.contains(searchString)) {
-                            foundWord = searchString;
-                            int index = words.indexOf(foundWord);
+                wordsList.setSelectedIndex(index);
+                wordsList.ensureIndexIsVisible(index);
 
-                            wordsList.setSelectedIndex(index);
-                            wordsList.ensureIndexIsVisible(index);
+                match = true;
 
-                            match = true;
+                statusButton.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
+                statusButton.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
+            } else if ((approximation = getApproximation(searchString)) != null) {
+                foundWord = approximation;
+                int index = words.indexOf(foundWord);
 
-                            statusButton.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
-                            statusButton.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
-                        } else if ((approximation = getApproximation(searchString)) != null) {
-                            foundWord = approximation;
-                            int index = words.indexOf(foundWord);
+                wordsList.setSelectedIndex(index);
+                wordsList.ensureIndexIsVisible(index);
 
-                            wordsList.setSelectedIndex(index);
-                            wordsList.ensureIndexIsVisible(index);
+                match = true;
 
-                            match = true;
+                statusButton.setIcon(IconManager.getImageIcon("bell2_gold.png", IconSize.SIZE24));
+                statusButton.setToolTipText(TRANSLATOR.translate("PartialMatchFound(ToolTip)"));
+            }
 
-                            statusButton.setIcon(IconManager.getImageIcon("bell2_gold.png", IconSize.SIZE24));
-                            statusButton.setToolTipText(TRANSLATOR.translate("PartialMatchFound(ToolTip)"));
-                        }
-
-                        // the tray popup translation should appear is the main frame is either not visible or minimized
-                        if ((trayIcon != null) && match && (!SpellbookFrame.this.isVisible()
-                                || (SpellbookFrame.this.getState() == JFrame.ICONIFIED))
-                                && PM.getBoolean(Preference.TRAY_POPUP, false)) {
-                            trayIcon.displayMessage(foundWord, dictionaryService.getTranslation((String) wordsList.getSelectedValue(), selectedDictionary),
-                                    TrayIcon.MessageType.INFO);
-                        }
-                    }
-                }
-
+            // the tray popup translation should appear is the main frame is either not visible or minimized
+            if ((trayIcon != null) && match && (!SpellbookFrame.this.isVisible()
+                    || (SpellbookFrame.this.getState() == JFrame.ICONIFIED))
+                    && PM.getBoolean(Preference.TRAY_POPUP, false)) {
+                trayIcon.displayMessage(foundWord, dictionaryService.getTranslation((String) wordsList.getSelectedValue(), selectedDictionary),
+                        TrayIcon.MessageType.INFO);
+            }
+        }
+    }
 
 
     public String getApproximation(String searchKey) {
@@ -640,9 +639,9 @@ public class SpellbookFrame extends javax.swing.JFrame {
             }
 
             Object[] options = {TRANSLATOR.translate("DownloadDb(Button)"),
-                TRANSLATOR.translate("SelectDb(Button)")};
+                    TRANSLATOR.translate("SelectDb(Button)")};
 
-            int choice = JOptionPane.showOptionDialog(null, 
+            int choice = JOptionPane.showOptionDialog(null,
                     dbPath.isEmpty() ? TRANSLATOR.translate("SelectDb(Message") : TRANSLATOR.translate("MissingDb(Message)"),
                     TRANSLATOR.translate("SelectDb(Title)"), JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
@@ -717,7 +716,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
     }
 
-    /** This method is called from within the constructor to
+    /**
+     * This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
      * always regenerated by the Form Editor.
@@ -812,16 +812,16 @@ public class SpellbookFrame extends javax.swing.JFrame {
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
-            .addComponent(wordSearchField, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                        .addComponent(wordSearchField, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(wordSearchField, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 412, Short.MAX_VALUE))
+                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(wordSearchField, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 412, Short.MAX_VALUE))
         );
 
         splitPane.setLeftComponent(jPanel2);
@@ -833,12 +833,12 @@ public class SpellbookFrame extends javax.swing.JFrame {
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
+                jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)
+                jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)
         );
 
         splitPane.setRightComponent(jPanel3);
@@ -1015,21 +1015,21 @@ public class SpellbookFrame extends javax.swing.JFrame {
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jToolBar1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 778, Short.MAX_VALUE)
-                    .addComponent(splitPane, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 778, Short.MAX_VALUE))
-                .addContainerGap())
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jToolBar1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 778, Short.MAX_VALUE)
+                                .addComponent(splitPane, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 778, Short.MAX_VALUE))
+                        .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(splitPane, javax.swing.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)
-                .addContainerGap())
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(splitPane, javax.swing.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)
+                        .addContainerGap())
         );
 
         jMenu1.setMnemonic('f');
@@ -1174,12 +1174,12 @@ public class SpellbookFrame extends javax.swing.JFrame {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -1376,6 +1376,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     //Must be called after initComponents in the constructor
+
     private void initDictionaries() {
         dictionaryMenu.removeAll();
 
@@ -1444,7 +1445,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
             dictionaryService.deleteWord(selectedWord, selectedDictionary);
         }
     }
-
 
 
     private class DictionaryItem extends JMenuItem implements ActionListener {
