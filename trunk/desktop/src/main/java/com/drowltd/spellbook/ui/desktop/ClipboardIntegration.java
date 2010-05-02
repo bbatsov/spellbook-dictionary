@@ -1,17 +1,13 @@
 package com.drowltd.spellbook.ui.desktop;
 
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.ClipboardOwner;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.*;
+import java.awt.datatransfer.*;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public final class ClipboardIntegration implements ClipboardOwner {
+    private boolean firstRun = true;
 
     /**
      * Empty implementation of the ClipboardOwner interface.
@@ -40,22 +36,27 @@ public final class ClipboardIntegration implements ClipboardOwner {
      *         empty String.
      */
     public String getClipboardContents() {
-        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        // ignore the contents that were in the clipboard before we started Spellbook
+        if (!firstRun) {
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 
-        final DataFlavor stringFlavor = DataFlavor.stringFlavor;
-        
-        if (clipboard.isDataFlavorAvailable(stringFlavor)) {
-            try {
-                String text = (String) clipboard.getData(stringFlavor);
-                
-                if (text != null) {
-                    return text;
+            final DataFlavor stringFlavor = DataFlavor.stringFlavor;
+
+            if (clipboard.isDataFlavorAvailable(stringFlavor)) {
+                try {
+                    String text = (String) clipboard.getData(stringFlavor);
+
+                    if (text != null) {
+                        return text;
+                    }
+                } catch (UnsupportedFlavorException ex) {
+                    Logger.getLogger(ClipboardIntegration.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(ClipboardIntegration.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            } catch (UnsupportedFlavorException ex) {
-                Logger.getLogger(ClipboardIntegration.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(ClipboardIntegration.class.getName()).log(Level.SEVERE, null, ex);
             }
+        } else {
+            firstRun = false;
         }
 
         return "";
