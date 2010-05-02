@@ -12,6 +12,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JTextPane;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
@@ -26,27 +28,28 @@ import org.slf4j.LoggerFactory;
 public class DiffDialog extends javax.swing.JDialog {
 
     private static Logger LOGGER = LoggerFactory.getLogger(DiffDialog.class);
-    private String baseText;
-    private String remoteText;
+
     private String acceptedText;
 
     /** Creates new form DiffDialog */
-    public DiffDialog(java.awt.Frame parent, boolean modal, String baseText, String remoteText) {
+    public DiffDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
 
+        initComponents();
+        init();
+
+    }
+
+    public DiffDialog diff(String baseText, String remoteText) {
         if (baseText == null || remoteText == null) {
             throw new IllegalArgumentException("baseText == null || remoteText==null");
         }
-
-        this.baseText = baseText;
-        this.remoteText = remoteText;
-
-        initComponents();
-
+        
         jBaseTextPane.setText(baseText);
         jRemoteTextPane.setText(remoteText);
-
         highlightPane(jBaseTextPane, jRemoteTextPane);
+
+        return this;
     }
 
     /** This method is called from within the constructor to
@@ -123,6 +126,24 @@ public class DiffDialog extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
 
+    private void init(){
+        jBaseScrollPane.getViewport().addChangeListener(new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                jRemoteScrollPane.getViewport().setViewPosition(jBaseScrollPane.getViewport().getViewPosition());
+            }
+        });
+
+        jRemoteScrollPane.getViewport().addChangeListener(new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                jBaseScrollPane.getViewport().setViewPosition(jRemoteScrollPane.getViewport().getViewPosition());
+            }
+        });
+    }
+
     List<StringLine> lcs(List<StringLine> base, List<StringLine> remote) {
         return new LCSFinder(base, remote).find();
     }
@@ -139,8 +160,7 @@ public class DiffDialog extends javax.swing.JDialog {
             try {
                 remote.getHighlighter().addHighlight(line.offset, line.offset + line.len, painter);
             } catch (BadLocationException ex) {
-                //Logger.getLogger(DiffDialog.class.getName()).log(Level.SEVERE, null, ex);
-                System.out.println(ex.getMessage());
+                LOGGER.error(ex.getMessage());
             }
         }
 
