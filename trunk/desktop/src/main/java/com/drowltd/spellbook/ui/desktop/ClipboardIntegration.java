@@ -29,7 +29,7 @@ public final class ClipboardIntegration implements ClipboardOwner {
     public void lostOwnership(Clipboard clipboard, Transferable contents) {
         try {
             // this delay in necessary - otherwise all sort of nasty things happen
-            Thread.sleep(300);
+            Thread.sleep(200);
         } catch (Exception e) {
             System.out.println("Exception: " + e);
         }
