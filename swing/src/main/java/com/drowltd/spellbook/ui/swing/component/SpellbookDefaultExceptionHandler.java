@@ -1,9 +1,9 @@
-package com.drowltd.spellbook.core.exception;
+package com.drowltd.spellbook.ui.swing.component;
 
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -41,7 +41,9 @@ public class SpellbookDefaultExceptionHandler implements Thread.UncaughtExceptio
         // or dialog and use it as the parent. In this example, I'm just passing
         // a null owner, which means this dialog may get buried behind
         // some other screen.
-        JOptionPane.showMessageDialog(null, msg);
+        ErrorDialog errorDialog = new ErrorDialog(e);
+
+        errorDialog.setVisible(true);
     }
 
     private void logException(Thread t, Throwable e) {
