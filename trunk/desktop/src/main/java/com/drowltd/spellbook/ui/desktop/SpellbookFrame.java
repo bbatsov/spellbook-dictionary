@@ -20,14 +20,28 @@ import com.jidesoft.swing.FolderChooser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.DefaultEditorKit;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.HeadlessException;
+import java.awt.Rectangle;
+import java.awt.TrayIcon;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,7 +65,6 @@ public class SpellbookFrame extends javax.swing.JFrame {
     private static final PreferencesManager PM = PreferencesManager.getInstance();
     private List<String> words;
     private ClipboardIntegration clipboardIntegration;
-    private ScheduledExecutorService clipboardExecutorService;
     private ScheduledExecutorService memoryUsageExecutorService;
     private TrayIcon trayIcon;
     private boolean exactMatch = false;
@@ -150,15 +163,15 @@ public class SpellbookFrame extends javax.swing.JFrame {
 
         setDefaultFont();
 
-        if (PM.getBoolean(Preference.CLIPBOARD_INTEGRATION, false)) {
-            activateClipboardMonitoring();
-        }
-
         if (PM.getBoolean(Preference.SHOW_MEMORY_USAGE, false)) {
             showMemoryUsage();
         } else {
             hideMemoryUsage();
         }
+
+        // implemented a very nasty clipboard ownership hack to simulate notifications
+        clipboardIntegration = new ClipboardIntegration(this);
+        clipboardIntegration.setClipboardContents(clipboardIntegration.getClipboardContents());
     }
 
     private void addListeners() {
@@ -407,18 +420,9 @@ public class SpellbookFrame extends javax.swing.JFrame {
         clearButton.setEnabled(false);
     }
 
-    public void activateClipboardMonitoring() {
-        LOGGER.info("Activating clipboard monitoring");
 
-        if (clipboardExecutorService == null || clipboardExecutorService.isShutdown()) {
-
-            clipboardIntegration = new ClipboardIntegration();
-
-            Runnable clipboardRunnable = new Runnable() {
-
-                @Override
-                public void run() {
-                    String transferredText = clipboardIntegration.getClipboardContents().trim();
+    public void clipboardCallback() {
+        String transferredText = clipboardIntegration.getClipboardContents().trim();
 
                     clipboardIntegration.setClipboardContents("");
 
@@ -468,21 +472,8 @@ public class SpellbookFrame extends javax.swing.JFrame {
                         }
                     }
                 }
-            };
 
-            clipboardExecutorService = Executors.newSingleThreadScheduledExecutor();
-            clipboardExecutorService.scheduleAtFixedRate(clipboardRunnable, 0, 1, TimeUnit.SECONDS);
-        } else {
-            LOGGER.info("Clipboard monitoring is already running");
-        }
-    }
 
-    public void shutdownClipboardMonitoring() {
-        if (clipboardExecutorService != null && !clipboardExecutorService.isShutdown()) {
-            LOGGER.info("Shutting down clipboard monitoring");
-            clipboardExecutorService.shutdown();
-        }
-    }
 
     public String getApproximation(String searchKey) {
         if (searchKey != null && !searchKey.isEmpty()) {
