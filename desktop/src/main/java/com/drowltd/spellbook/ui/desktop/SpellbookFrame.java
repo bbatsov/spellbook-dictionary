@@ -615,16 +615,10 @@ public class SpellbookFrame extends javax.swing.JFrame {
         final String dbPath = PM.get(Preference.PATH_TO_DB, "");
 
         File file = new File(dbPath);
-
-        String currentPath = "";
-        try {
-            currentPath = new java.io.File(".").getCanonicalPath();
-            LOGGER.info("Current path: " + currentPath);
-            currentPath += File.separator + COMPRESSED_DB_NAME;
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
+        
+        String currentPath = System.getProperty("user.home");
+        currentPath += File.separator + COMPRESSED_DB_NAME;
+        
         if (!file.exists() || file.isDirectory()) {
 
             LOGGER.info("Checking for archived db ...");
