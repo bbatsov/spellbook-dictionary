@@ -15,6 +15,7 @@ import com.drowltd.spellbook.ui.swing.util.IconManager.IconSize;
 import com.drowltd.spellbook.ui.swing.util.SwingUtil;
 import com.drowltd.spellbook.util.ArchiveUtils;
 import com.drowltd.spellbook.util.SearchUtils;
+import com.jidesoft.dialog.StandardDialog;
 import com.jidesoft.hints.ListDataIntelliHints;
 import com.jidesoft.swing.FolderChooser;
 import org.slf4j.Logger;
@@ -681,7 +682,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
             } else {
                 DownloadDialog downloadDialog = new DownloadDialog();
 
-                if (downloadDialog.showDialog(DB_URL)) {
+                if (downloadDialog.showDialog(DB_URL) == StandardDialog.RESULT_AFFIRMED) {
                     PM.put(Preference.PATH_TO_DB, ArchiveUtils.extractDbFromArchive(downloadDialog.getDownloadPath()));
                 }
             }
