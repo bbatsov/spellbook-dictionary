@@ -11,6 +11,7 @@ import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
@@ -32,17 +33,20 @@ import java.net.URL;
  * @author Bozhidar Batsov
  * @since 0.3
  */
-public class NewAboutDialog extends StandardDialog {
-    private static final Translator TRANSLATOR = Translator.getTranslator("Team");
-    private static final Translator TRANSLATOR_TEXT = Translator.getTranslator("AboutDialog");
+public class AboutDialog extends StandardDialog {
+    private static final Translator TEAM_TRANSLATOR = Translator.getTranslator("Team");
+    private static final Translator TRANSLATOR = Translator.getTranslator("AboutDialog");
     private JTextPane infoTextPane = new JTextPane();
     private JButton licenceButton = new JButton();
+    private static final int DIALOG_WIDTH = 500;
+    private static final int DIALOG_HEIGHT = 450;
+    private static final int FONT_SIZE = 11;
 
-    public NewAboutDialog(Frame owner, boolean modal) throws HeadlessException {
+    public AboutDialog(Frame owner, boolean modal) throws HeadlessException {
         super(owner, modal);
 
+        TEAM_TRANSLATOR.reset();
         TRANSLATOR.reset();
-        TRANSLATOR_TEXT.reset();
 
         infoTextPane.addHyperlinkListener(new HyperlinkListener() {
             @Override
@@ -70,27 +74,31 @@ public class NewAboutDialog extends StandardDialog {
             }
         }
 
-        setSize(400, 500);
+        setSize(DIALOG_WIDTH, DIALOG_HEIGHT);
+        setResizable(false);
+        setTitle(TRANSLATOR.translate("About(Title)"));
     }
 
     @Override
     public JComponent createBannerPanel() {
-        BannerPanel headerPanel1 = new BannerPanel("Spellbook Dictionary 0.3",
+        BannerPanel bannerPanel = new BannerPanel("Spellbook Dictionary 0.3",
                 "Spellbook is a multiplatform dictionary application written in Java. Spellbook is open source and is developed by a team committed to the" +
                         "goal of creating a high quality application that will serve the user community as best as possible.",
                 JideIconsFactory.getImageIcon("/images/spellbook-logo.png"));
-        headerPanel1.setFont(new Font("Tahoma", Font.PLAIN, 11));
-        headerPanel1.setBackground(Color.WHITE);
-        headerPanel1.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-        return headerPanel1;
+        bannerPanel.setFont(new Font("Tahoma", Font.PLAIN, FONT_SIZE));
+        bannerPanel.setBackground(Color.WHITE);
+        bannerPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+        return bannerPanel;
     }
 
     @Override
     public JComponent createContentPanel() {
-        JPanel panel = new JPanel(new MigLayout("wrap 1", "[grow]", "[grow]"));
+        JPanel panel = new JPanel(new MigLayout("wrap 1", "[grow]", "[grow][]"));
 
         JScrollPane jScrollPane = new JScrollPane(infoTextPane);
-        panel.add(jScrollPane, "growx");
+        panel.add(jScrollPane, "growx, growy");
+
+        panel.add(new JLabel(TRANSLATOR.translate("Copyright")), "center");
 
         return panel;  //To change body of implemented methods use File | Settings | File Templates.
     }
@@ -102,20 +110,23 @@ public class NewAboutDialog extends StandardDialog {
 
         JButton creditsButton = new JButton();
 
-        creditsButton.setAction(new AbstractAction("Credits") {
+        creditsButton.setAction(new AbstractAction(TRANSLATOR.translate("Credits(Button)")) {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 creditsButtonActionPerformed();
             }
         });
 
-        licenceButton.setAction(new AbstractAction("Licence") {
+        licenceButton.setAction(new AbstractAction(TRANSLATOR.translate("License(Button)")) {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 licenseButtonActionPerformed();
             }
         });
 
         JButton closeButton = new JButton();
-        closeButton.setAction(new AbstractAction("Close") {
+        closeButton.setAction(new AbstractAction(TRANSLATOR.translate("Close(Button)")) {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 setDialogResult(RESULT_CANCELLED);
                 setVisible(false);
@@ -135,7 +146,7 @@ public class NewAboutDialog extends StandardDialog {
     }
 
     private void licenseButtonActionPerformed() {
-        URL license = NewAboutDialog.class.getResource("/gplv3/gpl.html");
+        URL license = AboutDialog.class.getResource("/gplv3/gpl.html");
 
         try {
             Desktop.getDesktop().browse(license.toURI());
@@ -159,24 +170,24 @@ public class NewAboutDialog extends StandardDialog {
                 + "\n\t <b>%s</b> <br /> "
                 + "\n\t <a href=\"mailto:AlexanderNikolovNikolov@gmail.com?subject=Spellbook\">%s</a> <br />"
                 + "\n\t   \n\t</p>\n\t\n  </body>\n</html>\n",
-                TRANSLATOR.translate("ProjectLead"),
-                TRANSLATOR.translate("BozhidarBatsov"),
-                TRANSLATOR.translate("CoreUiSpellcheck"),
-                TRANSLATOR.translate("IvanValchev"),
-                TRANSLATOR.translate("ExamModul"),
-                TRANSLATOR.translate("IvanSpasov"),
-                TRANSLATOR.translate("MiroslavaStancheva"),
-                TRANSLATOR.translate("GeorgiAngelov"),
-                TRANSLATOR.translate("StudyModule"),
-                TRANSLATOR.translate("AlexanderNikolov"));
+                TEAM_TRANSLATOR.translate("ProjectLead"),
+                TEAM_TRANSLATOR.translate("BozhidarBatsov"),
+                TEAM_TRANSLATOR.translate("CoreUiSpellcheck"),
+                TEAM_TRANSLATOR.translate("IvanValchev"),
+                TEAM_TRANSLATOR.translate("ExamModule"),
+                TEAM_TRANSLATOR.translate("IvanSpasov"),
+                TEAM_TRANSLATOR.translate("MiroslavaStancheva"),
+                TEAM_TRANSLATOR.translate("GeorgiAngelov"),
+                TEAM_TRANSLATOR.translate("StudyModule"),
+                TEAM_TRANSLATOR.translate("AlexanderNikolov"));
 
         infoTextPane.setText(team);
         infoTextPane.setCaretPosition(0);
     }
 
     public static void main(String[] args) {
-        NewAboutDialog newAboutDialog = new NewAboutDialog(null, true);
+        AboutDialog aboutDialog = new AboutDialog(null, true);
 
-        newAboutDialog.setVisible(true);
+        aboutDialog.setVisible(true);
     }
 }
