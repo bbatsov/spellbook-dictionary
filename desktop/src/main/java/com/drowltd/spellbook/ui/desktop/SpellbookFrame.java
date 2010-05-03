@@ -1206,7 +1206,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_prefsMenuItemActionPerformed
 
     private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuItemActionPerformed
-        AboutDialog aboutDialog = new AboutDialog(this, true);
+        NewAboutDialog aboutDialog = new NewAboutDialog(this, true);
         aboutDialog.setLocationRelativeTo(this);
         aboutDialog.setVisible(true);
     }//GEN-LAST:event_aboutMenuItemActionPerformed

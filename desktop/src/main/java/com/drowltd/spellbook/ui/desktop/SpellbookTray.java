@@ -1,7 +1,11 @@
 package com.drowltd.spellbook.ui.desktop;
 
-import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.drowltd.spellbook.core.i18n.Translator;
+import com.drowltd.spellbook.ui.swing.util.IconManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.JFrame;
 import java.awt.AWTException;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
@@ -11,9 +15,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.JFrame;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A thin layer of abstraction on top the application's tray icon. Here is
@@ -107,7 +108,7 @@ public class SpellbookTray {
             @Override
             public void actionPerformed(ActionEvent e) {
                 LOGGER.info("About dialog opened from tray");
-                AboutDialog aboutDialog = new AboutDialog(appFrame, true);
+                NewAboutDialog aboutDialog = new NewAboutDialog(appFrame, true);
                 aboutDialog.setLocationRelativeTo(appFrame.isVisible() ? appFrame : null);
                 aboutDialog.setVisible(true);
             }
