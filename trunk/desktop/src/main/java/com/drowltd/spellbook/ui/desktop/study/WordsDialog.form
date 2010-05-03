@@ -89,9 +89,9 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="wordSearchField" pref="177" max="32767" attributes="1"/>
-                      <Component id="jLabel1" alignment="1" min="-2" pref="168" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="1" attributes="0">
+                      <Component id="jLabel1" pref="177" max="32767" attributes="0"/>
+                      <Component id="wordSearchField" alignment="1" pref="177" max="32767" attributes="1"/>
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
