@@ -98,6 +98,30 @@ public class SpellbookFrame extends JFrame {
     private static DictionaryService dictionaryService;
     private static Dictionary selectedDictionary;
 
+    private JButton backButton;
+    private JButton clearButton;
+    private JButton copyButton;
+    private JMenuItem copyMenuItem;
+    private JButton cutButton;
+    private JMenuItem cutMenuItem;
+    private JButton deleteWordButton;
+    private JMenuItem deleteWordMenuItem;
+    private JButton dictionaryButton;
+    private JMenu dictionaryMenu;
+    private JButton forwardButton;
+    private JPanel topPanel;
+    private JToolBar.Separator lastToolbarSeparator;
+    private JButton memoryButton;
+    private JButton pasteButton;
+    private JMenuItem pasteMenuItem;
+    private JSplitPane splitPane;
+    private JButton statusButton;
+    private JButton updateWordButton;
+    private JMenuItem updateWordMenuItem;
+    private JTextField wordSearchField;
+    private JTextPane wordTranslationTextPane;
+    private JList wordsList;
+
     /**
      * Creates new form SpellbookFrame
      */
@@ -774,14 +798,14 @@ public class SpellbookFrame extends JFrame {
             }
         });
 
-        searchPanel = new JPanel(new MigLayout("wrap 1", "[grow]", "[][grow]"));
+        JPanel searchPanel = new JPanel(new MigLayout("wrap 1", "[grow]", "[][grow]"));
 
         searchPanel.add(wordSearchField, "growx");
         searchPanel.add(new JScrollPane(wordsList), "growx, growy");
 
         splitPane.setLeftComponent(searchPanel);
 
-        translationPanel = new JPanel(new MigLayout("wrap 1", "[grow]", "[grow]"));
+        JPanel translationPanel = new JPanel(new MigLayout("wrap 1", "[grow]", "[grow]"));
         wordTranslationTextPane = new JTextPane();
 
         wordTranslationTextPane.setContentType("text/html");
@@ -799,28 +823,28 @@ public class SpellbookFrame extends JFrame {
     }
 
     private void initMenuBar(ResourceBundle bundle) {
-        jMenuBar1 = new JMenuBar();
-        jMenu1 = new JMenu();
-        restartMenuItem = new JMenuItem();
-        exitMenuItem = new JMenuItem();
-        jMenu2 = new JMenu();
-        addWordMenuItem = new JMenuItem();
+        JMenuBar jMenuBar1 = new JMenuBar();
+        JMenu jMenu1 = new JMenu();
+        JMenuItem restartMenuItem = new JMenuItem();
+        JMenuItem exitMenuItem = new JMenuItem();
+        JMenu jMenu2 = new JMenu();
+        JMenuItem addWordMenuItem = new JMenuItem();
         updateWordMenuItem = new JMenuItem();
         deleteWordMenuItem = new JMenuItem();
-        jSeparator2 = new JPopupMenu.Separator();
+        JPopupMenu.Separator jSeparator2 = new JPopupMenu.Separator();
         cutMenuItem = new JMenuItem(new DefaultEditorKit.CutAction());
         copyMenuItem = new JMenuItem(new DefaultEditorKit.CopyAction());
         pasteMenuItem = new JMenuItem(new DefaultEditorKit.PasteAction());
-        jSeparator1 = new JPopupMenu.Separator();
-        prefsMenuItem = new JMenuItem();
+        JPopupMenu.Separator jSeparator1 = new JPopupMenu.Separator();
+        JMenuItem prefsMenuItem = new JMenuItem();
         dictionaryMenu = new JMenu();
-        jMenu4 = new JMenu();
-        StudyWordsMenuItem = new JMenuItem();
-        examMenuItem = new JMenuItem();
-        spellcheckMenuItem = new JMenuItem();
-        jMenu5 = new JMenu();
-        helpContentsMenuItem = new JMenuItem();
-        aboutMenuItem = new JMenuItem();
+        JMenu jMenu4 = new JMenu();
+        JMenuItem studyWordsMenuItem = new JMenuItem();
+        JMenuItem examMenuItem = new JMenuItem();
+        JMenuItem spellcheckMenuItem = new JMenuItem();
+        JMenu jMenu5 = new JMenu();
+        JMenuItem helpContentsMenuItem = new JMenuItem();
+        JMenuItem aboutMenuItem = new JMenuItem();
 
         jMenu1.setMnemonic('f');
         jMenu1.setText(bundle.getString("File(Menu)")); // NOI18N
@@ -913,16 +937,16 @@ public class SpellbookFrame extends JFrame {
         jMenu4.setMnemonic('t');
         jMenu4.setText(bundle.getString("Tools(Menu)")); // NOI18N
 
-        StudyWordsMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/teacher.png"))); // NOI18N
-        StudyWordsMenuItem.setMnemonic('w');
-        StudyWordsMenuItem.setText(bundle.getString("StudyWords(MenuItem)")); // NOI18N
-        StudyWordsMenuItem.addActionListener(new ActionListener() {
+        studyWordsMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/teacher.png"))); // NOI18N
+        studyWordsMenuItem.setMnemonic('w');
+        studyWordsMenuItem.setText(bundle.getString("StudyWords(MenuItem)")); // NOI18N
+        studyWordsMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 StudyWordsMenuItemActionPerformed(evt);
             }
         });
-        jMenu4.add(StudyWordsMenuItem);
+        jMenu4.add(studyWordsMenuItem);
 
         examMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/blackboard.png"))); // NOI18N
         examMenuItem.setMnemonic('e');
@@ -973,27 +997,27 @@ public class SpellbookFrame extends JFrame {
 
     private void initToolBar(ResourceBundle bundle) {
 
-        mainToolBar = new JToolBar();
+        JToolBar mainToolBar = new JToolBar();
         backButton = new JButton();
         forwardButton = new JButton();
         clearButton = new JButton();
         statusButton = new JButton();
         dictionaryButton = new JButton();
-        jSeparator3 = new JToolBar.Separator();
-        addWordButton = new JButton();
+        JToolBar.Separator jSeparator3 = new JToolBar.Separator();
+        JButton addWordButton = new JButton();
         updateWordButton = new JButton();
         deleteWordButton = new JButton();
-        jSeparator4 = new JToolBar.Separator();
+        JToolBar.Separator jSeparator4 = new JToolBar.Separator();
         cutButton = new JButton(new DefaultEditorKit.CutAction());
         cutButton.setText(null);
         copyButton = new JButton(new DefaultEditorKit.CopyAction());
         copyButton.setText(null);
         pasteButton = new JButton(new DefaultEditorKit.PasteAction());
         pasteButton.setText(null);
-        jSeparator5 = new JToolBar.Separator();
-        studyButton = new JButton();
-        examButton = new JButton();
-        spellcheckButton = new JButton();
+        JToolBar.Separator jSeparator5 = new JToolBar.Separator();
+        JButton studyButton = new JButton();
+        JButton examButton = new JButton();
+        JButton spellcheckButton = new JButton();
         lastToolbarSeparator = new JToolBar.Separator();
         memoryButton = new JButton();
 
@@ -1319,56 +1343,6 @@ public class SpellbookFrame extends JFrame {
         clear();
     }
 
-    private JMenuItem StudyWordsMenuItem;
-    private JMenuItem aboutMenuItem;
-    private JButton addWordButton;
-    private JMenuItem addWordMenuItem;
-    private JButton backButton;
-    private JButton clearButton;
-    private JButton copyButton;
-    private JMenuItem copyMenuItem;
-    private JButton cutButton;
-    private JMenuItem cutMenuItem;
-    private JButton deleteWordButton;
-    private JMenuItem deleteWordMenuItem;
-    private JButton dictionaryButton;
-    private JMenu dictionaryMenu;
-    private JButton examButton;
-    private JMenuItem examMenuItem;
-    private JMenuItem exitMenuItem;
-    private JButton forwardButton;
-    private JMenuItem helpContentsMenuItem;
-    private JMenu jMenu1;
-    private JMenu jMenu2;
-    private JMenu jMenu4;
-    private JMenu jMenu5;
-    private JMenuBar jMenuBar1;
-    private JPanel topPanel;
-    private JPanel searchPanel;
-    private JPanel translationPanel;
-    private JPopupMenu.Separator jSeparator1;
-    private JPopupMenu.Separator jSeparator2;
-    private JToolBar.Separator jSeparator3;
-    private JToolBar.Separator jSeparator4;
-    private JToolBar.Separator jSeparator5;
-    private JToolBar mainToolBar;
-    private JToolBar.Separator lastToolbarSeparator;
-    private JButton memoryButton;
-    private JButton pasteButton;
-    private JMenuItem pasteMenuItem;
-    private JMenuItem prefsMenuItem;
-    private JMenuItem restartMenuItem;
-    private JButton spellcheckButton;
-    private JMenuItem spellcheckMenuItem;
-    private JSplitPane splitPane;
-    private JButton statusButton;
-    private JButton studyButton;
-    private JButton updateWordButton;
-    private JMenuItem updateWordMenuItem;
-    private JTextField wordSearchField;
-    private JTextPane wordTranslationTextPane;
-    private JList wordsList;
-    
     private void initDictionaries() {
         dictionaryMenu.removeAll();
 
