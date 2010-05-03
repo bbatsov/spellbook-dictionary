@@ -304,7 +304,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         AddUpdateWordDialog addUpdateWordDialog = new AddUpdateWordDialog(this, true);
         addUpdateWordDialog.setVisible(true);
 
-        if (addUpdateWordDialog.getReturnStatus() == AddUpdateWordDialog.RET_OK) {
+        if (addUpdateWordDialog.getDialogResult() == StandardDialog.RESULT_AFFIRMED) {
             if (words.contains(addUpdateWordDialog.getWord())) {
                 JOptionPane.showMessageDialog(null, TRANSLATOR.translate("WordAlreadyExists(Message)"), "Warning", JOptionPane.WARNING_MESSAGE);
                 return;
@@ -563,7 +563,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
         addUpdateWordDialog.setWord(originalWord);
         addUpdateWordDialog.setTranslation(dictionaryService.getTranslation(originalWord, selectedDictionary));
         addUpdateWordDialog.setVisible(true);
-        if (addUpdateWordDialog.getReturnStatus() == AddUpdateWordDialog.RET_OK) {
+        if (addUpdateWordDialog.getDialogResult() == StandardDialog.RESULT_CANCELLED) {
             String newWord = addUpdateWordDialog.getWord();
             String newTranslation = addUpdateWordDialog.getTranslation();
 
