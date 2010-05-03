@@ -1,30 +1,55 @@
 package com.drowltd.spellbook.ui.desktop;
 
-import com.drowltd.spellbook.core.model.Difficulty;
 import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.model.Dictionary;
+import com.drowltd.spellbook.core.model.Difficulty;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.ui.desktop.exam.ExamDialog;
 import com.drowltd.spellbook.ui.swing.component.DictionaryComboBox;
+import com.jidesoft.dialog.ButtonPanel;
+import com.jidesoft.dialog.ButtonResources;
+import com.jidesoft.dialog.StandardDialog;
+import com.jidesoft.plaf.UIDefaultsLookup;
+import net.miginfocom.swing.MigLayout;
+
+import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.WindowConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JTabbedPane;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import java.util.logging.Logger;
 
 import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preference;
 
@@ -34,21 +59,20 @@ import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preferen
  * @author Bozhidar Batsov
  * @since 0.2
  */
-public class PreferencesDialog extends javax.swing.JDialog {
+public class PreferencesDialog extends StandardDialog {
 
     private static final Translator TRANSLATOR = Translator.getTranslator("PreferencesForm");
     private static final PreferencesManager PM = PreferencesManager.getInstance();
     private Font selectedFont;
-    private boolean ok;
     private static final DictionaryService DICTIONARY_SERVICE = DictionaryService.getInstance();
 
     /** Creates new form PreferencesDialog */
-    public PreferencesDialog(final java.awt.Frame parent, boolean modal) {
+    public PreferencesDialog(final Frame parent, boolean modal) {
         super(parent, modal);
 
         TRANSLATOR.reset();
 
-        initComponents();
+        initGuiComponents();
 
         initGeneralTab(parent);
 
@@ -57,11 +81,66 @@ public class PreferencesDialog extends javax.swing.JDialog {
         initExamTab();
     }
 
-    public JTabbedPane getTabbedTane() {
+    @Override
+    public JComponent createBannerPanel() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public JComponent createContentPanel() {
         return tabbedPane;
     }
 
-    private void initGeneralTab(final java.awt.Frame parent) {
+    @Override
+    public ButtonPanel createButtonPanel() {
+        ButtonPanel buttonPanel = new ButtonPanel();
+        JButton okButton = new JButton();
+        JButton cancelButton = new JButton();
+        JButton helpButton = new JButton();
+        okButton.setName(OK);
+        cancelButton.setName(CANCEL);
+        helpButton.setName(HELP);
+        buttonPanel.addButton(okButton, ButtonPanel.AFFIRMATIVE_BUTTON);
+        buttonPanel.addButton(cancelButton, ButtonPanel.CANCEL_BUTTON);
+        buttonPanel.addButton(helpButton, ButtonPanel.HELP_BUTTON);
+
+        okButton.setAction(new AbstractAction(UIDefaultsLookup.getString("OptionPane.okButtonText")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setDialogResult(RESULT_AFFIRMED);
+                setVisible(false);
+                dispose();
+            }
+        });
+        cancelButton.setAction(new AbstractAction(UIDefaultsLookup.getString("OptionPane.cancelButtonText")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setDialogResult(RESULT_CANCELLED);
+                setVisible(false);
+                dispose();
+            }
+        });
+        final ResourceBundle resourceBundle = ButtonResources.getResourceBundle(Locale.getDefault());
+        helpButton.setAction(new AbstractAction(resourceBundle.getString("Button.help")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // do something
+            }
+        });
+        helpButton.setMnemonic(resourceBundle.getString("Button.help.mnemonic").charAt(0));
+
+        setDefaultCancelAction(cancelButton.getAction());
+        setDefaultAction(okButton.getAction());
+        getRootPane().setDefaultButton(okButton);
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        return buttonPanel;
+    }
+
+    public JTabbedPane getTabbedPane() {
+        return tabbedPane;
+    }
+
+    private void initGeneralTab(final Frame parent) {
         Language[] availableLangs = Language.values();
 
         Language selectedLanguage = Language.ENGLISH;
@@ -125,13 +204,13 @@ public class PreferencesDialog extends javax.swing.JDialog {
                     try {
                         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                     } catch (ClassNotFoundException ex) {
-                        java.util.logging.Logger.getLogger(SpellbookFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(SpellbookFrame.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (InstantiationException ex) {
-                        java.util.logging.Logger.getLogger(SpellbookFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(SpellbookFrame.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (IllegalAccessException ex) {
-                        java.util.logging.Logger.getLogger(SpellbookFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(SpellbookFrame.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (UnsupportedLookAndFeelException ex) {
-                        java.util.logging.Logger.getLogger(SpellbookFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(SpellbookFrame.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } else {
                     for (LookAndFeelInfo lookAndFeelInfo : lookAndFeelInfos) {
@@ -214,7 +293,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
         @Override
         public void valueChanged(ListSelectionEvent e) {
             previewText.setFont(generateFont());
-            currentFontField.setText(generateFont().getFontName().toString());
+            currentFontField.setText(generateFont().getFontName());
             currentStyleField.setText(fontStyleList.getSelectedValue().toString());
         }
 
@@ -321,7 +400,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
     public boolean showDialog() {
         setVisible(true);
 
-        return ok;
+        return getDialogResult() == RESULT_AFFIRMED;
     }
 
     public void disableTrayOptions() {
@@ -335,86 +414,39 @@ public class PreferencesDialog extends javax.swing.JDialog {
         trayPopupCheckBox.setEnabled(false);
     }
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void initGuiComponents() {
+        tabbedPane = new JTabbedPane();
 
-        difficultyButtonGroup = new javax.swing.ButtonGroup();
-        tabbedPane = new javax.swing.JTabbedPane();
-        jPanel1 = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
-        jPanel9 = new javax.swing.JPanel();
-        minimizeToTrayCheckBox = new javax.swing.JCheckBox();
-        minimizeToTrayOnCloseCheckBox = new javax.swing.JCheckBox();
-        clipboardIntegrationCheckBox = new javax.swing.JCheckBox();
-        trayPopupCheckBox = new javax.swing.JCheckBox();
-        showMemoryUsageCheckBox = new javax.swing.JCheckBox();
-        alwaysOnTopCheckBox = new javax.swing.JCheckBox();
-        emptyLineCheckBox = new javax.swing.JCheckBox();
-        jPanel10 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        languageComboBox = new javax.swing.JComboBox();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        lookAndFeelComboBox = new javax.swing.JComboBox();
+        generalSettingsPanel = new JPanel(new MigLayout("wrap 2", "[grow][grow]"));
+        minimizeToTrayCheckBox = new JCheckBox();
+        minimizeToTrayOnCloseCheckBox = new JCheckBox();
+        clipboardIntegrationCheckBox = new JCheckBox();
+        trayPopupCheckBox = new JCheckBox();
+        showMemoryUsageCheckBox = new JCheckBox();
+        alwaysOnTopCheckBox = new JCheckBox();
+        emptyLineCheckBox = new JCheckBox();
+        languageComboBox = new JComboBox();
+        lookAndFeelComboBox = new JComboBox();
         defaultDictionaryComboBox = new DictionaryComboBox(DICTIONARY_SERVICE.getDictionaries());
-        jPanel2 = new javax.swing.JPanel();
-        jPanel5 = new javax.swing.JPanel();
-        jLabel9 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        fontList = new javax.swing.JList();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        fontSizeList = new javax.swing.JList();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        fontStyleList = new javax.swing.JList();
-        jLabel13 = new javax.swing.JLabel();
-        fontPreviewPanel = new javax.swing.JPanel();
-        previewText = new javax.swing.JLabel();
-        currentFontField = new javax.swing.JTextField();
-        currentStyleField = new javax.swing.JTextField();
-        currentFontSizeField = new javax.swing.JTextField();
-        jPanel6 = new javax.swing.JPanel();
-        jPanel7 = new javax.swing.JPanel();
-        jLabel4 = new javax.swing.JLabel();
-        easyRadioButton = new javax.swing.JRadioButton();
-        mediumRadioButton = new javax.swing.JRadioButton();
-        hardRadioButton = new javax.swing.JRadioButton();
-        timerCheckBox = new javax.swing.JCheckBox();
-        jLabel7 = new javax.swing.JLabel();
-        wordCountField = new javax.swing.JTextField();
-        cancelButton = new javax.swing.JButton();
-        okButton = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("i18n/PreferencesForm"); // NOI18N
-        setTitle(bundle.getString("Preferences(Title)")); // NOI18N
-        setResizable(false);
 
-        jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("Functionality(JPanelBorder)"))); // NOI18N
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        ResourceBundle bundle = ResourceBundle.getBundle("i18n/PreferencesForm");
+        setTitle(bundle.getString("Preferences(Title)"));
 
-        minimizeToTrayCheckBox.setText(bundle.getString("MinimizeToTray(Label)")); // NOI18N
+        minimizeToTrayCheckBox.setText(bundle.getString("MinimizeToTray(Label)"));
 
-        minimizeToTrayOnCloseCheckBox.setText(bundle.getString("CloseToTray(Label)")); // NOI18N
+        minimizeToTrayOnCloseCheckBox.setText(bundle.getString("CloseToTray(Label)"));
 
-        clipboardIntegrationCheckBox.setText(bundle.getString("ClipboardIntegration(Label)")); // NOI18N
-        clipboardIntegrationCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        clipboardIntegrationCheckBox.setText(bundle.getString("ClipboardIntegration(Label)"));
+        clipboardIntegrationCheckBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
                 clipboardIntegrationCheckBoxActionPerformed(evt);
             }
         });
 
         trayPopupCheckBox.setText(bundle.getString("TrayPopup(Label)")); // NOI18N
-        trayPopupCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                trayPopupCheckBoxActionPerformed(evt);
-            }
-        });
 
         showMemoryUsageCheckBox.setText(bundle.getString("ShowMemory(Label)")); // NOI18N
 
@@ -422,269 +454,75 @@ public class PreferencesDialog extends javax.swing.JDialog {
 
         emptyLineCheckBox.setText(bundle.getString("EmptyLine(Label)")); // NOI18N
 
-        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
-        jPanel9.setLayout(jPanel9Layout);
-        jPanel9Layout.setHorizontalGroup(
-            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel9Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(showMemoryUsageCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(emptyLineCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 195, Short.MAX_VALUE)
-                    .addComponent(clipboardIntegrationCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
-                    .addComponent(trayPopupCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(alwaysOnTopCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(minimizeToTrayOnCloseCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(minimizeToTrayCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(94, Short.MAX_VALUE))
-        );
-        jPanel9Layout.setVerticalGroup(
-            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel9Layout.createSequentialGroup()
-                .addComponent(minimizeToTrayCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(minimizeToTrayOnCloseCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(clipboardIntegrationCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(emptyLineCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(trayPopupCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(showMemoryUsageCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(alwaysOnTopCheckBox)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jPanel10.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("Main(JPanelBorder)"))); // NOI18N
-
-        jLabel1.setText(bundle.getString("Language(Label)")); // NOI18N
-
         languageComboBox.setModel(new DefaultComboBoxModel(new Language[] {Language.ENGLISH, Language.BULGARIAN}));
 
-        jLabel2.setText(bundle.getString("LookAndFeel(Label)")); // NOI18N
+        generalSettingsPanel.add(new JLabel(TRANSLATOR.translate("Language(Label)")), "growx");
+        generalSettingsPanel.add(languageComboBox, "growx");
+        generalSettingsPanel.add(new JLabel(TRANSLATOR.translate("DefaultDictionary(Label)")), "growx");
+        generalSettingsPanel.add(defaultDictionaryComboBox, "growx");
+        generalSettingsPanel.add(new JLabel(TRANSLATOR.translate("LookAndFeel(Label)")), "growx");
+        generalSettingsPanel.add(lookAndFeelComboBox, "growx");
+        generalSettingsPanel.add(minimizeToTrayCheckBox, "growx");
+        generalSettingsPanel.add(minimizeToTrayOnCloseCheckBox, "growx");
+        generalSettingsPanel.add(clipboardIntegrationCheckBox, "growx");
+        generalSettingsPanel.add(trayPopupCheckBox, "growx");
+        generalSettingsPanel.add(showMemoryUsageCheckBox, "growx");
+        generalSettingsPanel.add(alwaysOnTopCheckBox, "growx");
+        generalSettingsPanel.add(emptyLineCheckBox, "growx");
 
-        jLabel3.setText(bundle.getString("DefaultDictionary(Label)")); // NOI18N
 
-        lookAndFeelComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        lookAndFeelComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                lookAndFeelComboBoxActionPerformed(evt);
-            }
-        });
+        tabbedPane.addTab(bundle.getString("GeneralSettings(Title)"), new ImageIcon(getClass().getResource("/icons/16x16/preferences.png")), generalSettingsPanel); // NOI18N
 
-        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
-        jPanel10.setLayout(jPanel10Layout);
-        jPanel10Layout.setHorizontalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel10Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(53, 53, 53)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(languageComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lookAndFeelComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(defaultDictionaryComboBox, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel10Layout.setVerticalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel10Layout.createSequentialGroup()
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(languageComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(lookAndFeelComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(defaultDictionaryComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        fontSettingsPanel = new JPanel(new MigLayout("wrap 4", "[grow][grow][grow][grow]", "[][][grow][grow]"));
+        fontList = new JList();
+        fontSizeList = new JList();
+        fontStyleList = new JList();
+        previewText = new JLabel();
+        currentFontField = new JTextField();
+        currentStyleField = new JTextField();
+        currentFontSizeField = new JTextField();
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        ResourceBundle bundle1 = ResourceBundle.getBundle("i18n/FontChooserForm"); // NOI18N
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        tabbedPane.addTab(bundle.getString("GeneralSettings(Title)"), new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/preferences.png")), jPanel1); // NOI18N
-
-        java.util.ResourceBundle bundle1 = java.util.ResourceBundle.getBundle("i18n/FontChooserForm"); // NOI18N
-        jLabel9.setText(bundle1.getString("Font(Label)")); // NOI18N
-
-        jLabel10.setText(bundle1.getString("Size(Label)")); // NOI18N
-
-        fontList.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane1.setViewportView(fontList);
-
-        fontSizeList.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane2.setViewportView(fontSizeList);
-
-        fontStyleList.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane3.setViewportView(fontStyleList);
-
-        jLabel13.setText(bundle1.getString("Style(Label)")); // NOI18N
-
-        fontPreviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Preview", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.ABOVE_TOP));
+        fontSettingsPanel.add(new JLabel(TRANSLATOR.translate("Font(Label)")), "span 2, growx");
+        fontSettingsPanel.add(new JLabel(TRANSLATOR.translate("Style(Label)")), "growx");
+        fontSettingsPanel.add(new JLabel(TRANSLATOR.translate("Size(Label)")), "growx");
+        fontSettingsPanel.add(currentFontField, "span 2, growx");
+        fontSettingsPanel.add(currentStyleField, "growx");
+        fontSettingsPanel.add(currentFontSizeField, "growx");
+        fontSettingsPanel.add(new JScrollPane(fontList), "span 2, growx, growy");
+        fontSettingsPanel.add(new JScrollPane(fontStyleList), "growx, growy");
+        fontSettingsPanel.add(new JScrollPane(fontSizeList), "growx, growy");
+        fontSettingsPanel.add(previewText, "span 4, growx, growy");
 
         previewText.setText("The quick fox jumps over the lazy dog.");
 
-        javax.swing.GroupLayout fontPreviewPanelLayout = new javax.swing.GroupLayout(fontPreviewPanel);
-        fontPreviewPanel.setLayout(fontPreviewPanelLayout);
-        fontPreviewPanelLayout.setHorizontalGroup(
-            fontPreviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(fontPreviewPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(previewText)
-                .addContainerGap(113, Short.MAX_VALUE))
-        );
-        fontPreviewPanelLayout.setVerticalGroup(
-            fontPreviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(fontPreviewPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(previewText)
-                .addContainerGap(23, Short.MAX_VALUE))
-        );
-
         currentFontField.setEditable(false);
-        currentFontField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                currentFontFieldActionPerformed(evt);
-            }
-        });
 
         currentStyleField.setEditable(false);
 
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(fontPreviewPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel9)
-                            .addComponent(currentFontField)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel13)
-                            .addComponent(currentStyleField)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel10)
-                            .addComponent(currentFontSizeField, javax.swing.GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE))))
-                .addContainerGap())
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
-                        .addComponent(jLabel9)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(currentFontField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 233, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
-                        .addComponent(jLabel13)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(currentStyleField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 233, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
-                        .addComponent(jLabel10)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(currentFontSizeField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 233, Short.MAX_VALUE)))
-                .addGap(11, 11, 11)
-                .addComponent(fontPreviewPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
+        tabbedPane.addTab(bundle1.getString("FontTab(Label)"), new ImageIcon(getClass().getResource("/icons/16x16/font.png")), fontSettingsPanel); // NOI18N
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+        examSettingsPanel = new JPanel(new MigLayout("wrap 4", "[grow][][][]"));
+        easyRadioButton = new JRadioButton();
+        mediumRadioButton = new JRadioButton();
+        hardRadioButton = new JRadioButton();
+        timerCheckBox = new JCheckBox();
+        wordCountField = new JTextField();
+        difficultyButtonGroup = new ButtonGroup();
 
-        tabbedPane.addTab(bundle1.getString("FontTab(Label)"), new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/font.png")), jPanel2); // NOI18N
+        examSettingsPanel.add(new JLabel(TRANSLATOR.translate("Difficulty(Label)")), "growx");
+        examSettingsPanel.add(easyRadioButton);
+        examSettingsPanel.add(mediumRadioButton);
+        examSettingsPanel.add(hardRadioButton);
+        examSettingsPanel.add(new JLabel(TRANSLATOR.translate("ExamWords(Label)")), "growx");
+        examSettingsPanel.add(wordCountField, "wrap");
+        examSettingsPanel.add(timerCheckBox);
 
-        jPanel6.setForeground(new java.awt.Color(204, 204, 204));
-
-        jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("Main(JPanelBorder)"))); // NOI18N
-
-        java.util.ResourceBundle bundle2 = java.util.ResourceBundle.getBundle("i18n/ExamSettingsDialog"); // NOI18N
-        jLabel4.setText(bundle2.getString("ChooseDifficulty(Label)")); // NOI18N
+        ResourceBundle bundle2 = ResourceBundle.getBundle("i18n/ExamSettingsDialog"); // NOI18N
 
         difficultyButtonGroup.add(easyRadioButton);
         easyRadioButton.setText(bundle2.getString("Easy(Label)")); // NOI18N
-        easyRadioButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                easyRadioButtonActionPerformed(evt);
-            }
-        });
 
         difficultyButtonGroup.add(mediumRadioButton);
         mediumRadioButton.setText(bundle2.getString("Medium(Label)")); // NOI18N
@@ -694,207 +532,45 @@ public class PreferencesDialog extends javax.swing.JDialog {
 
         timerCheckBox.setText(bundle2.getString("Countdown(Label)")); // NOI18N
 
-        jLabel7.setText(bundle2.getString("WordsByExam(Label)")); // NOI18N
-
-        wordCountField.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                wordCountFieldFocusGained(evt);
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                wordCountFieldFocusLost(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
-        jPanel7.setLayout(jPanel7Layout);
-        jPanel7Layout.setHorizontalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4)
-                    .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(jLabel7)
-                        .addGap(18, 18, 18)
-                        .addComponent(wordCountField, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(easyRadioButton)
-                        .addGap(18, 18, 18)
-                        .addComponent(mediumRadioButton)
-                        .addGap(18, 18, 18)
-                        .addComponent(hardRadioButton))
-                    .addComponent(timerCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(141, Short.MAX_VALUE))
-        );
-        jPanel7Layout.setVerticalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(easyRadioButton)
-                        .addComponent(mediumRadioButton))
-                    .addComponent(hardRadioButton))
-                .addGap(18, 18, 18)
-                .addComponent(timerCheckBox)
-                .addGap(18, 18, 18)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(wordCountField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(40, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(194, Short.MAX_VALUE))
-        );
-
-        tabbedPane.addTab("Exam", new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/blackboard.png")), jPanel6); // NOI18N
-
-        cancelButton.setText("Cancel");
-        cancelButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cancelButtonActionPerformed(evt);
-            }
-        });
-
-        okButton.setText("OK");
-        okButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                okButtonActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(okButton, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 396, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(tabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cancelButton)
-                    .addComponent(okButton))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        tabbedPane.addTab("Exam", new ImageIcon(getClass().getResource("/icons/16x16/blackboard.png")), examSettingsPanel);
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
+    }
 
-    private void clipboardIntegrationCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clipboardIntegrationCheckBoxActionPerformed
+    private void clipboardIntegrationCheckBoxActionPerformed(ActionEvent evt) {
         if (clipboardIntegrationCheckBox.isSelected()) {
             trayPopupCheckBox.setEnabled(true);
         } else {
             trayPopupCheckBox.setSelected(false);
             trayPopupCheckBox.setEnabled(false);
         }
-    }//GEN-LAST:event_clipboardIntegrationCheckBoxActionPerformed
+    }
 
-    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-        ok = true;
-        setVisible(false);
-    }//GEN-LAST:event_okButtonActionPerformed
-
-    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-        ok = false;
-        initExamTab();
-        setVisible(false);
-    }//GEN-LAST:event_cancelButtonActionPerformed
-
-    private void wordCountFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_wordCountFieldFocusGained
-        wordCountField.setText(null);
-}//GEN-LAST:event_wordCountFieldFocusGained
-
-    private void wordCountFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_wordCountFieldFocusLost
-}//GEN-LAST:event_wordCountFieldFocusLost
-
-    private void easyRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_easyRadioButtonActionPerformed
-        // TODO add your handling code here:
-}//GEN-LAST:event_easyRadioButtonActionPerformed
-
-    private void lookAndFeelComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lookAndFeelComboBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_lookAndFeelComboBoxActionPerformed
-
-    private void trayPopupCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_trayPopupCheckBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_trayPopupCheckBoxActionPerformed
-
-    private void currentFontFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_currentFontFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_currentFontFieldActionPerformed
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox alwaysOnTopCheckBox;
-    private javax.swing.JButton cancelButton;
-    private javax.swing.JCheckBox clipboardIntegrationCheckBox;
-    private javax.swing.JTextField currentFontField;
-    private javax.swing.JTextField currentFontSizeField;
-    private javax.swing.JTextField currentStyleField;
-    private javax.swing.JComboBox defaultDictionaryComboBox;
-    private javax.swing.ButtonGroup difficultyButtonGroup;
-    private javax.swing.JRadioButton easyRadioButton;
-    private javax.swing.JCheckBox emptyLineCheckBox;
-    private javax.swing.JList fontList;
-    private javax.swing.JPanel fontPreviewPanel;
-    private javax.swing.JList fontSizeList;
-    private javax.swing.JList fontStyleList;
-    private javax.swing.JRadioButton hardRadioButton;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel10;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel5;
-    private static javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel7;
-    private javax.swing.JPanel jPanel9;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JComboBox languageComboBox;
-    private javax.swing.JComboBox lookAndFeelComboBox;
-    private javax.swing.JRadioButton mediumRadioButton;
-    private javax.swing.JCheckBox minimizeToTrayCheckBox;
-    private javax.swing.JCheckBox minimizeToTrayOnCloseCheckBox;
-    private javax.swing.JButton okButton;
-    private javax.swing.JLabel previewText;
-    private javax.swing.JCheckBox showMemoryUsageCheckBox;
-    private javax.swing.JTabbedPane tabbedPane;
-    private static javax.swing.JCheckBox timerCheckBox;
-    private javax.swing.JCheckBox trayPopupCheckBox;
-    private javax.swing.JTextField wordCountField;
-    // End of variables declaration//GEN-END:variables
+    private JCheckBox alwaysOnTopCheckBox;
+    private JCheckBox clipboardIntegrationCheckBox;
+    private JTextField currentFontField;
+    private JTextField currentFontSizeField;
+    private JTextField currentStyleField;
+    private JComboBox defaultDictionaryComboBox;
+    private ButtonGroup difficultyButtonGroup;
+    private JRadioButton easyRadioButton;
+    private JCheckBox emptyLineCheckBox;
+    private JList fontList;
+    private JList fontSizeList;
+    private JList fontStyleList;
+    private JRadioButton hardRadioButton;
+    private JPanel generalSettingsPanel;
+    private JPanel fontSettingsPanel;
+    private JPanel examSettingsPanel;
+    private JComboBox languageComboBox;
+    private JComboBox lookAndFeelComboBox;
+    private JRadioButton mediumRadioButton;
+    private JCheckBox minimizeToTrayCheckBox;
+    private JCheckBox minimizeToTrayOnCloseCheckBox;
+    private JLabel previewText;
+    private JCheckBox showMemoryUsageCheckBox;
+    private JTabbedPane tabbedPane;
+    private JCheckBox timerCheckBox;
+    private JCheckBox trayPopupCheckBox;
+    private JTextField wordCountField;
 }
