@@ -44,7 +44,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -1200,7 +1199,7 @@ public class SpellbookFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_prefsMenuItemActionPerformed
 
     private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuItemActionPerformed
-        NewAboutDialog aboutDialog = new NewAboutDialog(this, true);
+        AboutDialog aboutDialog = new AboutDialog(this, true);
         aboutDialog.setLocationRelativeTo(this);
         aboutDialog.setVisible(true);
     }//GEN-LAST:event_aboutMenuItemActionPerformed
