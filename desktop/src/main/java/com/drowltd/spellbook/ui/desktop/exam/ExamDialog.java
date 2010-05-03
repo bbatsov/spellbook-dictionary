@@ -1,20 +1,21 @@
+
 package com.drowltd.spellbook.ui.desktop.exam;
 
-import com.drowltd.spellbook.core.i18n.Translator;
+import com.drowltd.spellbook.core.preferences.PreferencesManager.Preference;
 import com.drowltd.spellbook.core.model.Dictionary;
+import com.drowltd.spellbook.core.service.exam.ExamService;
 import com.drowltd.spellbook.core.model.Difficulty;
-import com.drowltd.spellbook.core.model.Language;
+import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.core.service.DictionaryService;
-import com.drowltd.spellbook.core.service.exam.ExamService;
+import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.ui.desktop.PreferencesDialog;
 import com.drowltd.spellbook.ui.desktop.PreferencesExtractor;
-import com.drowltd.spellbook.ui.desktop.SpellbookFrame;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.swing.Timer;
+import com.jidesoft.dialog.ButtonPanel;
+import com.jidesoft.dialog.StandardDialog;
+import com.jidesoft.plaf.UIDefaultsLookup;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,8 +23,17 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preference;
+import javax.swing.AbstractAction;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JTextField;
+import javax.swing.Timer;
+import net.miginfocom.swing.MigLayout;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -31,11 +41,10 @@ import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preferen
  * @author Georgi Angelov
  * @author Miroslava Stancheva
  * @since 0.2
- * 
  */
-public class ExamDialog extends javax.swing.JDialog {
+public class ExamDialog extends StandardDialog {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ExamDialog.class);
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ExamDialog.class);
     private ExamService examService;
     private static final PreferencesManager PM = PreferencesManager.getInstance();
     private int seconds = 0;
@@ -58,358 +67,252 @@ public class ExamDialog extends javax.swing.JDialog {
     private static List<String> wrongWords = new ArrayList<String>();
     private static List<String> correctTranslation = new ArrayList<String>();
     private boolean timerEnabled = PM.getBoolean(Preference.EXAM_TIMER, false);
-    private Frame parent;
 
     public enum TimerStatus {
 
         PAUSED, STARTED, STOPPED, DISABLED
     }
     private static TimerStatus enumTimerStatus = TimerStatus.DISABLED;
+//    private JPanel settingsPanel;
+//    private JPanel jPanel3;
+    private JComboBox fromLanguageComboBox;
+    private JComboBox toLanguageComboBox;
+    private JLabel jLabel4;
+    private JLabel jLabel7;
+    private JLabel jLabel8;
+    private JLabel jLabel9;
+    private static JLabel difficultyLabel;
+    private static JLabel timerIconLabel;
+    private JLabel answerIconLabel;
+    private static JLabel feedbackField;
+    private static JButton startButton;
+    private static JButton stopButton;
+    private JButton answerButton;
+    private static JButton pauseButton;
+    private JTextField translateField;
+    private JTextField answerField;
+    private static JProgressBar timerProgressBar;
+    private JProgressBar wordsProgressBar;
 
-    /** Creates new form ExamDialog */
-    public ExamDialog(java.awt.Frame parent, boolean modal) {
+    public ExamDialog(Frame parent, boolean modal) {
         super(parent, modal);
 
         TRANSLATOR.reset();
-        this.parent = parent;
 
         examService = new ExamService();
 
-        initComponents();
-        initLanguages();
-        pauseButton.setEnabled(false);
-        answerField.setEnabled(false);
+        
+
+//        settingsPanel = new JPanel();
+        fromLanguageComboBox = new JComboBox();
+        toLanguageComboBox = new JComboBox();
+        jLabel4 = new JLabel();
+        difficultyLabel = new JLabel();
+        jLabel7 = new JLabel();
+//        jPanel3 = new JPanel();
+        startButton = new JButton();
+        translateField = new JTextField();
+        answerField = new JTextField();
+        jLabel8 = new JLabel();
+        jLabel9 = new JLabel();
+        stopButton = new JButton();
+        timerProgressBar = new JProgressBar();
+        answerButton = new JButton();
+        wordsProgressBar = new JProgressBar();
+        timerIconLabel = new JLabel();
+        answerIconLabel = new JLabel();
+        pauseButton = new JButton();
+        feedbackField = new JLabel();
+
 
         setIconImage(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE16).getImage());
         setLocationRelativeTo(parent);
 
+        setSize(400, 500);
+        initLanguages();
     }
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    @Override
+    public JComponent createBannerPanel() {
+        return null;
+    }
 
-        settingsPanel = new javax.swing.JPanel();
-        fromLanguageComboBox = new javax.swing.JComboBox();
-        toLanguageComboBox = new javax.swing.JComboBox();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        difficultyLabel = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        jPanel3 = new javax.swing.JPanel();
-        startButton = new javax.swing.JButton();
-        translateField = new javax.swing.JTextField();
-        answerField = new javax.swing.JTextField();
-        jLabel8 = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
-        stopButton = new javax.swing.JButton();
-        timerProgressBar = new javax.swing.JProgressBar();
-        answerButton = new javax.swing.JButton();
-        wordsProgressBar = new javax.swing.JProgressBar();
-        timerIconLabel = new javax.swing.JLabel();
-        answerIconLabel = new javax.swing.JLabel();
-        pauseButton = new javax.swing.JButton();
-        feedbackField = new javax.swing.JLabel();
-        quitButton = new javax.swing.JButton();
-        settingsButton = new javax.swing.JButton();
+    @Override
+    public JComponent createContentPanel() {
+        JPanel panel = new JPanel(new MigLayout("wrap 5", "[][][][][]", "[grow][][][][grow][grow][grow][grow][][grow][grow][]"));
+        panel.add(new JLabel(TRANSLATOR.translate("Languages(Label)")), "span 5, left");
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("i18n/ExamDialog"); // NOI18N
-        setTitle(bundle.getString("Exam(Title)")); // NOI18N
-        setResizable(false);
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosed(java.awt.event.WindowEvent evt) {
-                formWindowClosed(evt);
-            }
-        });
-
-        settingsPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
+        panel.add(new JLabel(TRANSLATOR.translate("From(Label)")), "");
+        panel.add(fromLanguageComboBox, "");
         fromLanguageComboBox.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+
+            @Override
             public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
             }
+
+            @Override
             public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
                 fromLanguageComboBoxPopupMenuWillBecomeInvisible(evt);
             }
+
+            @Override
             public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
                 fromLanguageComboBoxPopupMenuWillBecomeVisible(evt);
             }
         });
         fromLanguageComboBox.addActionListener(new java.awt.event.ActionListener() {
+
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 fromLanguageComboBoxActionPerformed(evt);
             }
         });
 
+        panel.add(new JLabel(TRANSLATOR.translate("To(Label)")), "");
+        panel.add(toLanguageComboBox, "growx");
         toLanguageComboBox.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+
+            @Override
             public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
             }
+
+            @Override
             public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
                 toLanguageComboBoxPopupMenuWillBecomeInvisible(evt);
             }
+
+            @Override
             public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
                 toLanguageComboBoxPopupMenuWillBecomeVisible(evt);
             }
         });
-        toLanguageComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                toLanguageComboBoxActionPerformed(evt);
-            }
-        });
+        panel.add(jLabel7, "");
+        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/48x48/dictionary.png")));
 
-        jLabel1.setText(bundle.getString("Languages(Label)")); // NOI18N
-
-        jLabel2.setText(bundle.getString("From(Label)")); // NOI18N
-
-        jLabel3.setText(bundle.getString("To(Label)")); // NOI18N
-
-        jLabel4.setText(bundle.getString("Difficulty(Label)")); // NOI18N
-
-        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/48x48/dictionary.png"))); // NOI18N
-
-        javax.swing.GroupLayout settingsPanelLayout = new javax.swing.GroupLayout(settingsPanel);
-        settingsPanel.setLayout(settingsPanelLayout);
-        settingsPanelLayout.setHorizontalGroup(
-            settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(settingsPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, settingsPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addGap(18, 18, 18)
-                        .addComponent(difficultyLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, settingsPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(fromLanguageComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, 18)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(toLanguageComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28)
-                .addComponent(jLabel7)
-                .addContainerGap(28, Short.MAX_VALUE))
-        );
-        settingsPanelLayout.setVerticalGroup(
-            settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(settingsPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(settingsPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(18, 18, 18)
-                        .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel3)
-                            .addComponent(toLanguageComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(fromLanguageComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
-                        .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(difficultyLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, settingsPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel7)
-                        .addGap(26, 26, 26))))
-        );
-
-        jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanel3.setMinimumSize(new java.awt.Dimension(32767, 32767));
-
+        panel.add(jLabel4, "");
+        jLabel4.setText(TRANSLATOR.translate("Difficulty(Label)"));
+        panel.add(difficultyLabel, "span 4, left");
+        
+        panel.add(startButton, "");
         startButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/media_play_green.png"))); // NOI18N
-        startButton.setText(bundle.getString("Start(Button)")); // NOI18N
+        startButton.setText(TRANSLATOR.translate("Start(Button)"));
         startButton.addActionListener(new java.awt.event.ActionListener() {
+
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 startButtonActionPerformed(evt);
             }
         });
+        panel.add(pauseButton, "split 2");
+        pauseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/media_pause.png"))); // NOI18N
+        pauseButton.setText(TRANSLATOR.translate("Pause(Button)"));
+        pauseButton.setEnabled(false);
+        pauseButton.addActionListener(new java.awt.event.ActionListener() {
 
-        translateField.setEditable(false);
-
-        answerField.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                answerFieldActionPerformed(evt);
+                pauseButtonActionPerformed(evt);
             }
         });
-
-        jLabel8.setText(bundle.getString("OverAnswerField(Label)")); // NOI18N
-
-        jLabel9.setText(bundle.getString("OverTranslateField(Label)")); // NOI18N
-
+        panel.add(stopButton, "span, wrap");
         stopButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/media_stop_red.png"))); // NOI18N
-        stopButton.setText(bundle.getString("Stop(Button)")); // NOI18N
+        stopButton.setText(TRANSLATOR.translate("Stop(Button)"));
         stopButton.setEnabled(false);
         stopButton.addActionListener(new java.awt.event.ActionListener() {
+
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 stopButtonActionPerformed(evt);
             }
         });
 
-        timerProgressBar.setForeground(new java.awt.Color(51, 255, 51));
-        timerProgressBar.setToolTipText(bundle.getString("Timer(String)")); // NOI18N
-        timerProgressBar.setString(bundle.getString("Timer(String)")); // NOI18N
-        timerProgressBar.setStringPainted(true);
+        panel.add(jLabel9, "span 5, left");
+        jLabel9.setText(TRANSLATOR.translate("OverTranslateField(Label)"));
 
+        panel.add(translateField, "span 5, left, growx");
+        translateField.setEditable(false);
+
+        panel.add(jLabel8, "span 5, left");
+        jLabel8.setText(TRANSLATOR.translate("OverAnswerField(Label)"));
+
+        panel.add(answerField, "span 5, left, growx");
+        answerField.addActionListener(new java.awt.event.ActionListener() {
+
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                answerFieldActionPerformed(evt);
+            }
+        });
+        panel.add(answerIconLabel, "center");
+        answerIconLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/bell2_grey.png")));
+        panel.add(answerButton, "span 4, left, growx");
         answerButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/check2.png"))); // NOI18N
-        answerButton.setText(bundle.getString("Answer(Button)")); // NOI18N
+        answerButton.setText(TRANSLATOR.translate("Answer(Button)")); // NOI18N
         answerButton.setEnabled(false);
         answerButton.setMaximumSize(new java.awt.Dimension(75, 25));
         answerButton.setMinimumSize(new java.awt.Dimension(75, 25));
         answerButton.setPreferredSize(new java.awt.Dimension(75, 25));
         answerButton.addActionListener(new java.awt.event.ActionListener() {
+
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 answerButtonActionPerformed(evt);
             }
         });
 
+        panel.add(wordsProgressBar, "span 5, left");
         wordsProgressBar.setForeground(new java.awt.Color(102, 102, 255));
-        wordsProgressBar.setToolTipText(bundle.getString("Words(String)")); // NOI18N
-        wordsProgressBar.setMinimumSize(new java.awt.Dimension(32767, 17));
-        wordsProgressBar.setString(bundle.getString("Words(String)")); // NOI18N
+        wordsProgressBar.setToolTipText(TRANSLATOR.translate("Words(String)"));
+        wordsProgressBar.setString(TRANSLATOR.translate("Words(String)"));
         wordsProgressBar.setStringPainted(true);
 
-        timerIconLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/48x48/stopwatch.png"))); // NOI18N
+        panel.add(feedbackField, "span 5, left");
+        feedbackField.setText(TRANSLATOR.translate("Feedback(Field)"));
 
-        answerIconLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/bell2_grey.png"))); // NOI18N
+        panel.add(timerIconLabel, "");
+        timerIconLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/48x48/stopwatch.png")));
+        panel.add(timerProgressBar, "");
+        timerProgressBar.setForeground(new java.awt.Color(51, 255, 51));
+        timerProgressBar.setToolTipText(TRANSLATOR.translate("Timer(String)"));
+        timerProgressBar.setString(TRANSLATOR.translate("Timer(String)"));
+        timerProgressBar.setStringPainted(true);
 
-        pauseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/media_pause.png"))); // NOI18N
-        pauseButton.setText(bundle.getString("Pause(Button)")); // NOI18N
-        pauseButton.setEnabled(false);
-        pauseButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                pauseButtonActionPerformed(evt);
-            }
-        });
+        return panel;
+    }
 
-        feedbackField.setText(bundle.getString("Feedback(Field)")); // NOI18N
+    private void answerButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        answered();
+        seconds = secondsBackup;
+        answerField.requestFocus();
+    }
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(feedbackField, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(timerIconLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(timerProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(translateField, javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(wordsProgressBar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 430, Short.MAX_VALUE))
-                            .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
-                                .addGap(35, 35, 35)
-                                .addComponent(answerIconLabel)
-                                .addGap(34, 34, 34)
-                                .addComponent(answerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(answerField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(startButton, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
-                                .addGap(18, 18, 18)
-                                .addComponent(pauseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(stopButton, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(85, 85, 85))))
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(34, 34, 34)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(startButton)
-                    .addComponent(pauseButton)
-                    .addComponent(stopButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel9)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(translateField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel8)
-                .addGap(5, 5, 5)
-                .addComponent(answerField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(answerIconLabel)
-                    .addComponent(answerButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(20, 20, 20)
-                .addComponent(wordsProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(feedbackField)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(timerIconLabel)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addComponent(timerProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(22, 22, 22))
-        );
+    private void answerFieldActionPerformed(java.awt.event.ActionEvent evt) {
+        answered();
+        seconds = secondsBackup;
+    }
 
-        jPanel3Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {answerButton, pauseButton});
+    private void stopButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        wrongWords.add(examService.examWord());
+        correctTranslation.add(examService.getTranslation());
+        stopExam();
+        pauseButton.setText(TRANSLATOR.translate("Pause(Button)"));
 
-        quitButton.setText(bundle.getString("Quit(Button)")); // NOI18N
-        quitButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                quitButtonActionPerformed(evt);
-            }
-        });
+    }
 
-        settingsButton.setText(bundle.getString("Settings(Button)")); // NOI18N
-        settingsButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                settingsButtonActionPerformed(evt);
-            }
-        });
+    private void pauseButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        if (pauseButton.getText().equals(TRANSLATOR.translate("Pause(Button)"))) {
+            swingTimer.stop();
+            pauseButton.setText(TRANSLATOR.translate("Continue(Button)"));
+            answerButton.setEnabled(false);
+        } else if (pauseButton.getText().equals(TRANSLATOR.translate("Continue(Button)"))) {
+            swingTimer.start();
+            pauseButton.setText(TRANSLATOR.translate("Pause(Button)"));
+            answerButton.setEnabled(true);
+        }
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 468, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(quitButton)
-                        .addGap(18, 18, 18)
-                        .addComponent(settingsButton))
-                    .addComponent(settingsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
 
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {quitButton, settingsButton});
+    }
 
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(settingsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(settingsButton)
-                    .addComponent(quitButton))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        pack();
-    }// </editor-fold>//GEN-END:initComponents
-
-    private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
+    private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {
         selectedDictionary = dictionaryService.getDictionary((Language) fromLanguageComboBox.getSelectedItem(), (Language) toLanguageComboBox.getSelectedItem());
         assert selectedDictionary != null;
 
@@ -455,126 +358,73 @@ public class ExamDialog extends javax.swing.JDialog {
         wordsProgressBar.setValue(1);
         feedbackField.setText(TRANSLATOR.translate("ExamStarted(Label)"));
         answerField.requestFocus();
-    }//GEN-LAST:event_startButtonActionPerformed
+    }
 
-    private void stopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopButtonActionPerformed
-        wrongWords.add(examService.examWord());
-        correctTranslation.add(examService.getTranslation());
-        stopExam();
-        pauseButton.setText(TRANSLATOR.translate("Pause(Button)"));
-
-    }//GEN-LAST:event_stopButtonActionPerformed
-
-    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
-        swingTimer.stop();
-        PM.put(Preference.EXAM_DIFFICULTY, difficulty.name());
-        PM.putBoolean(Preference.EXAM_TIMER, timerUsed);
-        PM.putInt(Preference.EXAM_FROM_LANG, fromLanguageComboBox.getSelectedIndex());
-        PM.putInt(Preference.EXAM_TO_LANG, toLanguageComboBox.getSelectedIndex());
-    }//GEN-LAST:event_formWindowClosed
-
-    private void settingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_settingsButtonActionPerformed
-        PreferencesDialog preferencesDialog = new PreferencesDialog(parent, true);
-        preferencesDialog.getTabbedPane().setSelectedIndex(2);
-
-
-        preferencesDialog.setLocationRelativeTo(this);
-        PreferencesExtractor.extract((SpellbookFrame) parent, preferencesDialog);
-        preferencesDialog.refreshNewSettingsToExam();
-
-    }//GEN-LAST:event_settingsButtonActionPerformed
-
-    private void answerFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_answerFieldActionPerformed
-        answered();
-        seconds = secondsBackup;
-    }//GEN-LAST:event_answerFieldActionPerformed
-
-    private void answerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_answerButtonActionPerformed
-        answered();
-        seconds = secondsBackup;
-        answerField.requestFocus();
-    }//GEN-LAST:event_answerButtonActionPerformed
-
-    private void fromLanguageComboBoxPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_fromLanguageComboBoxPopupMenuWillBecomeInvisible
-        if (fromLanguageComboBox.getSelectedItem() == toLanguageComboBox.getSelectedItem()) {
-            toLanguageComboBox.setSelectedIndex(fromWordsIndex);
-        }
-
-    }//GEN-LAST:event_fromLanguageComboBoxPopupMenuWillBecomeInvisible
-
-    private void fromLanguageComboBoxPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_fromLanguageComboBoxPopupMenuWillBecomeVisible
-        fromWordsIndex = fromLanguageComboBox.getSelectedIndex();
-    }//GEN-LAST:event_fromLanguageComboBoxPopupMenuWillBecomeVisible
-
-    private void toLanguageComboBoxPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_toLanguageComboBoxPopupMenuWillBecomeInvisible
+    private void toLanguageComboBoxPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
         if (toLanguageComboBox.getSelectedItem() == fromLanguageComboBox.getSelectedItem()) {
             fromLanguageComboBox.setSelectedIndex(toWordsIndex);
         }
-    }//GEN-LAST:event_toLanguageComboBoxPopupMenuWillBecomeInvisible
+    }
 
-    private void toLanguageComboBoxPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_toLanguageComboBoxPopupMenuWillBecomeVisible
+    private void toLanguageComboBoxPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
         toWordsIndex = toLanguageComboBox.getSelectedIndex();
-    }//GEN-LAST:event_toLanguageComboBoxPopupMenuWillBecomeVisible
+    }
 
-    private void pauseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pauseButtonActionPerformed
-        if (pauseButton.getText().equals(TRANSLATOR.translate("Pause(Button)"))) {
-            swingTimer.stop();
-            pauseButton.setText(TRANSLATOR.translate("Continue(Button)"));
-            answerButton.setEnabled(false);
-        } else if (pauseButton.getText().equals(TRANSLATOR.translate("Continue(Button)"))) {
-            swingTimer.start();
-            pauseButton.setText(TRANSLATOR.translate("Pause(Button)"));
-            answerButton.setEnabled(true);
+    private void fromLanguageComboBoxPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+        if (fromLanguageComboBox.getSelectedItem() == toLanguageComboBox.getSelectedItem()) {
+            toLanguageComboBox.setSelectedIndex(fromWordsIndex);
         }
+    }
 
+    private void fromLanguageComboBoxPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+        fromWordsIndex = fromLanguageComboBox.getSelectedIndex();
+    }
 
-    }//GEN-LAST:event_pauseButtonActionPerformed
-
-    private void quitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quitButtonActionPerformed
-        setVisible(false);
-    }//GEN-LAST:event_quitButtonActionPerformed
-
-    private void fromLanguageComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fromLanguageComboBoxActionPerformed
+    private void fromLanguageComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
         final List<Language> languagesTo = examService.getToLanguages((Language) fromLanguageComboBox.getSelectedItem());
         toLanguageComboBox.removeAllItems();
         for (Language language : languagesTo) {
             toLanguageComboBox.addItem(language);
         }
-    }//GEN-LAST:event_fromLanguageComboBoxActionPerformed
+    }
 
-    private void toLanguageComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toLanguageComboBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_toLanguageComboBoxActionPerformed
-    /**
-     * @param args the command line arguments
-     */
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton answerButton;
-    private javax.swing.JTextField answerField;
-    private javax.swing.JLabel answerIconLabel;
-    private static javax.swing.JLabel difficultyLabel;
-    private static javax.swing.JLabel feedbackField;
-    private javax.swing.JComboBox fromLanguageComboBox;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel3;
-    private static javax.swing.JButton pauseButton;
-    private javax.swing.JButton quitButton;
-    private javax.swing.JButton settingsButton;
-    private javax.swing.JPanel settingsPanel;
-    private static javax.swing.JButton startButton;
-    private static javax.swing.JButton stopButton;
-    private static javax.swing.JLabel timerIconLabel;
-    private static javax.swing.JProgressBar timerProgressBar;
-    private javax.swing.JComboBox toLanguageComboBox;
-    private javax.swing.JTextField translateField;
-    private javax.swing.JProgressBar wordsProgressBar;
-    // End of variables declaration//GEN-END:variables
+    @Override
+    public ButtonPanel createButtonPanel() {
+        ButtonPanel buttonPanel = new ButtonPanel();
+
+        JButton quitButton = new JButton();
+        JButton settingsButton = new JButton();
+
+        quitButton.setName(TRANSLATOR.translate("Quit(Button)"));
+        settingsButton.setName(TRANSLATOR.translate("Settings(Button)"));
+
+        buttonPanel.add(settingsButton, ButtonPanel.OTHER_BUTTON);
+        buttonPanel.add(quitButton, ButtonPanel.CANCEL_BUTTON);
+
+        quitButton.setAction(new AbstractAction(UIDefaultsLookup.getString("OptionPane.cancelButtonText")) {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setDialogResult(RESULT_CANCELLED);
+                setVisible(false);
+            }
+        });
+
+        settingsButton.setAction(new AbstractAction(UIDefaultsLookup.getString("OptionPane.settingsButtonText")) {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PreferencesDialog preferencesDialog = new PreferencesDialog(null, true);
+         //       preferencesDialog.getTabbedTane().setSelectedIndex(2);
+
+
+                preferencesDialog.setLocationRelativeTo(null);
+                PreferencesExtractor.extract(null, preferencesDialog);
+                preferencesDialog.refreshNewSettingsToExam();
+            }
+        });
+        return buttonPanel;
+    }
 
     private void callAnswerService() {
         examService.getExamWord(selectedDictionary);
@@ -627,7 +477,7 @@ public class ExamDialog extends javax.swing.JDialog {
 
     }
     private boolean flagLast = false;
-    private Timer swingTimer = new javax.swing.Timer(1 * 1000, new ActionListener() {
+    private Timer swingTimer = new Timer(1 * 1000, new ActionListener() {
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -686,7 +536,7 @@ public class ExamDialog extends javax.swing.JDialog {
         enumTimerStatus = timerEnabled ? TimerStatus.STOPPED : TimerStatus.DISABLED;
         examWords = PM.getInt(Preference.EXAM_WORDS, 10);
         examWordsCopy = examWords;
-        setVisible(true);
+     setVisible(true);
     }
 
     /* This method handels the text in GUI, which is related to difficulty
@@ -712,13 +562,13 @@ public class ExamDialog extends javax.swing.JDialog {
 
         fromLanguageComboBox.setEnabled(a);
         toLanguageComboBox.setEnabled(a);
-        settingsButton.setEnabled(a);
+        // settingsButton.setEnabled(a);
         startButton.setEnabled(a);
         stopButton.setEnabled(!a);
         answerButton.setEnabled(!a);
         pauseButton.setEnabled(!a);
         answerField.setEnabled(!a);
-        
+
     }
 
     private void timerRunButton() {
@@ -806,4 +656,9 @@ public class ExamDialog extends javax.swing.JDialog {
             }
         }
     }
+
+//    public static void main(String[] args) {
+//        ExamDialog examDialog = new ExamDialog(null, true);
+//        examDialog.setVisible(true);
+//    }
 }
