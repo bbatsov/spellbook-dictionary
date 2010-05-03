@@ -1,16 +1,20 @@
 package com.drowltd.spellbook.ui.desktop.exam;
 
-import com.drowltd.spellbook.core.service.exam.ExamService;
-import com.drowltd.spellbook.core.model.Difficulty;
 import com.drowltd.spellbook.core.i18n.Translator;
+import com.drowltd.spellbook.core.model.Dictionary;
+import com.drowltd.spellbook.core.model.Difficulty;
+import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.core.service.DictionaryService;
-import com.drowltd.spellbook.core.model.Dictionary;
-import com.drowltd.spellbook.core.model.Language;
-import com.drowltd.spellbook.ui.swing.util.IconManager;
+import com.drowltd.spellbook.core.service.exam.ExamService;
 import com.drowltd.spellbook.ui.desktop.PreferencesDialog;
 import com.drowltd.spellbook.ui.desktop.PreferencesExtractor;
 import com.drowltd.spellbook.ui.desktop.SpellbookFrame;
+import com.drowltd.spellbook.ui.swing.util.IconManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.Timer;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,10 +22,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import javax.swing.Timer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preference;
 
@@ -475,7 +475,7 @@ public class ExamDialog extends javax.swing.JDialog {
 
     private void settingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_settingsButtonActionPerformed
         PreferencesDialog preferencesDialog = new PreferencesDialog(parent, true);
-        preferencesDialog.getTabbedTane().setSelectedIndex(2);
+        preferencesDialog.getTabbedPane().setSelectedIndex(2);
 
 
         preferencesDialog.setLocationRelativeTo(this);
