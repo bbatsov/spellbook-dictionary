@@ -25,11 +25,6 @@ import org.slf4j.LoggerFactory;
 public class StudyService extends AbstractPersistenceService {
 
     private List<String> translations = new ArrayList<String>();
-    String[] identificatorsForRowsWithPossibleTranslations = {
-        "1.", "2.", "3.", "4.", "5.", "6.", "7.", "8.", "9.", "10.", "11.", "12.", "13.", "14.", "15.", "16.", "17.", "18.", "19.", "20.",
-        "n", "pl", "a", "adv", "v", "int", "sl.",
-        "i.", "ii.", "iii.", "iv.", "v.", "vi.", "vii.", "viii.", "ix.", "x.", "xi.", "xii.", "xiii.", "xiv.", "xv."
-    };
     private static final Logger LOGGER = LoggerFactory.getLogger(StudyService.class);
 
     /**
@@ -220,6 +215,13 @@ public class StudyService extends AbstractPersistenceService {
         String id2 = " ";
         int beginIndex = 0;
         int endIndex = 0;
+
+        String[] identificatorsForRowsWithPossibleTranslations = {
+            "1.", "2.", "3.", "4.", "5.", "6.", "7.", "8.", "9.", "10.", "11.", "12.", "13.", "14.", "15.", "16.", "17.", "18.", "19.", "20.",
+            "n", "pl", "a", "adv", "v", "int", "sl.","\u043E\u0431\u0438\u043A\u002E","\u0438",
+            "i.", "ii.", "iii.", "iv.", "v.", "vi.", "vii.", "viii.", "ix.", "x.", "xi.", "xii.", "xiii.", "xiv.", "xv."
+        };
+
         for (String row : rows) {
             endIndex = row.indexOf(" ");
             if (endIndex != -1) {
