@@ -1,25 +1,26 @@
 package com.drowltd.spellbook.ui.swing.component;
 
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
+import com.jidesoft.dialog.ButtonPanel;
+import com.jidesoft.dialog.ButtonResources;
+import com.jidesoft.dialog.StandardDialog;
+import com.jidesoft.plaf.UIDefaultsLookup;
 import com.jidesoft.swing.FolderChooser;
+import net.miginfocom.swing.MigLayout;
 
+import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.ProgressMonitor;
 import javax.swing.SwingWorker;
+import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedInputStream;
@@ -29,29 +30,31 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
-public class DownloadDialog extends JDialog implements PropertyChangeListener {
-    private JPanel contentPane;
-    private JButton buttonOK;
-    private JButton buttonCancel;
+public class DownloadDialog extends StandardDialog implements PropertyChangeListener {
     private JButton downloadButton;
     private JButton changeFolderButton;
     private JTextField downloadUrlTextField;
     private JTextField downloadFolderTextField;
     private ProgressMonitor progressMonitor;
     private Task task;
-    private boolean ok;
     private String url;
     private String downloadFolder;
+    private JButton okButton = new JButton();
 
     public DownloadDialog() {
-        setContentPane(contentPane);
         setModal(true);
-        getRootPane().setDefaultButton(buttonOK);
 
-        buttonOK.setEnabled(false);
+        okButton.setEnabled(false);
 
         File currentDir = new File(".");
+
+        downloadFolderTextField = new JTextField();
+        downloadUrlTextField = new JTextField();
+        downloadButton = new JButton("Download");
+        changeFolderButton = new JButton("Change folder");
 
         try {
             downloadFolder = currentDir.getCanonicalPath();
@@ -59,20 +62,6 @@ public class DownloadDialog extends JDialog implements PropertyChangeListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        buttonOK.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                onOK();
-            }
-        });
-
-        buttonCancel.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                onCancel();
-            }
-        });
 
         downloadButton.addActionListener(new ActionListener() {
             @Override
@@ -106,37 +95,80 @@ public class DownloadDialog extends JDialog implements PropertyChangeListener {
             }
         });
 
-// call onCancel() when cross is clicked
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                onCancel();
-            }
-        });
+        setMinimumSize(new Dimension(600, 150));
+    }
 
-// call onCancel() on ESCAPE
-        contentPane.registerKeyboardAction(new ActionListener() {
+    @Override
+    public JComponent createBannerPanel() {
+        return null;
+    }
+
+    @Override
+    public JComponent createContentPanel() {
+        MigLayout layout = new MigLayout(
+              "wrap 4",                 // Layout Constraints
+              "[][][grow][]",   // Column constraints
+              "[shrink 0][shrink 0]");    // Row constraints
+
+
+        JPanel panel = new JPanel(layout);
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
+
+        panel.add(new JLabel("Download url"));
+        panel.add(downloadUrlTextField, "span 2, growx");
+        panel.add(downloadButton, "growx");
+        panel.add(new JLabel("Download folder"));
+        panel.add(downloadFolderTextField, "span 2, growx");
+        panel.add(changeFolderButton, "growx");
+
+        return panel;
+    }
+
+    @Override
+    public ButtonPanel createButtonPanel() {
+        ButtonPanel buttonPanel = new ButtonPanel();
+        JButton cancelButton = new JButton();
+        JButton helpButton = new JButton();
+        okButton.setName(OK);
+        cancelButton.setName(CANCEL);
+        helpButton.setName(HELP);
+        buttonPanel.addButton(okButton, ButtonPanel.AFFIRMATIVE_BUTTON);
+        buttonPanel.addButton(cancelButton, ButtonPanel.CANCEL_BUTTON);
+        buttonPanel.addButton(helpButton, ButtonPanel.HELP_BUTTON);
+
+        okButton.setAction(new AbstractAction(UIDefaultsLookup.getString("OptionPane.okButtonText")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onCancel();
+                setDialogResult(RESULT_AFFIRMED);
+                setVisible(false);
+                dispose();
             }
-        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        });
+        cancelButton.setAction(new AbstractAction(UIDefaultsLookup.getString("OptionPane.cancelButtonText")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setDialogResult(RESULT_CANCELLED);
+                setVisible(false);
+                dispose();
+            }
+        });
+        final ResourceBundle resourceBundle = ButtonResources.getResourceBundle(Locale.getDefault());
+        helpButton.setAction(new AbstractAction(resourceBundle.getString("Button.help")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // do something
+            }
+        });
+        helpButton.setMnemonic(resourceBundle.getString("Button.help.mnemonic").charAt(0));
+
+        setDefaultCancelAction(cancelButton.getAction());
+        setDefaultAction(okButton.getAction());
+        getRootPane().setDefaultButton(okButton);
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        return buttonPanel;
     }
 
-    private void onOK() {
-// add your code here
-        dispose();
-
-        ok = true;
-    }
-
-    private void onCancel() {
-// add your code here if necessary
-        dispose();
-    }
-
-    public boolean showDialog(String url) {
+    public int showDialog(String url) {
         this.url = url;
         downloadUrlTextField.setText(url);
         progressMonitor = new ProgressMonitor(this, "Downloading url " + url, "Downloading", 0, 100);
@@ -145,75 +177,16 @@ public class DownloadDialog extends JDialog implements PropertyChangeListener {
 
         setVisible(true);
 
-        return ok;
+        return getDialogResult();
     }
 
     public String getDownloadFolder() {
         return downloadFolder;
     }
 
-    {
-// GUI initializer generated by IntelliJ IDEA GUI Designer
-// >>> IMPORTANT!! <<<
-// DO NOT EDIT OR ADD ANY CODE HERE!
-        $$$setupUI$$$();
-    }
-
-    /**
-     * Method generated by IntelliJ IDEA GUI Designer
-     * >>> IMPORTANT!! <<<
-     * DO NOT edit this method OR call it in your code!
-     *
-     * @noinspection ALL
-     */
-    private void $$$setupUI$$$() {
-        contentPane = new JPanel();
-        contentPane.setLayout(new FormLayout("fill:d:grow", "center:d:grow,top:4dlu:noGrow,center:max(d;4px):noGrow"));
-        final JPanel panel1 = new JPanel();
-        panel1.setLayout(new FormLayout("fill:d:grow,left:4dlu:noGrow,fill:max(d;4px):noGrow", "center:d:grow"));
-        CellConstraints cc = new CellConstraints();
-        contentPane.add(panel1, cc.xy(1, 3));
-        final JPanel panel2 = new JPanel();
-        panel2.setLayout(new FormLayout("fill:d:grow,left:4dlu:noGrow,fill:d:grow", "center:d:grow"));
-        panel1.add(panel2, cc.xy(3, 1));
-        buttonOK = new JButton();
-        buttonOK.setText("OK");
-        panel2.add(buttonOK, cc.xy(1, 1));
-        buttonCancel = new JButton();
-        buttonCancel.setText("Cancel");
-        panel2.add(buttonCancel, cc.xy(3, 1));
-        final JPanel panel3 = new JPanel();
-        panel3.setLayout(new FormLayout("fill:max(d;4px):noGrow,left:4dlu:noGrow,fill:d:grow,left:4dlu:noGrow,fill:max(d;4px):noGrow", "center:d:grow,top:4dlu:noGrow,center:d:grow"));
-        contentPane.add(panel3, cc.xy(1, 1));
-        final JLabel label1 = new JLabel();
-        label1.setText("URL");
-        panel3.add(label1, cc.xy(1, 1));
-        final JLabel label2 = new JLabel();
-        label2.setText("Download location");
-        panel3.add(label2, cc.xy(1, 3));
-        downloadButton = new JButton();
-        downloadButton.setText("Download");
-        panel3.add(downloadButton, cc.xy(5, 1));
-        changeFolderButton = new JButton();
-        changeFolderButton.setText("Change folder");
-        panel3.add(changeFolderButton, cc.xy(5, 3));
-        downloadUrlTextField = new JTextField();
-        downloadUrlTextField.setEditable(false);
-        panel3.add(downloadUrlTextField, cc.xy(3, 1, CellConstraints.FILL, CellConstraints.DEFAULT));
-        downloadFolderTextField = new JTextField();
-        downloadFolderTextField.setEditable(false);
-        panel3.add(downloadFolderTextField, cc.xy(3, 3, CellConstraints.FILL, CellConstraints.DEFAULT));
-    }
-
-    /**
-     * @noinspection ALL
-     */
-    public JComponent $$$getRootComponent$$$() {
-        return contentPane;
-    }
-
-
     class Task extends SwingWorker<Void, Void> {
+        private static final int BUFFER_SIZE = 1024;
+
         @Override
         public Void doInBackground() {
             try {
@@ -224,14 +197,14 @@ public class DownloadDialog extends JDialog implements PropertyChangeListener {
 
                 BufferedInputStream in = new BufferedInputStream(dbUrl.openStream());
                 FileOutputStream fos = new FileOutputStream(getDownloadPath());
-                BufferedOutputStream bout = new BufferedOutputStream(fos, 1024);
-                byte[] data = new byte[1024];
+                BufferedOutputStream bout = new BufferedOutputStream(fos, BUFFER_SIZE);
+                byte[] data = new byte[BUFFER_SIZE];
                 int x;
                 int total = 0;
 
                 System.out.println("Downloading file " + url);
 
-                while ((x = in.read(data, 0, 1024)) >= 0) {
+                while ((x = in.read(data, 0, BUFFER_SIZE)) >= 0) {
                     total += x;
                     final int percents = (int) (((double) total / contentLength) * 100);
                     setProgress(percents);
@@ -285,11 +258,12 @@ public class DownloadDialog extends JDialog implements PropertyChangeListener {
 
                     System.out.println("Task canceled.\n");
                 } else {
+                    okButton.setEnabled(true);
+
                     System.out.println("Task completed.\n");
                 }
 
                 downloadButton.setEnabled(true);
-                buttonOK.setEnabled(true);
             }
         }
 

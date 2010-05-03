@@ -56,8 +56,8 @@
             <artifactId>jide-oss</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.jgoodies</groupId>
-            <artifactId>forms</artifactId>
+            <groupId>com.miglayout</groupId>
+            <artifactId>miglayout</artifactId>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
@@ -67,6 +67,6 @@
             <groupId>net.java.balloontip</groupId>
             <artifactId>balloontip</artifactId>
         </dependency>
-        
+
     </dependencies>
 </project>

@@ -27,12 +27,12 @@
             <artifactId>balloontip</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.jgoodies</groupId>
-            <artifactId>forms</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.jidesoft</groupId>
             <artifactId>jide-oss</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.miglayout</groupId>
+            <artifactId>miglayout</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
