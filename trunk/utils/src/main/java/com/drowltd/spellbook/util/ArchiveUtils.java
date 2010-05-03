@@ -34,13 +34,10 @@ public class ArchiveUtils {
      */
     public static String extractDbFromArchive(String pathToArchive) {
         // Get the current path, where the database will be extracted
-        String currentPath = "";
-        try {
-            currentPath = new java.io.File(".").getCanonicalPath();
-        } catch (IOException ex) {
-        }
+        String currentPath = System.getProperty("user.home");
         LOGGER.info("Current path: " + currentPath);
         currentPath += File.separator;
+
         try {
             //Open the archive
             FileInputStream archiveFileStream = new FileInputStream(pathToArchive);
