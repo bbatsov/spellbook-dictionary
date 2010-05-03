@@ -10,39 +10,131 @@
  */
 package com.drowltd.spellbook.ui.desktop;
 
+import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.model.Dictionary;
+import com.jidesoft.dialog.ButtonPanel;
+import com.jidesoft.dialog.ButtonResources;
+import com.jidesoft.dialog.StandardDialog;
+import com.jidesoft.plaf.UIDefaultsLookup;
+import net.miginfocom.swing.MigLayout;
+
+import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 import javax.swing.text.DefaultEditorKit;
+import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
- *
  * @author bozhidar
  */
-public class AddUpdateWordDialog extends javax.swing.JDialog {
+public class AddUpdateWordDialog extends StandardDialog {
+    private static final Translator TRANSLATOR = Translator.getTranslator("AddUpdateWordDialog");
 
-    /** A return status code - returned if Cancel button has been pressed */
-    public static final int RET_CANCEL = 0;
-    /** A return status code - returned if OK button has been pressed */
-    public static final int RET_OK = 1;
+    private JButton addButton;
+    private JButton editButton;
+    private JTextField newMeaningTextField;
+    private JTextField wordTextField;
+    private JTextPane translationPane;
     private Dictionary dictionary;
     private String toBeEdited;
     private Action selectLine;
 
-    /** Creates new form AddWordToDb */
-    public AddUpdateWordDialog(java.awt.Frame parent, boolean modal) {
+    public AddUpdateWordDialog(Frame parent, boolean modal) {
         super(parent, modal);
-        initComponents();
+
+        TRANSLATOR.reset();
+
+        addButton = new JButton(TRANSLATOR.translate("Add(JButton)"));
+        editButton = new JButton(TRANSLATOR.translate("Edit(JButton)"));
+        wordTextField = new JTextField();
+        newMeaningTextField = new JTextField();
+        translationPane = new JTextPane();
 
         setLocationRelativeTo(parent);
+
+        setSize(400, 400);
 
         selectLine = getSelectLineAction();
     }
 
-    /** @return the return status of this dialog - one of RET_OK or RET_CANCEL */
-    public int getReturnStatus() {
-        return returnStatus;
+    @Override
+    public JComponent createBannerPanel() {
+        return null;
     }
+
+    @Override
+    public JComponent createContentPanel() {
+        JPanel panel = new JPanel(new MigLayout("wrap 2", "[grow][]", "[][][][][][grow]"));
+
+        panel.add(new JLabel(TRANSLATOR.translate("Word(TextFieldBorder)")), "span 2, left");
+        panel.add(wordTextField, "span 2, growx, top");
+        panel.add(new JLabel(TRANSLATOR.translate("Add/Edit(TextFieldBorder)")), "span 2, left");
+        panel.add(newMeaningTextField, "growx, top");
+        panel.add(addButton, "top");
+        panel.add(new JLabel(TRANSLATOR.translate("Preview(TextFieldBorde)")), "span 2, left");
+        panel.add(new JScrollPane(translationPane), "growx, growy");
+        panel.add(editButton, "top");
+
+        return panel;
+    }
+
+    @Override
+    public ButtonPanel createButtonPanel() {
+        ButtonPanel buttonPanel = new ButtonPanel();
+        JButton okButton = new JButton();
+        JButton cancelButton = new JButton();
+        JButton helpButton = new JButton();
+        okButton.setName(OK);
+        cancelButton.setName(CANCEL);
+        helpButton.setName(HELP);
+        buttonPanel.addButton(okButton, ButtonPanel.AFFIRMATIVE_BUTTON);
+        buttonPanel.addButton(cancelButton, ButtonPanel.CANCEL_BUTTON);
+        buttonPanel.addButton(helpButton, ButtonPanel.HELP_BUTTON);
+
+        okButton.setAction(new AbstractAction(UIDefaultsLookup.getString("OptionPane.okButtonText")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setDialogResult(RESULT_AFFIRMED);
+                setVisible(false);
+                dispose();
+            }
+        });
+        cancelButton.setAction(new AbstractAction(UIDefaultsLookup.getString("OptionPane.cancelButtonText")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setDialogResult(RESULT_CANCELLED);
+                setVisible(false);
+                dispose();
+            }
+        });
+        final ResourceBundle resourceBundle = ButtonResources.getResourceBundle(Locale.getDefault());
+        helpButton.setAction(new AbstractAction(resourceBundle.getString("Button.help")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // do something
+            }
+        });
+        helpButton.setMnemonic(resourceBundle.getString("Button.help.mnemonic").charAt(0));
+
+        setDefaultCancelAction(cancelButton.getAction());
+        setDefaultAction(okButton.getAction());
+        getRootPane().setDefaultButton(okButton);
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        return buttonPanel;
+    }
+
 
     public void setDictionary(Dictionary dictionary) {
         this.dictionary = dictionary;
@@ -52,205 +144,24 @@ public class AddUpdateWordDialog extends javax.swing.JDialog {
         return dictionary;
     }
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        wordTextField = new javax.swing.JTextField();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        translationTextArea = new javax.swing.JTextArea();
-        newMeaningTextField = new javax.swing.JTextField();
-        addButton = new javax.swing.JButton();
-        editButton = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jPanel2 = new javax.swing.JPanel();
-        cancelButton = new javax.swing.JButton();
-        okButton = new javax.swing.JButton();
-
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosing(java.awt.event.WindowEvent evt) {
-                closeDialog(evt);
-            }
-        });
-
-        translationTextArea.setColumns(20);
-        translationTextArea.setEditable(false);
-        translationTextArea.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        translationTextArea.setRows(5);
-        translationTextArea.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                translationTextAreaMouseClicked(evt);
-            }
-        });
-        jScrollPane1.setViewportView(translationTextArea);
-
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("i18n/AddUpdateWordDialog"); // NOI18N
-        addButton.setText(bundle.getString("Add(JButton)")); // NOI18N
-        addButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addButtonActionPerformed(evt);
-            }
-        });
-
-        editButton.setText(bundle.getString("Edit(JButton)")); // NOI18N
-        editButton.setActionCommand(bundle.getString("Edit(JButton)")); // NOI18N
-        editButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                editButtonActionPerformed(evt);
-            }
-        });
-
-        jLabel1.setText("Word");
-
-        jLabel2.setText("Meaning");
-
-        jLabel3.setText("Dictionary entry preview");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
-                    .addComponent(newMeaningTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(89, 89, 89)
-                        .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel1)
-                    .addComponent(wordTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(wordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(addButton)
-                    .addComponent(editButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(newMeaningTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 161, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 29, Short.MAX_VALUE)
-        );
-
-        cancelButton.setText("Cancel");
-        cancelButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cancelButtonActionPerformed(evt);
-            }
-        });
-
-        okButton.setText("OK");
-        okButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                okButtonActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(31, 31, 31)
-                .addComponent(okButton, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cancelButton)
-                .addContainerGap())
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {cancelButton, okButton});
-
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(cancelButton)
-                        .addComponent(okButton))))
-        );
-
-        pack();
-    }// </editor-fold>//GEN-END:initComponents
-
-    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-        doClose(RET_OK);
-    }//GEN-LAST:event_okButtonActionPerformed
-
-    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-        doClose(RET_CANCEL);
-    }//GEN-LAST:event_cancelButtonActionPerformed
-
-    /** Closes the dialog */
-    private void closeDialog(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_closeDialog
-        doClose(RET_CANCEL);
-    }//GEN-LAST:event_closeDialog
-
-    private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-        translationTextArea.append(newMeaningTextField.getText() + "\n");
-    }//GEN-LAST:event_addButtonActionPerformed
-
-    private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
+    private void editButtonActionPerformed(ActionEvent evt) {
         if (toBeEdited == null) {
             return;
         }
-        String editedText = translationTextArea.getText().replaceAll(toBeEdited, newMeaningTextField.getText());
+        String editedText = translationPane.getText().replaceAll(toBeEdited, newMeaningTextField.getText());
         toBeEdited = newMeaningTextField.getText();
-        translationTextArea.setText(editedText);
-    }//GEN-LAST:event_editButtonActionPerformed
+        translationPane.setText(editedText);
+    }
 
-    private void translationTextAreaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_translationTextAreaMouseClicked
+    private void translationTextAreaMouseClicked(MouseEvent evt) {
 
         if (SwingUtilities.isLeftMouseButton(evt) && evt.getClickCount() == 1) {
             selectLine.actionPerformed(null);
         }
 
-        toBeEdited = translationTextArea.getSelectedText();
+        toBeEdited = translationPane.getSelectedText();
         newMeaningTextField.setText(toBeEdited);
-    }//GEN-LAST:event_translationTextAreaMouseClicked
-
-    private void doClose(int retStatus) {
-        returnStatus = retStatus;
-        setVisible(false);
-        dispose();
     }
 
     public void setWord(String word) {
@@ -262,15 +173,15 @@ public class AddUpdateWordDialog extends javax.swing.JDialog {
     }
 
     public void setTranslation(String translation) {
-        translationTextArea.setText(translation);
+        translationPane.setText(translation);
     }
 
     public String getTranslation() {
-        return translationTextArea.getText();
+        return translationPane.getText();
     }
 
     private Action getSelectLineAction() {
-        Action[] action = translationTextArea.getActions();
+        Action[] action = translationPane.getActions();
 
         for (int i = 0; i < action.length; i++) {
 
@@ -282,20 +193,12 @@ public class AddUpdateWordDialog extends javax.swing.JDialog {
 
         return selectLine;
     }
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton addButton;
-    private javax.swing.JButton cancelButton;
-    private javax.swing.JButton editButton;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField newMeaningTextField;
-    private javax.swing.JButton okButton;
-    private javax.swing.JTextArea translationTextArea;
-    private javax.swing.JTextField wordTextField;
-    // End of variables declaration//GEN-END:variables
-    private int returnStatus = RET_CANCEL;
+
+    public static void main(String[] args) {
+        AddUpdateWordDialog addUpdateWordDialog = new AddUpdateWordDialog(null, true);
+
+        addUpdateWordDialog.setVisible(true);
+    }
+
+
 }
