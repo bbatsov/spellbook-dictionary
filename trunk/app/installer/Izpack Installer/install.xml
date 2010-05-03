@@ -19,10 +19,14 @@
         <appname>Spellbook Desktop Edition</appname>
         <appversion>0.3-SNAPSHOT</appversion>
         <authors>
-            <author name="Many, many, devs" email="customer.service@softberries.com"/>
-			<author name="Many, many, devs2" email="customer1.service@softberries.com"/>
+            <author name="Bozhidar Batsov" email="bozhidar@drowltd.com"/>
+			<author name="Ivan Valchev" email="iivalchev@gmail.com"/>
+			<author name="Ivan Spasov" email="frankeys89@gmail.com"/>
+			<author name="Miroslava Stancheva" email="mireflame@gmail.com"/>
+			<author name="Georgi Angelov" email="george.angelow@gmail.com"/>
+			<author name="Alexander Nikolov" email="AlexanderNikolovNikolov@gmail.com"/>
         </authors>
-        <url>http://www.softwarepassion.com/</url>
+        <url>http://www.drowltd.com/spellbook</url>
 		<requiresjdk>no</requiresjdk>
     </info>
 
@@ -30,7 +34,16 @@
        The gui preferences indication.
        Sets the installer window to 640x480. It will not be able to change the size.
    -->
-    <guiprefs width="640" height="480" resizable="yes"/>
+    <guiprefs width="640" height="480" resizable="yes">
+	    <laf name="looks" decorate.frames = "yes">
+            <os family="unix" />
+			<param name="variant" value="plastic3D" />
+        </laf>
+        <laf name="looks" decorate.frames = "yes">
+            <os family="windows" />
+            <param name="variant" value="plastic3D" />
+        </laf>
+    </guiprefs>
     <variables>
         <variable name="DesktopShortcutCheckboxEnabled" value="false"/>
     </variables>
@@ -85,7 +98,7 @@
 		
 		<pack name="DateBase" required="no" preselected="yes">
 		    <description>The datebase for the dictionary</description>
-		    <file src="dictionary-db.tar.bz2" targetdir="$INSTALL_PATH"/>
+		    <file src="dictionary-db.tar.bz2" targetdir="$USER_HOME"/>
 		</pack>
 		
     </packs>
