@@ -66,5 +66,29 @@ public class RemoteDictionaryEntry extends AbstractEntity {
     public void setWord(String word) {
         this.word = word;
     }
+
+    @Override
+    public boolean equals(Object o){
+        if(o == null)
+        return false;
+
+        if(this == o) return true;
+
+        if(o.getClass() != RemoteDictionaryEntry.class) return false;
+
+        RemoteDictionaryEntry other = (RemoteDictionaryEntry) o;
+
+        if(word.equals(other.word) && remoteDictionary == other.remoteDictionary) return true;
+
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 29 * hash + (this.remoteDictionary != null ? this.remoteDictionary.hashCode() : 0);
+        hash = 29 * hash + (this.word != null ? this.word.hashCode() : 0);
+        return hash;
+    }
     
 }
