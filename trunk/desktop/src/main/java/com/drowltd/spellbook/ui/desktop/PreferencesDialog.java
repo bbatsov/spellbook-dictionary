@@ -228,7 +228,7 @@ public class PreferencesDialog extends StandardDialog {
                     }
                 }
 
-                SwingUtilities.updateComponentTreeUI(tabbedPane);
+                SwingUtilities.updateComponentTreeUI(getContentPane());
                 SwingUtilities.updateComponentTreeUI(parent);
             }
         });
@@ -451,7 +451,7 @@ public class PreferencesDialog extends StandardDialog {
     }
 
     private JPanel createFontPreferencesPanel() {
-        JPanel fontSettingsPanel = new JPanel(new MigLayout("wrap 4", "[grow][grow][grow][grow]", "[][][grow][grow]"));
+        JPanel fontSettingsPanel = new JPanel(new MigLayout("wrap 4", "[grow][][grow][grow]", "[][][grow][grow]"));
         fontList = new JList();
         fontSizeList = new JList();
         fontStyleList = new JList();

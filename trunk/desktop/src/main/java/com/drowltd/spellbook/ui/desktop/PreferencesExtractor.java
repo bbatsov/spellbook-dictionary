@@ -149,9 +149,20 @@ public class PreferencesExtractor {
 
         } else {
             // we need to restore the old look and feel manually since it was changed on selection
-            LookAndFeelInfo[] lookAndFeelInfos = UIManager.getInstalledLookAndFeels();
+            String currentLookAndFeel = UIManager.getLookAndFeel().getName();
+            String currentLookAndFeelClassName = UIManager.getLookAndFeel().getClass().getName();
 
             String selectedLookAndFeel = PM.get(Preference.LOOK_AND_FEEL, "System");
+
+            if (currentLookAndFeel.equalsIgnoreCase(selectedLookAndFeel) ||
+                    (selectedLookAndFeel.equals("System") &&
+                            currentLookAndFeelClassName.equals(UIManager.getSystemLookAndFeelClassName()))) {
+                LOGGER.info("Look and feel is the same, no need to reset");
+                return;
+            }
+
+            LookAndFeelInfo[] lookAndFeelInfos = UIManager.getInstalledLookAndFeels();
+
 
             if (selectedLookAndFeel.equals("System")) {
                 try {
