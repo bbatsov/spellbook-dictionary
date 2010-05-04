@@ -13,7 +13,7 @@ public enum Difficulty {
     private final int low;
     private final int high;
     private final int time; // in seconds
-    private static final Translator TRANSLATOR = Translator.getTranslator("ExamSettingsDialog");
+    private static final Translator TRANSLATOR = Translator.getTranslator("PreferencesDialog");
 
     private Difficulty(int low, int high, int time) {
         this.low = low;

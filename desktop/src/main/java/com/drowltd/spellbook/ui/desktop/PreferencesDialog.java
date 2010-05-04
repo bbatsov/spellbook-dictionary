@@ -8,6 +8,7 @@ import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.ui.desktop.exam.ExamDialog;
 import com.drowltd.spellbook.ui.swing.component.DictionaryComboBox;
+import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.jidesoft.dialog.ButtonPanel;
 import com.jidesoft.dialog.ButtonResources;
 import com.jidesoft.dialog.StandardDialog;
@@ -61,12 +62,11 @@ import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preferen
  */
 public class PreferencesDialog extends StandardDialog {
 
-    private static final Translator TRANSLATOR = Translator.getTranslator("PreferencesForm");
+    private static final Translator TRANSLATOR = Translator.getTranslator("PreferencesDialog");
     private static final PreferencesManager PM = PreferencesManager.getInstance();
     private Font selectedFont;
     private static final DictionaryService DICTIONARY_SERVICE = DictionaryService.getInstance();
 
-    /** Creates new form PreferencesDialog */
     public PreferencesDialog(final Frame parent, boolean modal) {
         super(parent, modal);
 
@@ -83,7 +83,7 @@ public class PreferencesDialog extends StandardDialog {
 
     @Override
     public JComponent createBannerPanel() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     @Override
@@ -143,7 +143,9 @@ public class PreferencesDialog extends StandardDialog {
     private void initGeneralTab(final Frame parent) {
         Language[] availableLangs = Language.values();
 
+        // this workaround is needed to avoid problems with older versions of spellbook
         Language selectedLanguage = Language.ENGLISH;
+
         String selectedLanguageName = PM.get(Preference.UI_LANG, Language.ENGLISH.getName());
 
         for (Language language : availableLangs) {
@@ -151,10 +153,6 @@ public class PreferencesDialog extends StandardDialog {
                 selectedLanguage = language;
                 break;
             }
-        }
-
-        if (selectedLanguage == null) {
-            throw new IllegalStateException("null UI lang");
         }
 
         // set the selected values from preferences
@@ -231,7 +229,6 @@ public class PreferencesDialog extends StandardDialog {
                 }
 
                 SwingUtilities.updateComponentTreeUI(tabbedPane);
-//                SwingUtilities.updateComponentTreeUI(jPanel4);
                 SwingUtilities.updateComponentTreeUI(parent);
             }
         });
@@ -416,64 +413,45 @@ public class PreferencesDialog extends StandardDialog {
 
     private void initGuiComponents() {
         tabbedPane = new JTabbedPane();
+        tabbedPane.addTab(TRANSLATOR.translate("GeneralSettings(Title)"), new ImageIcon(getClass().getResource("/icons/16x16/preferences.png")), createGeneralPreferencesPanel());
+        tabbedPane.addTab(TRANSLATOR.translate("FontTab(Label)"), IconManager.getMenuIcon("font.png"), createFontPreferencesPanel()); // NOI18N
+        tabbedPane.addTab("Exam", new ImageIcon(getClass().getResource("/icons/16x16/blackboard.png")), createExamPreferencesPanel());
 
-        generalSettingsPanel = new JPanel(new MigLayout("wrap 2", "[grow][grow]"));
-        minimizeToTrayCheckBox = new JCheckBox();
-        minimizeToTrayOnCloseCheckBox = new JCheckBox();
-        clipboardIntegrationCheckBox = new JCheckBox();
-        trayPopupCheckBox = new JCheckBox();
-        showMemoryUsageCheckBox = new JCheckBox();
-        alwaysOnTopCheckBox = new JCheckBox();
-        emptyLineCheckBox = new JCheckBox();
-        languageComboBox = new JComboBox();
-        lookAndFeelComboBox = new JComboBox();
-        defaultDictionaryComboBox = new DictionaryComboBox(DICTIONARY_SERVICE.getDictionaries());
+        pack();
+    }
 
+    private JPanel createExamPreferencesPanel() {
+        JPanel examSettingsPanel = new JPanel(new MigLayout("wrap 4", "[grow][][][]"));
+        easyRadioButton = new JRadioButton();
+        mediumRadioButton = new JRadioButton();
+        hardRadioButton = new JRadioButton();
+        timerCheckBox = new JCheckBox();
+        wordCountField = new JTextField();
+        ButtonGroup difficultyButtonGroup = new ButtonGroup();
 
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        ResourceBundle bundle = ResourceBundle.getBundle("i18n/PreferencesForm");
-        setTitle(bundle.getString("Preferences(Title)"));
+        examSettingsPanel.add(new JLabel(TRANSLATOR.translate("ChooseDifficulty(Label)")), "growx");
+        examSettingsPanel.add(easyRadioButton);
+        examSettingsPanel.add(mediumRadioButton);
+        examSettingsPanel.add(hardRadioButton);
+        examSettingsPanel.add(new JLabel(TRANSLATOR.translate("ExamWords(Label)")), "growx");
+        examSettingsPanel.add(wordCountField, "wrap");
+        examSettingsPanel.add(timerCheckBox);
 
-        minimizeToTrayCheckBox.setText(bundle.getString("MinimizeToTray(Label)"));
+        difficultyButtonGroup.add(easyRadioButton);
+        easyRadioButton.setText(TRANSLATOR.translate("Easy(Label)"));
 
-        minimizeToTrayOnCloseCheckBox.setText(bundle.getString("CloseToTray(Label)"));
+        difficultyButtonGroup.add(mediumRadioButton);
+        mediumRadioButton.setText(TRANSLATOR.translate("Medium(Label)"));
 
-        clipboardIntegrationCheckBox.setText(bundle.getString("ClipboardIntegration(Label)"));
-        clipboardIntegrationCheckBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                clipboardIntegrationCheckBoxActionPerformed(evt);
-            }
-        });
+        difficultyButtonGroup.add(hardRadioButton);
+        hardRadioButton.setText(TRANSLATOR.translate("Hard(Label)"));
 
-        trayPopupCheckBox.setText(bundle.getString("TrayPopup(Label)")); // NOI18N
+        timerCheckBox.setText(TRANSLATOR.translate("Countdown(Label)"));
+        return examSettingsPanel;
+    }
 
-        showMemoryUsageCheckBox.setText(bundle.getString("ShowMemory(Label)")); // NOI18N
-
-        alwaysOnTopCheckBox.setText(bundle.getString("AlwaysOnTop(Label)")); // NOI18N
-
-        emptyLineCheckBox.setText(bundle.getString("EmptyLine(Label)")); // NOI18N
-
-        languageComboBox.setModel(new DefaultComboBoxModel(new Language[] {Language.ENGLISH, Language.BULGARIAN}));
-
-        generalSettingsPanel.add(new JLabel(TRANSLATOR.translate("Language(Label)")), "growx");
-        generalSettingsPanel.add(languageComboBox, "growx");
-        generalSettingsPanel.add(new JLabel(TRANSLATOR.translate("DefaultDictionary(Label)")), "growx");
-        generalSettingsPanel.add(defaultDictionaryComboBox, "growx");
-        generalSettingsPanel.add(new JLabel(TRANSLATOR.translate("LookAndFeel(Label)")), "growx");
-        generalSettingsPanel.add(lookAndFeelComboBox, "growx");
-        generalSettingsPanel.add(minimizeToTrayCheckBox, "growx");
-        generalSettingsPanel.add(minimizeToTrayOnCloseCheckBox, "growx");
-        generalSettingsPanel.add(clipboardIntegrationCheckBox, "growx");
-        generalSettingsPanel.add(trayPopupCheckBox, "growx");
-        generalSettingsPanel.add(showMemoryUsageCheckBox, "growx");
-        generalSettingsPanel.add(alwaysOnTopCheckBox, "growx");
-        generalSettingsPanel.add(emptyLineCheckBox, "growx");
-
-
-        tabbedPane.addTab(bundle.getString("GeneralSettings(Title)"), new ImageIcon(getClass().getResource("/icons/16x16/preferences.png")), generalSettingsPanel); // NOI18N
-
-        fontSettingsPanel = new JPanel(new MigLayout("wrap 4", "[grow][grow][grow][grow]", "[][][grow][grow]"));
+    private JPanel createFontPreferencesPanel() {
+        JPanel fontSettingsPanel = new JPanel(new MigLayout("wrap 4", "[grow][grow][grow][grow]", "[][][grow][grow]"));
         fontList = new JList();
         fontSizeList = new JList();
         fontStyleList = new JList();
@@ -481,8 +459,6 @@ public class PreferencesDialog extends StandardDialog {
         currentFontField = new JTextField();
         currentStyleField = new JTextField();
         currentFontSizeField = new JTextField();
-
-        ResourceBundle bundle1 = ResourceBundle.getBundle("i18n/FontChooserForm"); // NOI18N
 
         fontSettingsPanel.add(new JLabel(TRANSLATOR.translate("Font(Label)")), "span 2, growx");
         fontSettingsPanel.add(new JLabel(TRANSLATOR.translate("Style(Label)")), "growx");
@@ -500,50 +476,68 @@ public class PreferencesDialog extends StandardDialog {
         currentFontField.setEditable(false);
 
         currentStyleField.setEditable(false);
-
-        tabbedPane.addTab(bundle1.getString("FontTab(Label)"), new ImageIcon(getClass().getResource("/icons/16x16/font.png")), fontSettingsPanel); // NOI18N
-
-        examSettingsPanel = new JPanel(new MigLayout("wrap 4", "[grow][][][]"));
-        easyRadioButton = new JRadioButton();
-        mediumRadioButton = new JRadioButton();
-        hardRadioButton = new JRadioButton();
-        timerCheckBox = new JCheckBox();
-        wordCountField = new JTextField();
-        difficultyButtonGroup = new ButtonGroup();
-
-        examSettingsPanel.add(new JLabel(TRANSLATOR.translate("Difficulty(Label)")), "growx");
-        examSettingsPanel.add(easyRadioButton);
-        examSettingsPanel.add(mediumRadioButton);
-        examSettingsPanel.add(hardRadioButton);
-        examSettingsPanel.add(new JLabel(TRANSLATOR.translate("ExamWords(Label)")), "growx");
-        examSettingsPanel.add(wordCountField, "wrap");
-        examSettingsPanel.add(timerCheckBox);
-
-        ResourceBundle bundle2 = ResourceBundle.getBundle("i18n/ExamSettingsDialog"); // NOI18N
-
-        difficultyButtonGroup.add(easyRadioButton);
-        easyRadioButton.setText(bundle2.getString("Easy(Label)")); // NOI18N
-
-        difficultyButtonGroup.add(mediumRadioButton);
-        mediumRadioButton.setText(bundle2.getString("Medium(Label)")); // NOI18N
-
-        difficultyButtonGroup.add(hardRadioButton);
-        hardRadioButton.setText(bundle2.getString("Hard(Label)")); // NOI18N
-
-        timerCheckBox.setText(bundle2.getString("Countdown(Label)")); // NOI18N
-
-        tabbedPane.addTab("Exam", new ImageIcon(getClass().getResource("/icons/16x16/blackboard.png")), examSettingsPanel);
-
-        pack();
+        return fontSettingsPanel;
     }
 
-    private void clipboardIntegrationCheckBoxActionPerformed(ActionEvent evt) {
-        if (clipboardIntegrationCheckBox.isSelected()) {
+    private JPanel createGeneralPreferencesPanel() {
+        JPanel generalSettingsPanel = new JPanel(new MigLayout("wrap 2", "[grow][grow]"));
+        minimizeToTrayCheckBox = new JCheckBox();
+        minimizeToTrayOnCloseCheckBox = new JCheckBox();
+        clipboardIntegrationCheckBox = new JCheckBox();
+        trayPopupCheckBox = new JCheckBox();
+        showMemoryUsageCheckBox = new JCheckBox();
+        alwaysOnTopCheckBox = new JCheckBox();
+        emptyLineCheckBox = new JCheckBox();
+        languageComboBox = new JComboBox();
+        lookAndFeelComboBox = new JComboBox();
+        defaultDictionaryComboBox = new DictionaryComboBox(DICTIONARY_SERVICE.getDictionaries());
+
+
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle(TRANSLATOR.translate("Preferences(Title)"));
+
+        minimizeToTrayCheckBox.setText(TRANSLATOR.translate("MinimizeToTray(Label)"));
+
+        minimizeToTrayOnCloseCheckBox.setText(TRANSLATOR.translate("CloseToTray(Label)"));
+
+        clipboardIntegrationCheckBox.setText(TRANSLATOR.translate("ClipboardIntegration(Label)"));
+        clipboardIntegrationCheckBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                if (clipboardIntegrationCheckBox.isSelected()) {
             trayPopupCheckBox.setEnabled(true);
         } else {
             trayPopupCheckBox.setSelected(false);
             trayPopupCheckBox.setEnabled(false);
         }
+            }
+        });
+
+        trayPopupCheckBox.setText(TRANSLATOR.translate("TrayPopup(Label)"));
+
+        showMemoryUsageCheckBox.setText(TRANSLATOR.translate("ShowMemory(Label)"));
+
+        alwaysOnTopCheckBox.setText(TRANSLATOR.translate("AlwaysOnTop(Label)"));
+
+        emptyLineCheckBox.setText(TRANSLATOR.translate("EmptyLine(Label)"));
+
+        languageComboBox.setModel(new DefaultComboBoxModel(new Language[] {Language.ENGLISH, Language.BULGARIAN}));
+
+        generalSettingsPanel.add(new JLabel(TRANSLATOR.translate("Language(Label)")), "growx");
+        generalSettingsPanel.add(languageComboBox, "growx");
+        generalSettingsPanel.add(new JLabel(TRANSLATOR.translate("DefaultDictionary(Label)")), "growx");
+        generalSettingsPanel.add(defaultDictionaryComboBox, "growx");
+        generalSettingsPanel.add(new JLabel(TRANSLATOR.translate("LookAndFeel(Label)")), "growx");
+        generalSettingsPanel.add(lookAndFeelComboBox, "growx");
+        generalSettingsPanel.add(minimizeToTrayCheckBox, "growx");
+        generalSettingsPanel.add(minimizeToTrayOnCloseCheckBox, "growx");
+        generalSettingsPanel.add(clipboardIntegrationCheckBox, "growx");
+        generalSettingsPanel.add(trayPopupCheckBox, "growx");
+        generalSettingsPanel.add(showMemoryUsageCheckBox, "growx");
+        generalSettingsPanel.add(alwaysOnTopCheckBox, "growx");
+        generalSettingsPanel.add(emptyLineCheckBox, "growx");
+
+        return generalSettingsPanel;
     }
 
     private JCheckBox alwaysOnTopCheckBox;
@@ -552,16 +546,12 @@ public class PreferencesDialog extends StandardDialog {
     private JTextField currentFontSizeField;
     private JTextField currentStyleField;
     private JComboBox defaultDictionaryComboBox;
-    private ButtonGroup difficultyButtonGroup;
     private JRadioButton easyRadioButton;
     private JCheckBox emptyLineCheckBox;
     private JList fontList;
     private JList fontSizeList;
     private JList fontStyleList;
     private JRadioButton hardRadioButton;
-    private JPanel generalSettingsPanel;
-    private JPanel fontSettingsPanel;
-    private JPanel examSettingsPanel;
     private JComboBox languageComboBox;
     private JComboBox lookAndFeelComboBox;
     private JRadioButton mediumRadioButton;

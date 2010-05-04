@@ -10,25 +10,26 @@
  */
 package com.drowltd.spellbook.ui.desktop.study;
 
-import com.drowltd.spellbook.core.preferences.PreferencesManager;
-import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preference;
-import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.i18n.Translator;
+import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.StudySet;
 import com.drowltd.spellbook.core.model.StudySetEntry;
+import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.core.service.study.StudyService;
 import com.drowltd.spellbook.ui.swing.component.DictionaryComboBox;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
-import java.awt.Frame;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.Set;
-import java.util.regex.Pattern;
+
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
+import java.awt.Frame;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+
+import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preference;
 
 /**
  *
@@ -39,7 +40,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
     private StudyService studyService;
     private DictionaryService dictionaryService;
     private static final PreferencesManager PM = PreferencesManager.getInstance();
-    private static final Translator TRANSLATOR = Translator.getTranslator("LearningWordsDialog");
+    private static final Translator TRANSLATOR = Translator.getTranslator("StudyWordsDialog");
     private SelectedDictionary selectedDictionary = SelectedDictionary.EN_BG;
     private WordsDialog wordsDialog;
     private List<String> wordsForLearning = new ArrayList<String>();
