@@ -30,7 +30,7 @@ import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preferen
 public class PreferencesExtractor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellbookFrame.class);
-    private static final Translator TRANSLATOR = Translator.getTranslator("SpellbookForm");
+    private static final Translator TRANSLATOR = Translator.getTranslator("SpellbookFrame");
     private static final PreferencesManager PM = PreferencesManager.getInstance();
 
     public static void extract(SpellbookFrame spellbookFrame, PreferencesDialog preferencesDialog) {

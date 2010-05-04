@@ -65,7 +65,6 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -81,7 +80,7 @@ import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preferen
 public class SpellbookFrame extends JFrame {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellbookFrame.class);
-    private static final Translator TRANSLATOR = Translator.getTranslator("SpellbookForm");
+    private static final Translator TRANSLATOR = Translator.getTranslator("SpellbookFrame");
     private static final PreferencesManager PM = PreferencesManager.getInstance();
     private List<String> words;
     private ClipboardIntegration clipboardIntegration;
@@ -775,8 +774,7 @@ public class SpellbookFrame extends JFrame {
 
         wordsList.setModel(new ListBackedListModel(words));
         wordsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        ResourceBundle bundle = ResourceBundle.getBundle("i18n/SpellbookForm"); // NOI18N
-        wordsList.setToolTipText(bundle.getString("WordsList(ToolTip)")); // NOI18N
+        wordsList.setToolTipText(TRANSLATOR.translate("WordsList(ToolTip)")); // NOI18N
         wordsList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent evt) {
@@ -790,7 +788,7 @@ public class SpellbookFrame extends JFrame {
             }
         });
 
-        wordSearchField.setToolTipText(bundle.getString("WordSearch(ToolTip)")); // NOI18N
+        wordSearchField.setToolTipText(TRANSLATOR.translate("WordSearch(ToolTip)")); // NOI18N
         wordSearchField.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -815,14 +813,14 @@ public class SpellbookFrame extends JFrame {
 
         splitPane.setRightComponent(translationPanel);
 
-        initToolBar(bundle);
+        initToolBar();
 
-        initMenuBar(bundle);
+        initMenuBar();
 
         pack();
     }
 
-    private void initMenuBar(ResourceBundle bundle) {
+    private void initMenuBar() {
         JMenuBar jMenuBar1 = new JMenuBar();
         JMenu jMenu1 = new JMenu();
         JMenuItem restartMenuItem = new JMenuItem();
@@ -847,11 +845,11 @@ public class SpellbookFrame extends JFrame {
         JMenuItem aboutMenuItem = new JMenuItem();
 
         jMenu1.setMnemonic('f');
-        jMenu1.setText(bundle.getString("File(Menu)")); // NOI18N
+        jMenu1.setText(TRANSLATOR.translate("File(Menu)")); // NOI18N
 
         restartMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/refresh.png"))); // NOI18N
         restartMenuItem.setMnemonic('r');
-        restartMenuItem.setText(bundle.getString("FileRestart(MenuItem)")); // NOI18N
+        restartMenuItem.setText(TRANSLATOR.translate("FileRestart(MenuItem)")); // NOI18N
         restartMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -862,7 +860,7 @@ public class SpellbookFrame extends JFrame {
 
         exitMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/exit.png"))); // NOI18N
         exitMenuItem.setMnemonic('x');
-        exitMenuItem.setText(bundle.getString("FileExit(MenuItem)")); // NOI18N
+        exitMenuItem.setText(TRANSLATOR.translate("FileExit(MenuItem)")); // NOI18N
         exitMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -874,10 +872,10 @@ public class SpellbookFrame extends JFrame {
         jMenuBar1.add(jMenu1);
 
         jMenu2.setMnemonic('e');
-        jMenu2.setText(bundle.getString("Edit(Menu)")); // NOI18N
+        jMenu2.setText(TRANSLATOR.translate("Edit(Menu)")); // NOI18N
 
         addWordMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/add2.png"))); // NOI18N
-        addWordMenuItem.setText(bundle.getString("EditAddWord(MenuItem)")); // NOI18N
+        addWordMenuItem.setText(TRANSLATOR.translate("EditAddWord(MenuItem)")); // NOI18N
         addWordMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -887,7 +885,7 @@ public class SpellbookFrame extends JFrame {
         jMenu2.add(addWordMenuItem);
 
         updateWordMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/edit.png"))); // NOI18N
-        updateWordMenuItem.setText(bundle.getString("EditUpdateWord(MenuItem)")); // NOI18N
+        updateWordMenuItem.setText(TRANSLATOR.translate("EditUpdateWord(MenuItem)")); // NOI18N
         updateWordMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -897,29 +895,29 @@ public class SpellbookFrame extends JFrame {
         jMenu2.add(updateWordMenuItem);
 
         deleteWordMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/delete2.png"))); // NOI18N
-        deleteWordMenuItem.setText(bundle.getString("EditDeleteWord(MenuItem)")); // NOI18N
+        deleteWordMenuItem.setText(TRANSLATOR.translate("EditDeleteWord(MenuItem)")); // NOI18N
         jMenu2.add(deleteWordMenuItem);
         jMenu2.add(jSeparator2);
 
         cutMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/cut.png"))); // NOI18N
         cutMenuItem.setMnemonic('t');
-        cutMenuItem.setText(bundle.getString("EditCut(MenuItem)")); // NOI18N
+        cutMenuItem.setText(TRANSLATOR.translate("EditCut(MenuItem)")); // NOI18N
         jMenu2.add(cutMenuItem);
 
         copyMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/copy.png"))); // NOI18N
         copyMenuItem.setMnemonic('c');
-        copyMenuItem.setText(bundle.getString("EditCopy(MenuItem)")); // NOI18N
+        copyMenuItem.setText(TRANSLATOR.translate("EditCopy(MenuItem)")); // NOI18N
         jMenu2.add(copyMenuItem);
 
         pasteMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/paste.png"))); // NOI18N
         pasteMenuItem.setMnemonic('p');
-        pasteMenuItem.setText(bundle.getString("EditPaste(MenuItem)")); // NOI18N
+        pasteMenuItem.setText(TRANSLATOR.translate("EditPaste(MenuItem)")); // NOI18N
         jMenu2.add(pasteMenuItem);
         jMenu2.add(jSeparator1);
 
         prefsMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/preferences.png"))); // NOI18N
         prefsMenuItem.setMnemonic('e');
-        prefsMenuItem.setText(bundle.getString("EditPreferences(MenuItem)")); // NOI18N
+        prefsMenuItem.setText(TRANSLATOR.translate("EditPreferences(MenuItem)")); // NOI18N
         prefsMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -931,15 +929,15 @@ public class SpellbookFrame extends JFrame {
         jMenuBar1.add(jMenu2);
 
         dictionaryMenu.setMnemonic('d');
-        dictionaryMenu.setText(bundle.getString("Dictionaries(Menu)")); // NOI18N
+        dictionaryMenu.setText(TRANSLATOR.translate("Dictionaries(Menu)")); // NOI18N
         jMenuBar1.add(dictionaryMenu);
 
         jMenu4.setMnemonic('t');
-        jMenu4.setText(bundle.getString("Tools(Menu)")); // NOI18N
+        jMenu4.setText(TRANSLATOR.translate("Tools(Menu)")); // NOI18N
 
         studyWordsMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/teacher.png"))); // NOI18N
         studyWordsMenuItem.setMnemonic('w');
-        studyWordsMenuItem.setText(bundle.getString("StudyWords(MenuItem)")); // NOI18N
+        studyWordsMenuItem.setText(TRANSLATOR.translate("StudyWords(MenuItem)")); // NOI18N
         studyWordsMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -950,7 +948,7 @@ public class SpellbookFrame extends JFrame {
 
         examMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/blackboard.png"))); // NOI18N
         examMenuItem.setMnemonic('e');
-        examMenuItem.setText(bundle.getString("Exam(MenuItem)")); // NOI18N
+        examMenuItem.setText(TRANSLATOR.translate("Exam(MenuItem)")); // NOI18N
         examMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -961,7 +959,7 @@ public class SpellbookFrame extends JFrame {
 
         spellcheckMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/spellcheck.png"))); // NOI18N
         spellcheckMenuItem.setMnemonic('s');
-        spellcheckMenuItem.setText(bundle.getString("SpellCheck(MenuItem)")); // NOI18N
+        spellcheckMenuItem.setText(TRANSLATOR.translate("SpellCheck(MenuItem)")); // NOI18N
         spellcheckMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -973,15 +971,15 @@ public class SpellbookFrame extends JFrame {
         jMenuBar1.add(jMenu4);
 
         jMenu5.setMnemonic('h');
-        jMenu5.setText(bundle.getString("Help(Menu)")); // NOI18N
+        jMenu5.setText(TRANSLATOR.translate("Help(Menu)")); // NOI18N
 
         helpContentsMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/help2.png"))); // NOI18N
-        helpContentsMenuItem.setText(bundle.getString("HelpContents(MenuItem)")); // NOI18N
+        helpContentsMenuItem.setText(TRANSLATOR.translate("HelpContents(MenuItem)")); // NOI18N
         jMenu5.add(helpContentsMenuItem);
 
         aboutMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/about.png"))); // NOI18N
         aboutMenuItem.setMnemonic('a');
-        aboutMenuItem.setText(bundle.getString("HelpAbout(MenuItem)")); // NOI18N
+        aboutMenuItem.setText(TRANSLATOR.translate("HelpAbout(MenuItem)")); // NOI18N
         aboutMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -995,7 +993,7 @@ public class SpellbookFrame extends JFrame {
         setJMenuBar(jMenuBar1);
     }
 
-    private void initToolBar(ResourceBundle bundle) {
+    private void initToolBar() {
 
         JToolBar mainToolBar = new JToolBar();
         backButton = new JButton();
@@ -1025,7 +1023,7 @@ public class SpellbookFrame extends JFrame {
         mainToolBar.setRollover(true);
 
         backButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/arrow_left_blue.png"))); // NOI18N
-        backButton.setToolTipText(bundle.getString("PreviousWord(Label)")); // NOI18N
+        backButton.setToolTipText(TRANSLATOR.translate("PreviousWord(Label)")); // NOI18N
         backButton.setFocusable(false);
         backButton.setHorizontalTextPosition(SwingConstants.CENTER);
         backButton.setVerticalTextPosition(SwingConstants.BOTTOM);
@@ -1038,7 +1036,7 @@ public class SpellbookFrame extends JFrame {
         mainToolBar.add(backButton);
 
         forwardButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/arrow_right_blue.png"))); // NOI18N
-        forwardButton.setToolTipText(bundle.getString("NextWord(Label)")); // NOI18N
+        forwardButton.setToolTipText(TRANSLATOR.translate("NextWord(Label)")); // NOI18N
         forwardButton.setFocusable(false);
         forwardButton.setHorizontalTextPosition(SwingConstants.CENTER);
         forwardButton.setVerticalTextPosition(SwingConstants.BOTTOM);
@@ -1051,7 +1049,7 @@ public class SpellbookFrame extends JFrame {
         mainToolBar.add(forwardButton);
 
         clearButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/eraser.png"))); // NOI18N
-        clearButton.setToolTipText(bundle.getString("ClearButton(ToolTip)")); // NOI18N
+        clearButton.setToolTipText(TRANSLATOR.translate("ClearButton(ToolTip)")); // NOI18N
         clearButton.setFocusable(false);
         clearButton.setHorizontalTextPosition(SwingConstants.CENTER);
         clearButton.setVerticalTextPosition(SwingConstants.BOTTOM);
@@ -1089,7 +1087,7 @@ public class SpellbookFrame extends JFrame {
         mainToolBar.add(jSeparator3);
 
         addWordButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/add2.png"))); // NOI18N
-        addWordButton.setToolTipText(bundle.getString("EditAddWord(MenuItem)")); // NOI18N
+        addWordButton.setToolTipText(TRANSLATOR.translate("EditAddWord(MenuItem)")); // NOI18N
         addWordButton.setFocusable(false);
         addWordButton.setHorizontalTextPosition(SwingConstants.CENTER);
         addWordButton.setVerticalTextPosition(SwingConstants.BOTTOM);
@@ -1102,7 +1100,7 @@ public class SpellbookFrame extends JFrame {
         mainToolBar.add(addWordButton);
 
         updateWordButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/edit.png"))); // NOI18N
-        updateWordButton.setToolTipText(bundle.getString("EditUpdateWord(MenuItem)")); // NOI18N
+        updateWordButton.setToolTipText(TRANSLATOR.translate("EditUpdateWord(MenuItem)")); // NOI18N
         updateWordButton.setFocusable(false);
         updateWordButton.setHorizontalTextPosition(SwingConstants.CENTER);
         updateWordButton.setVerticalTextPosition(SwingConstants.BOTTOM);
@@ -1115,7 +1113,7 @@ public class SpellbookFrame extends JFrame {
         mainToolBar.add(updateWordButton);
 
         deleteWordButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/delete2.png"))); // NOI18N
-        deleteWordButton.setToolTipText(bundle.getString("EditDeleteWord(MenuItem)")); // NOI18N
+        deleteWordButton.setToolTipText(TRANSLATOR.translate("EditDeleteWord(MenuItem)")); // NOI18N
         deleteWordButton.setFocusable(false);
         deleteWordButton.setHorizontalTextPosition(SwingConstants.CENTER);
         deleteWordButton.setVerticalTextPosition(SwingConstants.BOTTOM);
@@ -1129,21 +1127,21 @@ public class SpellbookFrame extends JFrame {
         mainToolBar.add(jSeparator4);
 
         cutButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/cut.png"))); // NOI18N
-        cutButton.setToolTipText(bundle.getString("EditCut(MenuItem)")); // NOI18N
+        cutButton.setToolTipText(TRANSLATOR.translate("EditCut(MenuItem)")); // NOI18N
         cutButton.setFocusable(false);
         cutButton.setHorizontalTextPosition(SwingConstants.CENTER);
         cutButton.setVerticalTextPosition(SwingConstants.BOTTOM);
         mainToolBar.add(cutButton);
 
         copyButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/copy.png"))); // NOI18N
-        copyButton.setToolTipText(bundle.getString("EditCopy(MenuItem)")); // NOI18N
+        copyButton.setToolTipText(TRANSLATOR.translate("EditCopy(MenuItem)")); // NOI18N
         copyButton.setFocusable(false);
         copyButton.setHorizontalTextPosition(SwingConstants.CENTER);
         copyButton.setVerticalTextPosition(SwingConstants.BOTTOM);
         mainToolBar.add(copyButton);
 
         pasteButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/paste.png"))); // NOI18N
-        pasteButton.setToolTipText(bundle.getString("EditPaste(MenuItem)")); // NOI18N
+        pasteButton.setToolTipText(TRANSLATOR.translate("EditPaste(MenuItem)")); // NOI18N
         pasteButton.setFocusable(false);
         pasteButton.setHorizontalTextPosition(SwingConstants.CENTER);
         pasteButton.setVerticalTextPosition(SwingConstants.BOTTOM);
@@ -1151,7 +1149,7 @@ public class SpellbookFrame extends JFrame {
         mainToolBar.add(jSeparator5);
 
         studyButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/teacher.png"))); // NOI18N
-        studyButton.setToolTipText(bundle.getString("StudyWords(MenuItem)")); // NOI18N
+        studyButton.setToolTipText(TRANSLATOR.translate("StudyWords(MenuItem)")); // NOI18N
         studyButton.setFocusable(false);
         studyButton.setHorizontalTextPosition(SwingConstants.CENTER);
         studyButton.setVerticalTextPosition(SwingConstants.BOTTOM);
@@ -1164,7 +1162,7 @@ public class SpellbookFrame extends JFrame {
         mainToolBar.add(studyButton);
 
         examButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/blackboard.png"))); // NOI18N
-        examButton.setToolTipText(bundle.getString("Exam(MenuItem)")); // NOI18N
+        examButton.setToolTipText(TRANSLATOR.translate("Exam(MenuItem)")); // NOI18N
         examButton.setFocusable(false);
         examButton.setHorizontalTextPosition(SwingConstants.CENTER);
         examButton.setVerticalTextPosition(SwingConstants.BOTTOM);
@@ -1177,7 +1175,7 @@ public class SpellbookFrame extends JFrame {
         mainToolBar.add(examButton);
 
         spellcheckButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/spellcheck.png"))); // NOI18N
-        spellcheckButton.setToolTipText(bundle.getString("SpellCheck(MenuItem)")); // NOI18N
+        spellcheckButton.setToolTipText(TRANSLATOR.translate("SpellCheck(MenuItem)")); // NOI18N
         spellcheckButton.setFocusable(false);
         spellcheckButton.setHorizontalTextPosition(SwingConstants.CENTER);
         spellcheckButton.setVerticalTextPosition(SwingConstants.BOTTOM);
