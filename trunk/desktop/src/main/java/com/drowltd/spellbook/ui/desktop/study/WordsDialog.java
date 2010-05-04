@@ -106,8 +106,12 @@ public class WordsDialog extends javax.swing.JDialog {
         addWordButton.setEnabled(words.contains(wordSearchField.getText()));
 
         if (addWordButton.isEnabled()) {
+            Dictionary dictionary = null;
+            if (dictionariesComboBox.getSelectedItem().equals(TRANSLATOR.translate("EnglishItem(ComboBox)"))) {
+                dictionary = dictionaries.get(0);
+            }
             wordTranslationTextPane.setText(dictionaryService.getTranslation(wordSearchField.getText(),
-                    (Dictionary) dictionariesComboBox.getSelectedItem()));
+                    dictionary));
             wordTranslationTextPane.setCaretPosition(0);
         }
     }
@@ -142,7 +146,7 @@ public class WordsDialog extends javax.swing.JDialog {
         deleteWordButton = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        dictionariesComboBox = new DictionaryComboBox(dictionaries);
+        dictionariesComboBox = new javax.swing.JComboBox();
         jLabel5 = new javax.swing.JLabel();
         addStudySetField = new javax.swing.JTextField();
         addStudySetButton = new javax.swing.JButton();
@@ -276,9 +280,9 @@ public class WordsDialog extends javax.swing.JDialog {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
                     .addComponent(dictionariesComboBox, 0, 187, Short.MAX_VALUE))
-                .addGap(111, 111, 111)
+                .addGap(129, 129, 129)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(studySetsComboBox, 0, 134, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
@@ -318,6 +322,9 @@ public class WordsDialog extends javax.swing.JDialog {
                         .addComponent(dictionariesComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
+
+        dictionariesComboBox.addItem(bundle.getString("EnglishItem(ComboBox)"));
+        dictionariesComboBox.setSelectedIndex(0);
 
         selectAllButton.setText(bundle.getString("All(Button)")); // NOI18N
         selectAllButton.addActionListener(new java.awt.event.ActionListener() {
@@ -494,7 +501,11 @@ public class WordsDialog extends javax.swing.JDialog {
                 JOptionPane.showMessageDialog(this, TRANSLATOR.translate("AlreadyContainedWord(Message)"), null, JOptionPane.ERROR_MESSAGE);
             } else {
                 countOFTheWords++;
-                studyService.addWord(word, (Dictionary) dictionariesComboBox.getSelectedItem(), studySetName);
+                Dictionary dictionary = null;
+                if(dictionariesComboBox.getSelectedItem().equals(TRANSLATOR.translate("EnglishItem(ComboBox)"))){
+                    dictionary = dictionaries.get(0);
+                }
+                studyService.addWord(word, dictionary, studySetName);
                 boolean selectAllWords = false;
                 setWordsInTable(selectAllWords);
             }
