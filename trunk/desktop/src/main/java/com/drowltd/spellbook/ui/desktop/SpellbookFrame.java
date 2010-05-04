@@ -471,7 +471,7 @@ public class SpellbookFrame extends JFrame {
 
         if (!transferredText.isEmpty()) {
             LOGGER.info("'" + transferredText + "' received from clipboard");
-            String searchString = transferredText.split("\\W")[0].toLowerCase();
+            String searchString = transferredText.split("\\s")[0].toLowerCase();
             String foundWord = "";
             LOGGER.info("Search string from clipboard is " + searchString);
             wordSearchField.setText(searchString);
