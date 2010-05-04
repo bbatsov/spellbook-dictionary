@@ -66,6 +66,7 @@ public class PreferencesDialog extends StandardDialog {
     private static final PreferencesManager PM = PreferencesManager.getInstance();
     private Font selectedFont;
     private static final DictionaryService DICTIONARY_SERVICE = DictionaryService.getInstance();
+    private JCheckBox startMinimizedCheckBox;
 
     public PreferencesDialog(final Frame parent, boolean modal) {
         super(parent, modal);
@@ -179,6 +180,8 @@ public class PreferencesDialog extends StandardDialog {
 
         alwaysOnTopCheckBox.setSelected(PM.getBoolean(Preference.ALWAYS_ON_TOP, false));
 
+        startMinimizedCheckBox.setSelected(PM.getBoolean(Preference.START_IN_TRAY, false));
+
         // build the look and feel section
         final LookAndFeelInfo[] lookAndFeelInfos = UIManager.getInstalledLookAndFeels();
         List<String> lookAndFeelNames = new ArrayList<String>();
@@ -285,6 +288,10 @@ public class PreferencesDialog extends StandardDialog {
 
     public Font getSelectedFont() {
         return selectedFont;
+    }
+
+    public boolean isStartMinizedEnabled() {
+        return startMinimizedCheckBox.isSelected();
     }
 
     private class SelectionUpdater implements ChangeListener, ListSelectionListener {
@@ -536,6 +543,9 @@ public class PreferencesDialog extends StandardDialog {
         generalSettingsPanel.add(showMemoryUsageCheckBox, "growx");
         generalSettingsPanel.add(alwaysOnTopCheckBox, "growx");
         generalSettingsPanel.add(emptyLineCheckBox, "growx");
+
+        startMinimizedCheckBox = new JCheckBox(TRANSLATOR.translate("StartMinimized(CheckBox)"));
+        generalSettingsPanel.add(startMinimizedCheckBox);
 
         return generalSettingsPanel;
     }

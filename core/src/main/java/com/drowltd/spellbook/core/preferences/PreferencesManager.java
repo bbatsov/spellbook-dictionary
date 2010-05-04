@@ -5,10 +5,11 @@
 
 package com.drowltd.spellbook.core.preferences;
 
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 
 /**
  *
@@ -83,6 +84,7 @@ public class PreferencesManager {
         DEFAULT_DICTIONARY,
         ALWAYS_ON_TOP,
         LOOK_AND_FEEL,
+        START_IN_TRAY,
         FONT_NAME,
         FONT_SIZE,
         FONT_STYLE,

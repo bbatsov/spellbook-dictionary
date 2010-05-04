@@ -118,7 +118,10 @@ public class SpellbookApp {
 
                 tAppFrame.setMinimumSize(new Dimension(MIN_FRAME_WIDTH, MIN_FRAME_HEIGHT));
                 tAppFrame.setAlwaysOnTop(pm.getBoolean(Preference.ALWAYS_ON_TOP, false));
-                tAppFrame.setVisible(true);
+                
+                if (!pm.getBoolean(Preference.START_IN_TRAY, false)) {
+                    tAppFrame.setVisible(true);
+                }
             }
         });
     }

@@ -133,6 +133,16 @@ public class PreferencesExtractor {
 
             PM.putBoolean(Preference.EMPTY_LINE, emptyLineSelected);
 
+            final boolean startMinimized = preferencesDialog.isStartMinizedEnabled();
+
+            if (startMinimized) {
+                LOGGER.info("Start minimized is enabled");
+            } else {
+                LOGGER.info("Start minimized is disabled");
+            }
+
+            PM.putBoolean(Preference.START_IN_TRAY, startMinimized);
+
             // set the font
             final Font selectedFont = preferencesDialog.getSelectedFont();
 
