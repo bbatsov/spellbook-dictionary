@@ -79,6 +79,8 @@ public class PreferencesDialog extends StandardDialog {
         initFontTab();
 
         initExamTab();
+
+        setResizable(false);
     }
 
     @Override
@@ -451,7 +453,7 @@ public class PreferencesDialog extends StandardDialog {
     }
 
     private JPanel createFontPreferencesPanel() {
-        JPanel fontSettingsPanel = new JPanel(new MigLayout("wrap 4", "[grow][][80:100:100][60:80:100]", "[][][grow][grow]"));
+        JPanel fontSettingsPanel = new JPanel(new MigLayout("wrap 4", "[200:300:400][][140:140:200][100:80:200]", "[][][grow][grow]"));
         fontList = new JList();
         fontSizeList = new JList();
         fontStyleList = new JList();
@@ -472,11 +474,8 @@ public class PreferencesDialog extends StandardDialog {
         fontSettingsPanel.add(new JLabel(TRANSLATOR.translate("Preview(Label)")), "span 4, gaptop 10, gapbottom 10");
         fontSettingsPanel.add(previewText, "span 4, growx, growy");
 
-        previewText.setText("The quick fox jumps over the lazy dog.");
+        previewText.setText(TRANSLATOR.translate("PreviewText(Label)"));
 
-        currentFontField.setEditable(false);
-
-        currentStyleField.setEditable(false);
         return fontSettingsPanel;
     }
 
