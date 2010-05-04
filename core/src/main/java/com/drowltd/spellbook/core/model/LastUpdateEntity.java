@@ -14,4 +14,7 @@ public class LastUpdateEntity extends AbstractEntity {
     public LastUpdateEntity(){
     }
 
+    @Override
+    public void preUpdate(){
+    }
 }
