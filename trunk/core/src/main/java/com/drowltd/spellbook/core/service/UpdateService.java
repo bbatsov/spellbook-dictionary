@@ -40,6 +40,7 @@ import org.slf4j.LoggerFactory;
 public class UpdateService extends AbstractPersistenceService {
 
     protected static EntityManager EM_REMOTE;
+    private static UpdateService INSTANCE;
     private static Logger LOGGER = LoggerFactory.getLogger(UpdateService.class);
     private static boolean isAuthenticated = false;
     private ConflictHandler handler;
@@ -56,11 +57,17 @@ public class UpdateService extends AbstractPersistenceService {
     }
 
     public static UpdateService getInstance() throws UpdateServiceException {
-        return new UpdateService();
+        if (INSTANCE == null) {
+            INSTANCE = new UpdateService();
+        }
+        return INSTANCE;
     }
 
     public static UpdateService getInstance(String userName, String password) throws AuthenticationException, UpdateServiceException {
-        return new UpdateService(userName, password);
+        if (INSTANCE == null || !isAuthenticated) {
+            INSTANCE = new UpdateService(userName, password);
+        }
+        return INSTANCE;
     }
 
     public static void initRemoteEntityManager(String userName, String password) throws AuthenticationException, UpdateServiceException {
@@ -157,12 +164,18 @@ public class UpdateService extends AbstractPersistenceService {
      */
     public void update() throws InterruptedException {
         if (lastUpdate == null) {
+            LOGGER.info("No updates available or not checked");
             return;
         }
         initDictMap();
         //get all UpdateEntries commited after the last update
         List<UpdateEntry> UpdateEntries = EM_REMOTE.createNamedQuery("UpdateEntry.checkForUpdates").setParameter("date", lastUpdate.getModified()).getResultList();
+        if (UpdateEntries.isEmpty()) {
+            LOGGER.info("No UpdateEntries found");
+            throw new IllegalStateException("No UpdateEntries found");
+        }
 
+        UncommittedEntries uncommitted = DictionaryService.getInstance().getUncommitted();
         DictionaryService service = DictionaryService.getInstance();
         EntityTransaction t = EM.getTransaction();
         t.begin();
@@ -170,20 +183,18 @@ public class UpdateService extends AbstractPersistenceService {
         Set<RemoteDictionaryEntry> remoteDictionaryEntries = new HashSet<RemoteDictionaryEntry>();
 
         //keeps track of the latest date we are updating to
-        Date latestDate = new Date(0);
+        Date latestDate = lastUpdate.getModified();
         for (UpdateEntry updateEntry : UpdateEntries) {
             if (latestDate.before(updateEntry.getCreated())) {
                 latestDate = updateEntry.getCreated();
             }
             Set<RemoteDictionaryEntry> rDictionaryEntries = updateEntry.getRemoteDictionaryEntries();
-            if (rDictionaryEntries.isEmpty()) {
-                LOGGER.info("No remoteDictionaryEntries found");
-                throw new IllegalStateException("No remoteDictionaryEntries found");
-            }
             //  Needed because the same RemoteDictionaryEntry may appear in different updates
             //  but we need it only once
             remoteDictionaryEntries.addAll(rDictionaryEntries);
         }
+
+        LOGGER.info("Last UpdateEntry.date == " + latestDate.toString());
 
         for (RemoteDictionaryEntry entry : remoteDictionaryEntries) {
             /*
@@ -216,8 +227,6 @@ public class UpdateService extends AbstractPersistenceService {
 
                 //Checking if the dictionary entry translation is being updated
                 DictionaryEntry de = (DictionaryEntry) EM.createQuery("select de from DictionaryEntry de where de.word = :word and de.dictionary = :dictionary").setParameter("word", entry.getWord()).setParameter("dictionary", dictionary).getSingleResult();
-
-                UncommittedEntries uncommitted = DictionaryService.getInstance().getUncommitted();
 
                 String translation = null;
                 if (uncommitted.getDictionaryEntries().contains(de) && handler != null) {
@@ -281,20 +290,20 @@ public class UpdateService extends AbstractPersistenceService {
 
             Dictionary dictionary = de.getDictionary();
             RemoteDictionary remoteDictionary = remoteDictMap.get(dictionary.getName());
-            
-            if(remoteDictionary == null){
+
+            if (remoteDictionary == null) {
                 remoteDictionary = new RemoteDictionary();
                 remoteDictionary.setName(dictionary.getName());
                 remoteDictionary.setFromLanguage(dictionary.getFromLanguage());
                 remoteDictionary.setToLanguage(dictionary.getToLanguage());
-                
+
                 EM_REMOTE.persist(remoteDictionary);
                 remoteDictMap.put(remoteDictionary.getName(), remoteDictionary);
             }
 
             rde.setRemoteDictionary(remoteDictionary);
 
-            
+
             EM_REMOTE.persist(rde);
             EM_REMOTE.persist(revisionEntry);
         }
