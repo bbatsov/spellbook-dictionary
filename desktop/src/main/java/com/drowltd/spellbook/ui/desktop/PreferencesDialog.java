@@ -451,7 +451,7 @@ public class PreferencesDialog extends StandardDialog {
     }
 
     private JPanel createFontPreferencesPanel() {
-        JPanel fontSettingsPanel = new JPanel(new MigLayout("wrap 4", "[grow][][grow][grow]", "[][][grow][grow]"));
+        JPanel fontSettingsPanel = new JPanel(new MigLayout("wrap 4", "[grow][][80:100:100][60:80:100]", "[][][grow][grow]"));
         fontList = new JList();
         fontSizeList = new JList();
         fontStyleList = new JList();
@@ -469,6 +469,7 @@ public class PreferencesDialog extends StandardDialog {
         fontSettingsPanel.add(new JScrollPane(fontList), "span 2, growx, growy");
         fontSettingsPanel.add(new JScrollPane(fontStyleList), "growx, growy");
         fontSettingsPanel.add(new JScrollPane(fontSizeList), "growx, growy");
+        fontSettingsPanel.add(new JLabel(TRANSLATOR.translate("Preview(Label)")), "span 4, gaptop 10, gapbottom 10");
         fontSettingsPanel.add(previewText, "span 4, growx, growy");
 
         previewText.setText("The quick fox jumps over the lazy dog.");
@@ -480,7 +481,7 @@ public class PreferencesDialog extends StandardDialog {
     }
 
     private JPanel createGeneralPreferencesPanel() {
-        JPanel generalSettingsPanel = new JPanel(new MigLayout("wrap 2", "[grow][grow]"));
+        JPanel generalSettingsPanel = new JPanel(new MigLayout("wrap 2", "[grow][grow]", "[][][]20[]10[]10[]10[]"));
         minimizeToTrayCheckBox = new JCheckBox();
         minimizeToTrayOnCloseCheckBox = new JCheckBox();
         clipboardIntegrationCheckBox = new JCheckBox();
