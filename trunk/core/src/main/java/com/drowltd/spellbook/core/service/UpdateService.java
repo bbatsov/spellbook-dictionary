@@ -331,6 +331,6 @@ public class UpdateService extends AbstractPersistenceService {
 
     public static interface ConflictHandler {
 
-        String handle(String base, String remote);
+        String handle(String base, String remote) throws InterruptedException;
     }
 }
