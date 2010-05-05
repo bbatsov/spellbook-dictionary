@@ -120,6 +120,8 @@ public class SpellbookFrame extends JFrame {
     private JTextField wordSearchField;
     private JTextPane wordTranslationTextPane;
     private JList wordsList;
+    private static final int DEFAULT_FONT_SIZE = 14;
+    private static final int DIVIDER_LOCATION = 180;
 
     /**
      * Creates new form SpellbookFrame
@@ -180,7 +182,7 @@ public class SpellbookFrame extends JFrame {
         addListeners();
 
         // restore the divider location from the last session
-        splitPane.setDividerLocation(PM.getInt(Preference.DIVIDER_LOCATION, 160));
+        splitPane.setDividerLocation(PM.getInt(Preference.DIVIDER_LOCATION, DIVIDER_LOCATION));
 
         updateDictionaryButton(selectedDictionary);
 
@@ -543,11 +545,11 @@ public class SpellbookFrame extends JFrame {
             String osName = System.getProperty("os.name");
 
             if (osName.contains("Windows")) {
-                wordTranslationTextPane.setFont(new Font("Arial", Font.PLAIN, 14));
+                wordTranslationTextPane.setFont(new Font("Arial", Font.PLAIN, DEFAULT_FONT_SIZE));
             }
         } else {
             String fontName = PM.get(Preference.FONT_NAME, "SansSerif");
-            int fontSize = PM.getInt(Preference.FONT_SIZE, 14);
+            int fontSize = PM.getInt(Preference.FONT_SIZE, DEFAULT_FONT_SIZE);
             int fontStyle = PM.getInt(Preference.FONT_STYLE, Font.PLAIN);
 
             setSelectedFont(new Font(fontName, fontStyle, fontSize));
@@ -767,7 +769,7 @@ public class SpellbookFrame extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         splitPane.setBorder(null);
-        splitPane.setDividerLocation(180);
+        splitPane.setDividerLocation(DIVIDER_LOCATION);
 
         topPanel.add(splitPane, "growx, growy");
 
