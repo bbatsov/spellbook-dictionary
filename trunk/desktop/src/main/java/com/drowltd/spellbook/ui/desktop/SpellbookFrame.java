@@ -215,8 +215,7 @@ public class SpellbookFrame extends JFrame {
         }
 
         // implemented a very nasty clipboard ownership hack to simulate notifications
-        clipboardIntegration = new ClipboardIntegration(this);
-        clipboardIntegration.setClipboardContents(clipboardIntegration.getClipboardContents());
+        clipboardIntegration = ClipboardIntegration.getInstance(this);
     }
 
     private void addListeners() {
