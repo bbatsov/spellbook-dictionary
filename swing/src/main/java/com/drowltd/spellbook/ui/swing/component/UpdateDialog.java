@@ -31,12 +31,13 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author iivalchev
  */
-public class UpdateDialog extends StandardDialog {
+public class UpdateDialog extends StandardDialog implements UpdateService.ConflictHandler {
 
     private ExecutorService executor = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
     private Future<?> updateFuture = null;
     private static Logger LOGGER = LoggerFactory.getLogger(UpdateDialog.class);
     private ResourceBundle bundle = ResourceBundle.getBundle("i18n/UpdateDialog");
+    private String acceptedText = null;
     //components
     private JButton cancelButton;
     private JProgressBar progressBar;
@@ -132,6 +133,45 @@ public class UpdateDialog extends StandardDialog {
         return buttonPanel;
     }
 
+    @Override
+    public String handle(final String base, final String remote) throws InterruptedException {
+        if (base == null || remote == null) {
+            LOGGER.error("base == null || remote == null");
+            throw new IllegalArgumentException("base == null || remote == null");
+        }
+
+        if (base.isEmpty()) {
+            LOGGER.error("base is empty");
+            throw new IllegalArgumentException("base is empty");
+        }
+
+        if (remote.isEmpty()) {
+            LOGGER.error("remote is empty");
+            throw new IllegalArgumentException("remote is empty");
+        }
+
+        EventQueue.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                setAcceptedText(new DiffDialog(UpdateDialog.this, true).diff(base, remote).showDialog());
+            }
+        });
+
+        synchronized (this) {
+            while (acceptedText == null)
+                wait();
+        }
+
+        return acceptedText;
+    }
+
+    private synchronized void setAcceptedText(String acceptedText) {
+        assert acceptedText != null : "acceptedText == null";
+        this.acceptedText = acceptedText;
+        notifyAll();
+    }
+
     private class CheckForUpdatesTask implements Runnable {
 
         @Override
@@ -165,6 +205,7 @@ public class UpdateDialog extends StandardDialog {
             }
             try {
                 setStatus(bundle.getString("Dialog(Updating)"));
+                us.setHandler(UpdateDialog.this);
                 us.update();
             } catch (InterruptedException ex) {
                 Thread.currentThread().interrupt();

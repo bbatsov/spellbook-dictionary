@@ -5,10 +5,11 @@
  */
 package com.drowltd.spellbook.ui.swing.component;
 
-import java.awt.Color;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
+import java.util.List;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -43,7 +44,7 @@ public class DiffDialog extends StandardDialog {
     /**
      * Creates new form DiffDialog
      */
-    public DiffDialog(java.awt.Frame parent, boolean modal) {
+    public DiffDialog(Dialog parent, boolean modal) {
         super(parent, modal);
 
         initComponents0();
@@ -179,7 +180,8 @@ public class DiffDialog extends StandardDialog {
     }
 
     List<StringLine> breakIntoLines(String text) {
-        assert text != null && !text.isEmpty() : "text is null or empty";
+        assert text != null : "text is null ";
+        assert !text.isEmpty() : "text is empty";
 
         String[] lines = text.split("\r?\n");
 
