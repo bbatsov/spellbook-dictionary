@@ -29,7 +29,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- *
  * @author iivalchev
  */
 public class UpdateDialog extends StandardDialog {
@@ -44,7 +43,9 @@ public class UpdateDialog extends StandardDialog {
     private JLabel statusLabel;
     private JButton updateButton;
 
-    /** Creates new form UpdateDialog */
+    /**
+     * Creates new form UpdateDialog
+     */
     public UpdateDialog(JFrame parent, boolean modal) {
         super(parent, modal);
         setLocationRelativeTo(parent);
@@ -65,14 +66,14 @@ public class UpdateDialog extends StandardDialog {
         statusLabel = new JLabel();
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        ResourceBundle bundle = ResourceBundle.getBundle("i18n/UpdateDialog"); // NOI18N
-        setTitle(bundle.getString("Dialog(Title)")); // NOI18N
+        ResourceBundle bundle = ResourceBundle.getBundle("i18n/UpdateDialog");
+        setTitle(bundle.getString("Dialog(Title)"));
         setResizable(false);
 
-        updateButton.setText(bundle.getString("Dialog(UpdateButton)")); // NOI18N
+        updateButton.setText(bundle.getString("Dialog(UpdateButton)"));
         updateButton.setEnabled(false);
 
-        cancelButton.setText(bundle.getString("Dialog(CancelButton)")); // NOI18N
+        cancelButton.setText(bundle.getString("Dialog(CancelButton)"));
         cancelButton.setMaximumSize(new Dimension(59, 29));
         cancelButton.setMinimumSize(new Dimension(59, 29));
         cancelButton.addActionListener(new ActionListener() {
@@ -82,7 +83,7 @@ public class UpdateDialog extends StandardDialog {
             }
         });
 
-        statusLabel.setText(bundle.getString("Dialog(CheckingForUpdates)")); // NOI18N
+        statusLabel.setText(bundle.getString("Dialog(CheckingForUpdates)"));
         statusLabel.setVerticalAlignment(SwingConstants.TOP);
     }
 

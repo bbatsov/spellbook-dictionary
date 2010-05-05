@@ -279,8 +279,8 @@ public class PreferencesDialog extends StandardDialog {
 
         selectedFont = new Font(fontName,
                 (fontStyleList.isSelectedIndex(2) ? Font.ITALIC : Font.PLAIN)
-                | (fontStyleList.isSelectedIndex(1) ? Font.BOLD : Font.PLAIN)
-                | (fontStyleList.isSelectedIndex(0) ? Font.PLAIN : Font.PLAIN),
+                        | (fontStyleList.isSelectedIndex(1) ? Font.BOLD : Font.PLAIN)
+                        | (fontStyleList.isSelectedIndex(0) ? Font.PLAIN : Font.PLAIN),
                 sizeInt);
 
         return selectedFont;
@@ -350,6 +350,7 @@ public class PreferencesDialog extends StandardDialog {
     /* This method sets the new settings to exam module after
      * changing them into setting dialog.
      */
+
     public void refreshNewSettingsToExam() {
         ExamDialog.diffLabelChange(getExamDifficulty().toString());
 
@@ -423,7 +424,7 @@ public class PreferencesDialog extends StandardDialog {
     private void initGuiComponents() {
         tabbedPane = new JTabbedPane();
         tabbedPane.addTab(TRANSLATOR.translate("GeneralSettings(Title)"), new ImageIcon(getClass().getResource("/icons/16x16/preferences.png")), createGeneralPreferencesPanel());
-        tabbedPane.addTab(TRANSLATOR.translate("FontTab(Label)"), IconManager.getMenuIcon("font.png"), createFontPreferencesPanel()); // NOI18N
+        tabbedPane.addTab(TRANSLATOR.translate("FontTab(Label)"), IconManager.getMenuIcon("font.png"), createFontPreferencesPanel());
         tabbedPane.addTab("Exam", new ImageIcon(getClass().getResource("/icons/16x16/blackboard.png")), createExamPreferencesPanel());
 
         pack();
@@ -512,11 +513,11 @@ public class PreferencesDialog extends StandardDialog {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 if (clipboardIntegrationCheckBox.isSelected()) {
-            trayPopupCheckBox.setEnabled(true);
-        } else {
-            trayPopupCheckBox.setSelected(false);
-            trayPopupCheckBox.setEnabled(false);
-        }
+                    trayPopupCheckBox.setEnabled(true);
+                } else {
+                    trayPopupCheckBox.setSelected(false);
+                    trayPopupCheckBox.setEnabled(false);
+                }
             }
         });
 
@@ -528,7 +529,7 @@ public class PreferencesDialog extends StandardDialog {
 
         emptyLineCheckBox.setText(TRANSLATOR.translate("EmptyLine(Label)"));
 
-        languageComboBox.setModel(new DefaultComboBoxModel(new Language[] {Language.ENGLISH, Language.BULGARIAN}));
+        languageComboBox.setModel(new DefaultComboBoxModel(new Language[]{Language.ENGLISH, Language.BULGARIAN}));
 
         generalSettingsPanel.add(new JLabel(TRANSLATOR.translate("Language(Label)")), "growx");
         generalSettingsPanel.add(languageComboBox, "growx");

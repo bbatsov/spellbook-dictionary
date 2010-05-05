@@ -656,10 +656,10 @@ public class SpellbookFrame extends JFrame {
         final String dbPath = PM.get(Preference.PATH_TO_DB, "");
 
         File file = new File(dbPath);
-        
+
         String currentPath = System.getProperty("user.home");
         currentPath += File.separator + COMPRESSED_DB_NAME;
-        
+
         if (!file.exists() || file.isDirectory()) {
 
             LOGGER.info("Checking for archived db ...");
@@ -773,25 +773,37 @@ public class SpellbookFrame extends JFrame {
 
         wordsList.setModel(new ListBackedListModel(words));
         wordsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        wordsList.setToolTipText(TRANSLATOR.translate("WordsList(ToolTip)")); // NOI18N
+        wordsList.setToolTipText(TRANSLATOR.translate("WordsList(ToolTip)"));
         wordsList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent evt) {
-                wordsListMouseClicked(evt);
+                if (evt.getClickCount() == 2) {
+                    updateWordDefinition();
+                }
             }
         });
         wordsList.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent evt) {
-                wordsListValueChanged(evt);
+                // TODO refine synchronization
+                if (!wordsList.isSelectionEmpty()) {
+                    // word field needs to be updated in a separate thread
+                    EventQueue.invokeLater(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            onWordSelectionChange();
+                        }
+                    });
+                }
             }
         });
 
-        wordSearchField.setToolTipText(TRANSLATOR.translate("WordSearch(ToolTip)")); // NOI18N
+        wordSearchField.setToolTipText(TRANSLATOR.translate("WordSearch(ToolTip)"));
         wordSearchField.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                wordSearchFieldActionPerformed(evt);
+                onWordSearchFieldAction();
             }
         });
 
@@ -820,176 +832,186 @@ public class SpellbookFrame extends JFrame {
     }
 
     private void initMenuBar() {
-        JMenuBar jMenuBar1 = new JMenuBar();
-        JMenu jMenu1 = new JMenu();
+        JMenuBar spellbookMenuBar = new JMenuBar();
+
+        // build the file menu
+        JMenu fileMenu = new JMenu();
         JMenuItem restartMenuItem = new JMenuItem();
         JMenuItem exitMenuItem = new JMenuItem();
-        JMenu jMenu2 = new JMenu();
-        JMenuItem addWordMenuItem = new JMenuItem();
-        updateWordMenuItem = new JMenuItem();
-        deleteWordMenuItem = new JMenuItem();
-        JPopupMenu.Separator jSeparator2 = new JPopupMenu.Separator();
-        cutMenuItem = new JMenuItem(new DefaultEditorKit.CutAction());
-        copyMenuItem = new JMenuItem(new DefaultEditorKit.CopyAction());
-        pasteMenuItem = new JMenuItem(new DefaultEditorKit.PasteAction());
-        JPopupMenu.Separator jSeparator1 = new JPopupMenu.Separator();
-        JMenuItem prefsMenuItem = new JMenuItem();
-        dictionaryMenu = new JMenu();
-        JMenu jMenu4 = new JMenu();
-        JMenuItem studyWordsMenuItem = new JMenuItem();
-        JMenuItem examMenuItem = new JMenuItem();
-        JMenuItem spellcheckMenuItem = new JMenuItem();
-        JMenu jMenu5 = new JMenu();
-        JMenuItem helpContentsMenuItem = new JMenuItem();
-        JMenuItem aboutMenuItem = new JMenuItem();
 
-        jMenu1.setMnemonic('f');
-        jMenu1.setText(TRANSLATOR.translate("File(Menu)")); // NOI18N
+        fileMenu.setMnemonic('f');
+        fileMenu.setText(TRANSLATOR.translate("File(Menu)"));
 
-        restartMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/refresh.png"))); // NOI18N
+        restartMenuItem.setIcon(IconManager.getMenuIcon("refresh.png"));
         restartMenuItem.setMnemonic('r');
-        restartMenuItem.setText(TRANSLATOR.translate("FileRestart(MenuItem)")); // NOI18N
+        restartMenuItem.setText(TRANSLATOR.translate("FileRestart(MenuItem)"));
         restartMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                restartMenuItemActionPerformed(evt);
+                restart();
             }
         });
-        jMenu1.add(restartMenuItem);
+        fileMenu.add(restartMenuItem);
 
-        exitMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/exit.png"))); // NOI18N
+        exitMenuItem.setIcon(IconManager.getMenuIcon("exit.png"));
         exitMenuItem.setMnemonic('x');
-        exitMenuItem.setText(TRANSLATOR.translate("FileExit(MenuItem)")); // NOI18N
+        exitMenuItem.setText(TRANSLATOR.translate("FileExit(MenuItem)"));
         exitMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                exitMenuItemActionPerformed(evt);
+                saveFrameState();
+
+                System.exit(0);
             }
         });
-        jMenu1.add(exitMenuItem);
+        fileMenu.add(exitMenuItem);
 
-        jMenuBar1.add(jMenu1);
+        spellbookMenuBar.add(fileMenu);
 
-        jMenu2.setMnemonic('e');
-        jMenu2.setText(TRANSLATOR.translate("Edit(Menu)")); // NOI18N
+        // build the edit menu
+        JMenu editMenu = new JMenu();
+        JMenuItem addWordMenuItem = new JMenuItem();
+        updateWordMenuItem = new JMenuItem();
+        deleteWordMenuItem = new JMenuItem();
+        cutMenuItem = new JMenuItem(new DefaultEditorKit.CutAction());
+        copyMenuItem = new JMenuItem(new DefaultEditorKit.CopyAction());
+        pasteMenuItem = new JMenuItem(new DefaultEditorKit.PasteAction());
+        JMenuItem prefsMenuItem = new JMenuItem();
 
-        addWordMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/add2.png"))); // NOI18N
-        addWordMenuItem.setText(TRANSLATOR.translate("EditAddWord(MenuItem)")); // NOI18N
+        editMenu.setMnemonic('e');
+        editMenu.setText(TRANSLATOR.translate("Edit(Menu)"));
+
+        addWordMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/add2.png")));
+        addWordMenuItem.setText(TRANSLATOR.translate("EditAddWord(MenuItem)"));
         addWordMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                addWordMenuItemActionPerformed(evt);
+                addWordDefinition();
             }
         });
-        jMenu2.add(addWordMenuItem);
+        editMenu.add(addWordMenuItem);
 
-        updateWordMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/edit.png"))); // NOI18N
-        updateWordMenuItem.setText(TRANSLATOR.translate("EditUpdateWord(MenuItem)")); // NOI18N
+        updateWordMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/edit.png")));
+        updateWordMenuItem.setText(TRANSLATOR.translate("EditUpdateWord(MenuItem)"));
         updateWordMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                updateWordMenuItemActionPerformed(evt);
+                updateWordDefinition();
             }
         });
-        jMenu2.add(updateWordMenuItem);
+        editMenu.add(updateWordMenuItem);
 
-        deleteWordMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/delete2.png"))); // NOI18N
-        deleteWordMenuItem.setText(TRANSLATOR.translate("EditDeleteWord(MenuItem)")); // NOI18N
-        jMenu2.add(deleteWordMenuItem);
-        jMenu2.add(jSeparator2);
+        deleteWordMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/delete2.png")));
+        deleteWordMenuItem.setText(TRANSLATOR.translate("EditDeleteWord(MenuItem)"));
+        editMenu.add(deleteWordMenuItem);
+        editMenu.add(new JPopupMenu.Separator());
 
-        cutMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/cut.png"))); // NOI18N
+        cutMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/cut.png")));
         cutMenuItem.setMnemonic('t');
-        cutMenuItem.setText(TRANSLATOR.translate("EditCut(MenuItem)")); // NOI18N
-        jMenu2.add(cutMenuItem);
+        cutMenuItem.setText(TRANSLATOR.translate("EditCut(MenuItem)"));
+        editMenu.add(cutMenuItem);
 
-        copyMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/copy.png"))); // NOI18N
+        copyMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/copy.png")));
         copyMenuItem.setMnemonic('c');
-        copyMenuItem.setText(TRANSLATOR.translate("EditCopy(MenuItem)")); // NOI18N
-        jMenu2.add(copyMenuItem);
+        copyMenuItem.setText(TRANSLATOR.translate("EditCopy(MenuItem)"));
+        editMenu.add(copyMenuItem);
 
-        pasteMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/paste.png"))); // NOI18N
+        pasteMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/paste.png")));
         pasteMenuItem.setMnemonic('p');
-        pasteMenuItem.setText(TRANSLATOR.translate("EditPaste(MenuItem)")); // NOI18N
-        jMenu2.add(pasteMenuItem);
-        jMenu2.add(jSeparator1);
+        pasteMenuItem.setText(TRANSLATOR.translate("EditPaste(MenuItem)"));
+        editMenu.add(pasteMenuItem);
+        editMenu.add(new JPopupMenu.Separator());
 
-        prefsMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/preferences.png"))); // NOI18N
+        prefsMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/preferences.png")));
         prefsMenuItem.setMnemonic('e');
-        prefsMenuItem.setText(TRANSLATOR.translate("EditPreferences(MenuItem)")); // NOI18N
+        prefsMenuItem.setText(TRANSLATOR.translate("EditPreferences(MenuItem)"));
         prefsMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                prefsMenuItemActionPerformed(evt);
+                showPreferencesDialog();
             }
         });
-        jMenu2.add(prefsMenuItem);
+        editMenu.add(prefsMenuItem);
 
-        jMenuBar1.add(jMenu2);
+        spellbookMenuBar.add(editMenu);
+
+        // build dictionary menu
+        dictionaryMenu = new JMenu();
 
         dictionaryMenu.setMnemonic('d');
-        dictionaryMenu.setText(TRANSLATOR.translate("Dictionaries(Menu)")); // NOI18N
-        jMenuBar1.add(dictionaryMenu);
+        dictionaryMenu.setText(TRANSLATOR.translate("Dictionaries(Menu)"));
+        spellbookMenuBar.add(dictionaryMenu);
 
-        jMenu4.setMnemonic('t');
-        jMenu4.setText(TRANSLATOR.translate("Tools(Menu)")); // NOI18N
+        // build tools menu
+        JMenu toolMenu = new JMenu();
+        JMenuItem studyWordsMenuItem = new JMenuItem();
+        JMenuItem examMenuItem = new JMenuItem();
+        JMenuItem spellcheckMenuItem = new JMenuItem();
 
-        studyWordsMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/teacher.png"))); // NOI18N
+        toolMenu.setMnemonic('t');
+        toolMenu.setText(TRANSLATOR.translate("Tools(Menu)"));
+
+        studyWordsMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/teacher.png")));
         studyWordsMenuItem.setMnemonic('w');
-        studyWordsMenuItem.setText(TRANSLATOR.translate("StudyWords(MenuItem)")); // NOI18N
+        studyWordsMenuItem.setText(TRANSLATOR.translate("StudyWords(MenuItem)"));
         studyWordsMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                StudyWordsMenuItemActionPerformed(evt);
+                showStudyDialog();
             }
         });
-        jMenu4.add(studyWordsMenuItem);
+        toolMenu.add(studyWordsMenuItem);
 
-        examMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/blackboard.png"))); // NOI18N
+        examMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/blackboard.png")));
         examMenuItem.setMnemonic('e');
-        examMenuItem.setText(TRANSLATOR.translate("Exam(MenuItem)")); // NOI18N
+        examMenuItem.setText(TRANSLATOR.translate("Exam(MenuItem)"));
         examMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                examMenuItemActionPerformed(evt);
+                showExamDialog();
             }
         });
-        jMenu4.add(examMenuItem);
+        toolMenu.add(examMenuItem);
 
-        spellcheckMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/spellcheck.png"))); // NOI18N
+        spellcheckMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/spellcheck.png")));
         spellcheckMenuItem.setMnemonic('s');
-        spellcheckMenuItem.setText(TRANSLATOR.translate("SpellCheck(MenuItem)")); // NOI18N
+        spellcheckMenuItem.setText(TRANSLATOR.translate("SpellCheck(MenuItem)"));
         spellcheckMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                spellcheckMenuItemActionPerformed(evt);
+                SpellCheckFrame.getInstance().setVisible(true);
             }
         });
-        jMenu4.add(spellcheckMenuItem);
+        toolMenu.add(spellcheckMenuItem);
 
-        jMenuBar1.add(jMenu4);
+        spellbookMenuBar.add(toolMenu);
 
-        jMenu5.setMnemonic('h');
-        jMenu5.setText(TRANSLATOR.translate("Help(Menu)")); // NOI18N
+        // build help menu
+        JMenu helpMenu = new JMenu();
+        JMenuItem helpContentsMenuItem = new JMenuItem();
+        JMenuItem aboutMenuItem = new JMenuItem();
 
-        helpContentsMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/help2.png"))); // NOI18N
-        helpContentsMenuItem.setText(TRANSLATOR.translate("HelpContents(MenuItem)")); // NOI18N
-        jMenu5.add(helpContentsMenuItem);
+        helpMenu.setMnemonic('h');
+        helpMenu.setText(TRANSLATOR.translate("Help(Menu)"));
 
-        aboutMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/about.png"))); // NOI18N
+        helpContentsMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/help2.png")));
+        helpContentsMenuItem.setText(TRANSLATOR.translate("HelpContents(MenuItem)"));
+        helpMenu.add(helpContentsMenuItem);
+
+        aboutMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/about.png")));
         aboutMenuItem.setMnemonic('a');
-        aboutMenuItem.setText(TRANSLATOR.translate("HelpAbout(MenuItem)")); // NOI18N
+        aboutMenuItem.setText(TRANSLATOR.translate("HelpAbout(MenuItem)"));
         aboutMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                aboutMenuItemActionPerformed(evt);
+                showAboutDialog();
             }
         });
-        jMenu5.add(aboutMenuItem);
+        helpMenu.add(aboutMenuItem);
 
-        jMenuBar1.add(jMenu5);
+        spellbookMenuBar.add(helpMenu);
 
-        setJMenuBar(jMenuBar1);
+        setJMenuBar(spellbookMenuBar);
     }
 
     private void initToolBar() {
@@ -1021,180 +1043,190 @@ public class SpellbookFrame extends JFrame {
         mainToolBar.setFloatable(false);
         mainToolBar.setRollover(true);
 
-        backButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/arrow_left_blue.png"))); // NOI18N
-        backButton.setToolTipText(TRANSLATOR.translate("PreviousWord(Label)")); // NOI18N
+        backButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/arrow_left_blue.png")));
+        backButton.setToolTipText(TRANSLATOR.translate("PreviousWord(Label)"));
         backButton.setFocusable(false);
         backButton.setHorizontalTextPosition(SwingConstants.CENTER);
         backButton.setVerticalTextPosition(SwingConstants.BOTTOM);
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                backButtonActionPerformed(evt);
+                if (searchedWords.size() > 0 && searchWordsIndex >= 1) {
+                    wordSearchField.setText(searchedWords.get(--searchWordsIndex));
+
+                    updateHistoryButtonsState();
+                }
             }
         });
         mainToolBar.add(backButton);
 
-        forwardButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/arrow_right_blue.png"))); // NOI18N
-        forwardButton.setToolTipText(TRANSLATOR.translate("NextWord(Label)")); // NOI18N
+        forwardButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/arrow_right_blue.png")));
+        forwardButton.setToolTipText(TRANSLATOR.translate("NextWord(Label)"));
         forwardButton.setFocusable(false);
         forwardButton.setHorizontalTextPosition(SwingConstants.CENTER);
         forwardButton.setVerticalTextPosition(SwingConstants.BOTTOM);
         forwardButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                forwardButtonActionPerformed(evt);
+                if (searchedWords.size() - 1 > searchWordsIndex) {
+                    wordSearchField.setText(searchedWords.get(++searchWordsIndex));
+
+                    updateHistoryButtonsState();
+                }
             }
         });
         mainToolBar.add(forwardButton);
 
-        clearButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/eraser.png"))); // NOI18N
-        clearButton.setToolTipText(TRANSLATOR.translate("ClearButton(ToolTip)")); // NOI18N
+        clearButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/eraser.png")));
+        clearButton.setToolTipText(TRANSLATOR.translate("ClearButton(ToolTip)"));
         clearButton.setFocusable(false);
         clearButton.setHorizontalTextPosition(SwingConstants.CENTER);
         clearButton.setVerticalTextPosition(SwingConstants.BOTTOM);
         clearButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                clearButtonActionPerformed(evt);
+                clear();
             }
         });
         mainToolBar.add(clearButton);
 
-        statusButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/bell2_grey.png"))); // NOI18N
+        statusButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/bell2_grey.png")));
         statusButton.setFocusable(false);
         statusButton.setHorizontalTextPosition(SwingConstants.CENTER);
         statusButton.setVerticalTextPosition(SwingConstants.BOTTOM);
         statusButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                statusButtonActionPerformed(evt);
+                onWordSearchFieldAction();
             }
         });
         mainToolBar.add(statusButton);
 
-        dictionaryButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/en-bg.png"))); // NOI18N
+        dictionaryButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/en-bg.png")));
         dictionaryButton.setFocusable(false);
         dictionaryButton.setHorizontalTextPosition(SwingConstants.CENTER);
         dictionaryButton.setVerticalTextPosition(SwingConstants.BOTTOM);
         dictionaryButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                dictionaryButtonActionPerformed(evt);
+                if (dictionaryService.isComplemented(selectedDictionary)) {
+                    selectDictionary(dictionaryService.getComplement(selectedDictionary), true);
+                }
             }
         });
         mainToolBar.add(dictionaryButton);
         mainToolBar.add(jSeparator3);
 
-        addWordButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/add2.png"))); // NOI18N
-        addWordButton.setToolTipText(TRANSLATOR.translate("EditAddWord(MenuItem)")); // NOI18N
+        addWordButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/add2.png")));
+        addWordButton.setToolTipText(TRANSLATOR.translate("EditAddWord(MenuItem)"));
         addWordButton.setFocusable(false);
         addWordButton.setHorizontalTextPosition(SwingConstants.CENTER);
         addWordButton.setVerticalTextPosition(SwingConstants.BOTTOM);
         addWordButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                addWordButtonActionPerformed(evt);
+                addWordDefinition();
             }
         });
         mainToolBar.add(addWordButton);
 
-        updateWordButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/edit.png"))); // NOI18N
-        updateWordButton.setToolTipText(TRANSLATOR.translate("EditUpdateWord(MenuItem)")); // NOI18N
+        updateWordButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/edit.png")));
+        updateWordButton.setToolTipText(TRANSLATOR.translate("EditUpdateWord(MenuItem)"));
         updateWordButton.setFocusable(false);
         updateWordButton.setHorizontalTextPosition(SwingConstants.CENTER);
         updateWordButton.setVerticalTextPosition(SwingConstants.BOTTOM);
         updateWordButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                updateWordButtonActionPerformed(evt);
+                updateWordDefinition();
             }
         });
         mainToolBar.add(updateWordButton);
 
-        deleteWordButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/delete2.png"))); // NOI18N
-        deleteWordButton.setToolTipText(TRANSLATOR.translate("EditDeleteWord(MenuItem)")); // NOI18N
+        deleteWordButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/delete2.png")));
+        deleteWordButton.setToolTipText(TRANSLATOR.translate("EditDeleteWord(MenuItem)"));
         deleteWordButton.setFocusable(false);
         deleteWordButton.setHorizontalTextPosition(SwingConstants.CENTER);
         deleteWordButton.setVerticalTextPosition(SwingConstants.BOTTOM);
         deleteWordButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                deleteWordButtonActionPerformed(evt);
+                deleteWordDefinition();
             }
         });
         mainToolBar.add(deleteWordButton);
         mainToolBar.add(jSeparator4);
 
-        cutButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/cut.png"))); // NOI18N
-        cutButton.setToolTipText(TRANSLATOR.translate("EditCut(MenuItem)")); // NOI18N
+        cutButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/cut.png")));
+        cutButton.setToolTipText(TRANSLATOR.translate("EditCut(MenuItem)"));
         cutButton.setFocusable(false);
         cutButton.setHorizontalTextPosition(SwingConstants.CENTER);
         cutButton.setVerticalTextPosition(SwingConstants.BOTTOM);
         mainToolBar.add(cutButton);
 
-        copyButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/copy.png"))); // NOI18N
-        copyButton.setToolTipText(TRANSLATOR.translate("EditCopy(MenuItem)")); // NOI18N
+        copyButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/copy.png")));
+        copyButton.setToolTipText(TRANSLATOR.translate("EditCopy(MenuItem)"));
         copyButton.setFocusable(false);
         copyButton.setHorizontalTextPosition(SwingConstants.CENTER);
         copyButton.setVerticalTextPosition(SwingConstants.BOTTOM);
         mainToolBar.add(copyButton);
 
-        pasteButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/paste.png"))); // NOI18N
-        pasteButton.setToolTipText(TRANSLATOR.translate("EditPaste(MenuItem)")); // NOI18N
+        pasteButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/paste.png")));
+        pasteButton.setToolTipText(TRANSLATOR.translate("EditPaste(MenuItem)"));
         pasteButton.setFocusable(false);
         pasteButton.setHorizontalTextPosition(SwingConstants.CENTER);
         pasteButton.setVerticalTextPosition(SwingConstants.BOTTOM);
         mainToolBar.add(pasteButton);
         mainToolBar.add(jSeparator5);
 
-        studyButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/teacher.png"))); // NOI18N
-        studyButton.setToolTipText(TRANSLATOR.translate("StudyWords(MenuItem)")); // NOI18N
+        studyButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/teacher.png")));
+        studyButton.setToolTipText(TRANSLATOR.translate("StudyWords(MenuItem)"));
         studyButton.setFocusable(false);
         studyButton.setHorizontalTextPosition(SwingConstants.CENTER);
         studyButton.setVerticalTextPosition(SwingConstants.BOTTOM);
         studyButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                studyButtonActionPerformed(evt);
+                showStudyDialog();
             }
         });
         mainToolBar.add(studyButton);
 
-        examButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/blackboard.png"))); // NOI18N
-        examButton.setToolTipText(TRANSLATOR.translate("Exam(MenuItem)")); // NOI18N
+        examButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/blackboard.png")));
+        examButton.setToolTipText(TRANSLATOR.translate("Exam(MenuItem)"));
         examButton.setFocusable(false);
         examButton.setHorizontalTextPosition(SwingConstants.CENTER);
         examButton.setVerticalTextPosition(SwingConstants.BOTTOM);
         examButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                examButtonActionPerformed(evt);
+                showExamDialog();
             }
         });
         mainToolBar.add(examButton);
 
-        spellcheckButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/spellcheck.png"))); // NOI18N
-        spellcheckButton.setToolTipText(TRANSLATOR.translate("SpellCheck(MenuItem)")); // NOI18N
+        spellcheckButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/spellcheck.png")));
+        spellcheckButton.setToolTipText(TRANSLATOR.translate("SpellCheck(MenuItem)"));
         spellcheckButton.setFocusable(false);
         spellcheckButton.setHorizontalTextPosition(SwingConstants.CENTER);
         spellcheckButton.setVerticalTextPosition(SwingConstants.BOTTOM);
         spellcheckButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                spellcheckButtonActionPerformed(evt);
+                SpellCheckFrame.getInstance().setVisible(true);
             }
         });
         mainToolBar.add(spellcheckButton);
         mainToolBar.add(lastToolbarSeparator);
 
-        memoryButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/memory.png"))); // NOI18N
+        memoryButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/memory.png")));
         memoryButton.setFocusable(false);
         memoryButton.setHorizontalTextPosition(SwingConstants.CENTER);
         memoryButton.setVerticalTextPosition(SwingConstants.BOTTOM);
         memoryButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                memoryButtonActionPerformed(evt);
+                System.gc();
             }
         });
         mainToolBar.add(memoryButton);
@@ -1202,13 +1234,7 @@ public class SpellbookFrame extends JFrame {
         topPanel.add(mainToolBar, "north, growx");
     }
 
-    private void exitMenuItemActionPerformed(ActionEvent evt) {
-        saveFrameState();
-
-        System.exit(0);
-    }
-
-    private void prefsMenuItemActionPerformed(ActionEvent evt) {
+    private void showPreferencesDialog() {
         PreferencesDialog preferencesDialog = new PreferencesDialog(this, true);
 
         // tray options should be disabled is the tray is not supported
@@ -1221,123 +1247,21 @@ public class SpellbookFrame extends JFrame {
         PreferencesExtractor.extract(this, preferencesDialog);
     }
 
-    private void aboutMenuItemActionPerformed(ActionEvent evt) {
+    private void showAboutDialog() {
         AboutDialog aboutDialog = new AboutDialog(this, true);
         aboutDialog.setLocationRelativeTo(this);
         aboutDialog.setVisible(true);
     }
 
-    private void spellcheckMenuItemActionPerformed(ActionEvent evt) {
-        SpellCheckFrame.getInstance().setVisible(true);
-    }
-
-    private void restartMenuItemActionPerformed(ActionEvent evt) {
-        restart();
-    }
-
-    private void examMenuItemActionPerformed(ActionEvent evt) {
-        ExamDialog examDialog = new ExamDialog(this, true);
-        examDialog.showExamDialog();
-    }
-
-    private void addWordMenuItemActionPerformed(ActionEvent evt) {
-        addWordDefinition();
-    }
-
-    private void updateWordMenuItemActionPerformed(ActionEvent evt) {
-        updateWordDefinition();
-    }
-
-    private void wordSearchFieldActionPerformed(ActionEvent evt) {
-        onWordSearchFieldAction();
-    }
-
-    private void wordsListValueChanged(ListSelectionEvent evt) {
-        // TODO refine synchronization
-        if (!wordsList.isSelectionEmpty()) {
-            // word field needs to be updated in a separate thread
-            EventQueue.invokeLater(new Runnable() {
-
-                @Override
-                public void run() {
-                    onWordSelectionChange();
-                }
-            });
-        }
-    }
-
-    private void StudyWordsMenuItemActionPerformed(ActionEvent evt) {
+    private void showStudyDialog() {
         StudyWordsDialog studyWords = new StudyWordsDialog(this, true);
         studyWords.setLocationRelativeTo(this);
         studyWords.showLearningWordsDialog();
     }
 
-    private void wordsListMouseClicked(MouseEvent evt) {
-        if (evt.getClickCount() == 2) {
-            updateWordDefinition();
-        }
-    }
-
-    private void backButtonActionPerformed(ActionEvent evt) {
-        if (searchedWords.size() > 0 && searchWordsIndex >= 1) {
-            wordSearchField.setText(searchedWords.get(--searchWordsIndex));
-
-            updateHistoryButtonsState();
-        }
-    }
-
-    private void forwardButtonActionPerformed(ActionEvent evt) {
-        if (searchedWords.size() - 1 > searchWordsIndex) {
-            wordSearchField.setText(searchedWords.get(++searchWordsIndex));
-
-            updateHistoryButtonsState();
-        }
-    }
-
-    private void statusButtonActionPerformed(ActionEvent evt) {
-        onWordSearchFieldAction();
-    }
-
-    private void memoryButtonActionPerformed(ActionEvent evt) {
-        System.gc();
-    }
-
-    private void dictionaryButtonActionPerformed(ActionEvent evt) {
-        if (dictionaryService.isComplemented(selectedDictionary)) {
-            selectDictionary(dictionaryService.getComplement(selectedDictionary), true);
-        }
-    }
-
-    private void studyButtonActionPerformed(ActionEvent evt) {
-        StudyWordsDialog studyWords = new StudyWordsDialog(this, true);
-        studyWords.setLocationRelativeTo(this);
-        studyWords.showLearningWordsDialog();
-    }
-
-    private void examButtonActionPerformed(ActionEvent evt) {
+    private void showExamDialog() {
         ExamDialog examDialog = new ExamDialog(this, true);
         examDialog.showExamDialog();
-    }
-
-    private void spellcheckButtonActionPerformed(ActionEvent evt) {
-        SpellCheckFrame.getInstance().setVisible(true);
-    }
-
-    private void addWordButtonActionPerformed(ActionEvent evt) {
-        addWordDefinition();
-    }
-
-    private void updateWordButtonActionPerformed(ActionEvent evt) {
-        updateWordDefinition();
-    }
-
-    private void deleteWordButtonActionPerformed(ActionEvent evt) {
-        deleteWordDefinition();
-        throw new NullPointerException("test");
-    }
-
-    private void clearButtonActionPerformed(ActionEvent evt) {
-        clear();
     }
 
     private void initDictionaries() {
