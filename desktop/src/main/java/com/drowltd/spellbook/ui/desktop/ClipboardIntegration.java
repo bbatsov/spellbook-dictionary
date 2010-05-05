@@ -17,8 +17,20 @@ public final class ClipboardIntegration implements ClipboardOwner {
 
     private SpellbookFrame spellbookFrame;
 
-    public ClipboardIntegration(SpellbookFrame spellbookFrame) {
-        this.spellbookFrame = spellbookFrame;
+    private static ClipboardIntegration instance;
+
+    public static ClipboardIntegration getInstance(SpellbookFrame spellbookFrame) {
+        if (instance == null) {
+            instance = new ClipboardIntegration();
+        }
+
+        instance.spellbookFrame = spellbookFrame;
+
+        return instance;
+    }
+
+    private ClipboardIntegration() {
+        setClipboardContents(getClipboardContents());
     }
 
     /**
