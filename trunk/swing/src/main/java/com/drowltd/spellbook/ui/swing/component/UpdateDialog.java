@@ -4,6 +4,20 @@ import com.drowltd.spellbook.core.exception.UpdateServiceException;
 import com.drowltd.spellbook.core.service.UpdateService;
 import com.jidesoft.dialog.ButtonPanel;
 import com.jidesoft.dialog.StandardDialog;
+import net.miginfocom.swing.MigLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,13 +27,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import net.miginfocom.swing.MigLayout;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -32,10 +39,10 @@ public class UpdateDialog extends StandardDialog {
     private static Logger LOGGER = LoggerFactory.getLogger(UpdateDialog.class);
     private ResourceBundle bundle = ResourceBundle.getBundle("i18n/UpdateDialog");
     //components
-    private javax.swing.JButton cancelButton;
-    private javax.swing.JProgressBar progressBar;
-    private javax.swing.JLabel statusLabel;
-    private javax.swing.JButton updateButton;
+    private JButton cancelButton;
+    private JProgressBar progressBar;
+    private JLabel statusLabel;
+    private JButton updateButton;
 
     /** Creates new form UpdateDialog */
     public UpdateDialog(JFrame parent, boolean modal) {
@@ -52,13 +59,13 @@ public class UpdateDialog extends StandardDialog {
     }
 
     private void initComponents0() {
-        progressBar = new javax.swing.JProgressBar();
-        updateButton = new javax.swing.JButton();
-        cancelButton = new javax.swing.JButton();
-        statusLabel = new javax.swing.JLabel();
+        progressBar = new JProgressBar();
+        updateButton = new JButton();
+        cancelButton = new JButton();
+        statusLabel = new JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("i18n/UpdateDialog"); // NOI18N
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        ResourceBundle bundle = ResourceBundle.getBundle("i18n/UpdateDialog"); // NOI18N
         setTitle(bundle.getString("Dialog(Title)")); // NOI18N
         setResizable(false);
 
@@ -66,20 +73,20 @@ public class UpdateDialog extends StandardDialog {
         updateButton.setEnabled(false);
 
         cancelButton.setText(bundle.getString("Dialog(CancelButton)")); // NOI18N
-        cancelButton.setMaximumSize(new java.awt.Dimension(59, 29));
-        cancelButton.setMinimumSize(new java.awt.Dimension(59, 29));
-        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+        cancelButton.setMaximumSize(new Dimension(59, 29));
+        cancelButton.setMinimumSize(new Dimension(59, 29));
+        cancelButton.addActionListener(new ActionListener() {
 
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            public void actionPerformed(ActionEvent evt) {
                 cancelButtonActionPerformed(evt);
             }
         });
 
         statusLabel.setText(bundle.getString("Dialog(CheckingForUpdates)")); // NOI18N
-        statusLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        statusLabel.setVerticalAlignment(SwingConstants.TOP);
     }
 
-    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    private void cancelButtonActionPerformed(ActionEvent evt) {
         if (updateFuture != null) {
             updateFuture.cancel(true);
             progressBar.setIndeterminate(false);
