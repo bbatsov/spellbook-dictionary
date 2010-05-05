@@ -6,10 +6,9 @@
 package com.drowltd.spellbook.ui.swing.component;
 
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.List;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.*;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -37,7 +36,9 @@ public class DiffDialog extends StandardDialog {
     private javax.swing.JTextPane jBaseTextPane;
     private javax.swing.JScrollPane jRemoteScrollPane;
     private javax.swing.JTextPane jRemoteTextPane;
-    private String acceptedText;
+
+    private ResourceBundle bundle = ResourceBundle.getBundle("i18n/DiffDialog");
+    private String acceptedText = "";
 
     /**
      * Creates new form DiffDialog
@@ -46,7 +47,6 @@ public class DiffDialog extends StandardDialog {
         super(parent, modal);
 
         initComponents0();
-        init();
     }
 
     public DiffDialog diff(String baseText, String remoteText) {
@@ -78,9 +78,46 @@ public class DiffDialog extends StandardDialog {
         jRemoteTextPane.setBackground(new java.awt.Color(255, 255, 255));
         jRemoteScrollPane.setViewportView(jRemoteTextPane);
 
-        jAcceptBaseButton.setText("jButton1");
+        jAcceptBaseButton.setText(bundle.getString("Dialog(AcceptBaseButton)"));
 
-        jAcceptRemoteButton.setText("jButton2");
+        jAcceptRemoteButton.setText(bundle.getString("Dialog(AcceptRemoteButton)"));
+
+        jBaseScrollPane.getViewport().addChangeListener(new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                jRemoteScrollPane.getViewport().setViewPosition(jBaseScrollPane.getViewport().getViewPosition());
+            }
+        });
+
+        jRemoteScrollPane.getViewport().addChangeListener(new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                jBaseScrollPane.getViewport().setViewPosition(jRemoteScrollPane.getViewport().getViewPosition());
+            }
+        });
+
+        jAcceptRemoteButton.addActionListener(new ActionListener(){
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                acceptedText = jRemoteTextPane.getText();
+
+                DiffDialog.this.setVisible(false);
+                DiffDialog.this.dispose();
+            }
+        });
+
+        jAcceptBaseButton.addActionListener(new ActionListener(){
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                acceptedText = jBaseTextPane.getText();
+                DiffDialog.this.setVisible(false);
+                DiffDialog.this.dispose();
+            }
+        });
 
     }
 
@@ -109,32 +146,15 @@ public class DiffDialog extends StandardDialog {
         return null;
     }
 
-    public int showDialog() {
+    public String showDialog() {
         pack();
 
         setVisible(true);
 
-        return getDialogResult();
+        getDialogResult();
+        return acceptedText;
     }
 
-
-    private void init() {
-        jBaseScrollPane.getViewport().addChangeListener(new ChangeListener() {
-
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                jRemoteScrollPane.getViewport().setViewPosition(jBaseScrollPane.getViewport().getViewPosition());
-            }
-        });
-
-        jRemoteScrollPane.getViewport().addChangeListener(new ChangeListener() {
-
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                jBaseScrollPane.getViewport().setViewPosition(jRemoteScrollPane.getViewport().getViewPosition());
-            }
-        });
-    }
 
     List<StringLine> lcs(List<StringLine> base, List<StringLine> remote) {
         return new LCSFinder(base, remote).find();
