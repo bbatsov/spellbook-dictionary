@@ -52,6 +52,7 @@ public class ExamDialog extends StandardDialog {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExamDialog.class);
     private ExamService examService;
     private static final PreferencesManager PM = PreferencesManager.getInstance();
+
     private int seconds = 0;
     private int secondsBackup = 0;
     private int examWords;
@@ -476,7 +477,7 @@ public class ExamDialog extends StandardDialog {
             correctWords++;
         } else {
             wordsProgressBar.setForeground(new Color(204, 0, 0));
-            feedbackField.setText(TRANSLATOR.translate("WrongAnser(String)"));
+            feedbackField.setText(TRANSLATOR.translate("WrongAnswer(String)"));
             answerIconLabel.setIcon(IconManager.getImageIcon("bell2_red.png", IconManager.IconSize.SIZE24));
             wrongWords.add(examService.examWord());
             correctTranslation.add(examService.getTranslation());
