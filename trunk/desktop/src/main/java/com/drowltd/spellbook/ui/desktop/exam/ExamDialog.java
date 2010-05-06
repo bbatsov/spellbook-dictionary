@@ -49,6 +49,7 @@ public class ExamDialog extends StandardDialog {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ExamDialog.class);
     private ExamService examService;
+    private static final Translator TRANSLATOR = Translator.getTranslator("ExamDialog");
     private static final PreferencesManager PM = PreferencesManager.getInstance();
 
     private int seconds = 0;
@@ -58,12 +59,11 @@ public class ExamDialog extends StandardDialog {
     private int maximumSecondsProgressBar = 0;
     private int maximumWordsProgressBar = 0;
     private static Difficulty difficulty = Difficulty.EASY;
-    private static Dictionary selectedDictionary;
+    private Dictionary selectedDictionary;
     private final DictionaryService dictionaryService = DictionaryService.getInstance();
     private int totalWords;
     private int correctWords;
-    private static final Translator TRANSLATOR = Translator.getTranslator("ExamDialog");
-    private static List<String> wrongWords = new ArrayList<String>();
+    private List<String> wrongWords = new ArrayList<String>();
     private boolean timerEnabled = PM.getBoolean(Preference.EXAM_TIMER, false);
 
     public enum TimerStatus {
@@ -146,7 +146,7 @@ public class ExamDialog extends StandardDialog {
         contentPanel.add(difficultyLabel, "left");
 
         contentPanel.add(startButton, "right");
-        startButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/media_play_green.png"))); // NOI18N
+        startButton.setIcon(IconManager.getMenuIcon("media_play_green.png"));
         startButton.setText(TRANSLATOR.translate("Start(Button)"));
         startButton.addActionListener(new ActionListener() {
             @Override
@@ -156,7 +156,7 @@ public class ExamDialog extends StandardDialog {
         });
 
         contentPanel.add(pauseButton, "center");
-        pauseButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/media_pause.png"))); // NOI18N
+        pauseButton.setIcon(IconManager.getMenuIcon("media_pause.png"));
         pauseButton.setText(TRANSLATOR.translate("Pause(Button)"));
         pauseButton.setEnabled(false);
         pauseButton.addActionListener(new ActionListener() {
@@ -167,7 +167,7 @@ public class ExamDialog extends StandardDialog {
         });
 
         contentPanel.add(stopButton, "span, wrap");
-        stopButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/media_stop_red.png"))); // NOI18N
+        stopButton.setIcon(IconManager.getMenuIcon("media_stop_red.png"));
         stopButton.setText(TRANSLATOR.translate("Stop(Button)"));
         stopButton.setEnabled(false);
         stopButton.addActionListener(new ActionListener() {
@@ -192,17 +192,16 @@ public class ExamDialog extends StandardDialog {
             }
         });
 
-        contentPanel.add(answerIconLabel, "span 3, right");
+        contentPanel.add(answerIconLabel, "span 4, right");
         answerIconLabel.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/bell2_grey.png")));
-        contentPanel.add(answerButton, "left, growx");
-        answerButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/check2.png"))); // NOI18N
-        answerButton.setText(TRANSLATOR.translate("Answer(Button)")); // NOI18N
+        contentPanel.add(answerButton, "left, span, growx");
+        answerButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/check2.png")));
+        answerButton.setText(TRANSLATOR.translate("Answer(Button)"));
         answerButton.setEnabled(false);
         answerButton.setMaximumSize(new Dimension(75, 25));
         answerButton.setMinimumSize(new Dimension(75, 25));
         answerButton.setPreferredSize(new Dimension(75, 25));
         answerButton.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent evt) {
                 answerButtonActionPerformed(evt);
@@ -289,7 +288,6 @@ public class ExamDialog extends StandardDialog {
                 seconds = difficulty.getTime();
             }
             timerRunButton();
-            boolean timerUsed = true;
             enumTimerStatus = TimerStatus.STARTED;
             timerIconLabel.setIcon(IconManager.getImageIcon("stopwatch_run.png", IconManager.IconSize.SIZE48));
         } else {
@@ -309,7 +307,9 @@ public class ExamDialog extends StandardDialog {
 
     private void fromLanguageComboBoxActionPerformed(ActionEvent evt) {
         final List<Language> languagesTo = examService.getToLanguages((Language) fromLanguageComboBox.getSelectedItem());
+
         toLanguageComboBox.removeAllItems();
+
         for (Language language : languagesTo) {
             toLanguageComboBox.addItem(language);
         }
@@ -328,8 +328,8 @@ public class ExamDialog extends StandardDialog {
         buttonPanel.add(settingsButton, ButtonPanel.OTHER_BUTTON);
         buttonPanel.add(quitButton, ButtonPanel.CANCEL_BUTTON);
         ResourceBundle bundle = ResourceBundle.getBundle("i18n/ExamDialog");
-        quitButton.setAction(new AbstractAction(bundle.getString("Quit(Button)")) {
 
+        quitButton.setAction(new AbstractAction(bundle.getString("Quit(Button)")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setDialogResult(RESULT_CANCELLED);
@@ -338,12 +338,10 @@ public class ExamDialog extends StandardDialog {
         });
 
         settingsButton.setAction(new AbstractAction(bundle.getString("Settings(Button)")) {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 PreferencesDialog preferencesDialog = new PreferencesDialog(null, true);
                 preferencesDialog.getTabbedPane().setSelectedIndex(2);
-
 
                 preferencesDialog.setLocationRelativeTo(null);
                 PreferencesExtractor.extract(null, preferencesDialog);
