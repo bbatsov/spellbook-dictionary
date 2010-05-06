@@ -18,6 +18,7 @@ import com.drowltd.spellbook.util.SearchUtils;
 import com.jidesoft.dialog.StandardDialog;
 import com.jidesoft.hints.ListDataIntelliHints;
 import com.jidesoft.swing.FolderChooser;
+import com.jidesoft.swing.JideSplitButton;
 import net.miginfocom.swing.MigLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,7 +106,7 @@ public class SpellbookFrame extends JFrame {
     private JMenuItem cutMenuItem;
     private JButton deleteWordButton;
     private JMenuItem deleteWordMenuItem;
-    private JButton dictionaryButton;
+    private JideSplitButton dictionaryButton;
     private JMenu dictionaryMenu;
     private JButton forwardButton;
     private JPanel topPanel;
@@ -1022,7 +1023,7 @@ public class SpellbookFrame extends JFrame {
         forwardButton = new JButton();
         clearButton = new JButton();
         statusButton = new JButton();
-        dictionaryButton = new JButton();
+        dictionaryButton = new JideSplitButton();
         JToolBar.Separator jSeparator3 = new JToolBar.Separator();
         JButton addWordButton = new JButton();
         updateWordButton = new JButton();
@@ -1115,6 +1116,12 @@ public class SpellbookFrame extends JFrame {
                 }
             }
         });
+
+        final List<Dictionary> availableDictionaries = dictionaryService.getDictionaries();
+        for (Dictionary dictionary : availableDictionaries) {
+            dictionaryButton.add(new DictionaryItem(dictionary));
+        }
+
         mainToolBar.add(dictionaryButton);
         mainToolBar.add(jSeparator3);
 
