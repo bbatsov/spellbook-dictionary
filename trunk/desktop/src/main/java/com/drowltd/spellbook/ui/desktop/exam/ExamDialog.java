@@ -60,18 +60,14 @@ public class ExamDialog extends StandardDialog {
     private int maximumSecondsProgressBar = 0;
     private int maximumWordsProgressBar = 0;
     private static Difficulty difficulty = Difficulty.EASY;
-    private static Language selectedLanguage;
     private static Dictionary selectedDictionary;
     private final DictionaryService dictionaryService = DictionaryService.getInstance();
     private int totalWords;
     private int correctWords;
     private int fromWordsIndex;
     private int toWordsIndex;
-    private boolean timerUsed;
-    private String diffLabelText;
     private static final Translator TRANSLATOR = Translator.getTranslator("ExamDialog");
     private static List<String> wrongWords = new ArrayList<String>();
-    private static List<String> correctTranslation = new ArrayList<String>();
     private boolean timerEnabled = PM.getBoolean(Preference.EXAM_TIMER, false);
 
     public enum TimerStatus {
@@ -82,10 +78,6 @@ public class ExamDialog extends StandardDialog {
     private static TimerStatus enumTimerStatus = TimerStatus.DISABLED;
     private JComboBox fromLanguageComboBox;
     private JComboBox toLanguageComboBox;
-    private JLabel jLabel4;
-    private JLabel jLabel7;
-    private JLabel jLabel8;
-    private JLabel jLabel9;
     private static JLabel difficultyLabel;
     private static JLabel timerIconLabel;
     private JLabel answerIconLabel;
@@ -108,14 +100,10 @@ public class ExamDialog extends StandardDialog {
 
         fromLanguageComboBox = new JComboBox();
         toLanguageComboBox = new JComboBox();
-        jLabel4 = new JLabel();
         difficultyLabel = new JLabel();
-        jLabel7 = new JLabel();
         startButton = new JButton();
         translateField = new JTextField();
         answerField = new JTextField();
-        jLabel8 = new JLabel();
-        jLabel9 = new JLabel();
         stopButton = new JButton();
         timerProgressBar = new JProgressBar();
         answerButton = new JButton();
@@ -140,7 +128,7 @@ public class ExamDialog extends StandardDialog {
 
     @Override
     public JComponent createContentPanel() {
-        JPanel panel = new JPanel(new MigLayout("wrap 5", "[][][][][]", "[grow][][][][grow][grow][grow][grow][][grow][grow][]"));
+        JPanel panel = new JPanel(new MigLayout("wrap 5", "[][][][][grow]", "[grow][][][][grow][grow][grow][grow][][grow][grow][]"));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         panel.add(new JLabel(TRANSLATOR.translate("Languages(Label)")), "span 5, left");
@@ -189,11 +177,9 @@ public class ExamDialog extends StandardDialog {
                 toLanguageComboBoxPopupMenuWillBecomeVisible(evt);
             }
         });
-        panel.add(jLabel7, "right, wrap");
-        jLabel7.setIcon(new ImageIcon(getClass().getResource("/icons/48x48/dictionary.png")));
+        panel.add(new JLabel(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE48)), "right, wrap");
 
-        panel.add(jLabel4, "left, split 2");
-        jLabel4.setText(TRANSLATOR.translate("Difficulty(Label)"));
+        panel.add(new JLabel(TRANSLATOR.translate("Difficulty(Label)")), "left, split 2");
         panel.add(difficultyLabel, "left, span 4, wrap");
 
         panel.add(startButton, "right");
@@ -229,14 +215,12 @@ public class ExamDialog extends StandardDialog {
             }
         });
 
-        panel.add(jLabel9, "span 5, left");
-        jLabel9.setText(TRANSLATOR.translate("OverTranslateField(Label)"));
+        panel.add(new JLabel(TRANSLATOR.translate("OverTranslateField(Label)")), "span 5, left");
 
         panel.add(translateField, "span 5, left, growx");
         translateField.setEditable(false);
 
-        panel.add(jLabel8, "span 5, left");
-        jLabel8.setText(TRANSLATOR.translate("OverAnswerField(Label)"));
+        panel.add(new JLabel(TRANSLATOR.translate("OverAnswerField(Label)")), "span 5, left");
 
         panel.add(answerField, "span 5, left, growx");
         answerField.addActionListener(new ActionListener() {
@@ -296,7 +280,6 @@ public class ExamDialog extends StandardDialog {
 
     private void stopButtonActionPerformed(ActionEvent evt) {
         wrongWords.add(examService.examWord());
-        correctTranslation.add(examService.getTranslation());
         stopExam();
         pauseButton.setText(TRANSLATOR.translate("Pause(Button)"));
 
@@ -321,7 +304,7 @@ public class ExamDialog extends StandardDialog {
                 (Language) toLanguageComboBox.getSelectedItem());
         assert selectedDictionary != null;
 
-        selectedLanguage = (Language) fromLanguageComboBox.getSelectedItem();
+        Language selectedLanguage = (Language) fromLanguageComboBox.getSelectedItem();
         assert selectedLanguage != null;
 
         LOGGER.info("Selected difficulty " + difficulty);
@@ -329,7 +312,6 @@ public class ExamDialog extends StandardDialog {
         LOGGER.info("Selected language is " + selectedLanguage);
 
         wrongWords.clear();
-        correctTranslation.clear();
         examService.getDifficultyWords(selectedDictionary, selectedLanguage, difficulty);
         totalWords = 0;
         correctWords = 0;
@@ -347,7 +329,7 @@ public class ExamDialog extends StandardDialog {
                 seconds = difficulty.getTime();
             }
             timerRunButton();
-            timerUsed = true;
+            boolean timerUsed = true;
             enumTimerStatus = TimerStatus.STARTED;
             timerIconLabel.setIcon(IconManager.getImageIcon("stopwatch_run.png", IconManager.IconSize.SIZE48));
         } else {
@@ -480,7 +462,6 @@ public class ExamDialog extends StandardDialog {
             feedbackField.setText(TRANSLATOR.translate("WrongAnswer(String)"));
             answerIconLabel.setIcon(IconManager.getImageIcon("bell2_red.png", IconManager.IconSize.SIZE24));
             wrongWords.add(examService.examWord());
-            correctTranslation.add(examService.getTranslation());
         }
 
     }
@@ -525,7 +506,6 @@ public class ExamDialog extends StandardDialog {
                 }
             } else {
                 wrongWords.add(examService.examWord());
-                correctTranslation.add(examService.getTranslation());
                 stopExam();
                 wordsProgressBar.setValue(maximumWordsProgressBar);
             }
@@ -540,7 +520,7 @@ public class ExamDialog extends StandardDialog {
 
         timerIconLabel.setVisible(timerEnabled);
 
-        diffLabelText = PM.get(Preference.EXAM_DIFFICULTY, difficulty.name());
+        String diffLabelText = PM.get(Preference.EXAM_DIFFICULTY, difficulty.name());
         diffLabelChange(diffLabelText);
 
         enumTimerStatus = timerEnabled ? TimerStatus.STOPPED : TimerStatus.DISABLED;
@@ -617,14 +597,6 @@ public class ExamDialog extends StandardDialog {
         examResultDialog.setLocationRelativeTo(this);
         examResultDialog.showExamResult(correctWords, totalWords);
 
-    }
-
-    public static List<String> getWrongWords() {
-        return wrongWords;
-    }
-
-    public static List<String> getCorrectTranslation() {
-        return correctTranslation;
     }
 
     public static void setTimerProgressBarVisible() {
