@@ -10,6 +10,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.File;
 import java.io.IOException;
 
 public final class ClipboardIntegration implements ClipboardOwner {
@@ -18,6 +19,7 @@ public final class ClipboardIntegration implements ClipboardOwner {
     private SpellbookFrame spellbookFrame;
 
     private static ClipboardIntegration instance;
+    private Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 
     public static ClipboardIntegration getInstance(SpellbookFrame spellbookFrame) {
         if (instance == null) {
@@ -47,13 +49,12 @@ public final class ClipboardIntegration implements ClipboardOwner {
         }
 
         LOGGER.info("Clipboard ownership lost");
+        // replace the contents in the clipboard with the same contents
+        // just to restore the ownership to Spellbook
+        clipboard.setContents(clipboard.getContents(this), this);
 
         // call the frame callback
         spellbookFrame.clipboardCallback();
-
-        // replace the contents in the clipboard with the same contents
-        // just to restore the ownership to Spellbook
-        setClipboardContents(getClipboardContents());
     }
 
     /**
@@ -64,7 +65,6 @@ public final class ClipboardIntegration implements ClipboardOwner {
      */
     public void setClipboardContents(String text) {
         StringSelection stringSelection = new StringSelection(text);
-        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(stringSelection, this);
     }
 
@@ -75,23 +75,23 @@ public final class ClipboardIntegration implements ClipboardOwner {
      *         empty String.
      */
     public String getClipboardContents() {
-            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        final DataFlavor stringFlavor = DataFlavor.stringFlavor;
 
-            final DataFlavor stringFlavor = DataFlavor.stringFlavor;
+        if (clipboard.isDataFlavorAvailable(stringFlavor)) {
+            try {
+                String text = (String) clipboard.getData(stringFlavor);
 
-            if (clipboard.isDataFlavorAvailable(stringFlavor)) {
-                try {
-                    String text = (String) clipboard.getData(stringFlavor);
-
-                    if (text != null) {
-                        return text;
-                    }
-                } catch (UnsupportedFlavorException ex) {
-                    ex.printStackTrace();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
+                // the string we receive maybe a file name we've copied so
+                // we must ignore this
+                if (text != null && !new File(text).exists()) {
+                    return text;
                 }
+            } catch (UnsupportedFlavorException ex) {
+                ex.printStackTrace();
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
+        }
 
 
         return "";
