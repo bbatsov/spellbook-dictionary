@@ -380,10 +380,10 @@ public class PreferencesDialog extends StandardDialog {
         ExamDialog.diffLabelChange(getExamDifficulty().toString());
 
         if (isExamTimerEnabled()) {
-            ExamDialog.setTimerProgressbarVisible();
+            ExamDialog.setTimerProgressBarVisible();
             ExamDialog.setEnumTimerStatus(ExamDialog.TimerStatus.STARTED);
         } else {
-            ExamDialog.setTimerProgressbarInvisible();
+            ExamDialog.setTimerProgressBarInvisible();
             ExamDialog.setEnumTimerStatus(ExamDialog.TimerStatus.DISABLED);
         }
 
