@@ -32,6 +32,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.text.DefaultEditorKit;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -57,10 +59,43 @@ public class AddUpdateWordDialog extends StandardDialog {
         TRANSLATOR.reset();
 
         addButton = new JButton(TRANSLATOR.translate("Add(JButton)"));
+
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                translationPane.setText(translationPane.getText() + newMeaningTextField.getText() + "\n");
+            }
+        });
+
         editButton = new JButton(TRANSLATOR.translate("Edit(JButton)"));
+
+        editButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (toBeEdited == null) {
+                    return;
+                }
+                String editedText = translationPane.getText().replaceAll(toBeEdited, newMeaningTextField.getText());
+                toBeEdited = newMeaningTextField.getText();
+                translationPane.setText(editedText);
+            }
+        });
+
         wordTextField = new JTextField();
         newMeaningTextField = new JTextField();
         translationPane = new JTextPane();
+
+        translationPane.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 1) {
+                    selectLine.actionPerformed(null);
+                }
+
+                toBeEdited = translationPane.getSelectedText();
+                newMeaningTextField.setText(toBeEdited);
+            }
+        });
 
         setLocationRelativeTo(parent);
 
@@ -142,26 +177,6 @@ public class AddUpdateWordDialog extends StandardDialog {
 
     public Dictionary getDictionary() {
         return dictionary;
-    }
-
-
-    private void editButtonActionPerformed(ActionEvent evt) {
-        if (toBeEdited == null) {
-            return;
-        }
-        String editedText = translationPane.getText().replaceAll(toBeEdited, newMeaningTextField.getText());
-        toBeEdited = newMeaningTextField.getText();
-        translationPane.setText(editedText);
-    }
-
-    private void translationTextAreaMouseClicked(MouseEvent evt) {
-
-        if (SwingUtilities.isLeftMouseButton(evt) && evt.getClickCount() == 1) {
-            selectLine.actionPerformed(null);
-        }
-
-        toBeEdited = translationPane.getSelectedText();
-        newMeaningTextField.setText(toBeEdited);
     }
 
     public void setWord(String word) {

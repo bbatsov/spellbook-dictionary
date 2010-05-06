@@ -66,7 +66,32 @@ public class PreferencesDialog extends StandardDialog {
     private static final PreferencesManager PM = PreferencesManager.getInstance();
     private Font selectedFont;
     private static final DictionaryService DICTIONARY_SERVICE = DictionaryService.getInstance();
+    private static final int DEFAULT_FONT_SIZE = 12;
+
+    private JCheckBox alwaysOnTopCheckBox;
     private JCheckBox startMinimizedCheckBox;
+    private JCheckBox clipboardIntegrationCheckBox;
+    private JTextField currentFontField;
+    private JTextField currentFontSizeField;
+    private JTextField currentStyleField;
+    private JComboBox defaultDictionaryComboBox;
+    private JRadioButton easyRadioButton;
+    private JCheckBox emptyLineCheckBox;
+    private JList fontList;
+    private JList fontSizeList;
+    private JList fontStyleList;
+    private JRadioButton hardRadioButton;
+    private JComboBox languageComboBox;
+    private JComboBox lookAndFeelComboBox;
+    private JRadioButton mediumRadioButton;
+    private JCheckBox minimizeToTrayCheckBox;
+    private JCheckBox minimizeToTrayOnCloseCheckBox;
+    private JLabel previewText;
+    private JCheckBox showMemoryUsageCheckBox;
+    private JTabbedPane tabbedPane;
+    private JCheckBox timerCheckBox;
+    private JCheckBox trayPopupCheckBox;
+    private JTextField wordCountField;
 
     public PreferencesDialog(final Frame parent, boolean modal) {
         super(parent, modal);
@@ -251,9 +276,9 @@ public class PreferencesDialog extends StandardDialog {
 
         fontList.addListSelectionListener(new SelectionUpdater());
 
-        fontSizeList.setListData(new Integer[]{8, 10, 12, 14, 16, 18});
+        fontSizeList.setListData(new Integer[]{8, 10, DEFAULT_FONT_SIZE, 14, 16, 18});
 
-        int currentFontSize = PM.getInt(Preference.FONT_SIZE, 12);
+        int currentFontSize = PM.getInt(Preference.FONT_SIZE, DEFAULT_FONT_SIZE);
         fontSizeList.setSelectedValue(currentFontSize, true);
 
         fontSizeList.addListSelectionListener(new SelectionUpdater());
@@ -550,28 +575,4 @@ public class PreferencesDialog extends StandardDialog {
 
         return generalSettingsPanel;
     }
-
-    private JCheckBox alwaysOnTopCheckBox;
-    private JCheckBox clipboardIntegrationCheckBox;
-    private JTextField currentFontField;
-    private JTextField currentFontSizeField;
-    private JTextField currentStyleField;
-    private JComboBox defaultDictionaryComboBox;
-    private JRadioButton easyRadioButton;
-    private JCheckBox emptyLineCheckBox;
-    private JList fontList;
-    private JList fontSizeList;
-    private JList fontStyleList;
-    private JRadioButton hardRadioButton;
-    private JComboBox languageComboBox;
-    private JComboBox lookAndFeelComboBox;
-    private JRadioButton mediumRadioButton;
-    private JCheckBox minimizeToTrayCheckBox;
-    private JCheckBox minimizeToTrayOnCloseCheckBox;
-    private JLabel previewText;
-    private JCheckBox showMemoryUsageCheckBox;
-    private JTabbedPane tabbedPane;
-    private JCheckBox timerCheckBox;
-    private JCheckBox trayPopupCheckBox;
-    private JTextField wordCountField;
 }
