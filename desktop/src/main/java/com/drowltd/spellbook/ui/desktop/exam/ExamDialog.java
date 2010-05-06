@@ -128,7 +128,7 @@ public class ExamDialog extends StandardDialog {
 
     @Override
     public JComponent createContentPanel() {
-        JPanel panel = new JPanel(new MigLayout("wrap 5", "[][][][][grow]", "[grow][][][][grow][grow][grow][grow][][grow][grow][]"));
+        JPanel panel = new JPanel(new MigLayout("wrap 5", "[][][][][grow]", "[grow][][][][grow][grow][grow][grow][][grow][grow]"));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         panel.add(new JLabel(TRANSLATOR.translate("Languages(Label)")), "span 5, left");
