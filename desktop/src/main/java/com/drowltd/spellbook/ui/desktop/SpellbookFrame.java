@@ -146,8 +146,7 @@ public class SpellbookFrame extends JFrame {
         // if another process is not using the connection already
         try {
             if (dictionaryService.getDictionaries().size() == 0) {
-                // todo add translation
-                JOptionPane.showMessageDialog(null, "No Dictionaries available", "Warning", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(null, TRANSLATOR.translate("NoDictionaries(Message)"), TRANSLATOR.translate("Error(Title)"), JOptionPane.WARNING_MESSAGE);
 
                 System.exit(0);
             }
