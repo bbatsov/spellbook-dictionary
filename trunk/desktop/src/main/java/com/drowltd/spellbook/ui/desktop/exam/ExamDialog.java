@@ -28,8 +28,6 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.Timer;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -64,14 +62,11 @@ public class ExamDialog extends StandardDialog {
     private final DictionaryService dictionaryService = DictionaryService.getInstance();
     private int totalWords;
     private int correctWords;
-    private int fromWordsIndex;
-    private int toWordsIndex;
     private static final Translator TRANSLATOR = Translator.getTranslator("ExamDialog");
     private static List<String> wrongWords = new ArrayList<String>();
     private boolean timerEnabled = PM.getBoolean(Preference.EXAM_TIMER, false);
 
     public enum TimerStatus {
-
         PAUSED, STARTED, STOPPED, DISABLED
     }
 
@@ -128,29 +123,13 @@ public class ExamDialog extends StandardDialog {
 
     @Override
     public JComponent createContentPanel() {
-        JPanel panel = new JPanel(new MigLayout("wrap 5", "[][][][][grow]", "[grow][][][][grow][grow][grow][grow][][grow][grow]"));
-        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        JPanel contentPanel = new JPanel(new MigLayout("wrap 5", "[grow][grow][grow][grow][grow]", "[grow][][][][grow][grow][grow][grow][][grow][grow][]"));
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        panel.add(new JLabel(TRANSLATOR.translate("Languages(Label)")), "span 5, left");
+        contentPanel.add(new JLabel(TRANSLATOR.translate("Languages(Label)")), "span, left");
+        contentPanel.add(new JLabel(TRANSLATOR.translate("From(Label)")), "left");
+        contentPanel.add(fromLanguageComboBox, "right, growx");
 
-        panel.add(new JLabel(TRANSLATOR.translate("From(Label)")), "left, split 2");
-        panel.add(fromLanguageComboBox, "right, w 70!");
-        fromLanguageComboBox.addPopupMenuListener(new PopupMenuListener() {
-
-            @Override
-            public void popupMenuCanceled(PopupMenuEvent evt) {
-            }
-
-            @Override
-            public void popupMenuWillBecomeInvisible(PopupMenuEvent evt) {
-                fromLanguageComboBoxPopupMenuWillBecomeInvisible(evt);
-            }
-
-            @Override
-            public void popupMenuWillBecomeVisible(PopupMenuEvent evt) {
-                fromLanguageComboBoxPopupMenuWillBecomeVisible(evt);
-            }
-        });
         fromLanguageComboBox.addActionListener(new ActionListener() {
 
             @Override
@@ -159,80 +138,63 @@ public class ExamDialog extends StandardDialog {
             }
         });
 
-        panel.add(new JLabel(TRANSLATOR.translate("To(Label)")), "left, split 2");
-        panel.add(toLanguageComboBox, "w 70!, right, skip");
-        toLanguageComboBox.addPopupMenuListener(new PopupMenuListener() {
+        contentPanel.add(new JLabel(TRANSLATOR.translate("To(Label)")), "left");
+        contentPanel.add(toLanguageComboBox, "right, growx");
+        contentPanel.add(new JLabel(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE48)), "right");
 
-            @Override
-            public void popupMenuCanceled(PopupMenuEvent evt) {
-            }
+        contentPanel.add(new JLabel(TRANSLATOR.translate("Difficulty(Label)")), "left");
+        contentPanel.add(difficultyLabel, "left");
 
-            @Override
-            public void popupMenuWillBecomeInvisible(PopupMenuEvent evt) {
-                toLanguageComboBoxPopupMenuWillBecomeInvisible(evt);
-            }
-
-            @Override
-            public void popupMenuWillBecomeVisible(PopupMenuEvent evt) {
-                toLanguageComboBoxPopupMenuWillBecomeVisible(evt);
-            }
-        });
-        panel.add(new JLabel(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE48)), "right, wrap");
-
-        panel.add(new JLabel(TRANSLATOR.translate("Difficulty(Label)")), "left, split 2");
-        panel.add(difficultyLabel, "left, span 4, wrap");
-
-        panel.add(startButton, "right");
+        contentPanel.add(startButton, "right");
         startButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/media_play_green.png"))); // NOI18N
         startButton.setText(TRANSLATOR.translate("Start(Button)"));
         startButton.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent evt) {
                 startButtonActionPerformed(evt);
             }
         });
-        panel.add(pauseButton, "split 2, center");
+
+        contentPanel.add(pauseButton, "center");
         pauseButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/media_pause.png"))); // NOI18N
         pauseButton.setText(TRANSLATOR.translate("Pause(Button)"));
         pauseButton.setEnabled(false);
         pauseButton.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent evt) {
                 pauseButtonActionPerformed(evt);
             }
         });
-        panel.add(stopButton, "span, wrap");
+
+        contentPanel.add(stopButton, "span, wrap");
         stopButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/media_stop_red.png"))); // NOI18N
         stopButton.setText(TRANSLATOR.translate("Stop(Button)"));
         stopButton.setEnabled(false);
         stopButton.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent evt) {
                 stopButtonActionPerformed(evt);
             }
         });
 
-        panel.add(new JLabel(TRANSLATOR.translate("OverTranslateField(Label)")), "span 5, left");
+        contentPanel.add(new JLabel(TRANSLATOR.translate("OverTranslateField(Label)")), "span, left");
 
-        panel.add(translateField, "span 5, left, growx");
+        contentPanel.add(translateField, "span 5, left, growx");
         translateField.setEditable(false);
 
-        panel.add(new JLabel(TRANSLATOR.translate("OverAnswerField(Label)")), "span 5, left");
+        contentPanel.add(new JLabel(TRANSLATOR.translate("OverAnswerField(Label)")), "span, left");
 
-        panel.add(answerField, "span 5, left, growx");
+        contentPanel.add(answerField, "span 5, left, growx");
         answerField.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent evt) {
                 answerFieldActionPerformed(evt);
             }
         });
-        panel.add(answerIconLabel, "center");
+
+        contentPanel.add(answerIconLabel, "span 3, right");
         answerIconLabel.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/bell2_grey.png")));
-        panel.add(answerButton, "span 4, left, w 160!");
+        contentPanel.add(answerButton, "left, growx");
         answerButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/check2.png"))); // NOI18N
         answerButton.setText(TRANSLATOR.translate("Answer(Button)")); // NOI18N
         answerButton.setEnabled(false);
@@ -247,24 +209,24 @@ public class ExamDialog extends StandardDialog {
             }
         });
 
-        panel.add(wordsProgressBar, "span 5, left, w 380!");
+        contentPanel.add(wordsProgressBar, "span, grow");
         wordsProgressBar.setForeground(new Color(102, 102, 255));
         wordsProgressBar.setToolTipText(TRANSLATOR.translate("Words(String)"));
         wordsProgressBar.setString(TRANSLATOR.translate("Words(String)"));
         wordsProgressBar.setStringPainted(true);
 
-        panel.add(feedbackField, "span 5, left");
+        contentPanel.add(feedbackField, "span, left");
         feedbackField.setText(TRANSLATOR.translate("Feedback(Field)"));
 
-        panel.add(timerIconLabel, "");
+        contentPanel.add(timerIconLabel, "");
         timerIconLabel.setIcon(new ImageIcon(getClass().getResource("/icons/48x48/stopwatch.png")));
-        panel.add(timerProgressBar, "span 4, w 275!");
+        contentPanel.add(timerProgressBar, "span, grow");
         timerProgressBar.setForeground(new Color(51, 255, 51));
         timerProgressBar.setToolTipText(TRANSLATOR.translate("Timer(String)"));
         timerProgressBar.setString(TRANSLATOR.translate("Timer(String)"));
         timerProgressBar.setStringPainted(true);
 
-        return panel;
+        return contentPanel;
     }
 
     private void answerButtonActionPerformed(ActionEvent evt) {
@@ -295,8 +257,6 @@ public class ExamDialog extends StandardDialog {
             pauseButton.setText(TRANSLATOR.translate("Pause(Button)"));
             answerButton.setEnabled(true);
         }
-
-
     }
 
     private void startButtonActionPerformed(ActionEvent evt) {
@@ -318,7 +278,7 @@ public class ExamDialog extends StandardDialog {
 
         callAnswerService();
 
-        editability(false);
+        enableComponents(false);
 
         examWords = PM.getInt(Preference.EXAM_WORDS, 10);
         examWordsCopy = examWords;
@@ -345,26 +305,6 @@ public class ExamDialog extends StandardDialog {
         wordsProgressBar.setValue(1);
         feedbackField.setText(TRANSLATOR.translate("ExamStarted(Label)"));
         answerField.requestFocus();
-    }
-
-    private void toLanguageComboBoxPopupMenuWillBecomeInvisible(PopupMenuEvent evt) {
-        if (toLanguageComboBox.getSelectedItem() == fromLanguageComboBox.getSelectedItem()) {
-            fromLanguageComboBox.setSelectedIndex(toWordsIndex);
-        }
-    }
-
-    private void toLanguageComboBoxPopupMenuWillBecomeVisible(PopupMenuEvent evt) {
-        toWordsIndex = toLanguageComboBox.getSelectedIndex();
-    }
-
-    private void fromLanguageComboBoxPopupMenuWillBecomeInvisible(PopupMenuEvent evt) {
-        if (fromLanguageComboBox.getSelectedItem() == toLanguageComboBox.getSelectedItem()) {
-            toLanguageComboBox.setSelectedIndex(fromWordsIndex);
-        }
-    }
-
-    private void fromLanguageComboBoxPopupMenuWillBecomeVisible(PopupMenuEvent evt) {
-        fromWordsIndex = fromLanguageComboBox.getSelectedIndex();
     }
 
     private void fromLanguageComboBoxActionPerformed(ActionEvent evt) {
@@ -549,8 +489,7 @@ public class ExamDialog extends StandardDialog {
         }
     }
 
-    private void editability(Boolean a) {
-
+    private void enableComponents(Boolean a) {
         fromLanguageComboBox.setEnabled(a);
         toLanguageComboBox.setEnabled(a);
         // settingsButton.setEnabled(a);
@@ -559,7 +498,6 @@ public class ExamDialog extends StandardDialog {
         answerButton.setEnabled(!a);
         pauseButton.setEnabled(!a);
         answerField.setEnabled(!a);
-
     }
 
     private void timerRunButton() {
@@ -569,34 +507,32 @@ public class ExamDialog extends StandardDialog {
         pauseButton.setEnabled(true);
         maximumSecondsProgressBar = seconds;
         timerProgressBar.setMaximum(maximumSecondsProgressBar);
-
     }
 
     private void stopExam() {
         swingTimer.stop();
         timerProgressBar.setValue(0);
+
         if (enumTimerStatus != TimerStatus.DISABLED) {
             enumTimerStatus = TimerStatus.STOPPED;
             timerIconLabel.setIcon(IconManager.getImageIcon("stopwatch_stop.png", IconManager.IconSize.SIZE48));
         }
+
         timerProgressBar.setString(TRANSLATOR.translate("Timer(String)"));
         wordsProgressBar.setValue(0);
         wordsProgressBar.setString(TRANSLATOR.translate("Words(String)"));
         answerIconLabel.setIcon(IconManager.getImageIcon("bell2_grey.png", IconManager.IconSize.SIZE24));
-        editability(true);
+        enableComponents(true);
         translateField.setText(null);
         answerField.setText(null);
         examWords = PM.getInt(Preference.EXAM_WORDS, examWords);
         examResult();
-
     }
 
     private void examResult() {
-
         ExamResult examResultDialog = new ExamResult(null, true);
         examResultDialog.setLocationRelativeTo(this);
         examResultDialog.showExamResult(correctWords, totalWords);
-
     }
 
     public static void setTimerProgressBarVisible() {
@@ -616,12 +552,7 @@ public class ExamDialog extends StandardDialog {
     }
 
     public static void setFeedbackFieldDefault() {
-
         feedbackField.setText(TRANSLATOR.translate("Feedback(Field)"));
-    }
-
-    public static String returnDiffLabelText() {
-        return difficultyLabel.getText();
     }
 
     private void initLanguages() {
@@ -632,7 +563,6 @@ public class ExamDialog extends StandardDialog {
             if (!addedLanguages.contains(languageFrom)) {
                 addedLanguages.add(languageFrom);
                 fromLanguageComboBox.addItem(languageFrom);
-
             }
         }
 

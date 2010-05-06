@@ -1,20 +1,19 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.drowltd.spellbook.ui.desktop.exam;
 
 import com.drowltd.spellbook.core.i18n.Translator;
+import com.drowltd.spellbook.core.model.ScoreboardEntry;
 import com.drowltd.spellbook.core.service.exam.ExamService;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.drowltd.spellbook.ui.swing.util.SwingUtil;
 import com.jidesoft.dialog.ButtonPanel;
 import com.jidesoft.dialog.StandardDialog;
 import com.jidesoft.plaf.UIDefaultsLookup;
-import java.awt.event.ActionEvent;
-import java.util.ResourceBundle;
+import net.miginfocom.swing.MigLayout;
+
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -22,11 +21,21 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
-import net.miginfocom.swing.MigLayout;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.List;
+import java.util.ResourceBundle;
 
 /**
- *
  * @author miroslava
  */
 public class ExamResult extends StandardDialog {
@@ -45,8 +54,8 @@ public class ExamResult extends StandardDialog {
     private JLabel result;
     private JTable scoreboarTable;
     private JLabel scoreboardButton;
-    private java.util.List<com.drowltd.spellbook.core.model.ScoreboardEntry> scoreboardEntryList;
-    private javax.persistence.Query scoreboardEntryQuery;
+    private List<ScoreboardEntry> scoreboardEntryList;
+    private Query scoreboardEntryQuery;
     private JTextField scoreboardNameField;
     private JButton seeWrongWords;
     private JButton submitScoreButton;
@@ -55,7 +64,7 @@ public class ExamResult extends StandardDialog {
     private JLabel wrongWordsLabel;
     private JLabel wrongWrodsResultLabel;
 
-    public ExamResult(java.awt.Frame parent, boolean modal) {
+    public ExamResult(Frame parent, boolean modal) {
         super(parent, modal);
         TRANSLATOR.reset();
 
@@ -66,30 +75,30 @@ public class ExamResult extends StandardDialog {
 //        scoreboardEntryQuery = java.beans.Beans.isDesignTime() ? null : entityManager.createQuery("SELECT s FROM ScoreboardEntry s");
 //        scoreboardEntryList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : scoreboardEntryQuery.getResultList();
 
-        correctWordsLabel = new javax.swing.JLabel();
-        correctWrodsResultLabel = new javax.swing.JLabel();
-        wrongWordsLabel = new javax.swing.JLabel();
-        wrongWrodsResultLabel = new javax.swing.JLabel();
-        successRateLabel = new javax.swing.JLabel();
-        successRateResultLabel = new javax.swing.JLabel();
-        endLabel = new javax.swing.JLabel();
+        correctWordsLabel = new JLabel();
+        correctWrodsResultLabel = new JLabel();
+        wrongWordsLabel = new JLabel();
+        wrongWrodsResultLabel = new JLabel();
+        successRateLabel = new JLabel();
+        successRateResultLabel = new JLabel();
+        endLabel = new JLabel();
 
-        iconLabel = new javax.swing.JLabel();
-        result = new javax.swing.JLabel();
+        iconLabel = new JLabel();
+        result = new JLabel();
 //        jPanel2 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        scoreboardNameField = new javax.swing.JTextField();
-        submitScoreButton = new javax.swing.JButton();
-        scoreboardButton = new javax.swing.JLabel();
+        jLabel1 = new JLabel();
+        scoreboardNameField = new JTextField();
+        submitScoreButton = new JButton();
+        scoreboardButton = new JLabel();
 //        jPanel3 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        scoreboarTable = new javax.swing.JTable();
+        jScrollPane1 = new JScrollPane();
+        scoreboarTable = new JTable();
 
         setLocationRelativeTo(parent);
         setTitle("ExamResult(Title)");
         setResizable(false);
         setSize(279, 342);
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setIconImage(IconManager.getImageIcon("teacher.png", IconManager.IconSize.SIZE16).getImage());
 
         initComponents();
@@ -105,15 +114,15 @@ public class ExamResult extends StandardDialog {
     public JComponent createContentPanel() {
         JPanel panel = new JPanel(new MigLayout("", "[]", "[][][][][][][]"));
         panel.add(scoreboardButton, "wrap, right");
-        scoreboardButton.setForeground(new java.awt.Color(0, 0, 255));
-        scoreboardButton.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        scoreboardButton.setForeground(new Color(0, 0, 255));
+        scoreboardButton.setHorizontalAlignment(SwingConstants.RIGHT);
         scoreboardButton.setText(TRANSLATOR.translate("ShowScoreboard(JLabel)"));
-        scoreboardButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        scoreboardButton.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        scoreboardButton.addMouseListener(new java.awt.event.MouseAdapter() {
+        scoreboardButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        scoreboardButton.setHorizontalTextPosition(SwingConstants.RIGHT);
+        scoreboardButton.addMouseListener(new MouseAdapter() {
 
             @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
+            public void mouseClicked(MouseEvent evt) {
                 scoreboardButtonMouseClicked(evt);
             }
         });
@@ -122,44 +131,44 @@ public class ExamResult extends StandardDialog {
         jLabel1.setText(TRANSLATOR.translate("ScoreboardName(JTextFiedl)"));
 
         panel.add(scoreboardNameField, "split 2, w 100!");
-        scoreboardNameField.addActionListener(new java.awt.event.ActionListener() {
+        scoreboardNameField.addActionListener(new ActionListener() {
 
             @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            public void actionPerformed(ActionEvent evt) {
                 scoreboardNameFieldActionPerformed(evt);
             }
         });
         panel.add(submitScoreButton, "wrap");
         submitScoreButton.setText(TRANSLATOR.translate("SubmitScore(JButton)"));
-        submitScoreButton.addActionListener(new java.awt.event.ActionListener() {
+        submitScoreButton.addActionListener(new ActionListener() {
 
             @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            public void actionPerformed(ActionEvent evt) {
                 submitScoreButtonActionPerformed(evt);
             }
         });
 
         panel.add(result, "center, wrap");
-        result.setFont(new java.awt.Font("Tahoma", 1, 14));
+        result.setFont(new Font("Tahoma", 1, 14));
         result.setText(TRANSLATOR.translate("Result(JLable)"));
 
         panel.add(correctWordsLabel, "split 3");
-        correctWordsLabel.setFont(new java.awt.Font("Tahoma", 1, 11));
-        correctWordsLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        correctWordsLabel.setFont(new Font("Tahoma", 1, 11));
+        correctWordsLabel.setHorizontalAlignment(SwingConstants.LEFT);
         correctWordsLabel.setText(TRANSLATOR.translate("CorrectWords(String)"));
         panel.add(correctWrodsResultLabel, "");
 
         panel.add(iconLabel, "spany 3, wrap, center");
-        iconLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/48x48/bell2_green.png")));
+        iconLabel.setIcon(new ImageIcon(getClass().getResource("/icons/48x48/bell2_green.png")));
 
         panel.add(wrongWordsLabel, "split 3");
-        wrongWordsLabel.setFont(new java.awt.Font("Tahoma", 1, 11));
-        wrongWordsLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        wrongWordsLabel.setFont(new Font("Tahoma", 1, 11));
+        wrongWordsLabel.setHorizontalAlignment(SwingConstants.LEFT);
         wrongWordsLabel.setText(TRANSLATOR.translate("WrongWords(String)"));
         panel.add(wrongWrodsResultLabel, "wrap");
 
         panel.add(successRateLabel, "split 3");
-        successRateLabel.setFont(new java.awt.Font("Tahoma", 1, 11));
+        successRateLabel.setFont(new Font("Tahoma", 1, 11));
         successRateLabel.setText(TRANSLATOR.translate("Success(Label)"));
         panel.add(successRateResultLabel, "wrap");
 
@@ -168,31 +177,31 @@ public class ExamResult extends StandardDialog {
         panel.add(scoreboarTable, "dock east");
         scoreboarTable.setModel(new DefaultTableModel(
                 new Object[][]{
-                    {new Integer(1), null, null},
-                    {new Integer(2), null, null},
-                    {new Integer(3), null, null},
-                    {new Integer(4), null, null},
-                    {new Integer(5), null, null},
-                    {new Integer(6), null, null},
-                    {new Integer(7), null, null},
-                    {new Integer(8), null, null},
-                    {new Integer(9), null, null},
-                    {new Integer(10), null, null},
-                    {new Integer(11), null, null},
-                    {new Integer(12), null, null},
-                    {new Integer(13), null, null},
-                    {new Integer(14), null, null},
-                    {new Integer(15), null, null}
+                        {new Integer(1), null, null},
+                        {new Integer(2), null, null},
+                        {new Integer(3), null, null},
+                        {new Integer(4), null, null},
+                        {new Integer(5), null, null},
+                        {new Integer(6), null, null},
+                        {new Integer(7), null, null},
+                        {new Integer(8), null, null},
+                        {new Integer(9), null, null},
+                        {new Integer(10), null, null},
+                        {new Integer(11), null, null},
+                        {new Integer(12), null, null},
+                        {new Integer(13), null, null},
+                        {new Integer(14), null, null},
+                        {new Integer(15), null, null}
                 },
                 new String[]{
-                    "", "Name", "Result"
+                        "", "Name", "Result"
                 }) {
 
             Class[] types = new Class[]{
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class
+                    Integer.class, String.class, String.class
             };
             boolean[] canEdit = new boolean[]{
-                false, false, false
+                    false, false, false
             };
 
             @Override
@@ -252,11 +261,11 @@ public class ExamResult extends StandardDialog {
         return buttonPanel;
     }
 
-    private void scoreboardButtonMouseClicked(java.awt.event.MouseEvent evt) {
+    private void scoreboardButtonMouseClicked(MouseEvent evt) {
         scoreboardViewStatus();
     }
 
-    private void scoreboardNameFieldActionPerformed(java.awt.event.ActionEvent evt) {
+    private void scoreboardNameFieldActionPerformed(ActionEvent evt) {
         if (!scoreboardNameField.getText().isEmpty()) {
             scoreboardFilling();
         } else {
@@ -264,7 +273,7 @@ public class ExamResult extends StandardDialog {
         }
     }
 
-    private void submitScoreButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    private void submitScoreButtonActionPerformed(ActionEvent evt) {
         if (!scoreboardNameField.getText().isEmpty()) {
             scoreboardFilling();
         } else {
@@ -324,7 +333,7 @@ public class ExamResult extends StandardDialog {
         Double examWordsForScoreboard = Double.parseDouble(correctWrodsResultLabel.getText())
                 + Double.parseDouble(wrongWrodsResultLabel.getText());
         examService.addScoreboardResult(scoreboardNameField.getText(), examWordsForScoreboard,
-                Double.parseDouble(wrongWrodsResultLabel.getText()), ExamDialog.returnDiffLabelText());
+                Double.parseDouble(wrongWrodsResultLabel.getText()), null);
 
     }
 
