@@ -1,4 +1,3 @@
-
 package com.drowltd.spellbook.ui.desktop.exam;
 
 import com.drowltd.spellbook.core.preferences.PreferencesManager.Preference;
@@ -15,7 +14,6 @@ import com.drowltd.spellbook.ui.swing.util.IconManager;
 
 import com.jidesoft.dialog.ButtonPanel;
 import com.jidesoft.dialog.StandardDialog;
-import com.jidesoft.plaf.UIDefaultsLookup;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -73,8 +72,6 @@ public class ExamDialog extends StandardDialog {
         PAUSED, STARTED, STOPPED, DISABLED
     }
     private static TimerStatus enumTimerStatus = TimerStatus.DISABLED;
-//    private JPanel settingsPanel;
-//    private JPanel jPanel3;
     private JComboBox fromLanguageComboBox;
     private JComboBox toLanguageComboBox;
     private JLabel jLabel4;
@@ -101,15 +98,11 @@ public class ExamDialog extends StandardDialog {
 
         examService = new ExamService();
 
-        
-
-//        settingsPanel = new JPanel();
         fromLanguageComboBox = new JComboBox();
         toLanguageComboBox = new JComboBox();
         jLabel4 = new JLabel();
         difficultyLabel = new JLabel();
         jLabel7 = new JLabel();
-//        jPanel3 = new JPanel();
         startButton = new JButton();
         translateField = new JTextField();
         answerField = new JTextField();
@@ -128,7 +121,7 @@ public class ExamDialog extends StandardDialog {
         setIconImage(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE16).getImage());
         setLocationRelativeTo(parent);
 
-        setSize(400, 500);
+        setSize(425, 490);
         initLanguages();
     }
 
@@ -140,10 +133,12 @@ public class ExamDialog extends StandardDialog {
     @Override
     public JComponent createContentPanel() {
         JPanel panel = new JPanel(new MigLayout("wrap 5", "[][][][][]", "[grow][][][][grow][grow][grow][grow][][grow][grow][]"));
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
         panel.add(new JLabel(TRANSLATOR.translate("Languages(Label)")), "span 5, left");
 
-        panel.add(new JLabel(TRANSLATOR.translate("From(Label)")), "");
-        panel.add(fromLanguageComboBox, "");
+        panel.add(new JLabel(TRANSLATOR.translate("From(Label)")), "left, split 2");
+        panel.add(fromLanguageComboBox, "right, w 70!");
         fromLanguageComboBox.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
 
             @Override
@@ -168,8 +163,8 @@ public class ExamDialog extends StandardDialog {
             }
         });
 
-        panel.add(new JLabel(TRANSLATOR.translate("To(Label)")), "");
-        panel.add(toLanguageComboBox, "growx");
+        panel.add(new JLabel(TRANSLATOR.translate("To(Label)")), "left, split 2");
+        panel.add(toLanguageComboBox, "w 70!, right, skip");
         toLanguageComboBox.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
 
             @Override
@@ -186,14 +181,14 @@ public class ExamDialog extends StandardDialog {
                 toLanguageComboBoxPopupMenuWillBecomeVisible(evt);
             }
         });
-        panel.add(jLabel7, "");
+        panel.add(jLabel7, "right, wrap");
         jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/48x48/dictionary.png")));
 
-        panel.add(jLabel4, "");
+        panel.add(jLabel4, "left, split 2");
         jLabel4.setText(TRANSLATOR.translate("Difficulty(Label)"));
-        panel.add(difficultyLabel, "span 4, left");
-        
-        panel.add(startButton, "");
+        panel.add(difficultyLabel, "left, span 4, wrap");
+
+        panel.add(startButton, "right");
         startButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/media_play_green.png"))); // NOI18N
         startButton.setText(TRANSLATOR.translate("Start(Button)"));
         startButton.addActionListener(new java.awt.event.ActionListener() {
@@ -203,7 +198,7 @@ public class ExamDialog extends StandardDialog {
                 startButtonActionPerformed(evt);
             }
         });
-        panel.add(pauseButton, "split 2");
+        panel.add(pauseButton, "split 2, center");
         pauseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/media_pause.png"))); // NOI18N
         pauseButton.setText(TRANSLATOR.translate("Pause(Button)"));
         pauseButton.setEnabled(false);
@@ -220,6 +215,7 @@ public class ExamDialog extends StandardDialog {
         stopButton.setEnabled(false);
         stopButton.addActionListener(new java.awt.event.ActionListener() {
 
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 stopButtonActionPerformed(evt);
             }
@@ -244,7 +240,7 @@ public class ExamDialog extends StandardDialog {
         });
         panel.add(answerIconLabel, "center");
         answerIconLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/bell2_grey.png")));
-        panel.add(answerButton, "span 4, left, growx");
+        panel.add(answerButton, "span 4, left, w 160!");
         answerButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/check2.png"))); // NOI18N
         answerButton.setText(TRANSLATOR.translate("Answer(Button)")); // NOI18N
         answerButton.setEnabled(false);
@@ -259,7 +255,7 @@ public class ExamDialog extends StandardDialog {
             }
         });
 
-        panel.add(wordsProgressBar, "span 5, left");
+        panel.add(wordsProgressBar, "span 5, left, w 380!");
         wordsProgressBar.setForeground(new java.awt.Color(102, 102, 255));
         wordsProgressBar.setToolTipText(TRANSLATOR.translate("Words(String)"));
         wordsProgressBar.setString(TRANSLATOR.translate("Words(String)"));
@@ -270,7 +266,7 @@ public class ExamDialog extends StandardDialog {
 
         panel.add(timerIconLabel, "");
         timerIconLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/48x48/stopwatch.png")));
-        panel.add(timerProgressBar, "");
+        panel.add(timerProgressBar, "span 4, w 275!");
         timerProgressBar.setForeground(new java.awt.Color(51, 255, 51));
         timerProgressBar.setToolTipText(TRANSLATOR.translate("Timer(String)"));
         timerProgressBar.setString(TRANSLATOR.translate("Timer(String)"));
@@ -313,7 +309,8 @@ public class ExamDialog extends StandardDialog {
     }
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        selectedDictionary = dictionaryService.getDictionary((Language) fromLanguageComboBox.getSelectedItem(), (Language) toLanguageComboBox.getSelectedItem());
+        selectedDictionary = dictionaryService.getDictionary((Language) fromLanguageComboBox.getSelectedItem(),
+                (Language) toLanguageComboBox.getSelectedItem());
         assert selectedDictionary != null;
 
         selectedLanguage = (Language) fromLanguageComboBox.getSelectedItem();
@@ -400,8 +397,8 @@ public class ExamDialog extends StandardDialog {
 
         buttonPanel.add(settingsButton, ButtonPanel.OTHER_BUTTON);
         buttonPanel.add(quitButton, ButtonPanel.CANCEL_BUTTON);
-
-        quitButton.setAction(new AbstractAction(UIDefaultsLookup.getString("OptionPane.cancelButtonText")) {
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("i18n/ExamDialog");
+        quitButton.setAction(new AbstractAction(bundle.getString("Quit(Button)")) {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -410,12 +407,12 @@ public class ExamDialog extends StandardDialog {
             }
         });
 
-        settingsButton.setAction(new AbstractAction(UIDefaultsLookup.getString("OptionPane.settingsButtonText")) {
+        settingsButton.setAction(new AbstractAction(bundle.getString("Settings(Button)")) {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 PreferencesDialog preferencesDialog = new PreferencesDialog(null, true);
-         //       preferencesDialog.getTabbedTane().setSelectedIndex(2);
+                preferencesDialog.getTabbedPane().setSelectedIndex(2);
 
 
                 preferencesDialog.setLocationRelativeTo(null);
@@ -423,6 +420,9 @@ public class ExamDialog extends StandardDialog {
                 preferencesDialog.refreshNewSettingsToExam();
             }
         });
+
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
         return buttonPanel;
     }
 
@@ -524,6 +524,7 @@ public class ExamDialog extends StandardDialog {
     });
 
     public void showExamDialog() {
+
         difficulty = difficulty.valueOf(PM.get(Preference.EXAM_DIFFICULTY, difficulty.name()));
 
         timerProgressBar.setVisible(timerEnabled);
@@ -536,7 +537,7 @@ public class ExamDialog extends StandardDialog {
         enumTimerStatus = timerEnabled ? TimerStatus.STOPPED : TimerStatus.DISABLED;
         examWords = PM.getInt(Preference.EXAM_WORDS, 10);
         examWordsCopy = examWords;
-     setVisible(true);
+        setVisible(true);
     }
 
     /* This method handels the text in GUI, which is related to difficulty
@@ -653,12 +654,15 @@ public class ExamDialog extends StandardDialog {
             if (!addedLanguages.contains(languageFrom)) {
                 addedLanguages.add(languageFrom);
                 fromLanguageComboBox.addItem(languageFrom);
+
             }
         }
-    }
 
-//    public static void main(String[] args) {
-//        ExamDialog examDialog = new ExamDialog(null, true);
-//        examDialog.setVisible(true);
-//    }
+        final List<Language> languagesTo = examService.getToLanguages((Language) fromLanguageComboBox.getSelectedItem());
+        toLanguageComboBox.removeAllItems();
+        for (Language language : languagesTo) {
+            toLanguageComboBox.addItem(language);
+        }
+    }
 }
+
