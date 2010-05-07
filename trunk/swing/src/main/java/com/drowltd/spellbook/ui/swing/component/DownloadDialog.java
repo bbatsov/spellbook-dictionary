@@ -1,11 +1,14 @@
 package com.drowltd.spellbook.ui.swing.component;
 
+import com.drowltd.spellbook.core.i18n.Translator;
 import com.jidesoft.dialog.ButtonPanel;
 import com.jidesoft.dialog.ButtonResources;
 import com.jidesoft.dialog.StandardDialog;
 import com.jidesoft.plaf.UIDefaultsLookup;
 import com.jidesoft.swing.FolderChooser;
 import net.miginfocom.swing.MigLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -34,6 +37,9 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class DownloadDialog extends StandardDialog implements PropertyChangeListener {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DownloadDialog.class);
+    private static final Translator TRANSLATOR = Translator.getTranslator("DownloadDialog");
+
     private JButton downloadButton;
     private JButton changeFolderButton;
     private JTextField downloadUrlTextField;
@@ -43,6 +49,8 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
     private String url;
     private String downloadFolder;
     private JButton okButton = new JButton();
+    private static final int MIN_WIDTH = 600;
+    private static final int MIN_HEIGHT = 150;
 
     public DownloadDialog() {
         setModal(true);
@@ -53,8 +61,8 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
 
         downloadFolderTextField = new JTextField();
         downloadUrlTextField = new JTextField();
-        downloadButton = new JButton("Download");
-        changeFolderButton = new JButton("Change folder");
+        downloadButton = new JButton(TRANSLATOR.translate("Download(Button)"));
+        changeFolderButton = new JButton(TRANSLATOR.translate("ChangeFolder(Button)"));
 
         try {
             downloadFolder = currentDir.getCanonicalPath();
@@ -70,8 +78,8 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
                 File file = new File(getDownloadPath());
                 if (file.exists() &&
                         JOptionPane.showConfirmDialog(DownloadDialog.this,
-                                "File already exists. Overwrite it?") != JOptionPane.YES_OPTION) {
-                    System.out.println("do not download");
+                                TRANSLATOR.translate("Overwrite(Message)")) != JOptionPane.YES_OPTION) {
+                    LOGGER.info("don't overwrite existing file");
                 } else {
                     task = new Task();
                     task.addPropertyChangeListener(DownloadDialog.this);
@@ -95,7 +103,7 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
             }
         });
 
-        setMinimumSize(new Dimension(600, 150));
+        setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
     }
 
     @Override
@@ -106,18 +114,18 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
     @Override
     public JComponent createContentPanel() {
         MigLayout layout = new MigLayout(
-              "wrap 4",                 // Layout Constraints
-              "[][][grow][]",   // Column constraints
-              "[shrink 0][shrink 0]");    // Row constraints
+                "wrap 4",                 // Layout Constraints
+                "[][][grow][]",   // Column constraints
+                "[shrink 0][shrink 0]");    // Row constraints
 
 
         JPanel panel = new JPanel(layout);
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
 
-        panel.add(new JLabel("Download url"));
+        panel.add(new JLabel(TRANSLATOR.translate("DownloadUrl(Label)")));
         panel.add(downloadUrlTextField, "span 2, growx");
         panel.add(downloadButton, "growx");
-        panel.add(new JLabel("Download folder"));
+        panel.add(new JLabel(TRANSLATOR.translate("DownloadFolder(Label)")));
         panel.add(downloadFolderTextField, "span 2, growx");
         panel.add(changeFolderButton, "growx");
 
@@ -180,10 +188,6 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
         return getDialogResult();
     }
 
-    public String getDownloadFolder() {
-        return downloadFolder;
-    }
-
     class Task extends SwingWorker<Void, Void> {
         private static final int BUFFER_SIZE = 1024;
 
@@ -202,7 +206,7 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
                 int x;
                 int total = 0;
 
-                System.out.println("Downloading file " + url);
+                LOGGER.info("Downloading file " + url);
 
                 while ((x = in.read(data, 0, BUFFER_SIZE)) >= 0) {
                     total += x;
@@ -242,8 +246,7 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
         if ("progress".equals(evt.getPropertyName())) {
             int progress = (Integer) evt.getNewValue();
             progressMonitor.setProgress(progress);
-            String message =
-                    String.format("Completed %d%%.\n", progress);
+            String message = String.format("Completed %d%%.\n", progress);
             progressMonitor.setNote(message);
             if (progressMonitor.isCanceled() || task.isDone()) {
                 Toolkit.getDefaultToolkit().beep();
@@ -253,14 +256,18 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
 
                     if (file.exists()) {
                         // removing partially downloaded file
-                        file.delete();
+                        if (file.delete()) {
+                            LOGGER.info("partial download successfully deleted");
+                        } else {
+                            LOGGER.info("failed to delete partially downloaded file " + file.getAbsolutePath());
+                        }
                     }
 
-                    System.out.println("Task canceled.\n");
+                    LOGGER.info("Task canceled.\n");
                 } else {
                     okButton.setEnabled(true);
 
-                    System.out.println("Task completed.\n");
+                    LOGGER.info("Task completed.\n");
                 }
 
                 downloadButton.setEnabled(true);
