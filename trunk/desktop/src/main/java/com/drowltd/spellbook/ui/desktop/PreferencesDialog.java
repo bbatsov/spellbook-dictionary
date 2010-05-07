@@ -19,7 +19,6 @@ import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -448,9 +447,9 @@ public class PreferencesDialog extends StandardDialog {
 
     private void initGuiComponents() {
         tabbedPane = new JTabbedPane();
-        tabbedPane.addTab(TRANSLATOR.translate("GeneralSettings(Title)"), new ImageIcon(getClass().getResource("/icons/16x16/preferences.png")), createGeneralPreferencesPanel());
+        tabbedPane.addTab(TRANSLATOR.translate("GeneralSettings(Title)"), IconManager.getMenuIcon("preferences.png"), createGeneralPreferencesPanel());
         tabbedPane.addTab(TRANSLATOR.translate("FontTab(Label)"), IconManager.getMenuIcon("font.png"), createFontPreferencesPanel());
-        tabbedPane.addTab("Exam", new ImageIcon(getClass().getResource("/icons/16x16/blackboard.png")), createExamPreferencesPanel());
+        tabbedPane.addTab("Exam", IconManager.getMenuIcon("blackboard.png"), createExamPreferencesPanel());
 
         pack();
     }

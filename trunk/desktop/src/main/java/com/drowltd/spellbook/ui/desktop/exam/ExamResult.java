@@ -13,7 +13,6 @@ import net.miginfocom.swing.MigLayout;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.swing.AbstractAction;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -159,7 +158,7 @@ public class ExamResult extends StandardDialog {
         panel.add(correctWrodsResultLabel, "");
 
         panel.add(iconLabel, "spany 3, wrap, center");
-        iconLabel.setIcon(new ImageIcon(getClass().getResource("/icons/48x48/bell2_green.png")));
+        iconLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconManager.IconSize.SIZE48));
 
         panel.add(wrongWordsLabel, "split 3");
         wrongWordsLabel.setFont(new Font("Tahoma", 1, 11));

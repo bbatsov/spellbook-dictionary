@@ -23,7 +23,6 @@ import net.miginfocom.swing.MigLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
@@ -882,7 +881,7 @@ public class SpellbookFrame extends JFrame {
         editMenu.setMnemonic('e');
         editMenu.setText(TRANSLATOR.translate("Edit(Menu)"));
 
-        addWordMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/add2.png")));
+        addWordMenuItem.setIcon(IconManager.getMenuIcon("add2.png"));
         addWordMenuItem.setText(TRANSLATOR.translate("EditAddWord(MenuItem)"));
         addWordMenuItem.addActionListener(new ActionListener() {
             @Override
@@ -892,7 +891,7 @@ public class SpellbookFrame extends JFrame {
         });
         editMenu.add(addWordMenuItem);
 
-        updateWordMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/edit.png")));
+        updateWordMenuItem.setIcon(IconManager.getMenuIcon("edit.png"));
         updateWordMenuItem.setText(TRANSLATOR.translate("EditUpdateWord(MenuItem)"));
         updateWordMenuItem.addActionListener(new ActionListener() {
             @Override
@@ -902,28 +901,28 @@ public class SpellbookFrame extends JFrame {
         });
         editMenu.add(updateWordMenuItem);
 
-        deleteWordMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/delete2.png")));
+        deleteWordMenuItem.setIcon(IconManager.getMenuIcon("delete2.png"));
         deleteWordMenuItem.setText(TRANSLATOR.translate("EditDeleteWord(MenuItem)"));
         editMenu.add(deleteWordMenuItem);
         editMenu.add(new JPopupMenu.Separator());
 
-        cutMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/cut.png")));
+        cutMenuItem.setIcon(IconManager.getMenuIcon("cut.png"));
         cutMenuItem.setMnemonic('t');
         cutMenuItem.setText(TRANSLATOR.translate("EditCut(MenuItem)"));
         editMenu.add(cutMenuItem);
 
-        copyMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/copy.png")));
+        copyMenuItem.setIcon(IconManager.getMenuIcon("copy.png"));
         copyMenuItem.setMnemonic('c');
         copyMenuItem.setText(TRANSLATOR.translate("EditCopy(MenuItem)"));
         editMenu.add(copyMenuItem);
 
-        pasteMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/paste.png")));
+        pasteMenuItem.setIcon(IconManager.getMenuIcon("paste.png"));
         pasteMenuItem.setMnemonic('p');
         pasteMenuItem.setText(TRANSLATOR.translate("EditPaste(MenuItem)"));
         editMenu.add(pasteMenuItem);
         editMenu.add(new JPopupMenu.Separator());
 
-        prefsMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/preferences.png")));
+        prefsMenuItem.setIcon(IconManager.getMenuIcon("preferences.png"));
         prefsMenuItem.setMnemonic('e');
         prefsMenuItem.setText(TRANSLATOR.translate("EditPreferences(MenuItem)"));
         prefsMenuItem.addActionListener(new ActionListener() {
@@ -952,7 +951,7 @@ public class SpellbookFrame extends JFrame {
         toolMenu.setMnemonic('t');
         toolMenu.setText(TRANSLATOR.translate("Tools(Menu)"));
 
-        studyWordsMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/teacher.png")));
+        studyWordsMenuItem.setIcon(IconManager.getMenuIcon("teacher.png"));
         studyWordsMenuItem.setMnemonic('w');
         studyWordsMenuItem.setText(TRANSLATOR.translate("StudyWords(MenuItem)"));
         studyWordsMenuItem.addActionListener(new ActionListener() {
@@ -963,7 +962,7 @@ public class SpellbookFrame extends JFrame {
         });
         toolMenu.add(studyWordsMenuItem);
 
-        examMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/blackboard.png")));
+        examMenuItem.setIcon(IconManager.getMenuIcon("blackboard.png"));
         examMenuItem.setMnemonic('e');
         examMenuItem.setText(TRANSLATOR.translate("Exam(MenuItem)"));
         examMenuItem.addActionListener(new ActionListener() {
@@ -974,7 +973,7 @@ public class SpellbookFrame extends JFrame {
         });
         toolMenu.add(examMenuItem);
 
-        spellcheckMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/spellcheck.png")));
+        spellcheckMenuItem.setIcon(IconManager.getMenuIcon("spellcheck.png"));
         spellcheckMenuItem.setMnemonic('s');
         spellcheckMenuItem.setText(TRANSLATOR.translate("SpellCheck(MenuItem)"));
         spellcheckMenuItem.addActionListener(new ActionListener() {
@@ -995,11 +994,11 @@ public class SpellbookFrame extends JFrame {
         helpMenu.setMnemonic('h');
         helpMenu.setText(TRANSLATOR.translate("Help(Menu)"));
 
-        helpContentsMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/help2.png")));
+        helpContentsMenuItem.setIcon(IconManager.getMenuIcon("help2.png"));
         helpContentsMenuItem.setText(TRANSLATOR.translate("HelpContents(MenuItem)"));
         helpMenu.add(helpContentsMenuItem);
 
-        aboutMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/about.png")));
+        aboutMenuItem.setIcon(IconManager.getMenuIcon("about.png"));
         aboutMenuItem.setMnemonic('a');
         aboutMenuItem.setText(TRANSLATOR.translate("HelpAbout(MenuItem)"));
         aboutMenuItem.addActionListener(new ActionListener() {
@@ -1043,7 +1042,7 @@ public class SpellbookFrame extends JFrame {
         mainToolBar.setFloatable(false);
         mainToolBar.setRollover(true);
 
-        backButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/arrow_left_blue.png")));
+        backButton.setIcon(IconManager.getImageIcon("arrow_left_blue.png", IconSize.SIZE24));
         backButton.setToolTipText(TRANSLATOR.translate("PreviousWord(Label)"));
         backButton.setFocusable(false);
         backButton.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -1060,7 +1059,7 @@ public class SpellbookFrame extends JFrame {
         });
         mainToolBar.add(backButton);
 
-        forwardButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/arrow_right_blue.png")));
+        forwardButton.setIcon(IconManager.getImageIcon("arrow_right_blue.png", IconSize.SIZE24));
         forwardButton.setToolTipText(TRANSLATOR.translate("NextWord(Label)"));
         forwardButton.setFocusable(false);
         forwardButton.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -1077,7 +1076,7 @@ public class SpellbookFrame extends JFrame {
         });
         mainToolBar.add(forwardButton);
 
-        clearButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/eraser.png")));
+        clearButton.setIcon(IconManager.getImageIcon("eraser.png", IconSize.SIZE24));
         clearButton.setToolTipText(TRANSLATOR.translate("ClearButton(ToolTip)"));
         clearButton.setFocusable(false);
         clearButton.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -1090,7 +1089,7 @@ public class SpellbookFrame extends JFrame {
         });
         mainToolBar.add(clearButton);
 
-        statusButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/bell2_grey.png")));
+        statusButton.setIcon(IconManager.getImageIcon("bell2_grey.png", IconSize.SIZE24));
         statusButton.setFocusable(false);
         statusButton.setHorizontalTextPosition(SwingConstants.CENTER);
         statusButton.setVerticalTextPosition(SwingConstants.BOTTOM);
@@ -1102,7 +1101,7 @@ public class SpellbookFrame extends JFrame {
         });
         mainToolBar.add(statusButton);
 
-        dictionaryButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/en-bg.png")));
+        dictionaryButton.setIcon(IconManager.getImageIcon("en-bg.png", IconSize.SIZE24));
         dictionaryButton.setFocusable(false);
         dictionaryButton.setHorizontalTextPosition(SwingConstants.CENTER);
         dictionaryButton.setVerticalTextPosition(SwingConstants.BOTTOM);
@@ -1123,7 +1122,7 @@ public class SpellbookFrame extends JFrame {
         mainToolBar.add(dictionaryButton);
         mainToolBar.add(new JToolBar.Separator());
 
-        addWordButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/add2.png")));
+        addWordButton.setIcon(IconManager.getImageIcon("add2.png", IconSize.SIZE24));
         addWordButton.setToolTipText(TRANSLATOR.translate("EditAddWord(MenuItem)"));
         addWordButton.setFocusable(false);
         addWordButton.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -1136,7 +1135,7 @@ public class SpellbookFrame extends JFrame {
         });
         mainToolBar.add(addWordButton);
 
-        updateWordButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/edit.png")));
+        updateWordButton.setIcon(IconManager.getImageIcon("edit.png", IconSize.SIZE24));
         updateWordButton.setToolTipText(TRANSLATOR.translate("EditUpdateWord(MenuItem)"));
         updateWordButton.setFocusable(false);
         updateWordButton.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -1149,7 +1148,7 @@ public class SpellbookFrame extends JFrame {
         });
         mainToolBar.add(updateWordButton);
 
-        deleteWordButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/delete2.png")));
+        deleteWordButton.setIcon(IconManager.getImageIcon("delete2.png", IconSize.SIZE24));
         deleteWordButton.setToolTipText(TRANSLATOR.translate("EditDeleteWord(MenuItem)"));
         deleteWordButton.setFocusable(false);
         deleteWordButton.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -1163,21 +1162,21 @@ public class SpellbookFrame extends JFrame {
         mainToolBar.add(deleteWordButton);
         mainToolBar.add(jSeparator4);
 
-        cutButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/cut.png")));
+        cutButton.setIcon(IconManager.getImageIcon("cut.png", IconSize.SIZE24));
         cutButton.setToolTipText(TRANSLATOR.translate("EditCut(MenuItem)"));
         cutButton.setFocusable(false);
         cutButton.setHorizontalTextPosition(SwingConstants.CENTER);
         cutButton.setVerticalTextPosition(SwingConstants.BOTTOM);
         mainToolBar.add(cutButton);
 
-        copyButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/copy.png")));
+        copyButton.setIcon(IconManager.getImageIcon("copy.png", IconSize.SIZE24));
         copyButton.setToolTipText(TRANSLATOR.translate("EditCopy(MenuItem)"));
         copyButton.setFocusable(false);
         copyButton.setHorizontalTextPosition(SwingConstants.CENTER);
         copyButton.setVerticalTextPosition(SwingConstants.BOTTOM);
         mainToolBar.add(copyButton);
 
-        pasteButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/paste.png")));
+        pasteButton.setIcon(IconManager.getImageIcon("paste.png", IconSize.SIZE24));
         pasteButton.setToolTipText(TRANSLATOR.translate("EditPaste(MenuItem)"));
         pasteButton.setFocusable(false);
         pasteButton.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -1185,7 +1184,7 @@ public class SpellbookFrame extends JFrame {
         mainToolBar.add(pasteButton);
         mainToolBar.add(new JToolBar.Separator());
 
-        studyButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/teacher.png")));
+        studyButton.setIcon(IconManager.getImageIcon("teacher.png", IconSize.SIZE24));
         studyButton.setToolTipText(TRANSLATOR.translate("StudyWords(MenuItem)"));
         studyButton.setFocusable(false);
         studyButton.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -1198,7 +1197,7 @@ public class SpellbookFrame extends JFrame {
         });
         mainToolBar.add(studyButton);
 
-        examButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/blackboard.png")));
+        examButton.setIcon(IconManager.getImageIcon("blackboard.png", IconSize.SIZE24));
         examButton.setToolTipText(TRANSLATOR.translate("Exam(MenuItem)"));
         examButton.setFocusable(false);
         examButton.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -1211,7 +1210,7 @@ public class SpellbookFrame extends JFrame {
         });
         mainToolBar.add(examButton);
 
-        spellcheckButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/spellcheck.png")));
+        spellcheckButton.setIcon(IconManager.getImageIcon("spellcheck.png", IconSize.SIZE24));
         spellcheckButton.setToolTipText(TRANSLATOR.translate("SpellCheck(MenuItem)"));
         spellcheckButton.setFocusable(false);
         spellcheckButton.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -1225,7 +1224,7 @@ public class SpellbookFrame extends JFrame {
         mainToolBar.add(spellcheckButton);
         mainToolBar.add(lastToolbarSeparator);
 
-        memoryButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/memory.png")));
+        memoryButton.setIcon(IconManager.getImageIcon("memory.png", IconSize.SIZE24));
         memoryButton.setFocusable(false);
         memoryButton.setHorizontalTextPosition(SwingConstants.CENTER);
         memoryButton.setVerticalTextPosition(SwingConstants.BOTTOM);

@@ -2,6 +2,13 @@ package com.drowltd.spellbook.ui.desktop.spellcheck;
 
 import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.core.spellcheck.SpellChecker;
+import com.drowltd.spellbook.ui.swing.util.IconManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JTextPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -10,15 +17,8 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import javax.swing.ImageIcon;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JTextPane;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- *
  * @author iivalchev
  * @since 0.2
  */
@@ -142,10 +142,10 @@ public class SpellCheckPopupMenu extends JPopupMenu {
         add(new JPopupMenu.Separator());
     }
 
-    private final void initCommonItems() {
+    private void initCommonItems() {
 
         JMenuItem cutItem = new JMenuItem("Cut");
-        cutItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/cut.png")));
+        cutItem.setIcon(IconManager.getMenuIcon("cut.png"));
         cutItem.addActionListener(new ActionListener() {
 
             @Override
@@ -156,7 +156,7 @@ public class SpellCheckPopupMenu extends JPopupMenu {
         commonItems.add(cutItem);
 
         JMenuItem copyItem = new JMenuItem("Copy");
-        copyItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/copy.png")));
+        copyItem.setIcon(IconManager.getMenuIcon("copy.png"));
         copyItem.addActionListener(new ActionListener() {
 
             @Override
@@ -167,7 +167,7 @@ public class SpellCheckPopupMenu extends JPopupMenu {
         commonItems.add(copyItem);
 
         JMenuItem pasteItem = new JMenuItem("Paste");
-        pasteItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/paste.png")));
+        pasteItem.setIcon(IconManager.getMenuIcon("paste.png"));
         pasteItem.addActionListener(new ActionListener() {
 
             @Override
