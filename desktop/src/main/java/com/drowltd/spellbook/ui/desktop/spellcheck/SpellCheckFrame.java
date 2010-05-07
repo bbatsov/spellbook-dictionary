@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.accessibility.AccessibleEditableText;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -44,7 +43,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- *
  * @author iivalchev
  * @since 0.2
  */
@@ -69,7 +67,9 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
         return INSTANCE;
     }
 
-    /** Creates new form SpellCheckFrame */
+    /**
+     * Creates new form SpellCheckFrame
+     */
     private SpellCheckFrame() {
         initComponents0();
         init();
@@ -117,7 +117,7 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
 
         jMenu1.setText("File");
 
-        jExitMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/exit.png"))); // NOI18N
+        jExitMenuItem.setIcon(IconManager.getMenuIcon("exit.png")); // NOI18N
         jExitMenuItem.setText("Exit");
         jExitMenuItem.addActionListener(new ActionListener() {
 
@@ -133,7 +133,7 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
         jMenu2.setText("Edit");
 
         jUndoMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_MASK));
-        jUndoMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/undo.png"))); // NOI18N
+        jUndoMenuItem.setIcon(IconManager.getMenuIcon("undo.png"));
         jUndoMenuItem.setText("Undo");
         jUndoMenuItem.addActionListener(new ActionListener() {
 
@@ -144,7 +144,7 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
         });
         jMenu2.add(jUndoMenuItem);
 
-        jRedoMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/redo.png"))); // NOI18N
+        jRedoMenuItem.setIcon(IconManager.getMenuIcon("redo.png"));
         jRedoMenuItem.setText("Redo");
         jRedoMenuItem.addActionListener(new ActionListener() {
 
@@ -156,7 +156,7 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
         jMenu2.add(jRedoMenuItem);
         jMenu2.add(jSeparator1);
 
-        jCutMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/cut.png"))); // NOI18N
+        jCutMenuItem.setIcon(IconManager.getMenuIcon("cut.png"));
         jCutMenuItem.setText("Cut");
         jCutMenuItem.addActionListener(new ActionListener() {
 
@@ -167,7 +167,7 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
         });
         jMenu2.add(jCutMenuItem);
 
-        jCopyMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/copy.png"))); // NOI18N
+        jCopyMenuItem.setIcon(IconManager.getMenuIcon("copy.png"));
         jCopyMenuItem.setText("Copy");
         jCopyMenuItem.addActionListener(new ActionListener() {
 
@@ -178,7 +178,7 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
         });
         jMenu2.add(jCopyMenuItem);
 
-        jPasteMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/paste.png"))); // NOI18N
+        jPasteMenuItem.setIcon(IconManager.getMenuIcon("paste.png"));
         jPasteMenuItem.setText("Paste");
         jPasteMenuItem.addActionListener(new ActionListener() {
 
@@ -371,7 +371,6 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
         jLanguageLabel.setText(message);
 
         jLanguageLabel.setIcon(IconManager.getMenuIcon(selectedLanguage.getIconName()));
-
 
 
     }

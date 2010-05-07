@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -193,9 +192,9 @@ public class ExamDialog extends StandardDialog {
         });
 
         contentPanel.add(answerIconLabel, "span 4, right");
-        answerIconLabel.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/bell2_grey.png")));
+        answerIconLabel.setIcon(IconManager.getImageIcon("bell2_grey.png", IconManager.IconSize.SIZE24));
         contentPanel.add(answerButton, "left, span, growx");
-        answerButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/check2.png")));
+        answerButton.setIcon(IconManager.getMenuIcon("check2.png"));
         answerButton.setText(TRANSLATOR.translate("Answer(Button)"));
         answerButton.setEnabled(false);
         answerButton.setMaximumSize(new Dimension(75, 25));
@@ -218,7 +217,7 @@ public class ExamDialog extends StandardDialog {
         feedbackField.setText(TRANSLATOR.translate("Feedback(Field)"));
 
         contentPanel.add(timerIconLabel, "");
-        timerIconLabel.setIcon(new ImageIcon(getClass().getResource("/icons/48x48/stopwatch.png")));
+        timerIconLabel.setIcon(IconManager.getImageIcon("stopwatch.png", IconManager.IconSize.SIZE48));
         contentPanel.add(timerProgressBar, "span, grow");
         timerProgressBar.setForeground(new Color(51, 255, 51));
         timerProgressBar.setToolTipText(TRANSLATOR.translate("Timer(String)"));
