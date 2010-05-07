@@ -230,7 +230,7 @@ public class UpdateService extends AbstractPersistenceService {
 
                 String translation = null;
                 if (uncommitted.getDictionaryEntries().contains(de) && handler != null) {
-                    translation = handler.handle(de.getTranslation(), revisionEntry.getTranslation());
+                    translation = handler.handle(entry.getWord(), de.getTranslation(), revisionEntry.getTranslation());
                 } else {
                     translation = revisionEntry.getTranslation();
                 }
@@ -331,6 +331,6 @@ public class UpdateService extends AbstractPersistenceService {
 
     public static interface ConflictHandler {
 
-        String handle(String base, String remote) throws InterruptedException;
+        String handle(String word, String base, String remote) throws InterruptedException;
     }
 }
