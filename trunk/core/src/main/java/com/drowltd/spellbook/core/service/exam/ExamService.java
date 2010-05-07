@@ -4,24 +4,24 @@
  */
 package com.drowltd.spellbook.core.service.exam;
 
-import com.drowltd.spellbook.core.model.Difficulty;
 import com.drowltd.spellbook.core.model.Dictionary;
+import com.drowltd.spellbook.core.model.Difficulty;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.model.ScoreboardEntry;
 import com.drowltd.spellbook.core.service.AbstractPersistenceService;
 import com.drowltd.spellbook.core.service.DictionaryService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.persistence.EntityTransaction;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.regex.Pattern;
-import javax.persistence.EntityTransaction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- *
  * @author Franky
  * @since 0.2
  */
@@ -35,23 +35,32 @@ public class ExamService extends AbstractPersistenceService {
     private String translation;
     private Logger LOGGER = LoggerFactory.getLogger(ExamService.class);
 
-    public ExamService() {
+    private static ExamService instance;
+
+    private ExamService() {
         super(null);
 
         dictionaryService = DictionaryService.getInstance();
+    }
+
+    public static ExamService getInstance() {
+        if (instance == null) {
+            instance = new ExamService();
+        }
+
+        return instance;
     }
 
     /**
      * Gets a random word from the selected dictionary
      *
      * @param dictionary the target dictionary
-     *
      */
-    public void getExamWord(Dictionary selectedDic) {
+    public void getExamWord(Dictionary dictionary) {
         examWordIndex = random.nextInt(words.size());
         String translation0 = null;
 
-        while ((translation0 = dictionaryService.getTranslation(words.get(examWordIndex), selectedDic)).contains("\u0432\u0436.")) {
+        while ((translation0 = dictionaryService.getTranslation(words.get(examWordIndex), dictionary)).contains("\u0432\u0436.")) {
             examWordIndex = random.nextInt(words.size());
         }
 
@@ -62,32 +71,27 @@ public class ExamService extends AbstractPersistenceService {
      * Returns a word from the selected dictionary
      *
      * @return selected word from the getExamWord method
-     *
      */
     public String examWord() {
         return words.get(examWordIndex);
     }
 
     /**
-     *
      * @return the translation of the selected word
-     *
      */
     public String getTranslation() {
         return translation;
     }
 
     /**
-     *
      * Splits the whole translation of a word into all possible answers
-     *
      */
     public void possibleAnswers() {
 
         answers = new ArrayList<String>();
         translation = translation.toLowerCase();
 
-        //Removes the uneeded characters from the translation
+        //Removes the unneeded characters from the translation
         String t = translation.replaceAll("\\b(n|a|v|(attr)|(adv)|[0-9]+)\\b\\s?", "");
 
         //Splits the translation around matches of the pattern
@@ -111,7 +115,6 @@ public class ExamService extends AbstractPersistenceService {
     }
 
     /**
-     *
      * Removes all forward slashes and gives all possible combinations for correct answer
      *
      * @param s one of the possible translations
@@ -167,7 +170,6 @@ public class ExamService extends AbstractPersistenceService {
     }
 
     /**
-     *
      * Checks if the answer given by the user is correct
      *
      * @param guess answer given by the user
