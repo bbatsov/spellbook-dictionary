@@ -1,7 +1,7 @@
 package com.drowltd.spellbook.ui.desktop.exam;
 
-import com.drowltd.spellbook.core.db.DatabaseService;
-import com.drowltd.spellbook.core.db.Dictionary;
+import com.drowltd.spellbook.core.model.Dictionary;
+import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.ui.swing.model.ListBackedListModel;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
 
@@ -11,7 +11,7 @@ import java.util.List;
  * @author Franky
  */
 public class WrongWordsDialog extends javax.swing.JDialog {
-    private DatabaseService databaseService = DatabaseService.getInstance();
+    private DictionaryService databaseService = DictionaryService.getInstance();
     private Dictionary dictionary;
 
     /**
@@ -118,7 +118,7 @@ public class WrongWordsDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void wrongWordsListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_wrongWordsListValueChanged
-        correctTranslationTextArea.setText(databaseService.getTranslation(dictionary, (String) wrongWordsList.getSelectedValue()));
+        correctTranslationTextArea.setText(databaseService.getTranslation((String) wrongWordsList.getSelectedValue(), dictionary));
     }//GEN-LAST:event_wrongWordsListValueChanged
 
     private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed

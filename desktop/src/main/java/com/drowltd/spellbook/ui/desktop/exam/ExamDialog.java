@@ -32,7 +32,6 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -62,7 +61,6 @@ public class ExamDialog extends StandardDialog {
     private final DictionaryService dictionaryService = DictionaryService.getInstance();
     private int totalWords;
     private int correctWords;
-    private List<String> wrongWords = new ArrayList<String>();
     private boolean timerEnabled = PM.getBoolean(Preference.EXAM_TIMER, false);
 
     public enum TimerStatus {
@@ -111,7 +109,6 @@ public class ExamDialog extends StandardDialog {
         setIconImage(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE16).getImage());
         setLocationRelativeTo(parent);
 
-        setSize(425, 490);
         initLanguages();
     }
 
@@ -239,7 +236,6 @@ public class ExamDialog extends StandardDialog {
     }
 
     private void stopButtonActionPerformed(ActionEvent evt) {
-        wrongWords.add(examService.examWord());
         stopExam();
         pauseButton.setText(TRANSLATOR.translate("Pause(Button)"));
 
@@ -269,7 +265,6 @@ public class ExamDialog extends StandardDialog {
         LOGGER.info("Timer is " + enumTimerStatus);
         LOGGER.info("Selected language is " + selectedLanguage);
 
-        wrongWords.clear();
         examService.getDifficultyWords(selectedDictionary, selectedLanguage, difficulty);
         totalWords = 0;
         correctWords = 0;
@@ -398,7 +393,6 @@ public class ExamDialog extends StandardDialog {
             wordsProgressBar.setForeground(new Color(204, 0, 0));
             feedbackField.setText(TRANSLATOR.translate("WrongAnswer(String)"));
             answerIconLabel.setIcon(IconManager.getImageIcon("bell2_red.png", IconManager.IconSize.SIZE24));
-            wrongWords.add(examService.examWord());
         }
 
     }
@@ -442,7 +436,6 @@ public class ExamDialog extends StandardDialog {
                     }
                 }
             } else {
-                wrongWords.add(examService.examWord());
                 stopExam();
                 wordsProgressBar.setValue(maximumWordsProgressBar);
             }
@@ -463,6 +456,9 @@ public class ExamDialog extends StandardDialog {
         enumTimerStatus = timerEnabled ? TimerStatus.STOPPED : TimerStatus.DISABLED;
         examWords = PM.getInt(Preference.EXAM_WORDS, 10);
         examWordsCopy = examWords;
+
+        pack();
+
         setVisible(true);
     }
 
