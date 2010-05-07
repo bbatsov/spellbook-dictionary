@@ -5,24 +5,33 @@
  */
 package com.drowltd.spellbook.ui.swing.component;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.*;
-import java.util.List;
-
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultHighlighter;
-import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
-
 import com.jidesoft.dialog.ButtonPanel;
 import com.jidesoft.dialog.StandardDialog;
 import net.miginfocom.swing.MigLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextPane;
+import javax.swing.WindowConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
+import java.awt.Color;
+import java.awt.Dialog;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * @author ikkari
@@ -31,20 +40,17 @@ public class DiffDialog extends StandardDialog {
 
     private static Logger LOGGER = LoggerFactory.getLogger(DiffDialog.class);
 
-    private javax.swing.JButton jAcceptBaseButton;
-    private javax.swing.JButton jAcceptRemoteButton;
-    private javax.swing.JScrollPane jBaseScrollPane;
-    private javax.swing.JTextPane jBaseTextPane;
-    private javax.swing.JScrollPane jRemoteScrollPane;
-    private javax.swing.JTextPane jRemoteTextPane;
-    private javax.swing.JLabel jWordLabel;
+    private JButton jAcceptBaseButton;
+    private JButton jAcceptRemoteButton;
+    private JScrollPane jBaseScrollPane;
+    private JTextPane jBaseTextPane;
+    private JScrollPane jRemoteScrollPane;
+    private JTextPane jRemoteTextPane;
+    private JLabel jWordLabel;
 
     private ResourceBundle bundle = ResourceBundle.getBundle("i18n/DiffDialog");
     private String acceptedText;
 
-    /**
-     * Creates new form DiffDialog
-     */
     public DiffDialog(Dialog parent, boolean modal) {
         super(parent, modal);
 
@@ -60,7 +66,7 @@ public class DiffDialog extends StandardDialog {
             throw new IllegalArgumentException("word == null, word.isEmpty()");
         }
 
-        jWordLabel.setText(bundle.getString("Dialog(Word)")+word);
+        jWordLabel.setText(bundle.getString("Dialog(Word)") + word);
         jBaseTextPane.setText(baseText);
         jRemoteTextPane.setText(remoteText);
         highlightPane(jBaseTextPane, jRemoteTextPane);
@@ -72,20 +78,20 @@ public class DiffDialog extends StandardDialog {
     private void initComponents0() {
         setTitle(bundle.getString("Dialog(Title)"));
 
-        jBaseScrollPane = new javax.swing.JScrollPane();
-        jBaseTextPane = new javax.swing.JTextPane();
-        jRemoteScrollPane = new javax.swing.JScrollPane();
-        jRemoteTextPane = new javax.swing.JTextPane();
-        jAcceptBaseButton = new javax.swing.JButton();
-        jAcceptRemoteButton = new javax.swing.JButton();
-        jWordLabel = new javax.swing.JLabel();
+        jBaseScrollPane = new JScrollPane();
+        jBaseTextPane = new JTextPane();
+        jRemoteScrollPane = new JScrollPane();
+        jRemoteTextPane = new JTextPane();
+        jAcceptBaseButton = new JButton();
+        jAcceptRemoteButton = new JButton();
+        jWordLabel = new JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
-        jBaseTextPane.setBackground(new java.awt.Color(255, 255, 255));
+        jBaseTextPane.setBackground(new Color(255, 255, 255));
         jBaseScrollPane.setViewportView(jBaseTextPane);
 
-        jRemoteTextPane.setBackground(new java.awt.Color(255, 255, 255));
+        jRemoteTextPane.setBackground(new Color(255, 255, 255));
         jRemoteScrollPane.setViewportView(jRemoteTextPane);
 
         jAcceptBaseButton.setText(bundle.getString("Dialog(AcceptBaseButton)"));

@@ -44,9 +44,6 @@ public class UpdateDialog extends StandardDialog implements UpdateService.Confli
     private JLabel statusLabel;
     private JButton updateButton;
 
-    /**
-     * Creates new form UpdateDialog
-     */
     public UpdateDialog(JFrame parent, boolean modal) {
         super(parent, modal);
         setLocationRelativeTo(parent);
@@ -78,6 +75,7 @@ public class UpdateDialog extends StandardDialog implements UpdateService.Confli
         cancelButton.setMinimumSize(new Dimension(59, 29));
         cancelButton.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent evt) {
                 cancelButtonActionPerformed(evt);
             }
@@ -153,7 +151,7 @@ public class UpdateDialog extends StandardDialog implements UpdateService.Confli
 
             @Override
             public void run() {
-                JOptionPane.showMessageDialog(UpdateDialog.this,bundle.getString("MessageDialog(Conflict)") , "Info", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(UpdateDialog.this, bundle.getString("MessageDialog(Conflict)"), "Info", JOptionPane.INFORMATION_MESSAGE);
                 setAcceptedText(new DiffDialog(UpdateDialog.this, true).diff(word, base, remote).showDialog());
             }
         });
