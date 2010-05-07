@@ -6,7 +6,6 @@ import com.drowltd.spellbook.core.model.Difficulty;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.core.service.DictionaryService;
-import com.drowltd.spellbook.ui.desktop.exam.ExamDialog;
 import com.drowltd.spellbook.ui.swing.component.DictionaryComboBox;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.jidesoft.dialog.ButtonPanel;
@@ -369,23 +368,6 @@ public class PreferencesDialog extends StandardDialog {
         } else {
             return Difficulty.HARD;
         }
-    }
-
-    /* This method sets the new settings to exam module after
-     * changing them into setting dialog.
-     */
-
-    public void refreshNewSettingsToExam() {
-        ExamDialog.diffLabelChange(getExamDifficulty().toString());
-
-        if (isExamTimerEnabled()) {
-            ExamDialog.setTimerProgressBarVisible();
-            ExamDialog.setEnumTimerStatus(ExamDialog.TimerStatus.STARTED);
-        } else {
-            ExamDialog.setTimerProgressBarInvisible();
-            ExamDialog.setEnumTimerStatus(ExamDialog.TimerStatus.DISABLED);
-        }
-
     }
 
     public Language getSelectedLanguage() {
