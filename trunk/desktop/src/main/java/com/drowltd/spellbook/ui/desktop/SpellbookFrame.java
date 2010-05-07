@@ -1024,7 +1024,7 @@ public class SpellbookFrame extends JFrame {
         clearButton = new JButton();
         statusButton = new JButton();
         dictionaryButton = new JideSplitButton();
-        JToolBar.Separator jSeparator3 = new JToolBar.Separator();
+        dictionaryButton.setButtonStyle(JideSplitButton.TOOLBAR_STYLE);
         JButton addWordButton = new JButton();
         updateWordButton = new JButton();
         deleteWordButton = new JButton();
@@ -1035,7 +1035,6 @@ public class SpellbookFrame extends JFrame {
         copyButton.setText(null);
         pasteButton = new JButton(new DefaultEditorKit.PasteAction());
         pasteButton.setText(null);
-        JToolBar.Separator jSeparator5 = new JToolBar.Separator();
         JButton studyButton = new JButton();
         JButton examButton = new JButton();
         JButton spellcheckButton = new JButton();
@@ -1123,7 +1122,7 @@ public class SpellbookFrame extends JFrame {
         }
 
         mainToolBar.add(dictionaryButton);
-        mainToolBar.add(jSeparator3);
+        mainToolBar.add(new JToolBar.Separator());
 
         addWordButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/add2.png")));
         addWordButton.setToolTipText(TRANSLATOR.translate("EditAddWord(MenuItem)"));
@@ -1185,7 +1184,7 @@ public class SpellbookFrame extends JFrame {
         pasteButton.setHorizontalTextPosition(SwingConstants.CENTER);
         pasteButton.setVerticalTextPosition(SwingConstants.BOTTOM);
         mainToolBar.add(pasteButton);
-        mainToolBar.add(jSeparator5);
+        mainToolBar.add(new JToolBar.Separator());
 
         studyButton.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/teacher.png")));
         studyButton.setToolTipText(TRANSLATOR.translate("StudyWords(MenuItem)"));
