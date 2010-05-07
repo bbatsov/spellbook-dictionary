@@ -507,8 +507,8 @@ public class SpellbookFrame extends JFrame {
                 statusButton.setToolTipText(TRANSLATOR.translate("PartialMatchFound(ToolTip)"));
             }
 
-            // the tray popup translation should appear is the main frame is not active
-            if ((trayIcon != null) && match && (!SpellbookFrame.this.isActive())
+            // the tray popup translation should appear is the main frame is not active and not always on top
+            if ((trayIcon != null) && match && !SpellbookFrame.this.isActive() && !SpellbookFrame.this.isAlwaysOnTop()
                     && PM.getBoolean(Preference.TRAY_POPUP, false)) {
                 trayIcon.displayMessage(foundWord, dictionaryService.getTranslation((String) wordsList.getSelectedValue(), selectedDictionary),
                         TrayIcon.MessageType.INFO);
