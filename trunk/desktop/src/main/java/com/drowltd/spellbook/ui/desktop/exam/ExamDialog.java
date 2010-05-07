@@ -50,37 +50,31 @@ public class ExamDialog extends StandardDialog {
     private static final Translator TRANSLATOR = Translator.getTranslator("ExamDialog");
     private static final PreferencesManager PM = PreferencesManager.getInstance();
 
-    private int seconds = 0;
-    private int secondsBackup = 0;
     private int examWords;
-    private int examWordsCopy;
-    private int maximumSecondsProgressBar = 0;
-    private int maximumWordsProgressBar = 0;
-    private static Difficulty difficulty = Difficulty.EASY;
+    private Difficulty difficulty = Difficulty.EASY;
     private Dictionary selectedDictionary;
     private final DictionaryService dictionaryService = DictionaryService.getInstance();
-    private int totalWords;
-    private int correctWords;
     private boolean timerEnabled = PM.getBoolean(Preference.EXAM_TIMER, false);
+    private ExamStats examStats;
 
     public enum TimerStatus {
         PAUSED, STARTED, STOPPED, DISABLED
     }
 
-    private static TimerStatus enumTimerStatus = TimerStatus.DISABLED;
+    private TimerStatus enumTimerStatus = TimerStatus.DISABLED;
     private JComboBox fromLanguageComboBox;
     private JComboBox toLanguageComboBox;
-    private static JLabel difficultyLabel;
-    private static JLabel timerIconLabel;
+    private JLabel difficultyLabel;
+    private JLabel timerIconLabel;
     private JLabel answerIconLabel;
-    private static JLabel feedbackField;
-    private static JButton startButton;
-    private static JButton stopButton;
+    private JLabel feedbackField;
+    private JButton startButton;
+    private JButton stopButton;
     private JButton answerButton;
-    private static JButton pauseButton;
+    private JButton pauseButton;
     private JTextField translateField;
     private JTextField answerField;
-    private static JProgressBar timerProgressBar;
+    private JProgressBar timerProgressBar;
     private JProgressBar wordsProgressBar;
 
     public ExamDialog(Frame parent, boolean modal) {
@@ -226,13 +220,11 @@ public class ExamDialog extends StandardDialog {
 
     private void answerButtonActionPerformed(ActionEvent evt) {
         answered();
-        seconds = secondsBackup;
         answerField.requestFocus();
     }
 
     private void answerFieldActionPerformed(ActionEvent evt) {
         answered();
-        seconds = secondsBackup;
     }
 
     private void stopButtonActionPerformed(ActionEvent evt) {
@@ -266,21 +258,18 @@ public class ExamDialog extends StandardDialog {
         LOGGER.info("Selected language is " + selectedLanguage);
 
         examService.getDifficultyWords(selectedDictionary, selectedLanguage, difficulty);
-        totalWords = 0;
-        correctWords = 0;
 
-        callAnswerService();
+        examStats = new ExamStats();
+        examStats.setDifficulty(difficulty);
+        examStats.setDictionary(selectedDictionary);
+
+        nextWord();
 
         enableComponents(false);
 
         examWords = PM.getInt(Preference.EXAM_WORDS, 10);
-        examWordsCopy = examWords;
 
         if (enumTimerStatus == TimerStatus.STARTED || enumTimerStatus == TimerStatus.STOPPED) {
-
-            if (timerEnabled) {
-                seconds = difficulty.getTime();
-            }
             timerRunButton();
             enumTimerStatus = TimerStatus.STARTED;
             timerIconLabel.setIcon(IconManager.getImageIcon("stopwatch_run.png", IconManager.IconSize.SIZE48));
@@ -290,9 +279,7 @@ public class ExamDialog extends StandardDialog {
             pauseButton.setEnabled(false);
         }
 
-        secondsBackup = seconds;
-        maximumWordsProgressBar = examWords;
-        wordsProgressBar.setMaximum(maximumWordsProgressBar);
+        wordsProgressBar.setMaximum(examWords);
         wordsProgressBar.setString("1/" + examWords);
         wordsProgressBar.setValue(1);
         feedbackField.setText(TRANSLATOR.translate("ExamStarted(Label)"));
@@ -339,7 +326,7 @@ public class ExamDialog extends StandardDialog {
 
                 preferencesDialog.setLocationRelativeTo(null);
                 PreferencesExtractor.extract(null, preferencesDialog);
-                preferencesDialog.refreshNewSettingsToExam();
+                //TODO Reload dialog
             }
         });
 
@@ -348,22 +335,18 @@ public class ExamDialog extends StandardDialog {
         return buttonPanel;
     }
 
-    private void callAnswerService() {
+    private void nextWord() {
         examService.getExamWord(selectedDictionary);
         translateField.setText(examService.examWord());
-        totalWords++;
     }
 
     private void answered() {
-        examWords--;
         displayTranslation();
 
-        if (examWords == 0) {
+        if (examStats.getTotalWords() >= examWords) {
             stopExam();
-
-            examWords = examWordsCopy;
         } else {
-            callAnswerService();
+            nextWord();
         }
 
         answerField.setText(null);
@@ -372,73 +355,31 @@ public class ExamDialog extends StandardDialog {
 
     private void displayTranslation() {
         examService.possibleAnswers();
-        String str;
 
-        if (examWords == 0) {
-            str = (examWordsCopy - examWords) + "/ " + examWordsCopy;
-        } else {
-            str = (examWordsCopy - examWords + 1) + "/ " + examWordsCopy;
-        }
-
-        wordsProgressBar.setString(str);
-        wordsProgressBar.setValue(maximumWordsProgressBar - examWords + 1);
+        wordsProgressBar.setString(examStats.getTotalWords() + "/" + examWords);
+        wordsProgressBar.setValue(examWords - examStats.getTotalWords());
 
         if (examService.isCorrect(answerField.getText())) {
             wordsProgressBar.setForeground(new Color(51, 255, 51));
 
             feedbackField.setText(TRANSLATOR.translate("CorrectAnswer(String)"));
             answerIconLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconManager.IconSize.SIZE24));
-            correctWords++;
+            examStats.getCorrectWords().add(translateField.getText());
         } else {
             wordsProgressBar.setForeground(new Color(204, 0, 0));
             feedbackField.setText(TRANSLATOR.translate("WrongAnswer(String)"));
             answerIconLabel.setIcon(IconManager.getImageIcon("bell2_red.png", IconManager.IconSize.SIZE24));
+            examStats.getIncorrectWords().add(translateField.getText());
         }
 
     }
 
-    private boolean flagLast = false;
     private Timer swingTimer = new Timer(1000, new ActionListener() {
 
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            if (examWords != 0) {
-                if (flagLast) {
-                    seconds = secondsBackup;
-                    flagLast = false;
 
-                }
-
-                if (seconds >= 10) {
-
-                    timerProgressBar.setString(TRANSLATOR.translate("TimeSecond(ProgressBar)") + seconds);
-
-                    seconds--;
-                    timerProgressBar.setValue(maximumSecondsProgressBar - seconds);
-                } else if (seconds < 10 && seconds >= 0) {
-                    if (seconds < 6) {
-                        wordsProgressBar.setForeground(new Color(204, 0, 0));
-                    } else {
-                        wordsProgressBar.setForeground(new Color(204, 0, 0));
-                    }
-
-                    timerProgressBar.setString(TRANSLATOR.translate("TimeFirst(ProgressBar)") + seconds);
-
-                    seconds--;
-                    timerProgressBar.setValue(maximumSecondsProgressBar - seconds);
-
-                    if (seconds == -1) {
-
-                        answered();
-
-                        flagLast = true;
-                    }
-                }
-            } else {
-                stopExam();
-                wordsProgressBar.setValue(maximumWordsProgressBar);
-            }
         }
     });
 
@@ -455,7 +396,6 @@ public class ExamDialog extends StandardDialog {
 
         enumTimerStatus = timerEnabled ? TimerStatus.STOPPED : TimerStatus.DISABLED;
         examWords = PM.getInt(Preference.EXAM_WORDS, 10);
-        examWordsCopy = examWords;
 
         pack();
 
@@ -467,7 +407,7 @@ public class ExamDialog extends StandardDialog {
      * there going to be made some optimization
      */
 
-    public static void diffLabelChange(String diff) {
+    public void diffLabelChange(String diff) {
         if (diff.equals("EASY")) {
             difficultyLabel.setText(TRANSLATOR.translate("Easy(Label)"));
             difficulty = Difficulty.EASY;
@@ -494,12 +434,9 @@ public class ExamDialog extends StandardDialog {
     }
 
     private void timerRunButton() {
-        seconds = difficulty.getTime();
-
         swingTimer.start();
         pauseButton.setEnabled(true);
-        maximumSecondsProgressBar = seconds;
-        timerProgressBar.setMaximum(maximumSecondsProgressBar);
+        timerProgressBar.setMaximum(difficulty.getTime());
     }
 
     private void stopExam() {
@@ -525,26 +462,26 @@ public class ExamDialog extends StandardDialog {
     private void examResult() {
         ExamResult examResultDialog = new ExamResult(null, true);
         examResultDialog.setLocationRelativeTo(this);
-        examResultDialog.showExamResult(correctWords, totalWords);
+        examResultDialog.showExamResult(examStats);
     }
 
-    public static void setTimerProgressBarVisible() {
+    public void setTimerProgressBarVisible() {
         timerProgressBar.setVisible(true);
         stopButton.setEnabled(false);
         timerIconLabel.setVisible(true);
     }
 
-    public static void setTimerProgressBarInvisible() {
+    public void setTimerProgressBarInvisible() {
         timerProgressBar.setVisible(false);
         pauseButton.setEnabled(false);
         timerIconLabel.setVisible(false);
     }
 
-    public static void setEnumTimerStatus(TimerStatus timerStatus) {
+    public void setEnumTimerStatus(TimerStatus timerStatus) {
         enumTimerStatus = timerStatus;
     }
 
-    public static void setFeedbackFieldDefault() {
+    public void setFeedbackFieldDefault() {
         feedbackField.setText(TRANSLATOR.translate("Feedback(Field)"));
     }
 

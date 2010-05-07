@@ -280,17 +280,19 @@ public class ExamResult extends StandardDialog {
         }
     }
 
-    public void showExamResult(int correctWords, int totalWords) {
+    public void showExamResult(ExamStats examStats) {
+        int correctWords = examStats.getCorrectWords().size();
+        int totalWords = examStats.getIncorrectWords().size() + correctWords;
 
         setSize(279, 342);
 
-        int uspeh = ((correctWords * 100) / totalWords);
+        int grade = (correctWords * 100) / totalWords;
 
         correctWrodsResultLabel.setText(Integer.toString(correctWords));
         wrongWrodsResultLabel.setText(Integer.toString(totalWords - correctWords));
-        successRateResultLabel.setText(Integer.toString(uspeh) + "%");
+        successRateResultLabel.setText(Integer.toString(grade) + "%");
 
-        if (uspeh > 60) {
+        if (grade > 60) {
             endLabel.setText(TRANSLATOR.translate("Passed(Label)"));
             iconLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconManager.IconSize.SIZE48));
         } else {
