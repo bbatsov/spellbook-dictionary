@@ -39,10 +39,11 @@ public class DiffDialogTest {
 
     @Test
     public void testHighlightPane() {
+        String word = "word";
         String text0 = "It is a long established fact that a reader will\n be distracted by the readable content of a page when\n looking at its layout. The point of using\n Lorem Ipsum is that it has a more-or-less\n normal distribution of letters, as opposed to using\n 'Content here, content here', making it look like readable English.\n Many desktop publishing packages and web page editors\n now use Lorem Ipsum as their default model text,\n and a search for 'lorem ipsum' will uncover many web sites still\n in their infancy. Various versions have evolved\n over the years, sometimes by accident, sometimes on purpose\n (injected humour and the like).";
         String text1 = "It is a long establishedd fact that a reader will\n be distracted by the readable content of a page when\n lookingat its layout. The point of using\n Lorem Ipsum is that it has a more-or-less\n normal distribution of letters, opposed to using\n 'Content here, content here', making it look like readable English.\n Many desktop publishing packages and web page editors\n now use Lorem Ipsum as their default model text,\n and a search for 'lorem ipsum' will uncover many web sites still\n in their infancy. Various versions have evolved\n over the years, sometimes by accident, sometimes on purpose\n (injected humour and the like)";
 
-        String acceptedText = new DiffDialog(null, true).diff(text0, text1).showDialog();
+        String acceptedText = new DiffDialog(null, true).diff(word, text0, text1).showDialog();
         assertTrue("text unaccepted", acceptedText.equals(text0) || acceptedText.equals(text1));
 
     }
@@ -59,8 +60,8 @@ public class DiffDialogTest {
         List<StringLine> expected = new ArrayList<StringLine>();
         expected.add(stringLine0);
         expected.add(stringLine1);
-
-        assertEquals("lines doesn't match",new DiffDialog(null, true).diff(text, text).breakIntoLines(text), expected);
+        String word = "word";
+        assertEquals("lines doesn't match",new DiffDialog(null, true).diff(word,text, text).breakIntoLines(text), expected);
     }
 
     //@Test

@@ -67,7 +67,6 @@ public class UpdateDialog extends StandardDialog implements UpdateService.Confli
         statusLabel = new JLabel();
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        ResourceBundle bundle = ResourceBundle.getBundle("i18n/UpdateDialog");
         setTitle(bundle.getString("Dialog(Title)"));
         setResizable(false);
 
@@ -134,8 +133,8 @@ public class UpdateDialog extends StandardDialog implements UpdateService.Confli
     }
 
     @Override
-    public String handle(final String base, final String remote) throws InterruptedException {
-        if (base == null || remote == null) {
+    public String handle(final String word, final String base, final String remote) throws InterruptedException {
+        if (word == null || base == null || remote == null) {
             LOGGER.error("base == null || remote == null");
             throw new IllegalArgumentException("base == null || remote == null");
         }
@@ -154,7 +153,8 @@ public class UpdateDialog extends StandardDialog implements UpdateService.Confli
 
             @Override
             public void run() {
-                setAcceptedText(new DiffDialog(UpdateDialog.this, true).diff(base, remote).showDialog());
+                JOptionPane.showMessageDialog(UpdateDialog.this,bundle.getString("MessageDialog(Conflict)") , "Info", JOptionPane.INFORMATION_MESSAGE);
+                setAcceptedText(new DiffDialog(UpdateDialog.this, true).diff(word, base, remote).showDialog());
             }
         });
 

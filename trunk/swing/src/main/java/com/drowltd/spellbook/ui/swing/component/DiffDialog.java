@@ -37,9 +37,10 @@ public class DiffDialog extends StandardDialog {
     private javax.swing.JTextPane jBaseTextPane;
     private javax.swing.JScrollPane jRemoteScrollPane;
     private javax.swing.JTextPane jRemoteTextPane;
+    private javax.swing.JLabel jWordLabel;
 
     private ResourceBundle bundle = ResourceBundle.getBundle("i18n/DiffDialog");
-    private String acceptedText = "";
+    private String acceptedText;
 
     /**
      * Creates new form DiffDialog
@@ -50,11 +51,16 @@ public class DiffDialog extends StandardDialog {
         initComponents0();
     }
 
-    public DiffDialog diff(String baseText, String remoteText) {
+    public DiffDialog diff(String word, String baseText, String remoteText) {
         if (baseText == null || remoteText == null) {
             throw new IllegalArgumentException("baseText == null || remoteText==null");
         }
 
+        if (word == null || word.isEmpty()) {
+            throw new IllegalArgumentException("word == null, word.isEmpty()");
+        }
+
+        jWordLabel.setText(bundle.getString("Dialog(Word)")+word);
         jBaseTextPane.setText(baseText);
         jRemoteTextPane.setText(remoteText);
         highlightPane(jBaseTextPane, jRemoteTextPane);
@@ -64,12 +70,15 @@ public class DiffDialog extends StandardDialog {
 
 
     private void initComponents0() {
+        setTitle(bundle.getString("Dialog(Title)"));
+
         jBaseScrollPane = new javax.swing.JScrollPane();
         jBaseTextPane = new javax.swing.JTextPane();
         jRemoteScrollPane = new javax.swing.JScrollPane();
         jRemoteTextPane = new javax.swing.JTextPane();
         jAcceptBaseButton = new javax.swing.JButton();
         jAcceptRemoteButton = new javax.swing.JButton();
+        jWordLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -99,7 +108,7 @@ public class DiffDialog extends StandardDialog {
             }
         });
 
-        jAcceptRemoteButton.addActionListener(new ActionListener(){
+        jAcceptRemoteButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -110,7 +119,7 @@ public class DiffDialog extends StandardDialog {
             }
         });
 
-        jAcceptBaseButton.addActionListener(new ActionListener(){
+        jAcceptBaseButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -132,8 +141,11 @@ public class DiffDialog extends StandardDialog {
     public JComponent createContentPanel() {
 
         JPanel panel = new JPanel();
-        panel.setLayout(new MigLayout("wrap 2", "[grow][grow]", "[grow][]"));
+        panel.setLayout(new MigLayout("wrap 2", "[grow][grow]", "[][][grow][]"));
 
+        panel.add(jWordLabel, "growx, span 2");
+        panel.add(new JLabel(bundle.getString("Dialog(Base)")), "growx");
+        panel.add(new JLabel(bundle.getString("Dialog(Remote)")), "growx");
         panel.add(jBaseScrollPane, "growx, growy, w 320, h 400");
         panel.add(jRemoteScrollPane, "growx, growy, w 320, h 400");
         panel.add(jAcceptBaseButton, "align 20%");
@@ -153,6 +165,9 @@ public class DiffDialog extends StandardDialog {
         setVisible(true);
 
         getDialogResult();
+        if (acceptedText == null) {
+            acceptedText = jBaseTextPane.getText();
+        }
         return acceptedText;
     }
 
