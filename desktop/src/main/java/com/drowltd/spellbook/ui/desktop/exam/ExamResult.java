@@ -41,7 +41,7 @@ public class ExamResult extends StandardDialog {
 
     private static final Translator TRANSLATOR = Translator.getTranslator("ExamResult");
     private boolean scoreboardVisibility = false;
-    private ExamService examService;
+    private ExamService examService = ExamService.getInstance();
     private JLabel correctWordsLabel;
     private JLabel correctWrodsResultLabel;
     private JLabel endLabel;
@@ -66,8 +66,6 @@ public class ExamResult extends StandardDialog {
     public ExamResult(Frame parent, boolean modal) {
         super(parent, modal);
         TRANSLATOR.reset();
-
-        examService = new ExamService();
 
 
 //       entityManager = java.beans.Beans.isDesignTime() ? null : javax.persistence.Persistence.createEntityManagerFactory("jdbc:h2:F:\\opt\\spellbook\\db\\spellbookPU").createEntityManager();

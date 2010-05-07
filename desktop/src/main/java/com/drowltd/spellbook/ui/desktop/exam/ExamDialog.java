@@ -44,16 +44,15 @@ import java.util.Set;
  * @since 0.2
  */
 public class ExamDialog extends StandardDialog {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(ExamDialog.class);
-    private ExamService examService;
+    private ExamService examService = ExamService.getInstance();
+    private final DictionaryService dictionaryService = DictionaryService.getInstance();
     private static final Translator TRANSLATOR = Translator.getTranslator("ExamDialog");
     private static final PreferencesManager PM = PreferencesManager.getInstance();
 
     private int examWords;
     private Difficulty difficulty = Difficulty.EASY;
     private Dictionary selectedDictionary;
-    private final DictionaryService dictionaryService = DictionaryService.getInstance();
     private boolean timerEnabled = PM.getBoolean(Preference.EXAM_TIMER, false);
     private ExamStats examStats;
 
@@ -82,8 +81,6 @@ public class ExamDialog extends StandardDialog {
 
         TRANSLATOR.reset();
 
-        examService = new ExamService();
-
         fromLanguageComboBox = new JComboBox();
         toLanguageComboBox = new JComboBox();
         difficultyLabel = new JLabel();
@@ -98,7 +95,6 @@ public class ExamDialog extends StandardDialog {
         answerIconLabel = new JLabel();
         pauseButton = new JButton();
         feedbackField = new JLabel();
-
 
         setIconImage(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE16).getImage());
         setLocationRelativeTo(parent);
@@ -124,7 +120,13 @@ public class ExamDialog extends StandardDialog {
 
             @Override
             public void actionPerformed(ActionEvent evt) {
-                fromLanguageComboBoxActionPerformed(evt);
+                final List<Language> languagesTo = examService.getToLanguages((Language) fromLanguageComboBox.getSelectedItem());
+
+                toLanguageComboBox.removeAllItems();
+
+                for (Language language : languagesTo) {
+                    toLanguageComboBox.addItem(language);
+                }
             }
         });
 
@@ -163,7 +165,8 @@ public class ExamDialog extends StandardDialog {
         stopButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                stopButtonActionPerformed(evt);
+                stopExam();
+                pauseButton.setText(TRANSLATOR.translate("Pause(Button)"));
             }
         });
 
@@ -178,7 +181,7 @@ public class ExamDialog extends StandardDialog {
         answerField.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                answerFieldActionPerformed(evt);
+                answered();
             }
         });
 
@@ -194,7 +197,8 @@ public class ExamDialog extends StandardDialog {
         answerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                answerButtonActionPerformed(evt);
+                answered();
+                answerField.requestFocus();
             }
         });
 
@@ -216,21 +220,6 @@ public class ExamDialog extends StandardDialog {
         timerProgressBar.setStringPainted(true);
 
         return contentPanel;
-    }
-
-    private void answerButtonActionPerformed(ActionEvent evt) {
-        answered();
-        answerField.requestFocus();
-    }
-
-    private void answerFieldActionPerformed(ActionEvent evt) {
-        answered();
-    }
-
-    private void stopButtonActionPerformed(ActionEvent evt) {
-        stopExam();
-        pauseButton.setText(TRANSLATOR.translate("Pause(Button)"));
-
     }
 
     private void pauseButtonActionPerformed(ActionEvent evt) {
@@ -284,16 +273,6 @@ public class ExamDialog extends StandardDialog {
         wordsProgressBar.setValue(1);
         feedbackField.setText(TRANSLATOR.translate("ExamStarted(Label)"));
         answerField.requestFocus();
-    }
-
-    private void fromLanguageComboBoxActionPerformed(ActionEvent evt) {
-        final List<Language> languagesTo = examService.getToLanguages((Language) fromLanguageComboBox.getSelectedItem());
-
-        toLanguageComboBox.removeAllItems();
-
-        for (Language language : languagesTo) {
-            toLanguageComboBox.addItem(language);
-        }
     }
 
     @Override
@@ -463,26 +442,6 @@ public class ExamDialog extends StandardDialog {
         ExamResult examResultDialog = new ExamResult(null, true);
         examResultDialog.setLocationRelativeTo(this);
         examResultDialog.showExamResult(examStats);
-    }
-
-    public void setTimerProgressBarVisible() {
-        timerProgressBar.setVisible(true);
-        stopButton.setEnabled(false);
-        timerIconLabel.setVisible(true);
-    }
-
-    public void setTimerProgressBarInvisible() {
-        timerProgressBar.setVisible(false);
-        pauseButton.setEnabled(false);
-        timerIconLabel.setVisible(false);
-    }
-
-    public void setEnumTimerStatus(TimerStatus timerStatus) {
-        enumTimerStatus = timerStatus;
-    }
-
-    public void setFeedbackFieldDefault() {
-        feedbackField.setText(TRANSLATOR.translate("Feedback(Field)"));
     }
 
     private void initLanguages() {
