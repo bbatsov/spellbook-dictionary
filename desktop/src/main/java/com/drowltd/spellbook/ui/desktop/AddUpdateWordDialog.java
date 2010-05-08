@@ -119,7 +119,7 @@ public class AddUpdateWordDialog extends StandardDialog {
         panel.add(newMeaningTextField, "growx, top");
         panel.add(addButton, "top");
         panel.add(new JLabel(TRANSLATOR.translate("Preview(TextFieldBorde)")), "span 2, left");
-        panel.add(new JScrollPane(translationPane), "growx, growy");
+        panel.add(new JScrollPane(translationPane), "grow");
         panel.add(editButton, "top");
 
         return panel;
