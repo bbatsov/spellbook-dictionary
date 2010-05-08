@@ -75,7 +75,6 @@ public class StudyWordsDialog extends javax.swing.JDialog {
     private JRadioButton randomRadioButton;
     private JCheckBox repeatMisspelledWordsCheckBox;
     private JCheckBox repeatWordCheckBox;
-    private JLabel secondRowLabel;
     private JButton seeAnswerButton;
     private JButton startButton;
     private JButton stopButton;
@@ -364,7 +363,6 @@ public class StudyWordsDialog extends javax.swing.JDialog {
     }
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        imoticonLabel.setIcon(IconManager.getImageIcon("laugh.gif", IconManager.IconSize.SIZE48));//for test
         startLearning();
     }
 
