@@ -106,7 +106,8 @@ public class PreferencesManager {
         LEARNING_IN_REVERSE_ORDER,
         LEARNING_RANDOM,
         REPEAT_MISSPELLED_WORDS,
-        REPEAT_WORDS
-
+        REPEAT_WORDS,
+        REMOTE_DB_USERNAME,
+        REMOTE_DB_PASSWORD
     }
 }

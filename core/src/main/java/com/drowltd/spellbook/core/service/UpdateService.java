@@ -11,7 +11,9 @@ import com.drowltd.spellbook.core.model.RemoteDictionaryEntry;
 import com.drowltd.spellbook.core.model.RevisionEntry;
 import com.drowltd.spellbook.core.model.UncommittedEntries;
 import com.drowltd.spellbook.core.model.UpdateEntry;
+
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,14 +24,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
  * This class provides the basic functionality for updating
  * the local database.
- *
+ * <p/>
  * IMPORTANT: There must be happens-before relationship between the
  * thread that uses DictionaryService and the thread that is using UpdateService.
  * Any use of DictionaryService must happen-before any use of UpdateService,
@@ -44,6 +46,9 @@ public class UpdateService extends AbstractPersistenceService {
     private static Logger LOGGER = LoggerFactory.getLogger(UpdateService.class);
     private static boolean isAuthenticated = false;
     private ConflictHandler handler;
+    private LastUpdateEntity lastUpdate;
+    private final Map<String, Dictionary> dictMap = new HashMap<String, Dictionary>();
+    private final Map<String, RemoteDictionary> remoteDictMap = new HashMap<String, RemoteDictionary>();
 
     private UpdateService() throws UpdateServiceException {
         if (EM == null) {
@@ -52,7 +57,7 @@ public class UpdateService extends AbstractPersistenceService {
         initRemoteEntityManager();
     }
 
-    private UpdateService(String userName, String password) throws AuthenticationException, UpdateServiceException {
+    private UpdateService(String userName, String password) throws AuthenticationException, UpdateServiceException, SQLException {
         initRemoteEntityManager(userName, password);
     }
 
@@ -63,20 +68,28 @@ public class UpdateService extends AbstractPersistenceService {
         return INSTANCE;
     }
 
-    public static UpdateService getInstance(String userName, String password) throws AuthenticationException, UpdateServiceException {
+    public static UpdateService getInstance(String userName, String password) throws AuthenticationException, UpdateServiceException, SQLException {
         if (INSTANCE == null || !isAuthenticated) {
             INSTANCE = new UpdateService(userName, password);
         }
         return INSTANCE;
     }
 
-    public static void initRemoteEntityManager(String userName, String password) throws AuthenticationException, UpdateServiceException {
+    public static void initRemoteEntityManager(String userName, String password) throws AuthenticationException, UpdateServiceException, SQLException {
         if (userName == null || userName.isEmpty() || password == null || password.isEmpty()) {
             throw new AuthenticationException();
         }
+
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            DriverManager.getConnection("jdbc:mysql://localhost:3306/SpellbookRemote", userName, password).close();
+        } catch (ClassNotFoundException e) {
+            throw new UpdateServiceException(e);
+        }
+
+        DriverManager.getConnection("jdbc:mysql://localhost:3306/SpellbookRemote", userName, password).close();
+
+        try {
+
             Map<String, String> properties = new HashMap<String, String>();
             properties.put("hibernate.connection.username", userName);
             properties.put("hibernate.connection.password", password);
@@ -97,13 +110,12 @@ public class UpdateService extends AbstractPersistenceService {
             throw new UpdateServiceException(e);
         }
     }
-    private LastUpdateEntity lastUpdate;
-    private final Map<String, Dictionary> dictMap = new HashMap<String, Dictionary>();
-    private final Map<String, RemoteDictionary> remoteDictMap = new HashMap<String, RemoteDictionary>();
+
 
     /*
      * Getting the single LastUpdateEntity
      */
+
     private LastUpdateEntity getLastUpdateEntity() {
         LastUpdateEntity lastUEntity;
         try {
@@ -128,6 +140,7 @@ public class UpdateService extends AbstractPersistenceService {
      * we can't assume the id of the remote database will match those
      * of the local.
      */
+
     private void initDictMap() {
         List<Dictionary> dictionaries = DictionaryService.getInstance().getDictionaries();
         for (Dictionary d : dictionaries) {
@@ -271,15 +284,17 @@ public class UpdateService extends AbstractPersistenceService {
         EM_REMOTE.getTransaction().begin();
 
         UpdateEntry updateEntry = new UpdateEntry();
-        EM_REMOTE.persist(updateEntry);
+
 
         for (DictionaryEntry de : uncommitted.getDictionaryEntries()) {
             RemoteDictionaryEntry rde;
+            boolean persist = false;
             try {
                 rde = EM_REMOTE.createNamedQuery("RemoteDictionaryEntry.getRemoteDictionaryEntry", RemoteDictionaryEntry.class).setParameter("word", de.getWord()).getSingleResult();
             } catch (NoResultException e) {
                 rde = new RemoteDictionaryEntry();
                 rde.setWord(de.getWord());
+                persist = true;
             }
 
             RevisionEntry revisionEntry = new RevisionEntry();
@@ -304,7 +319,11 @@ public class UpdateService extends AbstractPersistenceService {
             rde.setRemoteDictionary(remoteDictionary);
 
 
-            EM_REMOTE.persist(rde);
+            if (persist) {
+                EM_REMOTE.persist(rde);
+            }
+
+            EM_REMOTE.persist(updateEntry);
             EM_REMOTE.persist(revisionEntry);
         }
 
