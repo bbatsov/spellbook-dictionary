@@ -19,27 +19,46 @@ import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.core.service.study.StudyService;
 import com.drowltd.spellbook.ui.swing.component.DictionaryComboBox;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
+import net.miginfocom.swing.MigLayout;
 
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+import javax.swing.WindowConstants;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
+import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.Set;
-import javax.swing.*;
-
-import net.miginfocom.swing.MigLayout;
 
 import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preference;
 
 /**
- *
  * @author Sasho
  */
-public class StudyWordsDialog extends javax.swing.JDialog {
+public class StudyWordsDialog extends JDialog {
 
-    private StudyService studyService;
-    private DictionaryService dictionaryService;
+    private final StudyService studyService;
+    private final DictionaryService dictionaryService;
     private static final PreferencesManager PM = PreferencesManager.getInstance();
     private static final Translator TRANSLATOR = Translator.getTranslator("StudyWordsDialog");
     private SelectedDictionary selectedDictionary = SelectedDictionary.EN_BG;
@@ -57,7 +76,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
     private Integer answerSeen;
     private boolean isStopedLearn = true;
     private HowToEnumerate howToEnumerate = HowToEnumerate.IN_ORDER_OF_INPUT;
-    private Frame parent;
+    private final Frame parent;
 
     //components
     private JButton answerButton;
@@ -94,8 +113,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         IN_ORDER_OF_INPUT, IN_REVERSE_ORDER_OF_INPUT, RANDOM
     }
 
-    /** Creates new form LearningWordsDialog */
-    public StudyWordsDialog(java.awt.Frame parent, boolean modal) {
+    public StudyWordsDialog(Frame parent, boolean modal) {
         super(parent, modal);
         TRANSLATOR.reset();
         this.parent = parent;
@@ -114,9 +132,9 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         answerButton.setEnabled(false);
         seeAnswerButton.setEnabled(false);
         stopButton.setEnabled(false);
-        correctAnswer = new Integer(0);
-        wrongAnswer = new Integer(0);
-        answerSeen = new Integer(0);
+        correctAnswer = 0;
+        wrongAnswer = 0;
+        answerSeen = 0;
         int index = PM.getInt(Preference.DICTIONARIES, dictionariesComboBox.getSelectedIndex());
         dictionariesComboBox.setSelectedIndex(index);
         String studySetName = (String) studySetsComboBox.getSelectedItem();
@@ -129,22 +147,25 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         topPanel = new JPanel(new MigLayout("", "10[]10[]10", "10[179][][]10"));
         setContentPane(topPanel);
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("i18n/StudyWordsDialog"); // NOI18N
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        ResourceBundle bundle = ResourceBundle.getBundle("i18n/StudyWordsDialog"); // NOI18N
         setTitle(bundle.getString("LearningWordsDialog(Title)")); // NOI18N
         setResizable(false);
-        addWindowFocusListener(new java.awt.event.WindowFocusListener() {
+        addWindowFocusListener(new WindowFocusListener() {
 
-            public void windowGainedFocus(java.awt.event.WindowEvent evt) {
+            @Override
+            public void windowGainedFocus(WindowEvent evt) {
                 formWindowGainedFocus(evt);
             }
 
-            public void windowLostFocus(java.awt.event.WindowEvent evt) {
+            @Override
+            public void windowLostFocus(WindowEvent evt) {
             }
         });
-        addWindowListener(new java.awt.event.WindowAdapter() {
+        addWindowListener(new WindowAdapter() {
 
-            public void windowClosed(java.awt.event.WindowEvent evt) {
+            @Override
+            public void windowClosed(WindowEvent evt) {
                 formWindowClosed(evt);
             }
         });
@@ -153,21 +174,23 @@ public class StudyWordsDialog extends javax.swing.JDialog {
 
         initHowToEnumeratePanel(bundle);
 
-        repeatWordCheckBox = new javax.swing.JCheckBox();
+        repeatWordCheckBox = new JCheckBox();
         repeatWordCheckBox.setText(bundle.getString("RepeatWords(CheckBox)")); // NOI18N
-        repeatWordCheckBox.addActionListener(new java.awt.event.ActionListener() {
+        repeatWordCheckBox.addActionListener(new ActionListener() {
 
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
                 repeatWordCheckBoxActionPerformed(evt);
             }
         });
         topPanel.add(repeatWordCheckBox);
 
-        repeatMisspelledWordsCheckBox = new javax.swing.JCheckBox();
+        repeatMisspelledWordsCheckBox = new JCheckBox();
         repeatMisspelledWordsCheckBox.setText(bundle.getString("RepeatMisspelledWords(CheckBox)")); // NOI18N
-        repeatMisspelledWordsCheckBox.addActionListener(new java.awt.event.ActionListener() {
+        repeatMisspelledWordsCheckBox.addActionListener(new ActionListener() {
 
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
                 repeatMisspelledWordsCheckBoxActionPerformed(evt);
             }
         });
@@ -179,52 +202,56 @@ public class StudyWordsDialog extends javax.swing.JDialog {
     }
 
     private void initWordsPanel(ResourceBundle bundle) {
-        JPanel wordsPanel = new javax.swing.JPanel(new MigLayout("", "20[200]20", "[][][][][]0[21]"));
-        wordsPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        wordsPanel.setMaximumSize(new java.awt.Dimension(240, 179)); //224
+        JPanel wordsPanel = new JPanel(new MigLayout("", "20[200]20", "[][][][][]0[21]"));
+        wordsPanel.setBorder(BorderFactory.createEtchedBorder());
+        wordsPanel.setMaximumSize(new Dimension(240, 179)); //224
 
-        JLabel jLabel1 = new javax.swing.JLabel();
+        JLabel jLabel1 = new JLabel();
         jLabel1.setText(bundle.getString("Languages(Label)")); // NOI18N
         wordsPanel.add(jLabel1, "left,wrap");
 
         dictionariesComboBox = new DictionaryComboBox(dictionaries);
         wordsPanel.add(dictionariesComboBox, "span,growx,wrap");
 
-        JLabel jLabel3 = new javax.swing.JLabel();
+        JLabel jLabel3 = new JLabel();
         jLabel3.setText(bundle.getString("StudySet(Label)")); // NOI18N
         wordsPanel.add(jLabel3, "wrap");
 
-        studySetsComboBox = new javax.swing.JComboBox();
-        studySetsComboBox.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+        studySetsComboBox = new JComboBox();
+        studySetsComboBox.addPopupMenuListener(new PopupMenuListener() {
 
-            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            @Override
+            public void popupMenuCanceled(PopupMenuEvent evt) {
             }
 
-            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+            @Override
+            public void popupMenuWillBecomeInvisible(PopupMenuEvent evt) {
                 studySetsComboBoxPopupMenuWillBecomeInvisible(evt);
             }
 
-            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+            @Override
+            public void popupMenuWillBecomeVisible(PopupMenuEvent evt) {
             }
         });
         wordsPanel.add(studySetsComboBox, "span,growx,wrap");
 
-        wordsButton = new javax.swing.JButton();
-        wordsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/dictionary.png"))); // NOI18N
+        wordsButton = new JButton();
+        wordsButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/dictionary.png"))); // NOI18N
         wordsButton.setText(bundle.getString("Words(Button)")); // NOI18N
-        wordsButton.addActionListener(new java.awt.event.ActionListener() {
+        wordsButton.addActionListener(new ActionListener() {
 
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
                 wordsButtonActionPerformed(evt);
             }
         });
         wordsPanel.add(wordsButton, "center,w 105!,wrap");
 
-        warningIconLabel = new javax.swing.JLabel();
-        warningIconLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/warning.png"))); // NOI18N
+        warningIconLabel = new JLabel();
+        warningIconLabel.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/warning.png"))); // NOI18N
         wordsPanel.add(warningIconLabel, "split 2,left,w 25!,h 22!");
 
-        addWordsLabel = new javax.swing.JLabel();
+        addWordsLabel = new JLabel();
         addWordsLabel.setText(bundle.getString("AddWordsLabel(Message)")); // NOI18N
         wordsPanel.add(addWordsLabel, "wrap");
 
@@ -232,24 +259,24 @@ public class StudyWordsDialog extends javax.swing.JDialog {
     }
 
     private void initHowToEnumeratePanel(ResourceBundle bundle) {
-        JPanel howToEnumeratePanel = new javax.swing.JPanel(new MigLayout("wrap 1", "53[]", "[]20[]20[]20[]"));
-        howToEnumeratePanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        JPanel howToEnumeratePanel = new JPanel(new MigLayout("wrap 1", "53[]", "[]20[]20[]20[]"));
+        howToEnumeratePanel.setBorder(BorderFactory.createEtchedBorder());
         //howToEnumeratePanel.setMaximumSize(new java.awt.Dimension(224, 159));
         // howToEnumeratePanel.setMinimumSize(new java.awt.Dimension(224, 159));
 
-        JLabel jLabel5 = new javax.swing.JLabel();
+        JLabel jLabel5 = new JLabel();
         jLabel5.setText(bundle.getString("Enumerate(Label)")); // NOI18N
         howToEnumeratePanel.add(jLabel5);
 
-        inOrderOfInputRadioButton = new javax.swing.JRadioButton();
+        inOrderOfInputRadioButton = new JRadioButton();
         inOrderOfInputRadioButton.setText(bundle.getString("InOrderOfInput(Label)")); // NOI18N
         howToEnumeratePanel.add(inOrderOfInputRadioButton);
 
-        inReverseOrderOfInputRadioButton = new javax.swing.JRadioButton();
+        inReverseOrderOfInputRadioButton = new JRadioButton();
         inReverseOrderOfInputRadioButton.setText(bundle.getString("InReverseOrderOfInput(Label)")); // NOI18N
         howToEnumeratePanel.add(inReverseOrderOfInputRadioButton);
 
-        randomRadioButton = new javax.swing.JRadioButton();
+        randomRadioButton = new JRadioButton();
         randomRadioButton.setText(bundle.getString("Random(Label)")); // NOI18N
         howToEnumeratePanel.add(randomRadioButton);
 
@@ -257,103 +284,108 @@ public class StudyWordsDialog extends javax.swing.JDialog {
     }
 
     private void initStudyPanel(ResourceBundle bundle) {
-        JPanel studyPanel = new javax.swing.JPanel(new MigLayout("", "[left,105][right,105][][30]", "[][][][47][][][]"));
-        studyPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        JPanel studyPanel = new JPanel(new MigLayout("", "[left,105][right,105][][30]", "[][][][47][][][]"));
+        studyPanel.setBorder(BorderFactory.createEtchedBorder());
         //studyPanel.setMaximumSize(new java.awt.Dimension(492, 238));
         //studyPanel.setMinimumSize(new java.awt.Dimension(492, 238));
 
-        startButton = new javax.swing.JButton();
-        startButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/media_play_green.png"))); // NOI18N
+        startButton = new JButton();
+        startButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/media_play_green.png"))); // NOI18N
         startButton.setText(bundle.getString("Start(Button)")); // NOI18N
-        startButton.addActionListener(new java.awt.event.ActionListener() {
+        startButton.addActionListener(new ActionListener() {
 
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
                 startButtonActionPerformed(evt);
             }
         });
         studyPanel.add(startButton, "growx,sg");
 
-        stopButton = new javax.swing.JButton();
-        stopButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/media_stop_red.png"))); // NOI18N
+        stopButton = new JButton();
+        stopButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/media_stop_red.png"))); // NOI18N
         stopButton.setText(bundle.getString("Stop(Button)")); // NOI18N
-        stopButton.addActionListener(new java.awt.event.ActionListener() {
+        stopButton.addActionListener(new ActionListener() {
 
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
                 stopButtonActionPerformed(evt);
             }
         });
         studyPanel.add(stopButton, "growx,sg");
 
-        JLabel jLabel7 = new javax.swing.JLabel();
+        JLabel jLabel7 = new JLabel();
         jLabel7.setText(bundle.getString("Correct(Label)")); // NOI18N
         studyPanel.add(jLabel7, "gapleft 80,right");
 
-        countOfTheCorrectWordsLabel = new javax.swing.JLabel();
+        countOfTheCorrectWordsLabel = new JLabel();
         studyPanel.add(countOfTheCorrectWordsLabel, "left,wrap");
 
-        JLabel jLabel4 = new javax.swing.JLabel();
+        JLabel jLabel4 = new JLabel();
         jLabel4.setText(bundle.getString("OverTranslateField(Label)")); // NOI18N
         studyPanel.add(jLabel4, "span 2,left");
 
-        JLabel jLabel8 = new javax.swing.JLabel();
+        JLabel jLabel8 = new JLabel();
         jLabel8.setText(bundle.getString("Wrong(Label)")); // NOI18N
         studyPanel.add(jLabel8, "gapleft 80,right");
 
-        countOfTheWrongWordsLabel = new javax.swing.JLabel();
+        countOfTheWrongWordsLabel = new JLabel();
         studyPanel.add(countOfTheWrongWordsLabel, "left,wrap");
 
-        translateField = new javax.swing.JTextField();
+        translateField = new JTextField();
         translateField.setEditable(false);
         studyPanel.add(translateField, "span 2,growx");
 
-        JLabel jLabel9 = new javax.swing.JLabel();
+        JLabel jLabel9 = new JLabel();
         jLabel9.setText(bundle.getString("AnswerSeen(Label)")); // NOI18N
         studyPanel.add(jLabel9, "right");
 
-        answerSeenLabel = new javax.swing.JLabel();
+        answerSeenLabel = new JLabel();
         studyPanel.add(answerSeenLabel, "left,wrap");
 
-        transcriptionLabel = new javax.swing.JLabel();
+        transcriptionLabel = new JLabel();
         transcriptionLabel.setText(" ");
         studyPanel.add(transcriptionLabel, "span 2,growx,top");
 
-        imoticonLabel = new javax.swing.JLabel();
+        imoticonLabel = new JLabel();
         studyPanel.add(imoticonLabel, "w 53!,h 47!,gapleft 90,wrap");
 
-        JLabel jLabel6 = new javax.swing.JLabel();
+        JLabel jLabel6 = new JLabel();
         jLabel6.setText(bundle.getString("OverAnswerField(Label)")); // NOI18N
         studyPanel.add(jLabel6, "span 2,wrap");
 
-        answerField = new javax.swing.JTextField();
+        answerField = new JTextField();
         answerField.setEditable(false);
-        answerField.addActionListener(new java.awt.event.ActionListener() {
+        answerField.addActionListener(new ActionListener() {
 
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
                 answerFieldActionPerformed(evt);
             }
         });
         studyPanel.add(answerField, "span 2,growx");
 
-        answerStatutLabel = new javax.swing.JLabel();
+        answerStatutLabel = new JLabel();
         studyPanel.add(answerStatutLabel, "span 2,gapleft 60,wrap");
 
-        answerButton = new javax.swing.JButton();
-        answerButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/check.png"))); // NOI18N
+        answerButton = new JButton();
+        answerButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/check.png"))); // NOI18N
         answerButton.setText(bundle.getString("Answer(Button)")); // NOI18N
-        answerButton.addActionListener(new java.awt.event.ActionListener() {
+        answerButton.addActionListener(new ActionListener() {
 
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
                 answerButtonActionPerformed(evt);
             }
         });
         studyPanel.add(answerButton, "growx,sg");
 
-        seeAnswerButton = new javax.swing.JButton();
-        seeAnswerButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/lightbulb_on.png"))); // NOI18N
+        seeAnswerButton = new JButton();
+        seeAnswerButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/lightbulb_on.png"))); // NOI18N
         seeAnswerButton.setText(bundle.getString("SeeAnswer(Button)")); // NOI18N
-        seeAnswerButton.addActionListener(new java.awt.event.ActionListener() {
+        seeAnswerButton.addActionListener(new ActionListener() {
 
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
                 seeAnswerButtonActionPerformed(evt);
             }
         });
@@ -362,11 +394,11 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         topPanel.add(studyPanel, "span 2,growx");
     }
 
-    private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    private void startButtonActionPerformed(ActionEvent evt) {
         startLearning();
     }
 
-    private void wordsButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    private void wordsButtonActionPerformed(ActionEvent evt) {
 
         wordsDialog = new WordsDialog(parent, true);
         wordsDialog.clear();
@@ -376,7 +408,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
 
     }
 
-    private void answerButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    private void answerButtonActionPerformed(ActionEvent evt) {
 
         if (selectedDictionary == SelectedDictionary.EN_BG) {
             if (howToEnumerate == HowToEnumerate.RANDOM) {
@@ -394,8 +426,8 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         }
     }
 
-    private void seeAnswerButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        String word = null;
+    private void seeAnswerButtonActionPerformed(ActionEvent evt) {
+        String word;
         if (selectedDictionary == SelectedDictionary.EN_BG) {
             if (howToEnumerate == HowToEnumerate.RANDOM) {
                 word = (String) shuffleTranslationForLearning.get(wordIndex);
@@ -419,14 +451,14 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         answerField.requestFocus();
     }
 
-    private void stopButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    private void stopButtonActionPerformed(ActionEvent evt) {
 
         setComponentsEnable(true);
         //answerField.setText(null);
 
     }
 
-    private void formWindowClosed(java.awt.event.WindowEvent evt) {
+    private void formWindowClosed(WindowEvent evt) {
         PM.putInt(Preference.DICTIONARIES, dictionariesComboBox.getSelectedIndex());
         PM.putBoolean(Preference.LEARNING_IN_ORDER, inOrderOfInputRadioButton.isSelected());
         PM.putBoolean(Preference.LEARNING_IN_REVERSE_ORDER, inReverseOrderOfInputRadioButton.isSelected());
@@ -435,7 +467,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         PM.putBoolean(Preference.REPEAT_WORDS, repeatWordCheckBox.isSelected());
     }
 
-    private void answerFieldActionPerformed(java.awt.event.ActionEvent evt) {
+    private void answerFieldActionPerformed(ActionEvent evt) {
         if (!isStopedLearn) {
             if (selectedDictionary == SelectedDictionary.EN_BG) {
                 if (howToEnumerate == HowToEnumerate.RANDOM) {
@@ -454,7 +486,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         }
     }
 
-    private void repeatWordCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {
+    private void repeatWordCheckBoxActionPerformed(ActionEvent evt) {
         if (repeatWordCheckBox.isSelected()) {
             repeatMisspelledWordsCheckBox.setSelected(false);
         }
@@ -463,7 +495,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         }
     }
 
-    private void repeatMisspelledWordsCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {
+    private void repeatMisspelledWordsCheckBoxActionPerformed(ActionEvent evt) {
         if (repeatMisspelledWordsCheckBox.isSelected()) {
             repeatWordCheckBox.setSelected(false);
         }
@@ -472,12 +504,12 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         }
     }
 
-    private void studySetsComboBoxPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+    private void studySetsComboBoxPopupMenuWillBecomeInvisible(PopupMenuEvent evt) {
         checkingTheDatabase();
         PM.putInt(Preference.STUDY_SETS, studySetsComboBox.getSelectedIndex());
     }
 
-    private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {
+    private void formWindowGainedFocus(WindowEvent evt) {
         studySets = studyService.getStudySets();
         setStudySetsInComboBox();
         if (!studySets.isEmpty()) {
@@ -539,13 +571,13 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         countOfTheCorrectWordsLabel.setText("0");
         countOfTheWrongWordsLabel.setText("0");
         answerSeenLabel.setText("0");
-        correctAnswer = new Integer(0);
-        wrongAnswer = new Integer(0);
-        answerSeen = new Integer(0);
+        correctAnswer = 0;
+        wrongAnswer = 0;
+        answerSeen = 0;
     }
 
     private void showWordWhenStartTheStudy(List<String> words, List<String> translations) {
-        String translation = null, word = null;
+        String translation, word;
         if (selectedDictionary == SelectedDictionary.EN_BG) {
             word = words.get(wordIndex);
             translateField.setText(word);
@@ -553,7 +585,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
             transcriptionLabel.setText(" " + transcription);
         } else {
             translation = translations.get(wordIndex);
-            List<String> possiblesTranslations = new ArrayList<String>();
+            List<String> possiblesTranslations;
             possiblesTranslations = studyService.getPossiblesTranslations(translation);
             translation = studyService.combinePossiblesTranslationsForTheTable(possiblesTranslations);
             translateField.setText(translation);
@@ -588,19 +620,19 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         String wordTranslation = answerField.getText();
         wordTranslation = wordTranslation.toLowerCase();
 
-        String[] ourAnswers = null;
+        String[] ourAnswers;
         ourAnswers = wordTranslation.split("[,]+");
 
-        if (wordTranslation == null || wordTranslation.isEmpty()) {
+        if (wordTranslation.isEmpty()) {
             JOptionPane.showMessageDialog(this, TRANSLATOR.translate("AnswerFeild(Message)"), null, JOptionPane.ERROR_MESSAGE);
             answerField.requestFocus();
         }
 
-        List<String> possibleAnswers = new ArrayList<String>();
+        List<String> possibleAnswers;
         String translation = translations.get(wordIndex);
         possibleAnswers = studyService.getPossiblesTranslations(translation);
         studyService.possibleAnswers(translation);
-        List<String> anotherPossibleAnswers = new ArrayList<String>();
+        List<String> anotherPossibleAnswers;
         anotherPossibleAnswers = studyService.getAnothersPossiblesAnswers();
 
         if (repeatWordCheckBox.isSelected() && !wordTranslation.isEmpty()) {
@@ -665,10 +697,8 @@ public class StudyWordsDialog extends javax.swing.JDialog {
             answer = studyService.removeSpacesInTheBeginningAndEnd(answer);
             if (possibleAnswers.contains(answer)) {
                 isCorrectAnswer = true;
-                continue;
             } else if (anotherPossibleAnswers.contains(answer)) {
                 isCorrectAnswer = true;
-                continue;
             } else {
                 isCorrectAnswer = false;
                 break;
@@ -700,7 +730,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
 
         String word = words.get(wordIndex);
         if (selectedDictionary == SelectedDictionary.BG_EN) {
-            List<String> possiblesTranslations = new ArrayList<String>();
+            List<String> possiblesTranslations;
             possiblesTranslations = studyService.getPossiblesTranslations(word);
             word = studyService.combinePossiblesTranslationsForTheTable(possiblesTranslations);
         }
@@ -729,8 +759,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
             return " ";
         }
 
-        String transcription = translation.substring(beginIndex, endIndex);
-        return transcription;
+        return translation.substring(beginIndex, endIndex);
     }
 
     private void setComponentsEnable(boolean enable) {
@@ -794,7 +823,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
     }
 
     private void setStudySetsInComboBox() {
-        List<String> namesOfStudySets = new ArrayList<String>();
+        List<String> namesOfStudySets;
         namesOfStudySets = studyService.getNamesOfStudySets();
         studySetsComboBox.setModel(new DefaultComboBoxModel(namesOfStudySets.toArray()));
         //int index = PM.getInt(Preference.STUDY_SETS, studySetsComboBox.getSelectedIndex());
