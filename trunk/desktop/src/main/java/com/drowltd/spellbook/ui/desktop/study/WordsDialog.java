@@ -19,6 +19,7 @@ import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.StudySet;
 import com.drowltd.spellbook.ui.swing.component.DictionaryComboBox;
 import com.jidesoft.hints.ListDataIntelliHints;
+import com.jidesoft.swing.AutoCompletion;
 import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.util.ArrayList;
@@ -87,6 +88,7 @@ public class WordsDialog extends javax.swing.JDialog {
 
         initComponents();
 
+        AutoCompletion a = new AutoCompletion(wordSearchField, words);
         studyService = new StudyService();
         studySets = studyService.getStudySets();
         setStudySetsInComboBox();
