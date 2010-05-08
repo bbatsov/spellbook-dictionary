@@ -2,14 +2,7 @@ package com.drowltd.spellbook.core.model;
 
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  *
@@ -25,7 +18,7 @@ import javax.persistence.Table;
 })
 public class UpdateEntry extends AbstractEntity {
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "UPDATED_REMOTE_DICTIONARY_ENTRIES",
     joinColumns =
     @JoinColumn(name = "update_entry_id", referencedColumnName = "id"),

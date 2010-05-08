@@ -11,6 +11,8 @@ import com.drowltd.spellbook.core.model.RemoteDictionary;
 import com.drowltd.spellbook.core.model.RemoteDictionaryEntry;
 import com.drowltd.spellbook.core.model.RevisionEntry;
 import com.drowltd.spellbook.core.model.UpdateEntry;
+
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.Random;
 
@@ -48,7 +50,7 @@ public class UpdateServiceTest {
     }
 
     //@BeforeClass
-    public static void initEM() throws AuthenticationException, UpdateServiceException {
+    public static void initEM() throws AuthenticationException, UpdateServiceException, SQLException {
         DictionaryService.init("/opt/spellbook/db/spellbook.data.db");
         updateService = UpdateService.getInstance("iivalchev", "pass");
 
@@ -63,7 +65,7 @@ public class UpdateServiceTest {
     }
 
     @BeforeClass
-    public static void init() throws UpdateServiceException, InterruptedException, AuthenticationException {
+    public static void init() throws UpdateServiceException, InterruptedException, AuthenticationException, SQLException {
         testDate = new Date();
         Random random = new Random();
         translation = translation + (random.nextLong());
