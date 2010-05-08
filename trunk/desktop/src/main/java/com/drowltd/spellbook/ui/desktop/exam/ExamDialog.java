@@ -10,6 +10,7 @@ import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.core.service.exam.ExamService;
 import com.drowltd.spellbook.ui.desktop.PreferencesDialog;
 import com.drowltd.spellbook.ui.desktop.PreferencesExtractor;
+import com.drowltd.spellbook.ui.desktop.SpellbookFrame;
 import com.drowltd.spellbook.ui.swing.component.DifficultyComboBox;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.jidesoft.dialog.ButtonPanel;
@@ -56,6 +57,8 @@ public class ExamDialog extends StandardDialog {
     private Dictionary selectedDictionary;
     private ExamStats examStats;
 
+    private Frame parent;
+
     private static enum TimerStatus {
         PAUSED, STARTED, STOPPED, DISABLED
     }
@@ -78,6 +81,8 @@ public class ExamDialog extends StandardDialog {
 
     public ExamDialog(Frame parent, boolean modal) {
         super(parent, modal);
+
+        this.parent = parent;
 
         TRANSLATOR.reset();
 
@@ -108,8 +113,6 @@ public class ExamDialog extends StandardDialog {
         examWords = PM.getInt(Preference.EXAM_WORDS, 10);
 
         setIconImage(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE16).getImage());
-
-        setLocationRelativeTo(parent);
 
         initLanguages();
     }
@@ -379,6 +382,10 @@ public class ExamDialog extends StandardDialog {
 
     public void showExamDialog() {
         pack();
+
+        // this should be called after pack()!
+        setLocationRelativeTo(parent);
+
         setVisible(true);
     }
 
@@ -451,7 +458,7 @@ public class ExamDialog extends StandardDialog {
                 preferencesDialog.getTabbedPane().setSelectedIndex(2);
 
                 preferencesDialog.setLocationRelativeTo(null);
-                PreferencesExtractor.extract(null, preferencesDialog);
+                PreferencesExtractor.extract((SpellbookFrame) parent, preferencesDialog);
                 //TODO Reload dialog
             }
         });
