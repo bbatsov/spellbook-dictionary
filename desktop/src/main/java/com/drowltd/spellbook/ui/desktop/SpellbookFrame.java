@@ -469,7 +469,10 @@ public class SpellbookFrame extends JFrame {
     public void clipboardCallback() {
         String transferredText = clipboardIntegration.getClipboardContents().trim();
 
-        if (!transferredText.isEmpty()) {
+        // ignore empty text and urls
+        if (!transferredText.isEmpty()
+                && !transferredText.startsWith("http://")
+                && !transferredText.startsWith("mailto:")) {
             LOGGER.info("'" + transferredText + "' received from clipboard");
             String searchString = transferredText.split("\\s")[0].toLowerCase();
             String foundWord = "";
