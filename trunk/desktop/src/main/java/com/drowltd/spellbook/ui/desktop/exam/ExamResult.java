@@ -249,9 +249,7 @@ public class ExamResult extends StandardDialog {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                WrongWordsDialog wrongWordsDialog = new WrongWordsDialog(null, true);
-                wrongWordsDialog.setLocationRelativeTo(null);
-                wrongWordsDialog.setVisible(true);
+
             }
         });
 
