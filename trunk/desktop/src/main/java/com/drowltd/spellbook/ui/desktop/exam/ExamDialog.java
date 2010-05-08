@@ -132,7 +132,6 @@ public class ExamDialog extends StandardDialog {
         contentPanel.add(fromLanguageComboBox, "growx");
 
         fromLanguageComboBox.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent evt) {
                 final List<Language> languagesTo = examService.getToLanguages((Language) fromLanguageComboBox.getSelectedItem());
@@ -360,7 +359,6 @@ public class ExamDialog extends StandardDialog {
     }
 
     private Timer swingTimer = new Timer(1000, new ActionListener() {
-
         @Override
         public void actionPerformed(ActionEvent e) {
             timerProgressBar.setValue(timerProgressBar.getValue() + 1);
@@ -406,9 +404,8 @@ public class ExamDialog extends StandardDialog {
     }
 
     private void showExamResult() {
-        ExamResult examResultDialog = new ExamResult(null, true);
-        examResultDialog.setLocationRelativeTo(this);
-        examResultDialog.showExamResult(examStats);
+        ExamResult examResultDialog = new ExamResult(this, examStats);
+        examResultDialog.showExamResult();
     }
 
     private void initLanguages() {
