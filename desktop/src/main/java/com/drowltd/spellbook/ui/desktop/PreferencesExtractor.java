@@ -153,7 +153,7 @@ public class PreferencesExtractor {
             spellbookFrame.setSelectedFont(selectedFont);
 
             // exam prefs
-            PM.put(Preference.EXAM_DIFFICULTY, preferencesDialog.getExamDifficulty().toString());
+            PM.put(Preference.EXAM_DIFFICULTY, preferencesDialog.getExamDifficulty().name());
             PM.putInt(Preference.EXAM_WORDS, preferencesDialog.getExamWords());
             PM.putBoolean(Preference.EXAM_TIMER, preferencesDialog.isExamTimerEnabled());
 
