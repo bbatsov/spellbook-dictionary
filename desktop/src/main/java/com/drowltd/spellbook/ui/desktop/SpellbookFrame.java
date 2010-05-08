@@ -1276,7 +1276,6 @@ public class SpellbookFrame extends JFrame {
         for (Dictionary dictionary : availableDictionaries) {
             dictionaryMenu.add(new DictionaryItem(dictionary));
         }
-
     }
 
     private void autoCorrectDictionary(String searchString) {
