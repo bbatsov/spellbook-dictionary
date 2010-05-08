@@ -5,12 +5,14 @@ import com.drowltd.spellbook.core.model.DictionaryEntry;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.model.RankEntry;
 import com.drowltd.spellbook.core.model.UncommittedEntries;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +42,6 @@ public class DictionaryService extends AbstractPersistenceService {
      * Bootstraps the dictionary service. The method can be executed only once.
      *
      * @param dictDbFile the dictionary database file
-     *
      * @throws DictionaryDbLockedException if another process is already using the db file
      */
     public static void init(String dictDbFile) {
@@ -91,7 +92,7 @@ public class DictionaryService extends AbstractPersistenceService {
             LOGGER.info("Caching dictionary " + d.getName());
             dictionaryWordsCache.put(d.getName(),
                     EM.createQuery("select de.word from DictionaryEntry de "
-                    + "where de.dictionary = :dictionary order by LOWER(de.word) asc").setParameter("dictionary", d).getResultList());
+                            + "where de.dictionary = :dictionary order by LOWER(de.word) asc").setParameter("dictionary", d).getResultList());
         } else {
             LOGGER.info("Loading from cache dictionary " + d.getName());
         }
@@ -103,7 +104,7 @@ public class DictionaryService extends AbstractPersistenceService {
      * Retrieves the translation of a word from the specified dictionary.
      *
      * @param word the target word
-     * @param d the target dictionary
+     * @param d    the target dictionary
      * @return the word's translation
      */
     public String getTranslation(String word, Dictionary d) {
@@ -144,9 +145,9 @@ public class DictionaryService extends AbstractPersistenceService {
     /**
      * Adds a new word to a dictionary
      *
-     * @param word the word to add
+     * @param word        the word to add
      * @param translation the word's translation
-     * @param d the dictionary in which the word will be added
+     * @param d           the dictionary in which the word will be added
      */
     public void addWord(String word, String translation, Dictionary d) {
         if (word == null || word.isEmpty()) {
@@ -192,10 +193,10 @@ public class DictionaryService extends AbstractPersistenceService {
     /**
      * Updates a dictionary entry. Both the word itself and its translation can be updated.
      *
-     * @param word the word before the update(needed to find the entry to update)
-     * @param newWord the possibly new word
+     * @param word        the word before the update(needed to find the entry to update)
+     * @param newWord     the possibly new word
      * @param translation the new translation
-     * @param d the dictionary containing the word
+     * @param d           the dictionary containing the word
      */
     public void updateWord(String word, String newWord, String translation, Dictionary d) {
         if (word == null || word.isEmpty()) {
@@ -234,7 +235,7 @@ public class DictionaryService extends AbstractPersistenceService {
     /**
      * Deletes a word from the specified dictionary.
      *
-     * @param word word to delete
+     * @param word       word to delete
      * @param dictionary the dictionary to remove the word from
      */
     public void deleteWord(String word, Dictionary dictionary) {
@@ -248,7 +249,7 @@ public class DictionaryService extends AbstractPersistenceService {
      * Checks whether a dictionary contains a word.
      *
      * @param word the word for which to check
-     * @param d the dictionary in which to check
+     * @param d    the dictionary in which to check
      * @return true if the word is present, false otherwise
      */
     public boolean containsWord(String word, Dictionary d) {
@@ -289,7 +290,7 @@ public class DictionaryService extends AbstractPersistenceService {
      * Retrieves a dictionary by its from and to languages.
      *
      * @param languageFrom from language
-     * @param languageTo to language
+     * @param languageTo   to language
      * @return the dictionary that matches the languages
      */
     public Dictionary getDictionary(Language languageFrom, Language languageTo) {
@@ -316,6 +317,37 @@ public class DictionaryService extends AbstractPersistenceService {
         re.setLanguage(language);
         re.setWord(word);
         re.setRank(1);
+
+        EntityTransaction t = EM.getTransaction();
+        t.begin();
+        EM.persist(re);
+        t.commit();
+    }
+
+    public void addRankEntry(String word, Language language, int rank) {
+        if (word == null || word.isEmpty()) {
+            LOGGER.error("word == null || word.isEmpty()");
+            throw new IllegalArgumentException("word == null || word.isEmpty()");
+        }
+
+        if (language == null) {
+            LOGGER.error("language is null");
+            throw new IllegalArgumentException("language is null");
+        }
+
+        if (rank < 0) {
+            LOGGER.error("rank < 0");
+            throw new IllegalArgumentException("rank < 0");
+        }
+        RankEntry re = null;
+        try {
+            re = EM.createQuery("select re from RankEntry re where re.word = :word and re.language = :language", RankEntry.class).setParameter("word", word).setParameter("language", language).getSingleResult();
+        } catch (NoResultException e) {
+            re = new RankEntry();
+            re.setLanguage(language);
+            re.setWord(word);
+        }
+        re.setRank(rank);
 
         EntityTransaction t = EM.getTransaction();
         t.begin();
