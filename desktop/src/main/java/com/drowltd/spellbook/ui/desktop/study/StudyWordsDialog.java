@@ -58,6 +58,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
     private boolean isStopedLearn = true;
     private HowToEnumerate howToEnumerate = HowToEnumerate.IN_ORDER_OF_INPUT;
     private Frame parent;
+
     //components
     private JButton answerButton;
     private JTextField answerField;
@@ -66,7 +67,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
     private JLabel countOfTheCorrectWordsLabel;
     private JLabel countOfTheWrongWordsLabel;
     private JComboBox dictionariesComboBox;
-    private JLabel firstRowLabel;
+    private JLabel addWordsLabel;
     private JLabel imoticonLabel;
     private JRadioButton inOrderOfInputRadioButton;
     private JRadioButton inReverseOrderOfInputRadioButton;
@@ -175,45 +176,20 @@ public class StudyWordsDialog extends javax.swing.JDialog {
 
         initStudyPanel(bundle);
 
-        /*
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(studyPanel);
-        studyPanel.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-        jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel3Layout.createSequentialGroup().addContainerGap().addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false).addComponent(translateField, javax.swing.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE).addGroup(jPanel3Layout.createSequentialGroup().addComponent(answerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE).addGap(18, 18, 18).addComponent(seeAnswerButton)).addComponent(answerField, javax.swing.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE).addComponent(transcriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE).addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE).addGroup(jPanel3Layout.createSequentialGroup().addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false).addComponent(startButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE).addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)).addGap(18, 18, 18).addComponent(stopButton, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))).addGap(50, 50, 50).addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel3Layout.createSequentialGroup().addGap(8, 8, 8).addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(jLabel9, javax.swing.GroupLayout.Alignment.TRAILING).addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING).addComponent(jLabel7, javax.swing.GroupLayout.Alignment.TRAILING)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(answerSeenLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE).addComponent(countOfTheWrongWordsLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 43, Short.MAX_VALUE).addComponent(countOfTheCorrectWordsLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)).addGap(10, 10, 10)).addGroup(jPanel3Layout.createSequentialGroup().addGap(31, 31, 31).addComponent(imoticonLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)).addGroup(jPanel3Layout.createSequentialGroup().addGap(8, 8, 8).addComponent(answerStatutLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))).addGap(142, 142, 142)));
-
-        jPanel3Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[]{answerButton, seeAnswerButton, startButton, stopButton});
-
-        jPanel3Layout.setVerticalGroup(
-        jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel3Layout.createSequentialGroup().addContainerGap().addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER).addComponent(startButton).addComponent(stopButton).addComponent(jLabel7).addComponent(countOfTheCorrectWordsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(jLabel4).addComponent(jLabel8).addComponent(countOfTheWrongWordsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER).addComponent(translateField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addComponent(jLabel9).addComponent(answerSeenLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup().addComponent(transcriptionLabel).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE).addComponent(jLabel6)).addComponent(imoticonLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER).addComponent(answerField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addComponent(answerStatutLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(answerButton).addComponent(seeAnswerButton)).addContainerGap()));
-
-        jPanel3Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[]{answerButton, seeAnswerButton, startButton, stopButton});
-         */
-
-        /*
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addContainerGap().addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(studyPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 513, Short.MAX_VALUE).addGroup(layout.createSequentialGroup().addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false).addComponent(repeatWordCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE).addComponent(wordsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false).addComponent(repeatMisspelledWordsCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE).addComponent(howToEnumeratePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))).addContainerGap()));
-
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[]{howToEnumeratePanel, wordsPanel});
-
-        layout.setVerticalGroup(
-        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addContainerGap().addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false).addComponent(howToEnumeratePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE).addComponent(wordsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(repeatWordCheckBox).addComponent(repeatMisspelledWordsCheckBox)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(studyPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addContainerGap()));
-         */
         pack();
     }
 
     private void initWordsPanel(ResourceBundle bundle) {
-        JPanel wordsPanel = new javax.swing.JPanel(new MigLayout("", "20[]20", "[][][][][][]0[]"));
+        JPanel wordsPanel = new javax.swing.JPanel(new MigLayout("", "20[200]20", "[][][][][]0[21]"));
         wordsPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        wordsPanel.setMaximumSize(new java.awt.Dimension(224, 179));
+        wordsPanel.setMaximumSize(new java.awt.Dimension(240, 179)); //224
 
         JLabel jLabel1 = new javax.swing.JLabel();
         jLabel1.setText(bundle.getString("Languages(Label)")); // NOI18N
         wordsPanel.add(jLabel1, "left,wrap");
 
         dictionariesComboBox = new DictionaryComboBox(dictionaries);
-        wordsPanel.add(dictionariesComboBox, "w 184!,wrap");
+        wordsPanel.add(dictionariesComboBox, "span,growx,wrap");
 
         JLabel jLabel3 = new javax.swing.JLabel();
         jLabel3.setText(bundle.getString("StudySet(Label)")); // NOI18N
@@ -232,7 +208,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
             public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
             }
         });
-        wordsPanel.add(studySetsComboBox, "w 184!,wrap");
+        wordsPanel.add(studySetsComboBox, "span,growx,wrap");
 
         wordsButton = new javax.swing.JButton();
         wordsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/16x16/dictionary.png"))); // NOI18N
@@ -249,19 +225,15 @@ public class StudyWordsDialog extends javax.swing.JDialog {
         warningIconLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/24x24/warning.png"))); // NOI18N
         wordsPanel.add(warningIconLabel, "split 2,left,w 25!,h 22!");
 
-        firstRowLabel = new javax.swing.JLabel();
-        firstRowLabel.setText(bundle.getString("AddWordsFirstLabel(Message)")); // NOI18N
-        wordsPanel.add(firstRowLabel, "center,h 12!,wrap");
-
-        secondRowLabel = new javax.swing.JLabel();
-        secondRowLabel.setText(bundle.getString("AddWordsSecondLabel(Message)"));
-        wordsPanel.add(secondRowLabel, "center,h 12!");
+        addWordsLabel = new javax.swing.JLabel();
+        addWordsLabel.setText(bundle.getString("AddWordsLabel(Message)")); // NOI18N
+        wordsPanel.add(addWordsLabel, "wrap");
 
         topPanel.add(wordsPanel, "sg");
     }
 
     private void initHowToEnumeratePanel(ResourceBundle bundle) {
-        JPanel howToEnumeratePanel = new javax.swing.JPanel(new MigLayout("wrap 1", "37[]", "[]20[]20[]20[]"));
+        JPanel howToEnumeratePanel = new javax.swing.JPanel(new MigLayout("wrap 1", "53[]", "[]20[]20[]20[]"));
         howToEnumeratePanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         //howToEnumeratePanel.setMaximumSize(new java.awt.Dimension(224, 159));
         // howToEnumeratePanel.setMinimumSize(new java.awt.Dimension(224, 159));
@@ -286,7 +258,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
     }
 
     private void initStudyPanel(ResourceBundle bundle) {
-        JPanel studyPanel = new javax.swing.JPanel(new MigLayout("", "[left,105][right,105][][30]", "[][][][47][][][][]"));
+        JPanel studyPanel = new javax.swing.JPanel(new MigLayout("", "[left,105][right,105][][30]", "[][][][47][][][]"));
         studyPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         //studyPanel.setMaximumSize(new java.awt.Dimension(492, 238));
         //studyPanel.setMinimumSize(new java.awt.Dimension(492, 238));
@@ -800,8 +772,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
             } else {
                 startButton.setEnabled(isStopedLearn);
                 warningIconLabel.setIcon(null);
-                firstRowLabel.setText(null);
-                secondRowLabel.setText(null);
+                addWordsLabel.setText(null);
             }
         }
     }
@@ -809,8 +780,7 @@ public class StudyWordsDialog extends javax.swing.JDialog {
     private void reportThatDatabaseIsEmpty() {
         startButton.setEnabled(false);
         warningIconLabel.setIcon(IconManager.getImageIcon("warning.png", IconManager.IconSize.SIZE24));
-        firstRowLabel.setText(TRANSLATOR.translate("AddWordsFirstLabel(Message)"));
-        secondRowLabel.setText(TRANSLATOR.translate("AddWordsSecondLabel(Message)"));
+        addWordsLabel.setText(TRANSLATOR.translate("AddWordsLabel(Message)"));
     }
 
     public void showLearningWordsDialog() {
