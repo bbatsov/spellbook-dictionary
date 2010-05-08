@@ -88,7 +88,9 @@ public class WordsDialog extends javax.swing.JDialog {
 
         initComponents();
 
-        AutoCompletion a = new AutoCompletion(wordSearchField, words);
+        AutoCompletion autoCompletion = new AutoCompletion(wordSearchField, words);
+        autoCompletion.setStrict(false);
+
         studyService = new StudyService();
         studySets = studyService.getStudySets();
         setStudySetsInComboBox();
