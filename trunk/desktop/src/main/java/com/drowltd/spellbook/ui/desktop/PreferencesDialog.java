@@ -420,6 +420,8 @@ public class PreferencesDialog extends StandardDialog {
 
         timerCheckBox = new JCheckBox();
         wordCountField = new JTextField();
+        // accept only numbers
+        wordCountField.setDocument(new NumberDocument());
         difficultyComboBox = new DifficultyComboBox();
 
         examSettingsPanel.add(new JLabel(TRANSLATOR.translate("DefaultExamDifficulty(Label)")), "growx");
