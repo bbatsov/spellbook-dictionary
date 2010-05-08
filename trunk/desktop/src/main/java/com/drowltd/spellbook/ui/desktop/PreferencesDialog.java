@@ -7,6 +7,7 @@ import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.ui.swing.component.DictionaryComboBox;
+import com.drowltd.spellbook.ui.swing.component.DifficultyComboBox;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.jidesoft.dialog.ButtonPanel;
 import com.jidesoft.dialog.ButtonResources;
@@ -16,7 +17,6 @@ import net.miginfocom.swing.MigLayout;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -25,7 +25,6 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
@@ -73,15 +72,12 @@ public class PreferencesDialog extends StandardDialog {
     private JTextField currentFontSizeField;
     private JTextField currentStyleField;
     private JComboBox defaultDictionaryComboBox;
-    private JRadioButton easyRadioButton;
     private JCheckBox emptyLineCheckBox;
     private JList fontList;
     private JList fontSizeList;
     private JList fontStyleList;
-    private JRadioButton hardRadioButton;
     private JComboBox languageComboBox;
     private JComboBox lookAndFeelComboBox;
-    private JRadioButton mediumRadioButton;
     private JCheckBox minimizeToTrayCheckBox;
     private JCheckBox minimizeToTrayOnCloseCheckBox;
     private JLabel previewText;
@@ -90,6 +86,7 @@ public class PreferencesDialog extends StandardDialog {
     private JCheckBox timerCheckBox;
     private JCheckBox trayPopupCheckBox;
     private JTextField wordCountField;
+    private DifficultyComboBox difficultyComboBox;
 
     public PreferencesDialog(final Frame parent, boolean modal) {
         super(parent, modal);
@@ -334,19 +331,7 @@ public class PreferencesDialog extends StandardDialog {
     }
 
     private void initExamTab() {
-        switch (Difficulty.valueOf(PM.get(Preference.EXAM_DIFFICULTY, Difficulty.EASY.toString()))) {
-            case EASY:
-                easyRadioButton.setSelected(true);
-                break;
-            case MEDIUM:
-                mediumRadioButton.setSelected(true);
-                break;
-            case HARD:
-                hardRadioButton.setSelected(true);
-                break;
-            default:
-                throw new IllegalStateException("Unknown difficulty");
-        }
+        difficultyComboBox.setSelectedItem(Difficulty.valueOf(PM.get(Preference.EXAM_DIFFICULTY, Difficulty.EASY.name())));
 
         wordCountField.setText(String.valueOf(PM.getInt(Preference.EXAM_WORDS, 10)));
         timerCheckBox.setSelected(PM.getBoolean(Preference.EXAM_TIMER, false));
@@ -361,13 +346,7 @@ public class PreferencesDialog extends StandardDialog {
     }
 
     public Difficulty getExamDifficulty() {
-        if (easyRadioButton.isSelected()) {
-            return Difficulty.EASY;
-        } else if (mediumRadioButton.isSelected()) {
-            return Difficulty.MEDIUM;
-        } else {
-            return Difficulty.HARD;
-        }
+        return (Difficulty) difficultyComboBox.getSelectedItem();
     }
 
     public Language getSelectedLanguage() {
@@ -431,38 +410,25 @@ public class PreferencesDialog extends StandardDialog {
         tabbedPane = new JTabbedPane();
         tabbedPane.addTab(TRANSLATOR.translate("GeneralSettings(Title)"), IconManager.getMenuIcon("preferences.png"), createGeneralPreferencesPanel());
         tabbedPane.addTab(TRANSLATOR.translate("FontTab(Label)"), IconManager.getMenuIcon("font.png"), createFontPreferencesPanel());
-        tabbedPane.addTab("Exam", IconManager.getMenuIcon("blackboard.png"), createExamPreferencesPanel());
+        tabbedPane.addTab(TRANSLATOR.translate("Exam(Title)"), IconManager.getMenuIcon("blackboard.png"), createExamPreferencesPanel());
 
         pack();
     }
 
     private JPanel createExamPreferencesPanel() {
-        JPanel examSettingsPanel = new JPanel(new MigLayout("wrap 4", "[grow][][][]"));
-        easyRadioButton = new JRadioButton();
-        mediumRadioButton = new JRadioButton();
-        hardRadioButton = new JRadioButton();
+        JPanel examSettingsPanel = new JPanel(new MigLayout("wrap 2", "[grow][grow]"));
+
         timerCheckBox = new JCheckBox();
         wordCountField = new JTextField();
-        ButtonGroup difficultyButtonGroup = new ButtonGroup();
+        difficultyComboBox = new DifficultyComboBox();
 
-        examSettingsPanel.add(new JLabel(TRANSLATOR.translate("ChooseDifficulty(Label)")), "growx");
-        examSettingsPanel.add(easyRadioButton);
-        examSettingsPanel.add(mediumRadioButton);
-        examSettingsPanel.add(hardRadioButton);
-        examSettingsPanel.add(new JLabel(TRANSLATOR.translate("ExamWords(Label)")), "growx");
+        examSettingsPanel.add(new JLabel(TRANSLATOR.translate("DefaultExamDifficulty(Label)")), "growx");
+        examSettingsPanel.add(difficultyComboBox);
+        examSettingsPanel.add(new JLabel(TRANSLATOR.translate("ExamSize(Label)")), "growx");
         examSettingsPanel.add(wordCountField, "wrap");
         examSettingsPanel.add(timerCheckBox);
 
-        difficultyButtonGroup.add(easyRadioButton);
-        easyRadioButton.setText(TRANSLATOR.translate("Easy(Label)"));
-
-        difficultyButtonGroup.add(mediumRadioButton);
-        mediumRadioButton.setText(TRANSLATOR.translate("Medium(Label)"));
-
-        difficultyButtonGroup.add(hardRadioButton);
-        hardRadioButton.setText(TRANSLATOR.translate("Hard(Label)"));
-
-        timerCheckBox.setText(TRANSLATOR.translate("Countdown(Label)"));
+        timerCheckBox.setText(TRANSLATOR.translate("TimeBasedExam(Label)"));
         return examSettingsPanel;
     }
 
