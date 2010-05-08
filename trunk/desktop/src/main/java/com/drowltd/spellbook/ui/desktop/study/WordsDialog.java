@@ -101,8 +101,8 @@ public class WordsDialog extends javax.swing.JDialog {
 
         getTable().setOpaque(true);
 
-        ListDataIntelliHints intellihints = new ListDataIntelliHints(wordSearchField, words);
-        intellihints.setCaseSensitive(false);
+        //ListDataIntelliHints intellihints = new ListDataIntelliHints(wordSearchField, words);
+        //intellihints.setCaseSensitive(false);
 
         wordSearchField.getDocument().addDocumentListener(new DocumentListener() {
 
