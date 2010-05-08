@@ -221,7 +221,7 @@ public class ExamDialog extends StandardDialog {
 
         contentPanel.add(timerIconLabel, "");
         timerIconLabel.setIcon(IconManager.getImageIcon("stopwatch.png", IconManager.IconSize.SIZE48));
-        contentPanel.add(timerProgressBar, "span, grow");
+        contentPanel.add(timerProgressBar, "span, growx");
         timerProgressBar.setForeground(Color.GREEN);
         timerProgressBar.setToolTipText(TRANSLATOR.translate("Timer(String)"));
         timerProgressBar.setString(TRANSLATOR.translate("Timer(String)"));
@@ -320,6 +320,12 @@ public class ExamDialog extends StandardDialog {
     private void answered() {
         displayTranslation();
 
+        // reset the timer on answer
+        if (timerStatus == TimerStatus.STARTED) {
+            swingTimer.restart();
+            timerProgressBar.setValue(0);
+        }
+
         if (examStats.getTotalWords() >= examWords) {
             stopExam();
         } else {
@@ -353,8 +359,20 @@ public class ExamDialog extends StandardDialog {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            timerProgressBar.setValue(timerProgressBar.getValue() + 1);
+            int remainingTime = difficulty.getTime() - timerProgressBar.getValue();
 
+            // if the time expires continue with the next question
+            if (remainingTime == 0) {
+                answered();
+            }
 
+            // if the remaining time is little make it stand out
+            if (remainingTime < 6) {
+                timerProgressBar.setForeground(Color.RED);
+            }
+
+            timerProgressBar.setString("Remaining time: " + remainingTime);
         }
     });
 
