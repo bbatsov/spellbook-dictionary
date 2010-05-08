@@ -152,8 +152,8 @@ public class DiffDialog extends StandardDialog {
         panel.add(jWordLabel, "growx, span 2");
         panel.add(new JLabel(bundle.getString("Dialog(Base)")), "growx");
         panel.add(new JLabel(bundle.getString("Dialog(Remote)")), "growx");
-        panel.add(jBaseScrollPane, "growx, growy, w 320, h 400");
-        panel.add(jRemoteScrollPane, "growx, growy, w 320, h 400");
+        panel.add(jBaseScrollPane, "grow, w 320, h 400");
+        panel.add(jRemoteScrollPane, "grow, w 320, h 400");
         panel.add(jAcceptBaseButton, "align 20%");
         panel.add(jAcceptRemoteButton, "align 20%");
 

@@ -769,7 +769,7 @@ public class SpellbookFrame extends JFrame {
         splitPane.setBorder(null);
         splitPane.setDividerLocation(DIVIDER_LOCATION);
 
-        topPanel.add(splitPane, "growx, growy");
+        topPanel.add(splitPane, "grow");
 
         wordsList.setModel(new ListBackedListModel(words));
         wordsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -810,7 +810,7 @@ public class SpellbookFrame extends JFrame {
         JPanel searchPanel = new JPanel(new MigLayout("wrap 1", "[grow]", "[][grow]"));
 
         searchPanel.add(wordSearchField, "growx");
-        searchPanel.add(new JScrollPane(wordsList), "growx, growy");
+        searchPanel.add(new JScrollPane(wordsList), "grow");
 
         splitPane.setLeftComponent(searchPanel);
 
@@ -820,7 +820,7 @@ public class SpellbookFrame extends JFrame {
         wordTranslationTextPane.setContentType("text/html");
         wordTranslationTextPane.setEditable(false);
 
-        translationPanel.add(new JScrollPane(wordTranslationTextPane), "growx, growy");
+        translationPanel.add(new JScrollPane(wordTranslationTextPane), "grow");
 
         splitPane.setRightComponent(translationPanel);
 

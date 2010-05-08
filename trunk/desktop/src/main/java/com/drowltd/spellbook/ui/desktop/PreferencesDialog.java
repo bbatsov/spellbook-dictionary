@@ -450,11 +450,11 @@ public class PreferencesDialog extends StandardDialog {
         fontSettingsPanel.add(currentFontField, "span 2, growx");
         fontSettingsPanel.add(currentStyleField, "growx");
         fontSettingsPanel.add(currentFontSizeField, "growx");
-        fontSettingsPanel.add(new JScrollPane(fontList), "span 2, growx, growy");
-        fontSettingsPanel.add(new JScrollPane(fontStyleList), "growx, growy");
-        fontSettingsPanel.add(new JScrollPane(fontSizeList), "growx, growy");
+        fontSettingsPanel.add(new JScrollPane(fontList), "span 2, grow");
+        fontSettingsPanel.add(new JScrollPane(fontStyleList), "grow");
+        fontSettingsPanel.add(new JScrollPane(fontSizeList), "grow");
         fontSettingsPanel.add(new JLabel(TRANSLATOR.translate("Preview(Label)")), "span 4, gaptop 10, gapbottom 10");
-        fontSettingsPanel.add(previewText, "span 4, growx, growy");
+        fontSettingsPanel.add(previewText, "span 4, grow");
 
         previewText.setText(TRANSLATOR.translate("PreviewText(Label)"));
 

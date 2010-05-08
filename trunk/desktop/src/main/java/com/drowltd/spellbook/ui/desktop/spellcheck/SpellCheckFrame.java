@@ -200,7 +200,7 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
         MigLayout migLayout = new MigLayout("wrap 1", "0[grow]0", "0[grow][]");
         getContentPane().setLayout(migLayout);
 
-        add(jScrollPane, "growx, growy, w 530, h 540");
+        add(jScrollPane, "grow, w 530, h 540");
         add(jStatusLabel, "split 2, align left, growx");
         add(jLanguageLabel, "align right, growx");
 

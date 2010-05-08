@@ -65,7 +65,7 @@ public class AboutDialog extends StandardDialog {
 
         infoTextPane.setContentType("text/html");
         infoTextPane.setText("Spellbook is a multiplatform dictionary application written in Java. Spellbook is open source and is developed by a team committed to the" +
-                        "goal of creating a high quality application that will serve the user community as best as possible.");
+                "goal of creating a high quality application that will serve the user community as best as possible.");
 
         /** Checks whether desktop is supported and enable button that launch browser */
         if (Desktop.isDesktopSupported()) {
@@ -96,7 +96,7 @@ public class AboutDialog extends StandardDialog {
         JPanel panel = new JPanel(new MigLayout("wrap 1", "[grow]", "[grow][]"));
 
         JScrollPane jScrollPane = new JScrollPane(infoTextPane);
-        panel.add(jScrollPane, "growx, growy");
+        panel.add(jScrollPane, "grow");
 
         panel.add(new JLabel(TRANSLATOR.translate("Copyright")), "center");
 
