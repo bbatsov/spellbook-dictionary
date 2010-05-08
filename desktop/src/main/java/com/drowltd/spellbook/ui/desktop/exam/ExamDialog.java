@@ -38,6 +38,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 /**
+ * @author Bozhidar Batsov
  * @author Ivan Spasov
  * @author Georgi Angelov
  * @author Miroslava Stancheva
