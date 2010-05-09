@@ -5,16 +5,15 @@ import com.drowltd.spellbook.core.model.DictionaryEntry;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.model.RankEntry;
 import com.drowltd.spellbook.core.model.UncommittedEntries;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Provides Spellbook's basic dictionary related functionality like looking for dictionaries, words, adding/updating/
@@ -32,7 +31,6 @@ public class DictionaryService extends AbstractPersistenceService {
      * Builds a service object.
      *
      * @param dictDbFile the path to the H2 database file
-     * @throws DictionaryDbLockedException
      */
     private DictionaryService(String dictDbFile) {
         super(dictDbFile);
@@ -42,7 +40,6 @@ public class DictionaryService extends AbstractPersistenceService {
      * Bootstraps the dictionary service. The method can be executed only once.
      *
      * @param dictDbFile the dictionary database file
-     * @throws DictionaryDbLockedException if another process is already using the db file
      */
     public static void init(String dictDbFile) {
         if (instance == null) {
@@ -150,7 +147,7 @@ public class DictionaryService extends AbstractPersistenceService {
      * @param d           the dictionary in which the word will be added
      */
     public void addWord(String word, String translation, Dictionary d) {
-        if (word == null || word.isEmpty()) {
+        if (word == null || word.trim().isEmpty()) {
             LOGGER.error("word == null || word.isEmpty()");
             throw new IllegalArgumentException("word == null || word.isEmpty()");
         }
@@ -199,12 +196,12 @@ public class DictionaryService extends AbstractPersistenceService {
      * @param d           the dictionary containing the word
      */
     public void updateWord(String word, String newWord, String translation, Dictionary d) {
-        if (word == null || word.isEmpty()) {
+        if (word == null || word.trim().isEmpty()) {
             LOGGER.error("word == null || word.isEmpty()");
             throw new IllegalArgumentException("word == null || word.isEmpty()");
         }
 
-        if (translation == null || translation.isEmpty()) {
+        if (translation == null || translation.trim().isEmpty()) {
             LOGGER.error("translation == null || translation.isEmpty()");
             throw new IllegalArgumentException("word == null || word.isEmpty()");
         }
@@ -246,7 +243,7 @@ public class DictionaryService extends AbstractPersistenceService {
         EntityTransaction entityTransaction = EM.getTransaction();
         entityTransaction.begin();
         EM.merge(ue);
-        entityTransaction.commit();      
+        entityTransaction.commit();
 
         entityTransaction.begin();
         EM.createQuery("delete from DictionaryEntry de where de.word = :word and de.dictionary = :dictionary").setParameter("word", word).setParameter("dictionary", dictionary).executeUpdate();
