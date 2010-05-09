@@ -256,7 +256,7 @@ public class StudyWordsDialog extends JDialog {
         addWordsLabel.setText(bundle.getString("AddWordsLabel(Message)")); // NOI18N
         wordsPanel.add(addWordsLabel, "wrap");
 
-        topPanel.add(wordsPanel, "sg");
+        topPanel.add(wordsPanel, "w 240!,h 179!,sg");
     }
 
     private void initHowToEnumeratePanel(ResourceBundle bundle) {
