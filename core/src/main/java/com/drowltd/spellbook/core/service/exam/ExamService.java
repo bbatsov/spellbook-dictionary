@@ -58,7 +58,7 @@ public class ExamService extends AbstractPersistenceService {
      */
     public void getExamWord(Dictionary dictionary) {
         examWordIndex = random.nextInt(words.size());
-        String translation0 = null;
+        String translation0;
 
         while ((translation0 = dictionaryService.getTranslation(words.get(examWordIndex), dictionary)).contains("\u0432\u0436.")) {
             examWordIndex = random.nextInt(words.size());
@@ -120,8 +120,8 @@ public class ExamService extends AbstractPersistenceService {
      * @param s one of the possible translations
      */
     private void slash(String s) {
-        String first = new String();
-        String last = new String();
+        String first = "";
+        String last = "";
 
         if (s.contains("/")) {
             String[] slash = s.split("/");
@@ -198,7 +198,7 @@ public class ExamService extends AbstractPersistenceService {
             throw new IllegalArgumentException("fromLanguage");
         }
 
-        List<Dictionary> dictionaries = EM.createQuery("select d from Dictionary d where d.fromLanguage = :fromLanguage").setParameter("fromLanguage", fromLanguage).getResultList();
+        List<Dictionary> dictionaries = EM.createQuery("select d from Dictionary d where d.fromLanguage = :fromLanguage", Dictionary.class).setParameter("fromLanguage", fromLanguage).getResultList();
 
         List<Language> languagesTo = new ArrayList<Language>(dictionaries.size());
         for (Dictionary dictionary : dictionaries) {
@@ -228,7 +228,7 @@ public class ExamService extends AbstractPersistenceService {
         }
     }
 
-    public void addScoreboardResult(String username, Double examWords, Double wrongWords, String difficulty) {
+    public void addScoreboardResult(String username, long examWords, long wrongWords, String difficulty) {
 
         ScoreboardEntry se = new ScoreboardEntry();
         se.setUsername(username);
@@ -242,19 +242,7 @@ public class ExamService extends AbstractPersistenceService {
         t.commit();
     }
 
-    public List<String> getScoreboardUsername() {
-        return EM.createQuery("select se.username from ScoreboardEntry se order by ((se.examWords - se.wrongWords)*100)/se.examWords desc").getResultList();
-    }
-
-    public List<Double> getScoreboardWrongword() {
-        return EM.createQuery("select se.wrongWords from ScoreboardEntry se order by ((se.examWords - se.wrongWords)*100)/se.examWords desc").getResultList();
-    }
-
-    public List<Double> getScoreboardExamword() {
-        return EM.createQuery("select se.examWords from ScoreboardEntry se order by ((se.examWords - se.wrongWords)*100)/se.examWords desc").getResultList();
-    }
-
-    public List<String> getScoreboardDifficulty() {
-        return EM.createQuery("select se.difficulty from ScoreboardEntry se order by ((se.examWords - se.wrongWords)*100)/se.examWords desc").getResultList();
+    public List<ScoreboardEntry> getExamScores() {
+        return EM.createQuery("select se from ScoreboardEntry se order by se.created asc", ScoreboardEntry.class).getResultList();
     }
 }

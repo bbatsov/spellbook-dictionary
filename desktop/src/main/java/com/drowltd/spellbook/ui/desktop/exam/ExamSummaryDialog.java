@@ -1,11 +1,13 @@
 package com.drowltd.spellbook.ui.desktop.exam;
 
 import com.drowltd.spellbook.core.i18n.Translator;
+import com.drowltd.spellbook.core.model.ScoreboardEntry;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.core.service.exam.ExamService;
 import com.drowltd.spellbook.ui.swing.model.ListBackedListModel;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.drowltd.spellbook.ui.swing.util.SwingUtil;
+import com.drowltd.spellbook.ui.swing.validation.ButtonControllingDocumentListener;
 import com.drowltd.spellbook.util.DateUtils;
 import com.jidesoft.dialog.ButtonPanel;
 import com.jidesoft.dialog.StandardDialog;
@@ -31,6 +33,8 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
 
 /**
  * @author Bozhidar Batsov
@@ -53,13 +57,12 @@ public class ExamSummaryDialog extends StandardDialog {
     private JLabel averageTime;
     private JTextField nameTextField;
     private JButton submitScoreButton;
-    private JPanel incorrectWordsPanel;
-    private JPanel scoreboardPanel;
+    private JPanel slidePanel;
     private ExamStats examStats;
     private Dialog owner;
     private static final int MIN_PASSING_SCORE = 60;
 
-    public ExamSummaryDialog(Dialog owner, ExamStats examStats) {
+    public ExamSummaryDialog(final Dialog owner, final ExamStats examStats) {
         super(owner, true);
         TRANSLATOR.reset();
 
@@ -77,12 +80,21 @@ public class ExamSummaryDialog extends StandardDialog {
         score = new JLabel();
         nameTextField = new JTextField();
         submitScoreButton = new JButton(TRANSLATOR.translate("SubmitScore(Button)"));
+        nameTextField.getDocument().addDocumentListener(new ButtonControllingDocumentListener(nameTextField, submitScoreButton));
+
+        submitScoreButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                examService.addScoreboardResult(nameTextField.getText(), examStats.getTotalWords(), examStats.getIncorrectWords().size(), examStats.getDifficulty().name());
+            }
+        });
 
         setTitle(TRANSLATOR.translate("ExamSummaryDialog(Title)"));
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setIconImage(IconManager.getImageIcon("teacher.png", IconManager.IconSize.SIZE16).getImage());
 
-        incorrectWordsPanel = createIncorrectWordsPanel();
+
+        slidePanel = createIncorrectWordsPanel();
     }
 
     @Override
@@ -103,9 +115,9 @@ public class ExamSummaryDialog extends StandardDialog {
                     add(contentPanel);
                 }
                 add(buttonPanel, JideBoxLayout.FIX);
-                incorrectWordsPanel = createIncorrectWordsPanel();
-                add(incorrectWordsPanel, JideBoxLayout.VARY);
-                incorrectWordsPanel.setVisible(false);
+                slidePanel = createIncorrectWordsPanel();
+                add(slidePanel, JideBoxLayout.VARY);
+                slidePanel.setVisible(false);
             }
         };
     }
@@ -142,10 +154,12 @@ public class ExamSummaryDialog extends StandardDialog {
         ButtonPanel buttonPanel = new ButtonPanel();
         JButton closeButton = new JButton();
         JButton incorrectWordsButton = new JButton();
+        JButton scoreboardButton = new JButton();
         incorrectWordsButton.setMnemonic('D');
         closeButton.setName(OK);
         buttonPanel.addButton(closeButton, ButtonPanel.AFFIRMATIVE_BUTTON);
         buttonPanel.addButton(incorrectWordsButton, ButtonPanel.OTHER_BUTTON);
+        buttonPanel.addButton(scoreboardButton, ButtonPanel.OTHER_BUTTON);
 
         closeButton.setAction(new AbstractAction("Close") {
             @Override
@@ -159,13 +173,30 @@ public class ExamSummaryDialog extends StandardDialog {
         incorrectWordsButton.setAction(new AbstractAction("View incorrect >>") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (incorrectWordsPanel.isVisible()) {
-                    incorrectWordsPanel.setVisible(false);
+                if (slidePanel.isVisible() && slidePanel.getName().equals("IW")) {
+                    slidePanel.setVisible(false);
                     putValue(Action.NAME, "View incorrect <<");
                     pack();
                 } else {
-                    incorrectWordsPanel.setVisible(true);
+                    slidePanel = createIncorrectWordsPanel();
+                    slidePanel.setVisible(true);
                     putValue(Action.NAME, "<< View incorrect");
+                    pack();
+                }
+            }
+        });
+
+        scoreboardButton.setAction(new AbstractAction("View scoreboard >>") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (slidePanel.isVisible() && slidePanel.getName().equals("SB")) {
+                    slidePanel.setVisible(false);
+                    putValue(Action.NAME, "View scoreboard <<");
+                    pack();
+                } else {
+                    slidePanel = createScoreboardPanel();
+                    slidePanel.setVisible(true);
+                    putValue(Action.NAME, "<< View scoreboard");
                     pack();
                 }
             }
@@ -176,11 +207,13 @@ public class ExamSummaryDialog extends StandardDialog {
         getRootPane().setDefaultButton(closeButton);
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         buttonPanel.setSizeConstraint(ButtonPanel.NO_LESS_THAN); // since the checkbox is quite wide, we don't want all of them have the same size.
+        submitScoreButton.setEnabled(false);
         return buttonPanel;
     }
 
     public JPanel createIncorrectWordsPanel() {
         JPanel panel = new JPanel(new MigLayout("wrap 2", "[100:150:, grow 40][200:300:, grow 60]", "[grow]"));
+        panel.setName("IW");
 
         final JList incorrectWords = new JList(new ListBackedListModel(examStats.getIncorrectWords()));
         panel.add(new JScrollPane(incorrectWords), "grow");
@@ -197,6 +230,25 @@ public class ExamSummaryDialog extends StandardDialog {
                         dictionaryService.getTranslation(selectedWord, examStats.getDictionary())));
             }
         });
+
+        return panel;
+    }
+
+    public JPanel createScoreboardPanel() {
+        JPanel panel = new JPanel(new MigLayout("wrap 3", "[grow]", "[grow]"));
+        panel.setName("SB");
+
+        List<ScoreboardEntry> scoreboardEntryList = examService.getExamScores();
+
+        panel.add(new JLabel("Username"));
+        panel.add(new JLabel("Difficulty"));
+        panel.add(new JLabel("Score"));
+
+        for (ScoreboardEntry scoreboardEntry : scoreboardEntryList) {
+            panel.add(new JLabel(scoreboardEntry.getUsername()));
+            panel.add(new JLabel(scoreboardEntry.getDifficulty()));
+            panel.add(new JLabel(String.valueOf(scoreboardEntry.getScore())));
+        }
 
         return panel;
     }

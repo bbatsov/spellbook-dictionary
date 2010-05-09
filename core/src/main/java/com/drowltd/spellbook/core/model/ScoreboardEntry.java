@@ -17,9 +17,9 @@ import javax.persistence.Table;
 public class ScoreboardEntry extends AbstractEntity {
 
     @Column(name = "exam_words")
-    private Double examWords;
+    private Long examWords;
     @Column(name = "wrong_word")
-    private Double wrongWords;
+    private Long wrongWords;
     private String username;
     private String difficulty;
 
@@ -31,19 +31,19 @@ public class ScoreboardEntry extends AbstractEntity {
         return username;
     }
 
-    public void setExamWords(Double examWords) {
+    public void setExamWords(long examWords) {
         this.examWords = examWords;
     }
 
-    public Double getExamWords() {
+    public long getExamWords() {
         return examWords;
     }
 
-    public void setWrongWords(Double wrongWords) {
+    public void setWrongWords(long wrongWords) {
         this.wrongWords = wrongWords;
     }
 
-    public Double getWrongWords() {
+    public long getWrongWords() {
         return wrongWords;
     }
 
@@ -53,5 +53,9 @@ public class ScoreboardEntry extends AbstractEntity {
 
     public String getDifficulty() {
         return difficulty;
+    }
+
+    public int getScore() {
+        return (int) ((examWords - wrongWords) / (double) examWords * 100);
     }
 }

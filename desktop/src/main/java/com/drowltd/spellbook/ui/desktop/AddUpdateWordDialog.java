@@ -12,6 +12,7 @@ package com.drowltd.spellbook.ui.desktop;
 
 import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.model.Dictionary;
+import com.drowltd.spellbook.ui.swing.validation.ButtonControllingDocumentListener;
 import com.jidesoft.dialog.ButtonPanel;
 import com.jidesoft.dialog.ButtonResources;
 import com.jidesoft.dialog.StandardDialog;
@@ -29,8 +30,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.text.DefaultEditorKit;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -86,30 +85,9 @@ public class AddUpdateWordDialog extends StandardDialog {
 
         wordTextField = new JTextField();
 
-        wordTextField.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                if (!wordTextField.getText().trim().isEmpty()) {
-                    okButton.setEnabled(true);
-                } else {
-                    okButton.setEnabled(false);
-                }
-            }
+        okButton = new JButton();
 
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                if (!wordTextField.getText().trim().isEmpty()) {
-                    okButton.setEnabled(true);
-                } else {
-                    okButton.setEnabled(false);
-                }
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-        });
+        wordTextField.getDocument().addDocumentListener(new ButtonControllingDocumentListener(wordTextField, okButton));
 
         newMeaningTextField = new JTextField();
         translationPane = new JTextPane();
@@ -125,6 +103,8 @@ public class AddUpdateWordDialog extends StandardDialog {
                 newMeaningTextField.setText(toBeEdited);
             }
         });
+
+        translationPane.setEditable(false);
 
         setLocationRelativeTo(parent);
 
@@ -157,7 +137,6 @@ public class AddUpdateWordDialog extends StandardDialog {
     @Override
     public ButtonPanel createButtonPanel() {
         ButtonPanel buttonPanel = new ButtonPanel();
-        okButton = new JButton();
         JButton cancelButton = new JButton();
         JButton helpButton = new JButton();
         okButton.setName(OK);
