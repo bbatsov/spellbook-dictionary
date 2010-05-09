@@ -239,7 +239,15 @@ public class DictionaryService extends AbstractPersistenceService {
      * @param dictionary the dictionary to remove the word from
      */
     public void deleteWord(String word, Dictionary dictionary) {
+        UncommittedEntries ue = getUncommitted();
+        DictionaryEntry de = EM.createQuery("select de from DictionaryEntry de where de.word = :word and de.dictionary = :dictionary", DictionaryEntry.class).setParameter("word", word).setParameter("dictionary", dictionary).getSingleResult();
+        ue.getDictionaryEntries().remove(de);
+
         EntityTransaction entityTransaction = EM.getTransaction();
+        entityTransaction.begin();
+        EM.merge(ue);
+        entityTransaction.commit();      
+
         entityTransaction.begin();
         EM.createQuery("delete from DictionaryEntry de where de.word = :word and de.dictionary = :dictionary").setParameter("word", word).setParameter("dictionary", dictionary).executeUpdate();
         entityTransaction.commit();
