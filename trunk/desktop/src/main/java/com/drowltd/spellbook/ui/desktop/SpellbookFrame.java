@@ -733,7 +733,6 @@ public class SpellbookFrame extends JFrame {
         wordSearchField.setFont(font);
         wordsList.setFont(font);
         wordTranslationTextPane.setFont(font);
-        dictionaryButton.setFont(font);
     }
 
     public void selectDictionary(Dictionary dictionary, boolean clear) {
