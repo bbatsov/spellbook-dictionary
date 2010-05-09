@@ -183,6 +183,11 @@ public class PreferencesDialog extends StandardDialog {
 
         defaultDictionaryComboBox.setSelectedItem(PM.get(Preference.DEFAULT_DICTIONARY, null));
 
+        // select the first dictionary in case none is selected
+        if (defaultDictionaryComboBox.getSelectedItem() == null) {
+            defaultDictionaryComboBox.setSelectedIndex(0);
+        }
+
         minimizeToTrayCheckBox.setSelected(PM.getBoolean(Preference.MIN_TO_TRAY, false));
 
         minimizeToTrayOnCloseCheckBox.setSelected(PM.getBoolean(Preference.CLOSE_TO_TRAY, false));
