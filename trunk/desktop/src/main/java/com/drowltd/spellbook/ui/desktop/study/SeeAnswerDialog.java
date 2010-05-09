@@ -10,6 +10,7 @@
  */
 package com.drowltd.spellbook.ui.desktop.study;
 
+import com.drowltd.spellbook.core.i18n.Translator;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -26,6 +27,7 @@ public class SeeAnswerDialog extends javax.swing.JDialog {
     private JScrollPane seeAnswerScrollPane;
     private JTextPane seeAnswerTextPane;
     private JButton closeButton;
+    private static final Translator TRANSLATOR = Translator.getTranslator("StudyWordsDialog");
 
     /** Creates new form seeAnswerDialog */
     public SeeAnswerDialog(java.awt.Frame parent, boolean modal) {
@@ -39,6 +41,7 @@ public class SeeAnswerDialog extends javax.swing.JDialog {
         setContentPane(topPanel);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle(TRANSLATOR.translate("SeeAnswerDialog(Title)"));
         setResizable(false);
 
         seeAnswerScrollPane = new javax.swing.JScrollPane();
@@ -46,7 +49,7 @@ public class SeeAnswerDialog extends javax.swing.JDialog {
         seeAnswerTextPane.setEditable(false);
         seeAnswerScrollPane.add(seeAnswerTextPane);
         seeAnswerScrollPane.setViewportView(seeAnswerTextPane);
-        topPanel.add(seeAnswerScrollPane,"w 550!");
+        topPanel.add(seeAnswerScrollPane,"w 550!, h 250!");
 
         closeButton = new javax.swing.JButton();
         closeButton.setText("close");
