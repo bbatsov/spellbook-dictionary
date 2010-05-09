@@ -6,6 +6,7 @@ import com.drowltd.spellbook.core.service.exam.ExamService;
 import com.drowltd.spellbook.ui.swing.model.ListBackedListModel;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.drowltd.spellbook.ui.swing.util.SwingUtil;
+import com.drowltd.spellbook.util.DateUtils;
 import com.jidesoft.dialog.ButtonPanel;
 import com.jidesoft.dialog.StandardDialog;
 import com.jidesoft.dialog.StandardDialogPane;
@@ -22,61 +23,62 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.Component;
 import java.awt.Dialog;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 
 /**
+ * @author Bozhidar Batsov
  * @author miroslava
  */
-public class ExamResult extends StandardDialog {
+public class ExamSummaryDialog extends StandardDialog {
 
-    private static final Translator TRANSLATOR = Translator.getTranslator("ExamResult");
+    private static final Translator TRANSLATOR = Translator.getTranslator("ExamSummaryDialog");
     private ExamService examService = ExamService.getInstance();
     private DictionaryService dictionaryService = DictionaryService.getInstance();
 
-    private JLabel correctWordsLabel;
-    private JLabel correctWordsResultLabel;
-    private JLabel endLabel;
+    private JLabel incorrectWords;
+    private JLabel correctWords;
+    private JLabel message;
     private JLabel iconLabel;
-    private JLabel jLabel1;
-    private JLabel result;
-    private JLabel successRateLabel;
-    private JLabel successRateResultLabel;
-    private JLabel wrongWordsLabel;
-    private JLabel wrongWordsResultLabel;
+    private JLabel score;
+    private JLabel grade;
+    private JLabel totalWords;
+    private JLabel totalTime;
+    private JLabel averageTime;
+    private JTextField nameTextField;
+    private JButton submitScoreButton;
     private JPanel incorrectWordsPanel;
     private JPanel scoreboardPanel;
     private ExamStats examStats;
     private Dialog owner;
-    private static final int MIN_PASSING_GRADE = 60;
+    private static final int MIN_PASSING_SCORE = 60;
 
-    public ExamResult(Dialog owner, ExamStats examStats) {
+    public ExamSummaryDialog(Dialog owner, ExamStats examStats) {
         super(owner, true);
         TRANSLATOR.reset();
 
         this.examStats = examStats;
         this.owner = owner;
 
-        correctWordsLabel = new JLabel();
-        correctWordsResultLabel = new JLabel();
-        wrongWordsLabel = new JLabel();
-        wrongWordsResultLabel = new JLabel();
-        successRateLabel = new JLabel();
-        successRateResultLabel = new JLabel();
-        endLabel = new JLabel();
-
+        incorrectWords = new JLabel();
+        correctWords = new JLabel();
+        totalTime = new JLabel();
+        averageTime = new JLabel();
+        grade = new JLabel();
+        totalWords = new JLabel();
+        message = new JLabel();
         iconLabel = new JLabel();
-        result = new JLabel();
-        jLabel1 = new JLabel();
+        score = new JLabel();
+        nameTextField = new JTextField();
+        submitScoreButton = new JButton(TRANSLATOR.translate("SubmitScore(Button)"));
 
-        setTitle("ExamResult(Title)");
+        setTitle(TRANSLATOR.translate("ExamSummaryDialog(Title)"));
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setIconImage(IconManager.getImageIcon("teacher.png", IconManager.IconSize.SIZE16).getImage());
 
@@ -110,36 +112,27 @@ public class ExamResult extends StandardDialog {
 
     @Override
     public JComponent createContentPanel() {
-        JPanel panel = new JPanel(new MigLayout("", "[]", "[][][][][][][]"));
+        JPanel panel = new JPanel(new MigLayout("wrap 2", "[][grow]"));
 
-        panel.add(jLabel1, "wrap, left");
-        jLabel1.setText(TRANSLATOR.translate("ScoreboardName(JTextFiedl)"));
-
-        panel.add(result, "center, wrap");
-        result.setFont(new Font("Tahoma", 1, 14));
-        result.setText(TRANSLATOR.translate("Result(JLable)"));
-
-        panel.add(correctWordsLabel, "split 3");
-        correctWordsLabel.setFont(new Font("Tahoma", 1, 11));
-        correctWordsLabel.setHorizontalAlignment(SwingConstants.LEFT);
-        correctWordsLabel.setText(TRANSLATOR.translate("CorrectWords(String)"));
-        panel.add(correctWordsResultLabel, "");
-
-        panel.add(iconLabel, "spany 3, wrap, center");
-        iconLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconManager.IconSize.SIZE48));
-
-        panel.add(wrongWordsLabel, "split 3");
-        wrongWordsLabel.setFont(new Font("Tahoma", 1, 11));
-        wrongWordsLabel.setHorizontalAlignment(SwingConstants.LEFT);
-        wrongWordsLabel.setText(TRANSLATOR.translate("WrongWords(String)"));
-        panel.add(wrongWordsResultLabel, "wrap");
-
-        panel.add(successRateLabel, "split 3");
-        successRateLabel.setFont(new Font("Tahoma", 1, 11));
-        successRateLabel.setText(TRANSLATOR.translate("Success(Label)"));
-        panel.add(successRateResultLabel, "wrap");
-
-        panel.add(endLabel, "wrap, center");
+        panel.add(message);
+        panel.add(iconLabel);
+        panel.add(new JLabel(TRANSLATOR.translate("Score(Label)")));
+        panel.add(score);
+        panel.add(new JLabel(TRANSLATOR.translate("Grade(Label)")));
+        panel.add(grade);
+        panel.add(new JLabel(TRANSLATOR.translate("Total(Label)")));
+        panel.add(totalWords);
+        panel.add(new JLabel(TRANSLATOR.translate("NumberOfCorrect(Label)")));
+        panel.add(correctWords);
+        panel.add(new JLabel(TRANSLATOR.translate("NumberOfIncorrect(Label)")));
+        panel.add(incorrectWords);
+        panel.add(new JLabel(TRANSLATOR.translate("TotalTime(Label)")));
+        panel.add(totalTime);
+        panel.add(new JLabel(TRANSLATOR.translate("AvgTime(Label)")));
+        panel.add(averageTime);
+        panel.add(new JLabel(TRANSLATOR.translate("EnterName(Label)")));
+        panel.add(nameTextField, "w 150, growx, split 2");
+        panel.add(submitScoreButton);
 
         return panel;
     }
@@ -210,19 +203,23 @@ public class ExamResult extends StandardDialog {
 
     public void showExamResult() {
         int correctWords = examStats.getCorrectWords().size();
-        int totalWords = examStats.getIncorrectWords().size() + correctWords;
+        int totalWords = examStats.getTotalWords();
 
-        int grade = (correctWords * 100) / totalWords;
+        int score = (correctWords * 100) / totalWords;
 
-        correctWordsResultLabel.setText(Integer.toString(correctWords));
-        wrongWordsResultLabel.setText(Integer.toString(totalWords - correctWords));
-        successRateResultLabel.setText(Integer.toString(grade) + "%");
+        this.score.setText(Integer.toString(score) + "%");
+        this.grade.setText("A");
+        this.correctWords.setText(Integer.toString(correctWords));
+        this.incorrectWords.setText(Integer.toString(examStats.getIncorrectWords().size()));
+        this.totalWords.setText(Integer.toString(totalWords));
+        this.totalTime.setText(DateUtils.dateDifference(examStats.getStartTime(), examStats.getEndTime()));
+        this.averageTime.setText(DateUtils.getAvgDuration(examStats.getStartTime(), examStats.getEndTime(), totalWords));
 
-        if (grade > MIN_PASSING_GRADE) {
-            endLabel.setText(TRANSLATOR.translate("Passed(Label)"));
+        if (score > MIN_PASSING_SCORE) {
+            message.setText(TRANSLATOR.translate("Passed(Label)"));
             iconLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconManager.IconSize.SIZE48));
         } else {
-            endLabel.setText(TRANSLATOR.translate("Failed(Label)"));
+            message.setText(TRANSLATOR.translate("Failed(Label)"));
             iconLabel.setIcon(IconManager.getImageIcon("bell2_red.png", IconManager.IconSize.SIZE48));
         }
 
