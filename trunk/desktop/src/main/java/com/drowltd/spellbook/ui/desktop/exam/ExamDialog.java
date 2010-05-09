@@ -33,6 +33,7 @@ import java.awt.Color;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -294,12 +295,14 @@ public class ExamDialog extends StandardDialog {
     private void stopExam() {
         swingTimer.stop();
         timerProgressBar.setValue(0);
+        examStats.setEndTime(new Date());
 
         if (timerStatus != TimerStatus.DISABLED) {
             timerStatus = TimerStatus.STOPPED;
             timerIconLabel.setIcon(IconManager.getImageIcon("stopwatch_stop.png", IconManager.IconSize.SIZE48));
         }
 
+        // clear state
         timerProgressBar.setString(TRANSLATOR.translate("Timer(String)"));
         wordsProgressBar.setValue(0);
         wordsProgressBar.setString(TRANSLATOR.translate("Words(String)"));
@@ -307,6 +310,8 @@ public class ExamDialog extends StandardDialog {
         enableComponents(true);
         translateField.setText(null);
         answerField.setText(null);
+
+        // reread config
         examWords = PM.getInt(Preference.EXAM_WORDS, examWords);
 
         // don't show results for empty exam sessions
@@ -404,8 +409,8 @@ public class ExamDialog extends StandardDialog {
     }
 
     private void showExamResult() {
-        ExamResult examResultDialog = new ExamResult(this, examStats);
-        examResultDialog.showExamResult();
+        ExamSummaryDialog examSummaryDialog = new ExamSummaryDialog(this, examStats);
+        examSummaryDialog.showExamResult();
     }
 
     private void initLanguages() {
