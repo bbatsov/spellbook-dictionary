@@ -235,7 +235,7 @@ public class WordsDialog extends JDialog {
                 addStudySetButtonActionPerformed(evt);
             }
         });
-        studySetsPanel.add(addStudySetButton, "w 74!,sg,left");
+        studySetsPanel.add(addStudySetButton, "w 81!,sg,left");
 
         JButton deleteStudySetButton = new JButton();
         deleteStudySetButton.setText(bundle.getString("DeleteStudySet(Button)")); // NOI18N
@@ -278,7 +278,7 @@ public class WordsDialog extends JDialog {
                 addWordButtonActionPerformed(evt);
             }
         });
-        addWordPanel.add(addWordButton, "w 74!,sg,right,wrap");
+        addWordPanel.add(addWordButton, "w 81!,sg,right,wrap");
 
         JScrollPane wordTranslationScrollPane = new JScrollPane();
         wordTranslationTextPane = new JTextPane();
@@ -313,7 +313,7 @@ public class WordsDialog extends JDialog {
                 selectNothingButtonActionPerformed(evt);
             }
         });
-        wordsTablePanel.add(selectNothingButton, "w 74!,right,split 2,sg");
+        wordsTablePanel.add(selectNothingButton, "w 81!,right,split 2,sg");
 
         JButton selectAllButton = new JButton();
         selectAllButton.setText(bundle.getString("All(Button)")); // NOI18N
