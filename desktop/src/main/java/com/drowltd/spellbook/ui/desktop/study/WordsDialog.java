@@ -62,7 +62,6 @@ public class WordsDialog extends JDialog {
     private final Frame parent;
     private static final PreferencesManager PM = PreferencesManager.getInstance();
     private static final Translator TRANSLATOR = Translator.getTranslator("WordsDialog");
-
     //componets
     private JTextField addStudySetField;
     private JButton addWordButton;
@@ -388,9 +387,16 @@ public class WordsDialog extends JDialog {
     }
 
     private void addStudySetButtonActionPerformed(ActionEvent evt) {
-
         String name = addStudySetField.getText();
-        if (name != null && !name.isEmpty()) {
+        List<StudySet> studySets = studyService.getStudySets();
+        boolean isAlreadyContainedStudySet = false;
+        for(int i = 0; i < studySets.size(); i++){
+            if(studySets.get(i).getName().equals(name)){
+                isAlreadyContainedStudySet = true;
+                JOptionPane.showMessageDialog(this, TRANSLATOR.translate("AlreadyContainedStudySet(Message)"), null, JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        if (name != null && !name.isEmpty() && !isAlreadyContainedStudySet) {
             studyService.addStudySet(name);
             addStudySetField.setText(null);
             setStudySetsInComboBox();
@@ -461,8 +467,8 @@ public class WordsDialog extends JDialog {
         translationsForStudy = studyService.getTranslationsForStudy(studySetName);
 
         model.setColumnIdentifiers(new String[]{"",
-                TRANSLATOR.translate("Word(TableColumn)"), TRANSLATOR.translate("Translation(TableColumn)"),
-                ""});
+                    TRANSLATOR.translate("Word(TableColumn)"), TRANSLATOR.translate("Translation(TableColumn)"),
+                    ""});
 
         countOFTheWords = studyService.getCountOfTheWords(studySetName);
 
