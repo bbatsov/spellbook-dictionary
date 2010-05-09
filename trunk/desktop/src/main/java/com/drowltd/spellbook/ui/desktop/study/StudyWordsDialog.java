@@ -41,6 +41,7 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
@@ -299,7 +300,7 @@ public class StudyWordsDialog extends JDialog {
                 startButtonActionPerformed(evt);
             }
         });
-        studyPanel.add(startButton, "growx,sg");
+        studyPanel.add(startButton, "w 118!,sg");
 
         stopButton = new JButton();
         stopButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/media_stop_red.png"))); // NOI18N
@@ -311,7 +312,7 @@ public class StudyWordsDialog extends JDialog {
                 stopButtonActionPerformed(evt);
             }
         });
-        studyPanel.add(stopButton, "growx,sg");
+        studyPanel.add(stopButton, "sg");
 
         JLabel jLabel7 = new JLabel();
         jLabel7.setText(bundle.getString("Correct(Label)")); // NOI18N
@@ -333,7 +334,7 @@ public class StudyWordsDialog extends JDialog {
 
         translateField = new JTextField();
         translateField.setEditable(false);
-        studyPanel.add(translateField, "span 2,growx");
+        studyPanel.add(translateField, "span 2,w 246!");
 
         JLabel jLabel9 = new JLabel();
         jLabel9.setText(bundle.getString("AnswerSeen(Label)")); // NOI18N
@@ -362,7 +363,7 @@ public class StudyWordsDialog extends JDialog {
                 answerFieldActionPerformed(evt);
             }
         });
-        studyPanel.add(answerField, "span 2,growx");
+        studyPanel.add(answerField, "span 2,w 246!");
 
         answerStatutLabel = new JLabel();
         studyPanel.add(answerStatutLabel, "span 2,gapleft 60,wrap");
@@ -377,7 +378,7 @@ public class StudyWordsDialog extends JDialog {
                 answerButtonActionPerformed(evt);
             }
         });
-        studyPanel.add(answerButton, "growx,sg");
+        studyPanel.add(answerButton, "sg");
 
         seeAnswerButton = new JButton();
         seeAnswerButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/lightbulb_on.png"))); // NOI18N
@@ -389,7 +390,7 @@ public class StudyWordsDialog extends JDialog {
                 seeAnswerButtonActionPerformed(evt);
             }
         });
-        studyPanel.add(seeAnswerButton, "growx,sg");
+        studyPanel.add(seeAnswerButton, "sg");
 
         topPanel.add(studyPanel, "span 2,growx");
     }
