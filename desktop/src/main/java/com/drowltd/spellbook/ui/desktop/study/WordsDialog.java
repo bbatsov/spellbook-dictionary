@@ -388,7 +388,7 @@ public class WordsDialog extends JDialog {
 
     private void addStudySetButtonActionPerformed(ActionEvent evt) {
         String name = addStudySetField.getText();
-        List<StudySet> studySets = studyService.getStudySets();
+        studySets = studyService.getStudySets();
         boolean isAlreadyContainedStudySet = false;
         for(int i = 0; i < studySets.size(); i++){
             if(studySets.get(i).getName().equals(name)){
