@@ -13,6 +13,7 @@ import com.jidesoft.dialog.ButtonPanel;
 import com.jidesoft.dialog.ButtonResources;
 import com.jidesoft.dialog.StandardDialog;
 import com.jidesoft.plaf.UIDefaultsLookup;
+import com.jidesoft.swing.FolderChooser;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.AbstractAction;
@@ -42,6 +43,7 @@ import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -85,6 +87,7 @@ public class PreferencesDialog extends StandardDialog {
     private JCheckBox trayPopupCheckBox;
     private JTextField wordCountField;
     private DifficultyComboBox difficultyComboBox;
+    private JTextField dictionaryDbPathTextField;
 
     public PreferencesDialog(final Frame parent, boolean modal) {
         super(parent, modal);
@@ -459,7 +462,7 @@ public class PreferencesDialog extends StandardDialog {
     }
 
     private JPanel createGeneralPreferencesPanel() {
-        JPanel generalSettingsPanel = new JPanel(new MigLayout("wrap 2", "[grow][grow]", "[][][]20[]10[]10[]10[]"));
+        JPanel generalSettingsPanel = new JPanel(new MigLayout("wrap 2", "[grow][grow]", "[][][]20[]10[]10[]10[]10[]"));
         minimizeToTrayCheckBox = new JCheckBox();
         minimizeToTrayOnCloseCheckBox = new JCheckBox();
         clipboardIntegrationCheckBox = new JCheckBox();
@@ -470,7 +473,7 @@ public class PreferencesDialog extends StandardDialog {
         languageComboBox = new JComboBox();
         lookAndFeelComboBox = new JComboBox();
         defaultDictionaryComboBox = new DictionaryComboBox(DICTIONARY_SERVICE.getDictionaries());
-
+        dictionaryDbPathTextField = new JTextField(PM.get(Preference.PATH_TO_DB, ""));
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(TRANSLATOR.translate("Preferences(Title)"));
@@ -502,12 +505,28 @@ public class PreferencesDialog extends StandardDialog {
 
         languageComboBox.setModel(new DefaultComboBoxModel(new Language[]{Language.ENGLISH, Language.BULGARIAN}));
 
+        JButton changeDbPathButton = new JButton(TRANSLATOR.translate("SelectPath(Button)"));
+
+        changeDbPathButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                FolderChooser folderChooser = new FolderChooser(new File("."));
+
+                if (folderChooser.showOpenDialog(PreferencesDialog.this) == FolderChooser.APPROVE_OPTION) {
+                    dictionaryDbPathTextField.setText(folderChooser.getSelectedFolder().getAbsolutePath());
+                }
+            }
+        });
+
         generalSettingsPanel.add(new JLabel(TRANSLATOR.translate("Language(Label)")), "growx");
         generalSettingsPanel.add(languageComboBox, "growx");
         generalSettingsPanel.add(new JLabel(TRANSLATOR.translate("DefaultDictionary(Label)")), "growx");
         generalSettingsPanel.add(defaultDictionaryComboBox, "growx");
         generalSettingsPanel.add(new JLabel(TRANSLATOR.translate("LookAndFeel(Label)")), "growx");
         generalSettingsPanel.add(lookAndFeelComboBox, "growx");
+        generalSettingsPanel.add(new JLabel(TRANSLATOR.translate("DictionaryDatabase(Label)")));
+        generalSettingsPanel.add(dictionaryDbPathTextField, "split 2, growx");
+        generalSettingsPanel.add(changeDbPathButton, "growx");
         generalSettingsPanel.add(minimizeToTrayCheckBox, "growx");
         generalSettingsPanel.add(minimizeToTrayOnCloseCheckBox, "growx");
         generalSettingsPanel.add(clipboardIntegrationCheckBox, "growx");

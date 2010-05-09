@@ -17,7 +17,6 @@ import com.drowltd.spellbook.util.ArchiveUtils;
 import com.drowltd.spellbook.util.SearchUtils;
 import com.jidesoft.dialog.StandardDialog;
 import com.jidesoft.hints.ListDataIntelliHints;
-import com.jidesoft.swing.FolderChooser;
 import com.jidesoft.swing.JideSplitButton;
 import net.miginfocom.swing.MigLayout;
 import org.slf4j.Logger;
@@ -90,9 +89,7 @@ public class SpellbookFrame extends JFrame {
     private List<String> searchedWords = new ArrayList<String>();
     private int searchWordsIndex = -1;
     private static final int BYTES_IN_ONE_MEGABYTE = 1024 * 1024;
-    private static final String DEFAULT_DB_PATH = "/opt/spellbook/db/";
-    private static final String DB_FILE_NAME = "spellbook.data.db";
-    private static final String COMPRESSED_DB_NAME = "spellbook-db.tar.bz2";
+    private static final String SPELLBOOK_USER_DIR = System.getProperty("user.home") + File.separator + ".spellbook";
     private static final String DB_URL = "http://spellbook-dictionary.googlecode.com/files/spellbook-db.tar.bz2";
     private static DictionaryService dictionaryService;
     private static Dictionary selectedDictionary;
@@ -128,9 +125,6 @@ public class SpellbookFrame extends JFrame {
      */
     public SpellbookFrame() {
         TRANSLATOR.reset();
-
-        // check a list of known possible locations for the db first
-        checkDefaultDbLocations();
 
         // check the presence of the dictionary database
         if (!verifyDbPresence()) {
@@ -581,23 +575,6 @@ public class SpellbookFrame extends JFrame {
         PM.putInt(Preference.DIVIDER_LOCATION, splitPane.getDividerLocation());
     }
 
-    private void checkDefaultDbLocations() {
-        LOGGER.info("Checking default db locations...");
-
-        String[] defaultDbLocations = new String[]{DEFAULT_DB_PATH, "db/"};
-
-        for (String path : defaultDbLocations) {
-            File dbFile = new File(path + DB_FILE_NAME);
-
-            if (dbFile.exists()) {
-                LOGGER.info("Found db in " + path);
-                PM.put(Preference.PATH_TO_DB, path + DB_FILE_NAME);
-
-                break;
-            }
-        }
-    }
-
     private void updateWordDefinition() throws IllegalStateException {
         AddUpdateWordDialog addUpdateWordDialog = new AddUpdateWordDialog(this, true);
         addUpdateWordDialog.setDictionary(selectedDictionary);
@@ -643,11 +620,9 @@ public class SpellbookFrame extends JFrame {
         dictionaryButton.setIcon(IconManager.getImageIcon(dictionary.getIconName(), IconManager.IconSize.SIZE24));
 
         if (dictionary.getName().equals("English-Bulgarian")) {
-            //SwingUtil.showBalloonTip(dictionaryButton, TRANSLATOR.translate("EnBgDictLoaded(Message)"));
             dictionaryButton.setToolTipText(String.format(TRANSLATOR.translate("EnBgDictSize(Label)"), words.size()));
             dictionaryButton.setIcon(IconManager.getImageIcon(dictionary.getIconName(), IconManager.IconSize.SIZE24));
         } else if (dictionary.getName().equals("Bulgarian-English")) {
-            //SwingUtil.showBalloonTip(dictionaryButton, TRANSLATOR.translate("BgEnDictLoaded(Message)"));
             dictionaryButton.setToolTipText(String.format(TRANSLATOR.translate("BgEnDictSize(Label)"), words.size()));
             dictionaryButton.setIcon(IconManager.getImageIcon(dictionary.getIconName(), IconManager.IconSize.SIZE24));
         } else {
@@ -656,76 +631,31 @@ public class SpellbookFrame extends JFrame {
     }
 
     private boolean verifyDbPresence() {
+        final File userDir = new File(SPELLBOOK_USER_DIR);
+        if (!userDir.exists()) {
+            if (userDir.mkdir()) {
+                LOGGER.info("Successfully create user dir: " + SPELLBOOK_USER_DIR);
+            }
+        }
+
         final String dbPath = PM.get(Preference.PATH_TO_DB, "");
 
         File file = new File(dbPath);
 
-        String currentPath = System.getProperty("user.home");
-        currentPath += File.separator + COMPRESSED_DB_NAME;
-
         if (!file.exists() || file.isDirectory()) {
+            DownloadDialog downloadDialog = new DownloadDialog();
 
-            LOGGER.info("Checking for archived db ...");
-
-            File archivedDbFile = new File(currentPath);
-
-            if (archivedDbFile.exists()) {
-                LOGGER.info("Found the archived db in " + currentPath);
-
-                PM.put(Preference.PATH_TO_DB, ArchiveUtils.extractDbFromArchive(currentPath));
-                return true;
-
-            }
-
-            Object[] options = {TRANSLATOR.translate("DownloadDb(Button)"),
-                    TRANSLATOR.translate("SelectDb(Button)")};
-
-            int choice = JOptionPane.showOptionDialog(null,
-                    dbPath.isEmpty() ? TRANSLATOR.translate("SelectDb(Message") : TRANSLATOR.translate("MissingDb(Message)"),
-                    TRANSLATOR.translate("SelectDb(Title)"), JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-
-            if (choice == 1) {
-                FolderChooser folderChooser = new FolderChooser();
-                folderChooser.setFileHidingEnabled(true); // show hidden folders
-                int result = folderChooser.showOpenDialog(this);
-
-                if (result == FolderChooser.APPROVE_OPTION) {
-                    String selectedDbFolderPath = folderChooser.getSelectedFile().getPath();
-
-                    File dbFile = new File(selectedDbFolderPath + File.separator + COMPRESSED_DB_NAME);
-
-                    LOGGER.info("Looking for compressed spellbook database " + dbFile.getPath());
-
-                    if (dbFile.exists()) {
-                        PM.put(Preference.PATH_TO_DB, ArchiveUtils.extractDbFromArchive(currentPath));
-
-                        return true;
-                    }
-
-                    dbFile = new File(selectedDbFolderPath + File.separator + DB_FILE_NAME);
-
-                    LOGGER.info("Looking for spellbook db " + dbFile.getPath());
-
-                    if (dbFile.exists()) {
-                        PM.put(Preference.PATH_TO_DB, dbFile.getPath());
-
-                        return true;
-                    } else {
-                        return false;
-                    }
+            if (downloadDialog.showDialog(DB_URL) == StandardDialog.RESULT_AFFIRMED) {
+                if (downloadDialog.isCompressed()) {
+                    PM.put(Preference.PATH_TO_DB, ArchiveUtils.extractDbFromArchive(downloadDialog.getDbPath()));
                 } else {
-                    return false;
+                    PM.put(Preference.PATH_TO_DB, downloadDialog.getLocalDbFile());
                 }
             } else {
-                DownloadDialog downloadDialog = new DownloadDialog();
-
-                if (downloadDialog.showDialog(DB_URL) == StandardDialog.RESULT_AFFIRMED) {
-                    PM.put(Preference.PATH_TO_DB, ArchiveUtils.extractDbFromArchive(downloadDialog.getDownloadPath()));
-                }
+                return false;
             }
-
         }
+
         return true;
     }
 
