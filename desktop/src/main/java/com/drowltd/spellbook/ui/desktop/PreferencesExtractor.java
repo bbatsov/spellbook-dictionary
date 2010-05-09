@@ -35,20 +35,6 @@ public class PreferencesExtractor {
 
     public static void extract(SpellbookFrame spellbookFrame, PreferencesDialog preferencesDialog) {
         if (preferencesDialog.showDialog()) {
-            String oldLanguage = PM.get(Preference.UI_LANG, Language.ENGLISH.getName());
-            final String newLanguage = preferencesDialog.getSelectedLanguage().getName();
-            PM.put(Preference.UI_LANG, newLanguage);
-
-            if (!oldLanguage.equals(newLanguage)) {
-                LOGGER.info("Language changed from " + oldLanguage + " to " + newLanguage);
-                int selectedOption = JOptionPane.showConfirmDialog(spellbookFrame, TRANSLATOR.translate("Restart(Message)"), "Restart",
-                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
-
-                if (selectedOption == JOptionPane.OK_OPTION) {
-                    spellbookFrame.restart();
-                }
-            }
-
             PM.put(Preference.DEFAULT_DICTIONARY, preferencesDialog.getDefaultDictionary());
 
             final boolean minimizeToTrayEnabled = preferencesDialog.isMinimizeToTrayEnabled();
@@ -157,6 +143,20 @@ public class PreferencesExtractor {
             PM.putInt(Preference.EXAM_WORDS, preferencesDialog.getExamWords());
             PM.putBoolean(Preference.EXAM_TIMER, preferencesDialog.isExamTimerEnabled());
 
+            // language settings should be changed last because they may require restart
+            String oldLanguage = PM.get(Preference.UI_LANG, Language.ENGLISH.getName());
+            final String newLanguage = preferencesDialog.getSelectedLanguage().getName();
+            PM.put(Preference.UI_LANG, newLanguage);
+
+            if (!oldLanguage.equals(newLanguage)) {
+                LOGGER.info("Language changed from " + oldLanguage + " to " + newLanguage);
+                int selectedOption = JOptionPane.showConfirmDialog(spellbookFrame, TRANSLATOR.translate("Restart(Message)"), "Restart",
+                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+
+                if (selectedOption == JOptionPane.OK_OPTION) {
+                    spellbookFrame.restart();
+                }
+            }
         } else {
             // we need to restore the old look and feel manually since it was changed on selection
             String currentLookAndFeel = UIManager.getLookAndFeel().getName();
