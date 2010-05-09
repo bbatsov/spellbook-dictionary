@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import javax.swing.SwingUtilities;
 
 /**
- *
  * @author bozhidar
  */
 public class SpellbookDefaultExceptionHandler implements Thread.UncaughtExceptionHandler {
@@ -42,7 +41,8 @@ public class SpellbookDefaultExceptionHandler implements Thread.UncaughtExceptio
         // a null owner, which means this dialog may get buried behind
         // some other screen.
         ErrorDialog errorDialog = new ErrorDialog(e);
-
+        errorDialog.pack();
+        errorDialog.setLocationRelativeTo(null);
         errorDialog.setVisible(true);
     }
 

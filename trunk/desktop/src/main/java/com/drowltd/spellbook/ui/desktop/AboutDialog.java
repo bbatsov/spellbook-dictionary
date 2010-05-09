@@ -64,6 +64,7 @@ public class AboutDialog extends StandardDialog {
         });
 
         infoTextPane.setContentType("text/html");
+        infoTextPane.setEditable(false);
         infoTextPane.setText("Spellbook is a multiplatform dictionary application written in Java. Spellbook is open source and is developed by a team committed to the" +
                 "goal of creating a high quality application that will serve the user community as best as possible.");
 
