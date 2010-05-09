@@ -376,7 +376,7 @@ public class StudyWordsDialog extends JDialog {
         studyPanel.add(answerButton, "sg");
 
         seeAnswerButton = new JButton();
-        seeAnswerButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/lightbulb_on.png"))); // NOI18N
+        //seeAnswerButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/lightbulb_on.png"))); // NOI18N
         seeAnswerButton.setText(bundle.getString("SeeAnswer(Button)")); // NOI18N
         seeAnswerButton.addActionListener(new ActionListener() {
 
