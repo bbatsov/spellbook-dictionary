@@ -42,6 +42,7 @@ import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -326,7 +327,23 @@ public class WordsDialog extends JDialog {
         wordsTablePanel.add(selectAllButton, "right,sg,wrap");
 
         JScrollPane wordsScrollPane = new JScrollPane();
-        wordsTable = new JTable();
+        wordsTable = new JTable() {
+
+            @Override
+            public String getToolTipText(MouseEvent e) {
+                String tip = null;
+                java.awt.Point p = e.getPoint();
+                int rowIndex = rowAtPoint(p);
+                int colIndex = columnAtPoint(p);
+                int realColumnIndex = convertColumnIndexToModel(colIndex);
+
+                if (realColumnIndex == 1 || realColumnIndex == 2) {
+                    tip = (String) getValueAt(rowIndex, colIndex);
+                } 
+                return tip;
+            }
+        };
+
         wordsScrollPane.setViewportView(wordsTable);
         wordsTablePanel.add(wordsScrollPane, "growx,wrap");
 
@@ -390,8 +407,8 @@ public class WordsDialog extends JDialog {
         String name = addStudySetField.getText();
         studySets = studyService.getStudySets();
         boolean isAlreadyContainedStudySet = false;
-        for(int i = 0; i < studySets.size(); i++){
-            if(studySets.get(i).getName().equals(name)){
+        for (int i = 0; i < studySets.size(); i++) {
+            if (studySets.get(i).getName().equals(name)) {
                 isAlreadyContainedStudySet = true;
                 JOptionPane.showMessageDialog(this, TRANSLATOR.translate("AlreadyContainedStudySet(Message)"), null, JOptionPane.ERROR_MESSAGE);
             }
