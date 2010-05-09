@@ -64,7 +64,6 @@
         <res src="shortcutSpec.xml" id="shortcutSpec.xml"/>
 		<res src="unix_shortcutSpec.xml" id="Unix_shortcutSpec.xml"/>
         <res id="LicencePanel.licence" src="Licence.txt"/>
-        <res id="InfoPanel.info" src="Readme.txt"/>
     </resources>
 
     <!-- 
@@ -88,7 +87,6 @@
     <packs>
         <pack name="Base" required="yes">
             <description>The base files</description>
-            <file src="Readme.txt" targetdir="$INSTALL_PATH"/>
             <file src="Licence.txt" targetdir="$INSTALL_PATH"/>
             <file src="dictionary.png" targetdir="$INSTALL_PATH"/>
 			<file src="dictionary.ico" targetdir="$INSTALL_PATH"/>
@@ -98,7 +96,7 @@
 		
 		<pack name="DateBase" required="no" preselected="yes">
 		    <description>The datebase for the dictionary</description>
-		    <file src="dictionary-db.tar.bz2" targetdir="$USER_HOME"/>
+		    <file src="dictionary-db.tar.bz2" targetdir="$USER_HOME/spellbook"/>
 		</pack>
 		
     </packs>
