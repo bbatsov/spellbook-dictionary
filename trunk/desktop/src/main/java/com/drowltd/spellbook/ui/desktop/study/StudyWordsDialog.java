@@ -78,7 +78,6 @@ public class StudyWordsDialog extends JDialog {
     private boolean isStopedLearn = true;
     private HowToEnumerate howToEnumerate = HowToEnumerate.IN_ORDER_OF_INPUT;
     private final Frame parent;
-
     //components
     private JButton answerButton;
     private JTextField answerField;
@@ -260,10 +259,8 @@ public class StudyWordsDialog extends JDialog {
     }
 
     private void initHowToEnumeratePanel(ResourceBundle bundle) {
-        JPanel howToEnumeratePanel = new JPanel(new MigLayout("wrap 1", "53[]", "[]20[]20[]20[]"));
+        JPanel howToEnumeratePanel = new JPanel(new MigLayout("wrap 1", "53[]", "[]15[]20[]20[]"));
         howToEnumeratePanel.setBorder(BorderFactory.createEtchedBorder());
-        //howToEnumeratePanel.setMaximumSize(new java.awt.Dimension(224, 159));
-        // howToEnumeratePanel.setMinimumSize(new java.awt.Dimension(224, 159));
 
         JLabel jLabel5 = new JLabel();
         jLabel5.setText(bundle.getString("Enumerate(Label)")); // NOI18N
@@ -287,8 +284,6 @@ public class StudyWordsDialog extends JDialog {
     private void initStudyPanel(ResourceBundle bundle) {
         JPanel studyPanel = new JPanel(new MigLayout("", "[left,105][right,105][][30]", "[][][][47][][][]"));
         studyPanel.setBorder(BorderFactory.createEtchedBorder());
-        //studyPanel.setMaximumSize(new java.awt.Dimension(492, 238));
-        //studyPanel.setMinimumSize(new java.awt.Dimension(492, 238));
 
         startButton = new JButton();
         startButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/media_play_green.png"))); // NOI18N
@@ -582,6 +577,7 @@ public class StudyWordsDialog extends JDialog {
         if (selectedDictionary == SelectedDictionary.EN_BG) {
             word = words.get(wordIndex);
             translateField.setText(word);
+            translateField.setToolTipText(word);
             String transcription = getTranscription(word);
             transcriptionLabel.setText(" " + transcription);
         } else {
@@ -590,6 +586,7 @@ public class StudyWordsDialog extends JDialog {
             possiblesTranslations = studyService.getPossiblesTranslations(translation);
             translation = studyService.combinePossiblesTranslationsForTheTable(possiblesTranslations);
             translateField.setText(translation);
+            translateField.setToolTipText(translation);
             translateField.setCaretPosition(0);
         }
     }
@@ -736,6 +733,7 @@ public class StudyWordsDialog extends JDialog {
             word = studyService.combinePossiblesTranslationsForTheTable(possiblesTranslations);
         }
         translateField.setText(word);
+        translateField.setToolTipText(word);
         translateField.setCaretPosition(0);
 
         String transcription = getTranscription(word);
@@ -778,6 +776,7 @@ public class StudyWordsDialog extends JDialog {
         randomRadioButton.setEnabled(enable);
         transcriptionLabel.setText(" ");
         translateField.setText(null);
+        translateField.setToolTipText(null);
         answerField.setText(null);
         answerField.setEditable(!enable);
         startButton.requestFocus();
