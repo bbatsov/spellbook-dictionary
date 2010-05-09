@@ -423,24 +423,26 @@ public class StudyWordsDialog extends JDialog {
     }
 
     private void seeAnswerButtonActionPerformed(ActionEvent evt) {
-        String word;
+        String answer;
         if (selectedDictionary == SelectedDictionary.EN_BG) {
             if (howToEnumerate == HowToEnumerate.RANDOM) {
-                word = (String) shuffleTranslationForLearning.get(wordIndex);
+                answer = shuffleWordsForLearning.get(wordIndex) + "\n\n" + (String) shuffleTranslationForLearning.get(wordIndex);
             } else {
-                word = translationForLearning.get(wordIndex);
+                answer = wordsForLearning.get(wordIndex) + "\n\n" + translationForLearning.get(wordIndex);
             }
-            String message = TRANSLATOR.translate("SeeAnswerMessege(Message)") + " \"" + word + "\"";
-            JOptionPane.showMessageDialog(this, message, TRANSLATOR.translate("SeeAnswerPaneTittle(Title)"), JOptionPane.INFORMATION_MESSAGE);
+            //JOptionPane.showMessageDialog(this, message, TRANSLATOR.translate("SeeAnswerPaneTittle(Title)"), JOptionPane.INFORMATION_MESSAGE);
+            SeeAnswerDialog seeAnswerDialog = new SeeAnswerDialog(parent, true);
+            seeAnswerDialog.setAnswer(answer);
+            seeAnswerDialog.setLocationRelativeTo(this);
+            seeAnswerDialog.setVisible(true);
         }
         if (selectedDictionary == SelectedDictionary.BG_EN) {
             if (howToEnumerate == HowToEnumerate.RANDOM) {
-                word = (String) shuffleWordsForLearning.get(wordIndex);
+                answer = (String) shuffleWordsForLearning.get(wordIndex);
             } else {
-                word = wordsForLearning.get(wordIndex);
+                answer = wordsForLearning.get(wordIndex);
             }
-            String message = TRANSLATOR.translate("SeeAnswerMessege(Message)") + " \"" + word + "\"";
-            JOptionPane.showMessageDialog(this, message, TRANSLATOR.translate("SeeAnswerPaneTittle(Title)"), JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, answer, TRANSLATOR.translate("SeeAnswerPaneTittle(Title)"), JOptionPane.INFORMATION_MESSAGE);
         }
         answerSeen++;
         answerSeenLabel.setText(answerSeen.toString());
