@@ -61,9 +61,7 @@ public class PreferencesDialog extends StandardDialog {
 
     private static final Translator TRANSLATOR = Translator.getTranslator("PreferencesDialog");
     private static final PreferencesManager PM = PreferencesManager.getInstance();
-    private Font selectedFont;
     private static final DictionaryService DICTIONARY_SERVICE = DictionaryService.getInstance();
-    private static final int DEFAULT_FONT_SIZE = 12;
 
     private JCheckBox alwaysOnTopCheckBox;
     private JCheckBox startMinimizedCheckBox;
@@ -271,51 +269,45 @@ public class PreferencesDialog extends StandardDialog {
         fontList.setListData(availableFonts);
 
         // select the current font
-        String selectedFontName = PM.get(Preference.FONT_NAME, "Serif");
+        String selectedFontName = PM.get(Preference.FONT_NAME, getFont().getName());
         fontList.setSelectedValue(selectedFontName, true);
 
         fontList.addListSelectionListener(new SelectionUpdater());
 
-        fontSizeList.setListData(new Integer[]{8, 10, DEFAULT_FONT_SIZE, 14, 16, 18});
+        fontSizeList.setListData(new Integer[]{8, 10, 12, 14, 16, 18});
 
-        int currentFontSize = PM.getInt(Preference.FONT_SIZE, DEFAULT_FONT_SIZE);
+        int currentFontSize = PM.getInt(Preference.FONT_SIZE, getFont().getSize());
         fontSizeList.setSelectedValue(currentFontSize, true);
 
         fontSizeList.addListSelectionListener(new SelectionUpdater());
 
         fontStyleList.setListData(new String[]{"Regular", "Bold", "Italic"});
         fontStyleList.addListSelectionListener(new SelectionUpdater());
-        fontStyleList.setSelectedIndex(PM.getInt(Preference.FONT_STYLE, 0));
+        fontStyleList.setSelectedIndex(PM.getInt(Preference.FONT_STYLE, getFont().getStyle()));
 
         previewText.setFont(generateFont());
 
         currentFontField.setEnabled(false);
-        currentFontField.setText(PM.get(Preference.FONT_NAME, selectedFont.getName()));
+        currentFontField.setText(PM.get(Preference.FONT_NAME, getFont().getName()));
         currentStyleField.setEnabled(false);
         currentStyleField.setText(fontStyleList.getSelectedValue().toString());
         currentFontSizeField.setEnabled(false);
         currentFontSizeField.setText(fontSizeList.getSelectedValue().toString());
     }
 
-    private Font generateFont() {
+    public Font generateFont() {
         String fontName = (String) fontList.getSelectedValue();
 
         Integer sizeInt = (Integer) fontSizeList.getSelectedValue();
 
-        selectedFont = new Font(fontName,
+        return new Font(fontName,
                 (fontStyleList.isSelectedIndex(2) ? Font.ITALIC : Font.PLAIN)
                         | (fontStyleList.isSelectedIndex(1) ? Font.BOLD : Font.PLAIN)
                         | (fontStyleList.isSelectedIndex(0) ? Font.PLAIN : Font.PLAIN),
                 sizeInt);
-
-        return selectedFont;
     }
 
-    public Font getSelectedFont() {
-        return selectedFont;
-    }
-
-    public boolean isStartMinizedEnabled() {
+    public boolean isStartMinimizedEnabled() {
         return startMinimizedCheckBox.isSelected();
     }
 
