@@ -17,7 +17,6 @@ import java.io.IOException;
  *
  * @author Miroslava Stancheva
  * @author Bozhidar Batsov
- *
  * @since 0.3
  */
 public class ArchiveUtils {
@@ -34,9 +33,8 @@ public class ArchiveUtils {
      */
     public static String extractDbFromArchive(String pathToArchive) {
         // Get the current path, where the database will be extracted
-        String currentPath = System.getProperty("user.home");
+        String currentPath = System.getProperty("user.home") + File.separator + ".spellbook" + File.separator;
         LOGGER.info("Current path: " + currentPath);
-        currentPath += File.separator;
 
         try {
             //Open the archive

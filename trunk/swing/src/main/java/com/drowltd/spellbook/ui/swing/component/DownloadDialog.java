@@ -1,9 +1,12 @@
 package com.drowltd.spellbook.ui.swing.component;
 
 import com.drowltd.spellbook.core.i18n.Translator;
+import com.drowltd.spellbook.ui.swing.util.IconManager;
+import com.jidesoft.dialog.BannerPanel;
 import com.jidesoft.dialog.ButtonPanel;
 import com.jidesoft.dialog.ButtonResources;
 import com.jidesoft.dialog.StandardDialog;
+import com.jidesoft.icons.JideIconsFactory;
 import com.jidesoft.plaf.UIDefaultsLookup;
 import com.jidesoft.swing.FolderChooser;
 import net.miginfocom.swing.MigLayout;
@@ -20,7 +23,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.ProgressMonitor;
 import javax.swing.SwingWorker;
+import javax.swing.border.BevelBorder;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -43,39 +49,38 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
     private JButton downloadButton;
     private JButton changeFolderButton;
     private JTextField downloadUrlTextField;
-    private JTextField downloadFolderTextField;
+    private JTextField localDbFolderTextField;
     private ProgressMonitor progressMonitor;
     private Task task;
     private String url;
-    private String downloadFolder;
+    private String localDbFolder;
     private JButton okButton = new JButton();
     private static final int MIN_WIDTH = 600;
     private static final int MIN_HEIGHT = 150;
+    private boolean compressed = true;
+
+    private static final String DB_FILE_NAME = "spellbook.data.db";
+    private static final String COMPRESSED_DB_NAME = "spellbook-db.tar.bz2";
 
     public DownloadDialog() {
         setModal(true);
 
-        okButton.setEnabled(false);
-
-        File currentDir = new File(".");
-
-        downloadFolderTextField = new JTextField();
+        localDbFolderTextField = new JTextField();
+        localDbFolderTextField.setEditable(false);
         downloadUrlTextField = new JTextField();
-        downloadButton = new JButton(TRANSLATOR.translate("Download(Button)"));
-        changeFolderButton = new JButton(TRANSLATOR.translate("ChangeFolder(Button)"));
+        downloadUrlTextField.setEditable(false);
+        downloadButton = new JButton(TRANSLATOR.translate("Download(Button)"), IconManager.getImageIcon("data_down.png", IconManager.IconSize.SIZE24));
+        changeFolderButton = new JButton(TRANSLATOR.translate("ChangeFolder(Button)"), IconManager.getImageIcon("data_find.png", IconManager.IconSize.SIZE24));
 
-        try {
-            downloadFolder = currentDir.getCanonicalPath();
-            downloadFolderTextField.setText(downloadFolder);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        localDbFolder = System.getProperty("java.io.tmpdir");
+        localDbFolderTextField.setText(localDbFolder);
 
         downloadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //careful not to overwrite existing files
-                File file = new File(getDownloadPath());
+                File file = new File(getDbPath());
                 if (file.exists() &&
                         JOptionPane.showConfirmDialog(DownloadDialog.this,
                                 TRANSLATOR.translate("Overwrite(Message)")) != JOptionPane.YES_OPTION) {
@@ -97,18 +102,49 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
                 int result = folderChooser.showSaveDialog(DownloadDialog.this);
 
                 if (result == FolderChooser.APPROVE_OPTION) {
-                    downloadFolder = folderChooser.getSelectedFolder().getAbsolutePath();
-                    downloadFolderTextField.setText(downloadFolder);
+                    localDbFolder = folderChooser.getSelectedFolder().getAbsolutePath();
+                    localDbFolderTextField.setText(localDbFolder);
+
+                    File dbFile = new File(localDbFolder + File.separator + "db" + File.separator + DB_FILE_NAME);
+
+                    if (dbFile.exists()) {
+                        okButton.setEnabled(true);
+                        compressed = false;
+                    } else {
+                        dbFile = new File(localDbFolder + File.separator + COMPRESSED_DB_NAME);
+
+                        if (dbFile.exists()) {
+                            okButton.setEnabled(true);
+                        }
+                    }
                 }
             }
         });
 
         setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
+        setTitle(TRANSLATOR.translate("SelectDatabase(Title)"));
+    }
+
+    public boolean isCompressed() {
+        return compressed;
+    }
+
+    public void setCompressed(boolean compressed) {
+        this.compressed = compressed;
+    }
+
+    public String getLocalDbFile() {
+        return localDbFolder + File.separator + DB_FILE_NAME;
     }
 
     @Override
     public JComponent createBannerPanel() {
-        return null;
+        BannerPanel bannerPanel = new BannerPanel("Missing db", TRANSLATOR.translate("MissingDb(Message)"),
+                JideIconsFactory.getImageIcon("/icons/48x48/data_unknown.png"));
+        bannerPanel.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        bannerPanel.setBackground(Color.WHITE);
+        bannerPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+        return bannerPanel;
     }
 
     @Override
@@ -125,8 +161,8 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
         panel.add(new JLabel(TRANSLATOR.translate("DownloadUrl(Label)")));
         panel.add(downloadUrlTextField, "span 2, growx");
         panel.add(downloadButton, "growx");
-        panel.add(new JLabel(TRANSLATOR.translate("DownloadFolder(Label)")));
-        panel.add(downloadFolderTextField, "span 2, growx");
+        panel.add(new JLabel(TRANSLATOR.translate("DbFolder(Label)")));
+        panel.add(localDbFolderTextField, "span 2, growx");
         panel.add(changeFolderButton, "growx");
 
         return panel;
@@ -172,6 +208,9 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
         setDefaultCancelAction(cancelButton.getAction());
         setDefaultAction(okButton.getAction());
         getRootPane().setDefaultButton(okButton);
+
+        okButton.setEnabled(false);
+
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         return buttonPanel;
     }
@@ -200,7 +239,7 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
                 int contentLength = dbUrl.openConnection().getContentLength();
 
                 BufferedInputStream in = new BufferedInputStream(dbUrl.openStream());
-                FileOutputStream fos = new FileOutputStream(getDownloadPath());
+                FileOutputStream fos = new FileOutputStream(getDbPath());
                 BufferedOutputStream bout = new BufferedOutputStream(fos, BUFFER_SIZE);
                 byte[] data = new byte[BUFFER_SIZE];
                 int x;
@@ -233,8 +272,8 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
 
     }
 
-    public String getDownloadPath() {
-        return downloadFolder + File.separator + getFileName();
+    public String getDbPath() {
+        return localDbFolder + File.separator + getFileName();
     }
 
     private String getFileName() {
@@ -252,7 +291,7 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
                 Toolkit.getDefaultToolkit().beep();
                 if (progressMonitor.isCanceled()) {
                     task.cancel(true);
-                    File file = new File(getDownloadPath());
+                    File file = new File(getDbPath());
 
                     if (file.exists()) {
                         // removing partially downloaded file
