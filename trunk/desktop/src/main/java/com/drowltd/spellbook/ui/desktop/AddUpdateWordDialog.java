@@ -29,6 +29,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.text.DefaultEditorKit;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -52,6 +54,7 @@ public class AddUpdateWordDialog extends StandardDialog {
     private Dictionary dictionary;
     private String toBeEdited;
     private Action selectLine;
+    private JButton okButton;
 
     public AddUpdateWordDialog(Frame parent, boolean modal) {
         super(parent, modal);
@@ -82,6 +85,32 @@ public class AddUpdateWordDialog extends StandardDialog {
         });
 
         wordTextField = new JTextField();
+
+        wordTextField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                if (!wordTextField.getText().trim().isEmpty()) {
+                    okButton.setEnabled(true);
+                } else {
+                    okButton.setEnabled(false);
+                }
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                if (!wordTextField.getText().trim().isEmpty()) {
+                    okButton.setEnabled(true);
+                } else {
+                    okButton.setEnabled(false);
+                }
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        });
+
         newMeaningTextField = new JTextField();
         translationPane = new JTextPane();
 
@@ -128,7 +157,7 @@ public class AddUpdateWordDialog extends StandardDialog {
     @Override
     public ButtonPanel createButtonPanel() {
         ButtonPanel buttonPanel = new ButtonPanel();
-        JButton okButton = new JButton();
+        okButton = new JButton();
         JButton cancelButton = new JButton();
         JButton helpButton = new JButton();
         okButton.setName(OK);
@@ -166,6 +195,7 @@ public class AddUpdateWordDialog extends StandardDialog {
         setDefaultCancelAction(cancelButton.getAction());
         setDefaultAction(okButton.getAction());
         getRootPane().setDefaultButton(okButton);
+        okButton.setEnabled(false);
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         return buttonPanel;
     }
