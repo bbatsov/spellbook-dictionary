@@ -338,6 +338,7 @@ public class SpellbookFrame extends JFrame {
 
     private void addWordDefinition() throws HeadlessException {
         AddUpdateWordDialog addUpdateWordDialog = new AddUpdateWordDialog(this, true);
+        addUpdateWordDialog.setLocationRelativeTo(this);
         addUpdateWordDialog.setVisible(true);
 
         if (addUpdateWordDialog.getDialogResult() == StandardDialog.RESULT_AFFIRMED) {
@@ -583,6 +584,7 @@ public class SpellbookFrame extends JFrame {
         final String originalWord = (String) wordsList.getSelectedValue();
         addUpdateWordDialog.setWord(originalWord);
         addUpdateWordDialog.setTranslation(dictionaryService.getTranslation(originalWord, selectedDictionary));
+        addUpdateWordDialog.setLocationRelativeTo(this);
         addUpdateWordDialog.setVisible(true);
         if (addUpdateWordDialog.getDialogResult() == StandardDialog.RESULT_CANCELLED) {
             String newWord = addUpdateWordDialog.getWord();
