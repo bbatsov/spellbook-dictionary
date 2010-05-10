@@ -6,8 +6,8 @@ package com.drowltd.spellbook.core.service.exam;
 
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.Difficulty;
+import com.drowltd.spellbook.core.model.ExamScoreEntry;
 import com.drowltd.spellbook.core.model.Language;
-import com.drowltd.spellbook.core.model.ScoreboardEntry;
 import com.drowltd.spellbook.core.service.AbstractPersistenceService;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import org.slf4j.Logger;
@@ -228,21 +228,14 @@ public class ExamService extends AbstractPersistenceService {
         }
     }
 
-    public void addScoreboardResult(String username, long examWords, long wrongWords, String difficulty) {
-
-        ScoreboardEntry se = new ScoreboardEntry();
-        se.setUsername(username);
-        se.setExamWords(examWords);
-        se.setWrongWords(wrongWords);
-        se.setDifficulty(difficulty);
-
+    public void addScoreboardResult(ExamScoreEntry examScoreEntry) {
         EntityTransaction t = EM.getTransaction();
         t.begin();
-        EM.persist(se);
+        EM.persist(examScoreEntry);
         t.commit();
     }
 
-    public List<ScoreboardEntry> getExamScores() {
-        return EM.createQuery("select se from ScoreboardEntry se order by se.created asc", ScoreboardEntry.class).getResultList();
+    public List<ExamScoreEntry> getExamScores() {
+        return EM.createQuery("select se from ExamScoreEntry se order by se.created asc", ExamScoreEntry.class).getResultList();
     }
 }

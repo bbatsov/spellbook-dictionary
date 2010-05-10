@@ -1,7 +1,7 @@
 package com.drowltd.spellbook.ui.desktop.exam;
 
 import com.drowltd.spellbook.core.i18n.Translator;
-import com.drowltd.spellbook.core.model.ScoreboardEntry;
+import com.drowltd.spellbook.core.model.ExamScoreEntry;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.core.service.exam.ExamService;
 import com.drowltd.spellbook.ui.swing.model.ListBackedListModel;
@@ -57,7 +57,8 @@ public class ExamSummaryDialog extends StandardDialog {
     private JLabel averageTime;
     private JTextField nameTextField;
     private JButton submitScoreButton;
-    private JPanel slidePanel;
+    private JPanel incorrectWordPanel;
+    private JPanel scoreboardPanel;
     private ExamStats examStats;
     private Dialog owner;
     private static final int MIN_PASSING_SCORE = 60;
@@ -85,7 +86,7 @@ public class ExamSummaryDialog extends StandardDialog {
         submitScoreButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                examService.addScoreboardResult(nameTextField.getText(), examStats.getTotalWords(), examStats.getIncorrectWords().size(), examStats.getDifficulty().name());
+                examService.addScoreboardResult(examStats.createExamScoreEntry(nameTextField.getText()));
             }
         });
 
@@ -94,7 +95,7 @@ public class ExamSummaryDialog extends StandardDialog {
         setIconImage(IconManager.getImageIcon("teacher.png", IconManager.IconSize.SIZE16).getImage());
 
 
-        slidePanel = createIncorrectWordsPanel();
+        incorrectWordPanel = createIncorrectWordsPanel();
     }
 
     @Override
@@ -115,9 +116,12 @@ public class ExamSummaryDialog extends StandardDialog {
                     add(contentPanel);
                 }
                 add(buttonPanel, JideBoxLayout.FIX);
-                slidePanel = createIncorrectWordsPanel();
-                add(slidePanel, JideBoxLayout.VARY);
-                slidePanel.setVisible(false);
+                incorrectWordPanel = createIncorrectWordsPanel();
+                add(incorrectWordPanel, JideBoxLayout.FIX);
+                incorrectWordPanel.setVisible(false);
+                scoreboardPanel = createScoreboardPanel();
+                add(scoreboardPanel, JideBoxLayout.FIX);
+                scoreboardPanel.setVisible(false);
             }
         };
     }
@@ -173,13 +177,12 @@ public class ExamSummaryDialog extends StandardDialog {
         incorrectWordsButton.setAction(new AbstractAction("View incorrect >>") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (slidePanel.isVisible() && slidePanel.getName().equals("IW")) {
-                    slidePanel.setVisible(false);
+                if (incorrectWordPanel.isVisible()) {
+                    incorrectWordPanel.setVisible(false);
                     putValue(Action.NAME, "View incorrect <<");
                     pack();
                 } else {
-                    slidePanel = createIncorrectWordsPanel();
-                    slidePanel.setVisible(true);
+                    incorrectWordPanel.setVisible(true);
                     putValue(Action.NAME, "<< View incorrect");
                     pack();
                 }
@@ -189,13 +192,12 @@ public class ExamSummaryDialog extends StandardDialog {
         scoreboardButton.setAction(new AbstractAction("View scoreboard >>") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (slidePanel.isVisible() && slidePanel.getName().equals("SB")) {
-                    slidePanel.setVisible(false);
+                if (scoreboardPanel.isVisible()) {
+                    scoreboardPanel.setVisible(false);
                     putValue(Action.NAME, "View scoreboard <<");
                     pack();
                 } else {
-                    slidePanel = createScoreboardPanel();
-                    slidePanel.setVisible(true);
+                    scoreboardPanel.setVisible(true);
                     putValue(Action.NAME, "<< View scoreboard");
                     pack();
                 }
@@ -238,16 +240,16 @@ public class ExamSummaryDialog extends StandardDialog {
         JPanel panel = new JPanel(new MigLayout("wrap 3", "[grow]", "[grow]"));
         panel.setName("SB");
 
-        List<ScoreboardEntry> scoreboardEntryList = examService.getExamScores();
+        List<ExamScoreEntry> examScoreEntryList = examService.getExamScores();
 
         panel.add(new JLabel("Username"));
         panel.add(new JLabel("Difficulty"));
         panel.add(new JLabel("Score"));
 
-        for (ScoreboardEntry scoreboardEntry : scoreboardEntryList) {
-            panel.add(new JLabel(scoreboardEntry.getUsername()));
-            panel.add(new JLabel(scoreboardEntry.getDifficulty()));
-            panel.add(new JLabel(String.valueOf(scoreboardEntry.getScore())));
+        for (ExamScoreEntry examScoreEntry : examScoreEntryList) {
+            panel.add(new JLabel(examScoreEntry.getName()));
+            panel.add(new JLabel(examScoreEntry.getDifficulty().toString()));
+            panel.add(new JLabel(String.valueOf(examScoreEntry.getScore())));
         }
 
         return panel;
