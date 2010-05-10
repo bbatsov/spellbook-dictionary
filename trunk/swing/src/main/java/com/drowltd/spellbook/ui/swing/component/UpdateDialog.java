@@ -115,7 +115,7 @@ public class UpdateDialog extends StandardDialog implements UpdateService.Confli
 
     @Override
     public JComponent createContentPanel() {
-        MigLayout migLayout = new MigLayout("wrap 1", "[][]");
+        MigLayout migLayout = new MigLayout("wrap 1", "4[]4[]");
         JPanel panel = new JPanel(migLayout);
         panel.add(statusLabel, "align 50 %");
         panel.add(progressBar, "growx");
