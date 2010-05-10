@@ -24,6 +24,7 @@ import javax.swing.JTextField;
 import javax.swing.ProgressMonitor;
 import javax.swing.SwingWorker;
 import javax.swing.border.BevelBorder;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -52,26 +53,25 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
     private JTextField localDbFolderTextField;
     private ProgressMonitor progressMonitor;
     private Task task;
-    private String url;
     private String localDbFolder;
     private JButton okButton = new JButton();
     private static final int MIN_WIDTH = 600;
-    private static final int MIN_HEIGHT = 150;
+    private static final int MIN_HEIGHT = 250;
     private boolean compressed = true;
 
     private static final String DB_FILE_NAME = "spellbook.data.db";
-    private static final String COMPRESSED_DB_NAME = "spellbook-db.tar.bz2";
+    private static final String DB_URL = "http://spellbook-dictionary.googlecode.com/files/spellbook-db-0.3.tar.bz2";
 
     public DownloadDialog() {
         setModal(true);
 
         localDbFolderTextField = new JTextField();
         localDbFolderTextField.setEditable(false);
-        downloadUrlTextField = new JTextField();
+        downloadUrlTextField = new JTextField(DB_URL);
         downloadUrlTextField.setEditable(false);
         downloadButton = new JButton(TRANSLATOR.translate("Download(Button)"), IconManager.getImageIcon("data_down.png", IconManager.IconSize.SIZE24));
         changeFolderButton = new JButton(TRANSLATOR.translate("ChangeFolder(Button)"), IconManager.getImageIcon("data_find.png", IconManager.IconSize.SIZE24));
-
+        progressMonitor = new ProgressMonitor(this, "Downloading url " + DB_URL, "Downloading", 0, 100);
 
         localDbFolder = System.getProperty("java.io.tmpdir");
         localDbFolderTextField.setText(localDbFolder);
@@ -108,13 +108,13 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
                     File dbFile = new File(localDbFolder + File.separator + "db" + File.separator + DB_FILE_NAME);
 
                     if (dbFile.exists()) {
-                        okButton.setEnabled(true);
+                        okButton.getAction().setEnabled(true);
                         compressed = false;
                     } else {
-                        dbFile = new File(localDbFolder + File.separator + COMPRESSED_DB_NAME);
+                        dbFile = new File(localDbFolder + File.separator + getFileName());
 
                         if (dbFile.exists()) {
-                            okButton.setEnabled(true);
+                            okButton.getAction().setEnabled(true);
                         }
                     }
                 }
@@ -122,15 +122,11 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
         });
 
         setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
-        setTitle(TRANSLATOR.translate("SelectDatabase(Title)"));
+        setTitle(TRANSLATOR.translate("SelectDb(Title)"));
     }
 
     public boolean isCompressed() {
         return compressed;
-    }
-
-    public void setCompressed(boolean compressed) {
-        this.compressed = compressed;
     }
 
     public String getLocalDbFile() {
@@ -139,7 +135,7 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
 
     @Override
     public JComponent createBannerPanel() {
-        BannerPanel bannerPanel = new BannerPanel("Missing db", TRANSLATOR.translate("MissingDb(Message)"),
+        BannerPanel bannerPanel = new BannerPanel(TRANSLATOR.translate("MissingDb(Title)"), TRANSLATOR.translate("MissingDb(Message)"),
                 JideIconsFactory.getImageIcon("/icons/48x48/data_unknown.png"));
         bannerPanel.setFont(new Font("Tahoma", Font.PLAIN, 14));
         bannerPanel.setBackground(Color.WHITE);
@@ -209,17 +205,13 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
         setDefaultAction(okButton.getAction());
         getRootPane().setDefaultButton(okButton);
 
-        okButton.setEnabled(false);
+        okButton.getAction().setEnabled(false);
 
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         return buttonPanel;
     }
 
-    public int showDialog(String url) {
-        this.url = url;
-        downloadUrlTextField.setText(url);
-        progressMonitor = new ProgressMonitor(this, "Downloading url " + url, "Downloading", 0, 100);
-
+    public int showDialog() {
         pack();
 
         setVisible(true);
@@ -233,7 +225,7 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
         @Override
         public Void doInBackground() {
             try {
-                URL dbUrl = new URL(url);
+                URL dbUrl = new URL(DB_URL);
                 setProgress(0);
 
                 int contentLength = dbUrl.openConnection().getContentLength();
@@ -245,7 +237,7 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
                 int x;
                 int total = 0;
 
-                LOGGER.info("Downloading file " + url);
+                LOGGER.info("Downloading file " + DB_URL);
 
                 while ((x = in.read(data, 0, BUFFER_SIZE)) >= 0) {
                     total += x;
@@ -277,7 +269,7 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
     }
 
     private String getFileName() {
-        return url.substring(url.lastIndexOf("/") + 1);
+        return DB_URL.substring(DB_URL.lastIndexOf("/") + 1);
     }
 
     @Override
@@ -304,7 +296,7 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
 
                     LOGGER.info("Task canceled.\n");
                 } else {
-                    okButton.setEnabled(true);
+                    okButton.getAction().setEnabled(true);
 
                     LOGGER.info("Task completed.\n");
                 }
@@ -318,7 +310,7 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
     public static void main(String[] args) {
         DownloadDialog dialog = new DownloadDialog();
 
-        dialog.showDialog("");
+        dialog.showDialog();
 
         System.exit(0);
     }

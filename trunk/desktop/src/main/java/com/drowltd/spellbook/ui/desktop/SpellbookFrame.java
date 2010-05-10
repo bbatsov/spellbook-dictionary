@@ -90,7 +90,6 @@ public class SpellbookFrame extends JFrame {
     private int searchWordsIndex = -1;
     private static final int BYTES_IN_ONE_MEGABYTE = 1024 * 1024;
     private static final String SPELLBOOK_USER_DIR = System.getProperty("user.home") + File.separator + ".spellbook";
-    private static final String DB_URL = "http://spellbook-dictionary.googlecode.com/files/spellbook-db.tar.bz2";
     private static DictionaryService dictionaryService;
     private static Dictionary selectedDictionary;
 
@@ -645,7 +644,7 @@ public class SpellbookFrame extends JFrame {
         if (!file.exists() || file.isDirectory()) {
             DownloadDialog downloadDialog = new DownloadDialog();
 
-            if (downloadDialog.showDialog(DB_URL) == StandardDialog.RESULT_AFFIRMED) {
+            if (downloadDialog.showDialog() == StandardDialog.RESULT_AFFIRMED) {
                 if (downloadDialog.isCompressed()) {
                     PM.put(Preference.PATH_TO_DB, ArchiveUtils.extractDbFromArchive(downloadDialog.getDbPath()));
                 } else {
