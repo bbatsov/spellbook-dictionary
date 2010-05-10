@@ -100,7 +100,7 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
             public void actionPerformed(ActionEvent e) {
                 FolderChooser folderChooser = new FolderChooser();
 
-                int result = folderChooser.showSaveDialog(DownloadDialog.this);
+                int result = folderChooser.showOpenDialog(DownloadDialog.this);
 
                 if (result == FolderChooser.APPROVE_OPTION) {
                     localDbFolder = folderChooser.getSelectedFolder().getAbsolutePath();
