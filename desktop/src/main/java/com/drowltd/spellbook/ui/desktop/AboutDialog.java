@@ -26,6 +26,7 @@ import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -53,7 +54,12 @@ public class AboutDialog extends StandardDialog {
             public void hyperlinkUpdate(HyperlinkEvent e) {
                 if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
                     try {
-                        Desktop.getDesktop().mail(e.getURL().toURI());
+                        final URI tUri = e.getURL().toURI();
+                        if (tUri.getScheme().equals("http")) {
+                            Desktop.getDesktop().browse(tUri);
+                        } else {
+                            Desktop.getDesktop().mail(tUri);
+                        }
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     } catch (URISyntaxException ex) {
@@ -65,8 +71,7 @@ public class AboutDialog extends StandardDialog {
 
         infoTextPane.setContentType("text/html");
         infoTextPane.setEditable(false);
-        infoTextPane.setText("Spellbook is a multiplatform dictionary application written in Java. Spellbook is open source and is developed by a team committed to the" +
-                "goal of creating a high quality application that will serve the user community as best as possible.");
+        infoTextPane.setText(TRANSLATOR.translate("About(Message)"));
 
         /** Checks whether desktop is supported and enable button that launch browser */
         if (Desktop.isDesktopSupported()) {
@@ -83,8 +88,7 @@ public class AboutDialog extends StandardDialog {
     @Override
     public JComponent createBannerPanel() {
         BannerPanel bannerPanel = new BannerPanel("Spellbook Dictionary 0.3",
-                "Spellbook is a multiplatform dictionary application written in Java. Spellbook is open source and is developed by a team committed to the" +
-                        "goal of creating a high quality application that will serve the user community as best as possible.",
+                TRANSLATOR.translate("Banner(Message)"),
                 JideIconsFactory.getImageIcon("/images/spellbook-logo.png"));
         bannerPanel.setFont(new Font("Tahoma", Font.PLAIN, FONT_SIZE));
         bannerPanel.setBackground(Color.WHITE);
@@ -99,9 +103,9 @@ public class AboutDialog extends StandardDialog {
         JScrollPane jScrollPane = new JScrollPane(infoTextPane);
         panel.add(jScrollPane, "grow");
 
-        panel.add(new JLabel(TRANSLATOR.translate("Copyright")), "center");
+        panel.add(new JLabel(TRANSLATOR.translate("Copyleft(Label)")), "center");
 
-        return panel;  //To change body of implemented methods use File | Settings | File Templates.
+        return panel;
     }
 
     @Override
@@ -184,11 +188,5 @@ public class AboutDialog extends StandardDialog {
 
         infoTextPane.setText(team);
         infoTextPane.setCaretPosition(0);
-    }
-
-    public static void main(String[] args) {
-        AboutDialog aboutDialog = new AboutDialog(null, true);
-
-        aboutDialog.setVisible(true);
     }
 }
