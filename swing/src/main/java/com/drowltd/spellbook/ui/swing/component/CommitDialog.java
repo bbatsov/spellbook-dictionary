@@ -79,7 +79,7 @@ public class CommitDialog extends StandardDialog {
     @Override
     public JComponent createContentPanel() {
 
-        JPanel panel = new JPanel(new MigLayout("wrap 1", "[grow][]", "[][]"));
+        JPanel panel = new JPanel(new MigLayout("wrap 1", "[grow][]", "4[]4[]"));
         panel.add(message);
         panel.add(progressBar);
 
@@ -134,6 +134,11 @@ public class CommitDialog extends StandardDialog {
 
     public void showUpdateDialog() {
         if (login()) {
+            if (!updateService.haveUncommited()) {
+                JOptionPane.showMessageDialog(CommitDialog.this, bundle.getString("CommitDialog(noUncommitted)"), "Info", JOptionPane.INFORMATION_MESSAGE);
+                dispose();
+                return;
+            }
             pack();
             setVisible(true);
         }

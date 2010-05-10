@@ -49,6 +49,7 @@ public class UpdateService extends AbstractPersistenceService {
     private LastUpdateEntity lastUpdate;
     private final Map<String, Dictionary> dictMap = new HashMap<String, Dictionary>();
     private final Map<String, RemoteDictionary> remoteDictMap = new HashMap<String, RemoteDictionary>();
+    private final Set<DictionaryEntry> updatedEntries = new HashSet<DictionaryEntry>();
 
     private UpdateService() throws UpdateServiceException {
         if (EM == null) {
@@ -177,8 +178,9 @@ public class UpdateService extends AbstractPersistenceService {
      */
     public void update() throws InterruptedException {
         if (lastUpdate == null) {
-            LOGGER.info("No updates available or not checked");
-            return;
+            if (!checkForUpdates()) {
+                return;
+            }
         }
         initDictMap();
         //get all UpdateEntries commited after the last update
@@ -190,87 +192,103 @@ public class UpdateService extends AbstractPersistenceService {
 
         UncommittedEntries uncommitted = DictionaryService.getInstance().getUncommitted();
         DictionaryService service = DictionaryService.getInstance();
+
         EntityTransaction t = EM.getTransaction();
-        t.begin();
 
-        Set<RemoteDictionaryEntry> remoteDictionaryEntries = new HashSet<RemoteDictionaryEntry>();
+        try {
+            t.begin();
 
-        //keeps track of the latest date we are updating to
-        Date latestDate = lastUpdate.getModified();
-        for (UpdateEntry updateEntry : UpdateEntries) {
-            if (latestDate.before(updateEntry.getCreated())) {
-                latestDate = updateEntry.getCreated();
-            }
-            Set<RemoteDictionaryEntry> rDictionaryEntries = updateEntry.getRemoteDictionaryEntries();
-            //  Needed because the same RemoteDictionaryEntry may appear in different updates
-            //  but we need it only once
-            remoteDictionaryEntries.addAll(rDictionaryEntries);
-        }
+            Set<RemoteDictionaryEntry> remoteDictionaryEntries = new HashSet<RemoteDictionaryEntry>();
 
-        LOGGER.info("Last UpdateEntry.date == " + latestDate.toString());
-
-        for (RemoteDictionaryEntry entry : remoteDictionaryEntries) {
-            /*
-             * Checking for interruption, will be called frequently
-             * keeping us responive.
-             */
-            if (Thread.interrupted()) {
-                LOGGER.warn("update interrupted");
-                t.rollback();
-                throw new InterruptedException();
+            //keeps track of the latest date we are updating to
+            Date latestDate = lastUpdate.getModified();
+            for (UpdateEntry updateEntry : UpdateEntries) {
+                if (latestDate.before(updateEntry.getCreated())) {
+                    latestDate = updateEntry.getCreated();
+                }
+                Set<RemoteDictionaryEntry> rDictionaryEntries = updateEntry.getRemoteDictionaryEntries();
+                //  Needed because the same RemoteDictionaryEntry may appear in different updates
+                //  but we need it only once
+                remoteDictionaryEntries.addAll(rDictionaryEntries);
             }
 
-            //try to get the local Dictionary
-            Dictionary dictionary = dictMap.get(entry.getRemoteDictionary().getName());
-            if (dictionary == null) {
+            LOGGER.info("Last UpdateEntry.date == " + latestDate.toString());
+
+            for (RemoteDictionaryEntry entry : remoteDictionaryEntries) {
                 /*
-                 * This will happen if more dictionaries are available in the
-                 * remote database so we are skipping those entries.
-                 */
-
-                LOGGER.info("Dictionary not available skipping");
-                continue;
-            }
-
-            //Getting the last revision
-            RevisionEntry revisionEntry = EM_REMOTE.createNamedQuery("RemoteDictionaryEntry.getLastRevision", RevisionEntry.class).setParameter("remoteDictionaryEntry", entry).getSingleResult();
-
-            try {
-                service.getTranslation(entry.getWord(), dictionary);
-
-                //Checking if the dictionary entry translation is being updated
-                DictionaryEntry de = (DictionaryEntry) EM.createQuery("select de from DictionaryEntry de where de.word = :word and de.dictionary = :dictionary").setParameter("word", entry.getWord()).setParameter("dictionary", dictionary).getSingleResult();
-
-                String translation = null;
-                if (uncommitted.getDictionaryEntries().contains(de) && handler != null) {
-                    translation = handler.handle(entry.getWord(), de.getTranslation(), revisionEntry.getTranslation());
-                } else {
-                    translation = revisionEntry.getTranslation();
+                * Checking for interruption, will be called frequently
+                * keeping us responive.
+                */
+                if (Thread.interrupted()) {
+                    LOGGER.warn("update interrupted");
+                    t.rollback();
+                    throw new InterruptedException();
                 }
 
-                de.setTranslation(translation);
+                //try to get the local Dictionary
+                Dictionary dictionary = dictMap.get(entry.getRemoteDictionary().getName());
+                if (dictionary == null) {
+                    /*
+                    * This will happen if more dictionaries are available in the
+                    * remote database so we are skipping those entries.
+                    */
 
-                LOGGER.info("updating DictionaryEntry");
-                EM.persist(de);
-            } catch (NoResultException e) {
+                    LOGGER.info("Dictionary not available skipping");
+                    continue;
+                }
 
-                //Not an update adding new dictionary entry
-                DictionaryEntry de = revisionEntry.toDictionaryEntry();
-                de.setDictionary(dictionary);
+                //Getting the last revision
+                RevisionEntry revisionEntry = EM_REMOTE.createNamedQuery("RemoteDictionaryEntry.getLastRevision", RevisionEntry.class).setParameter("remoteDictionaryEntry", entry).getSingleResult();
+                DictionaryEntry de;
+                try {
+                    service.getTranslation(entry.getWord(), dictionary);
 
-                //Adding RankEntry
-                RankEntry re = revisionEntry.toRankEntry();
+                    //Checking if the dictionary entry translation is being updated
+                    de = (DictionaryEntry) EM.createQuery("select de from DictionaryEntry de where de.word = :word and de.dictionary = :dictionary").setParameter("word", entry.getWord()).setParameter("dictionary", dictionary).getSingleResult();
 
-                LOGGER.info("adding DictionaryEntry");
-                EM.persist(de);
-                EM.persist(re);
+                    String translation = null;
+                    if (uncommitted.getDictionaryEntries().contains(de) && handler != null) {
+                        translation = handler.handle(entry.getWord(), de.getTranslation(), revisionEntry.getTranslation());
+                    } else {
+                        translation = revisionEntry.getTranslation();
+                    }
+
+                    de.setTranslation(translation);
+
+                    LOGGER.info("updating DictionaryEntry");
+                    EM.persist(de);
+                } catch (NoResultException e) {
+
+                    //Not an update adding new dictionary entry
+                    de = revisionEntry.toDictionaryEntry();
+                    de.setDictionary(dictionary);
+
+                    //Adding RankEntry
+                    RankEntry re = revisionEntry.toRankEntry();
+
+                    LOGGER.info("adding DictionaryEntry");
+                    EM.persist(de);
+                    EM.persist(re);
+                }
+                updatedEntries.add(de);
             }
 
+            //Keep track of the latest update date
+            lastUpdate.setModified(latestDate);
+            t.commit();
+        } finally {
+            if (t.isActive()) {
+                t.rollback();
+            }
         }
+    }
 
-        //Keep track of the latest update date
-        lastUpdate.setModified(latestDate);
-        t.commit();
+    public Set<DictionaryEntry> getUpdatedEntries() {
+        return updatedEntries;
+    }
+
+    public boolean haveUncommited() {
+        return !EM.createQuery("select ue from UncommittedEntries ue where (select count(de) from ue.dictionaryEntries de) > 0 and ue.committed = false").getResultList().isEmpty();
     }
 
     public void commit() {
@@ -281,54 +299,62 @@ public class UpdateService extends AbstractPersistenceService {
 
         initRemoteDictMap();
 
-        EM_REMOTE.getTransaction().begin();
+        EntityTransaction t = EM_REMOTE.getTransaction();
+        try {
+            t.begin();
 
-        UpdateEntry updateEntry = new UpdateEntry();
+            UpdateEntry updateEntry = new UpdateEntry();
 
 
-        for (DictionaryEntry de : uncommitted.getDictionaryEntries()) {
-            RemoteDictionaryEntry rde;
-            boolean persist = false;
-            try {
-                rde = EM_REMOTE.createNamedQuery("RemoteDictionaryEntry.getRemoteDictionaryEntry", RemoteDictionaryEntry.class).setParameter("word", de.getWord()).getSingleResult();
-            } catch (NoResultException e) {
-                rde = new RemoteDictionaryEntry();
-                rde.setWord(de.getWord());
-                persist = true;
+            for (DictionaryEntry de : uncommitted.getDictionaryEntries()) {
+                RemoteDictionaryEntry rde;
+                boolean persist = false;
+                try {
+                    rde = EM_REMOTE.createNamedQuery("RemoteDictionaryEntry.getRemoteDictionaryEntry", RemoteDictionaryEntry.class).setParameter("word", de.getWord()).getSingleResult();
+                } catch (NoResultException e) {
+                    rde = new RemoteDictionaryEntry();
+                    rde.setWord(de.getWord());
+                    persist = true;
+                }
+
+                RevisionEntry revisionEntry = new RevisionEntry();
+                revisionEntry.setTranslation(de.getTranslation());
+                revisionEntry.setRemoteDictionaryEntry(rde);
+
+                updateEntry.addRemoteDictionaryEntry(rde);
+
+                Dictionary dictionary = de.getDictionary();
+                RemoteDictionary remoteDictionary = remoteDictMap.get(dictionary.getName());
+
+                if (remoteDictionary == null) {
+                    remoteDictionary = new RemoteDictionary();
+                    remoteDictionary.setName(dictionary.getName());
+                    remoteDictionary.setFromLanguage(dictionary.getFromLanguage());
+                    remoteDictionary.setToLanguage(dictionary.getToLanguage());
+
+                    EM_REMOTE.persist(remoteDictionary);
+                    remoteDictMap.put(remoteDictionary.getName(), remoteDictionary);
+                }
+
+                rde.setRemoteDictionary(remoteDictionary);
+
+
+                if (persist) {
+                    EM_REMOTE.persist(rde);
+                }
+
+                EM_REMOTE.persist(updateEntry);
+                EM_REMOTE.persist(revisionEntry);
             }
 
-            RevisionEntry revisionEntry = new RevisionEntry();
-            revisionEntry.setTranslation(de.getTranslation());
-            revisionEntry.setRemoteDictionaryEntry(rde);
 
-            updateEntry.addRemoteDictionaryEntry(rde);
-
-            Dictionary dictionary = de.getDictionary();
-            RemoteDictionary remoteDictionary = remoteDictMap.get(dictionary.getName());
-
-            if (remoteDictionary == null) {
-                remoteDictionary = new RemoteDictionary();
-                remoteDictionary.setName(dictionary.getName());
-                remoteDictionary.setFromLanguage(dictionary.getFromLanguage());
-                remoteDictionary.setToLanguage(dictionary.getToLanguage());
-
-                EM_REMOTE.persist(remoteDictionary);
-                remoteDictMap.put(remoteDictionary.getName(), remoteDictionary);
-            }
-
-            rde.setRemoteDictionary(remoteDictionary);
-
-
-            if (persist) {
-                EM_REMOTE.persist(rde);
-            }
-
-            EM_REMOTE.persist(updateEntry);
-            EM_REMOTE.persist(revisionEntry);
+            t.commit();
         }
-
-
-        EM_REMOTE.getTransaction().commit();
+        finally {
+            if (t.isActive()) {
+                t.rollback();
+            }
+        }
 
         uncommitted.setCommitted(true);
 
