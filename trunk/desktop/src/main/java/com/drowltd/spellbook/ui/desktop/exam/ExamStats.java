@@ -2,6 +2,7 @@ package com.drowltd.spellbook.ui.desktop.exam;
 
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.Difficulty;
+import com.drowltd.spellbook.core.model.ExamScoreEntry;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -69,5 +70,17 @@ public class ExamStats {
 
     public int getTotalWords() {
         return correctWords.size() + incorrectWords.size();
+    }
+
+    public ExamScoreEntry createExamScoreEntry(String name) {
+        ExamScoreEntry scoreEntry = new ExamScoreEntry();
+        scoreEntry.setCorrectWords(correctWords.size());
+        scoreEntry.setTotalWords(getTotalWords());
+        scoreEntry.setFromLanguage(dictionary.getFromLanguage());
+        scoreEntry.setToLanguage(dictionary.getToLanguage());
+        scoreEntry.setDifficulty(difficulty);
+        scoreEntry.setName(name);
+
+        return scoreEntry;
     }
 }

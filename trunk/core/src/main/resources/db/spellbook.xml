@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <databaseChangeLog
-    xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
 
     <changeSet id="1" author="bozhidar">
@@ -154,7 +154,7 @@
     </changeSet>
     <changeSet id="7" author="sasho">
         <addColumn tableName="STUDY_ENTRIES">
-            <column name="STUDY_SET_ID" type="bigint" >
+            <column name="STUDY_SET_ID" type="bigint">
                 <constraints nullable="false"/>
             </column>
         </addColumn>
@@ -218,6 +218,38 @@
             </column>
             <column name="dictionary_entry_id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="11" author="bozhidar">
+        <dropTable tableName="SCOREBOARD"/>
+        <createTable tableName="EXAM_SCORE_ENTRIES">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="total_words" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="correct_words" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="difficulty" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified" type="datetime">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="from_lang" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="to_lang" type="int">
+                <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
