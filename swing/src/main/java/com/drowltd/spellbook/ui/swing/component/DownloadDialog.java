@@ -61,6 +61,7 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
 
     private static final String DB_FILE_NAME = "spellbook.data.db";
     private static final String DB_URL = "http://spellbook-dictionary.googlecode.com/files/spellbook-db-0.3.tar.bz2";
+    private static final String DOWNLOAD_DIR = System.getProperty("java.io.tmpdir");
 
     public DownloadDialog() {
         setModal(true);
@@ -73,14 +74,14 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
         changeFolderButton = new JButton(TRANSLATOR.translate("ChangeFolder(Button)"), IconManager.getImageIcon("data_find.png", IconManager.IconSize.SIZE24));
         progressMonitor = new ProgressMonitor(this, "Downloading url " + DB_URL, "Downloading", 0, 100);
 
-        localDbFolder = System.getProperty("java.io.tmpdir");
+        localDbFolder = System.getProperty("user.home");
         localDbFolderTextField.setText(localDbFolder);
 
         downloadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //careful not to overwrite existing files
-                File file = new File(getDbPath());
+                File file = new File(getDownloadedDbPath());
                 if (file.exists() &&
                         JOptionPane.showConfirmDialog(DownloadDialog.this,
                                 TRANSLATOR.translate("Overwrite(Message)")) != JOptionPane.YES_OPTION) {
@@ -231,7 +232,7 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
                 int contentLength = dbUrl.openConnection().getContentLength();
 
                 BufferedInputStream in = new BufferedInputStream(dbUrl.openStream());
-                FileOutputStream fos = new FileOutputStream(getDbPath());
+                FileOutputStream fos = new FileOutputStream(getDownloadedDbPath());
                 BufferedOutputStream bout = new BufferedOutputStream(fos, BUFFER_SIZE);
                 byte[] data = new byte[BUFFER_SIZE];
                 int x;
@@ -264,8 +265,8 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
 
     }
 
-    public String getDbPath() {
-        return localDbFolder + File.separator + getFileName();
+    public String getDownloadedDbPath() {
+        return DOWNLOAD_DIR + File.separator + getFileName();
     }
 
     private String getFileName() {
@@ -283,7 +284,7 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
                 Toolkit.getDefaultToolkit().beep();
                 if (progressMonitor.isCanceled()) {
                     task.cancel(true);
-                    File file = new File(getDbPath());
+                    File file = new File(getDownloadedDbPath());
 
                     if (file.exists()) {
                         // removing partially downloaded file

@@ -648,7 +648,7 @@ public class SpellbookFrame extends JFrame {
 
             if (downloadDialog.showDialog() == StandardDialog.RESULT_AFFIRMED) {
                 if (downloadDialog.isCompressed()) {
-                    PM.put(Preference.PATH_TO_DB, ArchiveUtils.extractDbFromArchive(downloadDialog.getDbPath()));
+                    PM.put(Preference.PATH_TO_DB, ArchiveUtils.extractDbFromArchive(downloadDialog.getDownloadedDbPath()));
                 } else {
                     PM.put(Preference.PATH_TO_DB, downloadDialog.getLocalDbFile());
                 }
