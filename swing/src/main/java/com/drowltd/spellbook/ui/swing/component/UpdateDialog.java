@@ -198,19 +198,23 @@ public class UpdateDialog extends StandardDialog implements UpdateService.Confli
             UpdateService us = null;
             try {
                 us = UpdateService.getInstance();
-            } catch (UpdateServiceException ex) {
+
+                try {
+                    setStatus(bundle.getString("Dialog(Updating)"));
+                    us.setHandler(UpdateDialog.this);
+                    us.update();
+                } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                    EventQueue.invokeLater(new UpdateResponseTask(bundle.getString("MessageDialog(Cancelled)")));
+                }
+
+                EventQueue.invokeLater(new UpdateResponseTask(bundle.getString("MessageDialog(Success)")));
+            } catch (Exception ex) {
                 EventQueue.invokeLater(new UpdateResponseTask(bundle.getString("MessageDialog(Error)")));
             }
-            try {
-                setStatus(bundle.getString("Dialog(Updating)"));
-                us.setHandler(UpdateDialog.this);
-                us.update();
-            } catch (InterruptedException ex) {
-                Thread.currentThread().interrupt();
-                EventQueue.invokeLater(new UpdateResponseTask(bundle.getString("MessageDialog(Cancelled)")));
+            finally {
+                us.close();
             }
-
-            EventQueue.invokeLater(new UpdateResponseTask(bundle.getString("MessageDialog(Success)")));
         }
     }
 
