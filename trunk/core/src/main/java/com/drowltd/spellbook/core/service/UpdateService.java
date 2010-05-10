@@ -50,6 +50,7 @@ public class UpdateService extends AbstractPersistenceService {
     private final Map<String, Dictionary> dictMap = new HashMap<String, Dictionary>();
     private final Map<String, RemoteDictionary> remoteDictMap = new HashMap<String, RemoteDictionary>();
     private final Set<DictionaryEntry> updatedEntries = new HashSet<DictionaryEntry>();
+    private boolean isOpen = true;
 
     private UpdateService() throws UpdateServiceException {
         if (EM == null) {
@@ -76,7 +77,7 @@ public class UpdateService extends AbstractPersistenceService {
         return INSTANCE;
     }
 
-    public static void initRemoteEntityManager(String userName, String password) throws AuthenticationException, UpdateServiceException, SQLException {
+    protected static void initRemoteEntityManager(String userName, String password) throws AuthenticationException, UpdateServiceException, SQLException {
         if (userName == null || userName.isEmpty() || password == null || password.isEmpty()) {
             throw new AuthenticationException();
         }
@@ -177,6 +178,10 @@ public class UpdateService extends AbstractPersistenceService {
      * Updates the local database.
      */
     public void update() throws InterruptedException {
+        if(!isOpen){
+            LOGGER.error("UpdateService is closed");
+            throw new IllegalStateException("UpdateService is closed");
+        }
         if (lastUpdate == null) {
             if (!checkForUpdates()) {
                 return;
@@ -295,6 +300,10 @@ public class UpdateService extends AbstractPersistenceService {
         if (!isAuthenticated) {
             return;
         }
+        if(!isOpen){
+            LOGGER.error("UpdateService is closed");
+            throw new IllegalStateException("UpdateService is closed");
+        }
         UncommittedEntries uncommitted = DictionaryService.getInstance().getUncommitted();
 
         initRemoteDictMap();
@@ -356,11 +365,24 @@ public class UpdateService extends AbstractPersistenceService {
             }
         }
 
+        //will not execute if exception thrown
         uncommitted.setCommitted(true);
 
         EM.getTransaction().begin();
         EM.merge(uncommitted);
         EM.getTransaction().commit();
+    }
+
+    public void close() {
+        if (EM_REMOTE.isOpen())
+            EM_REMOTE.close();
+        if(INSTANCE != null)
+            INSTANCE = null;
+        isOpen = false;
+    }
+
+    public boolean isOpen(){
+        return isOpen;
     }
 
     public static EntityManager getEM_REMOTE() {

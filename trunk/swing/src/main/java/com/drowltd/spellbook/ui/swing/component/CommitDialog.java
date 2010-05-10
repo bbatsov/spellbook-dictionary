@@ -79,7 +79,7 @@ public class CommitDialog extends StandardDialog {
     @Override
     public JComponent createContentPanel() {
 
-        JPanel panel = new JPanel(new MigLayout("wrap 1", "[grow][]", "4[]4[]"));
+        JPanel panel = new JPanel(new MigLayout("wrap 1", "[grow][]", "5[]5[]10"));
         panel.add(message);
         panel.add(progressBar);
 
@@ -99,15 +99,14 @@ public class CommitDialog extends StandardDialog {
         String username = PreferencesManager.getInstance().get(PreferencesManager.Preference.REMOTE_DB_USERNAME, null);
         String password = PreferencesManager.getInstance().get(PreferencesManager.Preference.REMOTE_DB_PASSWORD, null);
 
-        while (true) {
+        boolean tryToConnect = true;
+        while (tryToConnect) {
             try {
-                UpdateService service = UpdateService.getInstance(username, password);
-                updateService = service;
+                updateService = UpdateService.getInstance(username, password);
                 return true;
             } catch (UpdateServiceException e) {
                 JOptionPane.showMessageDialog(CommitDialog.this, bundle.getString("CommitDialog(connectionFailure)"), "Info", JOptionPane.ERROR_MESSAGE);
-                this.dispose();
-                return false;
+                tryToConnect = false;
 
             } catch (AuthenticationException e) {
                 LOGGER.warn(e.getMessage());
@@ -118,18 +117,23 @@ public class CommitDialog extends StandardDialog {
 
                 if (e.getErrorCode() == 0) {
                     JOptionPane.showMessageDialog(CommitDialog.this, bundle.getString("CommitDialog(connectionFailure)"), "Info", JOptionPane.ERROR_MESSAGE);
-                    this.dispose();
-                    return false;
+                    tryToConnect = false;
+                } else {
+                    JOptionPane.showMessageDialog(CommitDialog.this, bundle.getString("LoginDialog(loginIncorrect)"), "Info", JOptionPane.ERROR_MESSAGE);
                 }
             }
 
-            String[] loginInfo = showUserLoginDialog(this);
-            if ((username = loginInfo[0]).equals("") || (password = loginInfo[1]).equals("")) {
-                this.dispose();
-                return false;
+            if (tryToConnect) {
+                String[] loginInfo = showUserLoginDialog(this);
+                if (loginInfo[2].equals("close"))
+                    tryToConnect = false;
+                else {
+                    username = loginInfo[0];
+                    password = loginInfo[1];
+                }
             }
         }
-
+        return false;
     }
 
     public void showUpdateDialog() {
@@ -148,30 +152,37 @@ public class CommitDialog extends StandardDialog {
 
         @Override
         public void run() {
+
+            boolean isSuccessful = true;
             try {
-                updateService.commit();
+                if (updateService.isOpen())
+                    updateService.commit();
+                else
+                    showMessasge(bundle.getString("CommitDialog(commitFailedMessage)"), JOptionPane.ERROR_MESSAGE);
             } catch (Exception e) {
-                EventQueue.invokeLater(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        JOptionPane.showMessageDialog(CommitDialog.this, bundle.getString("CommitDialog(commitFailedMessage)"), "Info", JOptionPane.ERROR_MESSAGE);
-                        CommitDialog.this.dispose();
-                    }
-                });
-
-                return;
+                
+                updateService.close();
+                isSuccessful = false;
             }
+
+            if (isSuccessful)
+                showMessasge(bundle.getString("CommitDialog(commitSuccesMessage)"), JOptionPane.INFORMATION_MESSAGE);
+            else
+                showMessasge(bundle.getString("CommitDialog(commitFailedMessage)"), JOptionPane.ERROR_MESSAGE);
+
+        }
+
+        private void showMessasge(final String message, final int type) {
+            assert message != null && !message.isEmpty() : "message != null && !message.isEmpty()";
 
             EventQueue.invokeLater(new Runnable() {
 
                 @Override
                 public void run() {
-                    JOptionPane.showMessageDialog(CommitDialog.this, bundle.getString("CommitDialog(commitSuccesMessage)"), "Info", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(CommitDialog.this, message, "Info", type);
                     CommitDialog.this.dispose();
                 }
             });
-
         }
     }
 
@@ -194,9 +205,9 @@ public class CommitDialog extends StandardDialog {
                 PreferencesManager.getInstance().put(PreferencesManager.Preference.REMOTE_DB_USERNAME, username.getText());
                 PreferencesManager.getInstance().put(PreferencesManager.Preference.REMOTE_DB_PASSWORD, password.getText());
             }
-            return new String[]{username.getText(), password.getText()};
+            return new String[]{username.getText(), password.getText(), ""};
         } else {
-            return new String[]{"", ""};
+            return new String[]{"", "", "close"};
         }
     }
 }
