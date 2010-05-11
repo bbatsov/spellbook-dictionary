@@ -1295,6 +1295,11 @@ public class SpellbookFrame extends JFrame {
     private synchronized void onWordSelectionChange() {
         final int selectedIndex = wordsList.getSelectedIndex();
 
+        // safeguard against no selection
+        if (selectedIndex < 0) {
+            return;
+        }
+
         final String selectedWord = words.get(selectedIndex);
 
         // some things should happen only if the user is selecting words directly from the words list
