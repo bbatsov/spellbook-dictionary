@@ -23,13 +23,17 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.AbstractTableModel;
+
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.event.ActionEvent;
@@ -62,6 +66,8 @@ public class ExamSummaryDialog extends StandardDialog {
     private ExamStats examStats;
     private Dialog owner;
     private static final int MIN_PASSING_SCORE = 60;
+    private ScoreboardTableModel scoreboardTableModel;
+    private boolean submitted = false;
 
     public ExamSummaryDialog(final Dialog owner, final ExamStats examStats) {
         super(owner, true);
@@ -86,7 +92,15 @@ public class ExamSummaryDialog extends StandardDialog {
         submitScoreButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                examService.addScoreboardResult(examStats.createExamScoreEntry(nameTextField.getText()));
+                if (!submitted) {
+                final ExamScoreEntry tEntry = examStats.createExamScoreEntry(nameTextField.getText());
+                examService.addScoreboardResult(tEntry);
+                scoreboardTableModel.getScoreEntries().add(tEntry);
+                scoreboardTableModel.fireTableRowsInserted(0, scoreboardTableModel.getRowCount());
+                submitted = true;
+                } else {
+                    JOptionPane.showMessageDialog(ExamSummaryDialog.this, TRANSLATOR.translate("ScoreAlreadySubmitted(Message)"));
+                }
             }
         });
 
@@ -237,20 +251,13 @@ public class ExamSummaryDialog extends StandardDialog {
     }
 
     public JPanel createScoreboardPanel() {
-        JPanel panel = new JPanel(new MigLayout("wrap 3", "[grow]", "[grow]"));
+        JPanel panel = new JPanel(new MigLayout("wrap", "[grow]", "[200]"));
         panel.setName("SB");
 
         List<ExamScoreEntry> examScoreEntryList = examService.getExamScores();
 
-        panel.add(new JLabel("Username"));
-        panel.add(new JLabel("Difficulty"));
-        panel.add(new JLabel("Score"));
-
-        for (ExamScoreEntry examScoreEntry : examScoreEntryList) {
-            panel.add(new JLabel(examScoreEntry.getName()));
-            panel.add(new JLabel(examScoreEntry.getDifficulty().toString()));
-            panel.add(new JLabel(String.valueOf(examScoreEntry.getScore())));
-        }
+        scoreboardTableModel = new ScoreboardTableModel(examScoreEntryList);
+        panel.add(new JScrollPane(new JTable(scoreboardTableModel)), "grow");
 
         return panel;
     }
@@ -280,5 +287,38 @@ public class ExamSummaryDialog extends StandardDialog {
         pack();
         setLocationRelativeTo(owner);
         setVisible(true);
+    }
+}
+
+class ScoreboardTableModel extends AbstractTableModel {
+    private String[] columnNames = {"Name", "From", "To", "Score"};
+    private List<ExamScoreEntry> scoreEntries;
+
+    ScoreboardTableModel(final List<ExamScoreEntry> pScoreEntries) {
+        scoreEntries = pScoreEntries;
+    }
+
+    public List<ExamScoreEntry> getScoreEntries() {
+        return scoreEntries;
+    }
+
+    public int getColumnCount() {
+        return columnNames.length;
+    }
+
+    public int getRowCount() {
+        return scoreEntries.size();
+    }
+
+    public String getColumnName(int col) {
+        return columnNames[col];
+    }
+
+    public Object getValueAt(int row, int col) {
+        return scoreEntries.get(row).toArray()[col];
+    }
+
+    public Class getColumnClass(int c) {
+        return getValueAt(0, c).getClass();
     }
 }
