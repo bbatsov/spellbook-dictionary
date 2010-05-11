@@ -29,6 +29,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.Timer;
+
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -221,8 +222,7 @@ public class ExamDialog extends StandardDialog {
 
         contentPanel.add(wordsProgressBar, "span, grow");
         wordsProgressBar.setForeground(Color.GREEN);
-        wordsProgressBar.setToolTipText(TRANSLATOR.translate("Words(String)"));
-        wordsProgressBar.setString(TRANSLATOR.translate("Words(String)"));
+        wordsProgressBar.setString("0/0");
         wordsProgressBar.setStringPainted(true);
 
         contentPanel.add(feedbackField, "span, left");
@@ -314,8 +314,8 @@ public class ExamDialog extends StandardDialog {
         // clear state
         timerProgressBar.setString(TRANSLATOR.translate("Timer(String)"));
         wordsProgressBar.setValue(0);
-        wordsProgressBar.setString(TRANSLATOR.translate("Words(String)"));
         answerIconLabel.setIcon(IconManager.getImageIcon("bell2_grey.png", IconManager.IconSize.SIZE24));
+        
         enableComponents(true);
         translateField.setText(null);
         answerField.setText(null);

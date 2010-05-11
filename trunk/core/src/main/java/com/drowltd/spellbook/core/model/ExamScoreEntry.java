@@ -89,4 +89,8 @@ public class ExamScoreEntry extends AbstractEntity {
     public int getScore() {
         return (int) (correctWords / (double) totalWords * 100);
     }
+
+    public Object[] toArray() {
+        return new Object[]{name, fromLanguage.toString(), toLanguage.toString(), getScore()};
+    }
 }
