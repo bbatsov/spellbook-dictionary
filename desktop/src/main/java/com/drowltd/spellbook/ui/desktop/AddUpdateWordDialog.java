@@ -205,7 +205,9 @@ public class AddUpdateWordDialog extends StandardDialog {
         setDefaultCancelAction(cancelButton.getAction());
         setDefaultAction(okButton.getAction());
         getRootPane().setDefaultButton(okButton);
-        okButton.setEnabled(false);
+        if (wordTextField.getText().isEmpty()) {
+            okButton.setEnabled(false);
+        }
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         return buttonPanel;
     }
