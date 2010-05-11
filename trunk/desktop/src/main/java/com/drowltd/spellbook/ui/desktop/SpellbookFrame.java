@@ -578,15 +578,18 @@ public class SpellbookFrame extends JFrame {
     private void updateWordDefinition() throws IllegalStateException {
         AddUpdateWordDialog addUpdateWordDialog = new AddUpdateWordDialog(this, true);
         addUpdateWordDialog.setDictionary(selectedDictionary);
+
         if (wordsList.isSelectionEmpty()) {
             throw new IllegalStateException("No word selected");
         }
+
         final String originalWord = (String) wordsList.getSelectedValue();
         addUpdateWordDialog.setWord(originalWord);
         addUpdateWordDialog.setTranslation(dictionaryService.getTranslation(originalWord, selectedDictionary));
         addUpdateWordDialog.setLocationRelativeTo(this);
         addUpdateWordDialog.setVisible(true);
-        if (addUpdateWordDialog.getDialogResult() == StandardDialog.RESULT_CANCELLED) {
+
+        if (addUpdateWordDialog.getDialogResult() == StandardDialog.RESULT_AFFIRMED) {
             String newWord = addUpdateWordDialog.getWord();
             String newTranslation = addUpdateWordDialog.getTranslation();
 
