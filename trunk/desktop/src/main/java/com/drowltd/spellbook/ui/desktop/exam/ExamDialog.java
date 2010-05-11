@@ -59,6 +59,7 @@ public class ExamDialog extends StandardDialog {
     private ExamStats examStats;
 
     private Frame parent;
+    private JButton settingsButton;
 
     private static enum TimerStatus {
         PAUSED, STARTED, STOPPED, DISABLED
@@ -101,7 +102,15 @@ public class ExamDialog extends StandardDialog {
         answerIconLabel = new JLabel();
         pauseButton = new JButton();
         feedbackField = new JLabel();
+        readExamPreferences();
 
+        setIconImage(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE16).getImage());
+        setTitle(TRANSLATOR.translate("Exam(Title)"));
+
+        initLanguages();
+    }
+
+    private void readExamPreferences() {
         // set the default difficulty
         difficultyComboBox.setSelectedItem(Difficulty.valueOf(PM.get(Preference.EXAM_DIFFICULTY, Difficulty.EASY.name())));
 
@@ -112,10 +121,6 @@ public class ExamDialog extends StandardDialog {
 
         timerStatus = timerEnabled ? TimerStatus.STOPPED : TimerStatus.DISABLED;
         examWords = PM.getInt(Preference.EXAM_WORDS, 10);
-
-        setIconImage(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE16).getImage());
-
-        initLanguages();
     }
 
     @Override
@@ -249,6 +254,8 @@ public class ExamDialog extends StandardDialog {
     }
 
     private void startExam() {
+        settingsButton.getAction().setEnabled(false);
+
         selectedDictionary = dictionaryService.getDictionary((Language) fromLanguageComboBox.getSelectedItem(),
                 (Language) toLanguageComboBox.getSelectedItem());
         assert selectedDictionary != null;
@@ -293,6 +300,8 @@ public class ExamDialog extends StandardDialog {
     }
 
     private void stopExam() {
+        settingsButton.getAction().setEnabled(true);
+
         swingTimer.stop();
         timerProgressBar.setValue(0);
         examStats.setEndTime(new Date());
@@ -436,7 +445,7 @@ public class ExamDialog extends StandardDialog {
         ButtonPanel buttonPanel = new ButtonPanel();
 
         JButton quitButton = new JButton();
-        JButton settingsButton = new JButton();
+        settingsButton = new JButton();
 
         quitButton.setName(TRANSLATOR.translate("Quit(Button)"));
         settingsButton.setName(TRANSLATOR.translate("Settings(Button)"));
@@ -461,7 +470,9 @@ public class ExamDialog extends StandardDialog {
 
                 preferencesDialog.setLocationRelativeTo(null);
                 PreferencesExtractor.extract((SpellbookFrame) parent, preferencesDialog);
-                //TODO Reload dialog
+                //Reload config
+
+                readExamPreferences();
             }
         });
 
