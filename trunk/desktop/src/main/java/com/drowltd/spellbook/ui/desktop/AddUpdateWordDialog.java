@@ -84,7 +84,7 @@ public class AddUpdateWordDialog extends StandardDialog {
                 wetherToChange = false;
             }
         });
-       
+
         wordTextField = new JTextField();
 
         okButton = new JButton();
@@ -174,9 +174,13 @@ public class AddUpdateWordDialog extends StandardDialog {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                setDialogResult(RESULT_AFFIRMED);
-                setVisible(false);
-                dispose();
+                if (translationPane.getText().isEmpty()) {
+                    newMeaningTextField.requestFocus();
+                } else {
+                    setDialogResult(RESULT_AFFIRMED);
+                    setVisible(false);
+                    dispose();
+                }
             }
         });
         cancelButton.setAction(new AbstractAction(UIDefaultsLookup.getString("OptionPane.cancelButtonText")) {
