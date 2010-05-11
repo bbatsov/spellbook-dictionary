@@ -247,6 +247,9 @@ public class DictionaryService extends AbstractPersistenceService {
 
         entityTransaction.begin();
         EM.createQuery("delete from DictionaryEntry de where de.word = :word and de.dictionary = :dictionary").setParameter("word", word).setParameter("dictionary", dictionary).executeUpdate();
+        // we need a flush here to evict the object from the session, otherwise adding the same word in the same session
+        // will cause an error
+        EM.flush();
         entityTransaction.commit();
     }
 
