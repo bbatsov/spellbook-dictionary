@@ -81,6 +81,7 @@ public class AddUpdateWordDialog extends StandardDialog {
                 } else {
                     translationPane.setText(translationPane.getText() + newMeaningTextField.getText() + "\n");
                 }
+                wetherToChange = false;
             }
         });
        
@@ -135,7 +136,6 @@ public class AddUpdateWordDialog extends StandardDialog {
             newTranslation.append(tRow + "\n");
         }
         translationPane.setText(newTranslation.toString());
-        wetherToChange = false;
     }
 
     @Override
