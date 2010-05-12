@@ -20,14 +20,14 @@
         <appversion>0.3-SNAPSHOT</appversion>
         <authors>
             <author name="Bozhidar Batsov" email="bozhidar@drowltd.com"/>
-			<author name="Ivan Valchev" email="iivalchev@gmail.com"/>
-			<author name="Ivan Spasov" email="frankeys89@gmail.com"/>
-			<author name="Miroslava Stancheva" email="mireflame@gmail.com"/>
-			<author name="Georgi Angelov" email="george.angelow@gmail.com"/>
-			<author name="Alexander Nikolov" email="AlexanderNikolovNikolov@gmail.com"/>
+            <author name="Ivan Valchev" email="iivalchev@gmail.com"/>
+            <author name="Ivan Spasov" email="frankeys89@gmail.com"/>
+            <author name="Miroslava Stancheva" email="mireflame@gmail.com"/>
+            <author name="Georgi Angelov" email="george.angelow@gmail.com"/>
+            <author name="Alexander Nikolov" email="AlexanderNikolovNikolov@gmail.com"/>
         </authors>
         <url>http://www.drowltd.com/spellbook</url>
-		<requiresjdk>no</requiresjdk>
+        <requiresjdk>no</requiresjdk>
     </info>
 
     <!-- 
@@ -35,13 +35,13 @@
        Sets the installer window to 640x480. It will not be able to change the size.
    -->
     <guiprefs width="640" height="480" resizable="yes">
-	    <laf name="looks" decorate.frames = "yes">
-            <os family="unix" />
-			<param name="variant" value="plastic3D" />
+        <laf name="looks" decorate.frames="yes">
+            <os family="unix"/>
+            <param name="variant" value="plastic3D"/>
         </laf>
-        <laf name="looks" decorate.frames = "yes">
-            <os family="windows" />
-            <param name="variant" value="plastic3D" />
+        <laf name="looks" decorate.frames="yes">
+            <os family="windows"/>
+            <param name="variant" value="plastic3D"/>
         </laf>
     </guiprefs>
     <variables>
@@ -53,7 +53,7 @@
    -->
     <locale>
         <langpack iso3="eng"/>
-        
+
     </locale>
 
     <!-- 
@@ -62,7 +62,7 @@
    -->
     <resources>
         <res src="shortcutSpec.xml" id="shortcutSpec.xml"/>
-		<res src="unix_shortcutSpec.xml" id="Unix_shortcutSpec.xml"/>
+        <res src="unix_shortcutSpec.xml" id="Unix_shortcutSpec.xml"/>
         <res id="LicencePanel.licence" src="Licence.txt"/>
     </resources>
 
@@ -89,16 +89,16 @@
             <description>The base files</description>
             <file src="Licence.txt" targetdir="$INSTALL_PATH"/>
             <file src="dictionary.png" targetdir="$INSTALL_PATH"/>
-			<file src="dictionary.ico" targetdir="$INSTALL_PATH"/>
-            <file src="spellbook-ui-0.3-SNAPSHOT-jar-with-dependencies.jar" targetdir="$INSTALL_PATH"/>
-            
+            <file src="dictionary.ico" targetdir="$INSTALL_PATH"/>
+            <file src="spellbook-ui-0.3-jar-with-dependencies.jar" targetdir="$INSTALL_PATH"/>
+
         </pack>
-		
-		<pack name="DateBase" required="no" preselected="yes">
-		    <description>The datebase for the dictionary</description>
-		    <file src="dictionary-db.tar.bz2" targetdir="$USER_HOME/spellbook"/>
-		</pack>
-		
+
+        <pack name="DateBase" required="no" preselected="yes">
+            <description>The database for the dictionary</description>
+            <file src="spellbook-db-0.3.tar.bz2" targetdir="$USER_HOME/.spellbook"/>
+        </pack>
+
     </packs>
     <native type="izpack" name="ShellLink.dll"/>
     <native type="3rdparty" name="COIOSHelper.dll" stage="both">
