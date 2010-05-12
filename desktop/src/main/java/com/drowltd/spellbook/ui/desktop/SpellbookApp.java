@@ -116,13 +116,15 @@ public class SpellbookApp {
         File file = new File(SPELLBOOK_DB_PATH);
 
         if (!file.exists() || file.isDirectory()) {
+            final File archiveFile = new File(SPELLBOOK_USER_DIR + File.separator + "spellbook-db-0.3.tar.bz2");
+
             final DownloadDialog downloadDialog = new DownloadDialog();
 
-            if (downloadDialog.showDialog() == StandardDialog.RESULT_AFFIRMED) {
+            if (archiveFile.exists() || downloadDialog.showDialog() == StandardDialog.RESULT_AFFIRMED) {
                 SwingWorker<Void, Void> swingWorker = new SwingWorker<Void, Void>() {
                     @Override
                     protected Void doInBackground() throws Exception {
-                        ArchiveUtils.extractDbFromArchive(downloadDialog.getDownloadedDbPath());
+                        ArchiveUtils.extractDbFromArchive(archiveFile.exists() ? archiveFile.getAbsolutePath() : downloadDialog.getDownloadedDbPath());
 
                         return null;
                     }
