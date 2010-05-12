@@ -5,7 +5,7 @@
     <groupId>com.drowltd.spellbook</groupId>
     <artifactId>spellbook</artifactId>
     <packaging>pom</packaging>
-    <version>0.3</version>
+    <version>0.3.0</version>
 
     <name>Spellbook Dictionary</name>
     <description>Spellbook Dictionary is platform independent dictionary written in Java</description>
@@ -51,17 +51,17 @@
             <dependency>
                 <groupId>com.drowltd.spellbook</groupId>
                 <artifactId>spellbook-core</artifactId>
-                <version>0.3-SNAPSHOT</version>
+                <version>0.3.0</version>
             </dependency>
             <dependency>
                 <groupId>com.drowltd.spellbook</groupId>
                 <artifactId>spellbook-swing</artifactId>
-                <version>0.3-SNAPSHOT</version>
+                <version>0.3.0</version>
             </dependency>
             <dependency>
                 <groupId>com.drowltd.spellbook</groupId>
                 <artifactId>spellbook-utils</artifactId>
-                <version>0.3-SNAPSHOT</version>
+                <version>0.3.0</version>
             </dependency>
 
             <!-- database -->

@@ -4,7 +4,7 @@
     <parent>
         <artifactId>spellbook</artifactId>
         <groupId>com.drowltd.spellbook</groupId>
-        <version>0.3-SNAPSHOT</version>
+        <version>0.3.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
