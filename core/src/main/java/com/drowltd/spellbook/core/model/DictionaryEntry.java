@@ -98,4 +98,9 @@ public class DictionaryEntry extends AbstractEntity {
         int hash = 5;
         return hash;
     }
+
+    @Override
+    public String toString(){
+        return getWord();
+    }
 }

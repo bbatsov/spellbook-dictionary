@@ -3,6 +3,7 @@ package com.drowltd.spellbook.ui.swing.component;
 import com.drowltd.spellbook.core.exception.AuthenticationException;
 import com.drowltd.spellbook.core.exception.UpdateServiceException;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
+import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.core.service.UpdateService;
 import com.jidesoft.dialog.ButtonPanel;
 import com.jidesoft.dialog.StandardDialog;
@@ -11,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,6 +35,7 @@ public class CommitDialog extends StandardDialog {
     private JProgressBar progressBar;
     private JButton commitButton;
     private JButton cancelButton;
+    private JList list;
 
     private UpdateService updateService;
     private ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -50,6 +53,8 @@ public class CommitDialog extends StandardDialog {
         progressBar = new JProgressBar();
         commitButton = new JButton(bundle.getString("CommitDialog(commitButton)"));
         cancelButton = new JButton(bundle.getString("CommitDialog(cancelButton)"));
+        list = new JList();
+                     list.setBorder(new LineBorder(Color.BLACK, 1));
 
         commitButton.addActionListener(new ActionListener() {
             @Override
@@ -70,6 +75,7 @@ public class CommitDialog extends StandardDialog {
 
         setTitle(bundle.getString("CommitDialog(Title)"));
     }
+    
 
     @Override
     public JComponent createBannerPanel() {
@@ -79,9 +85,10 @@ public class CommitDialog extends StandardDialog {
     @Override
     public JComponent createContentPanel() {
 
-        JPanel panel = new JPanel(new MigLayout("wrap 1", "[grow][]", "5[]5[]10"));
+        JPanel panel = new JPanel(new MigLayout("wrap 1", "[][grow][grow]", "5[]5[]5[]10"));
         panel.add(message);
-        panel.add(progressBar);
+        panel.add(list,"grow, h 250, w 200");
+        panel.add(progressBar,"grow");
 
         return panel;
     }
@@ -143,6 +150,7 @@ public class CommitDialog extends StandardDialog {
                 dispose();
                 return;
             }
+            list.setListData(updateService.getUncommitted().getDictionaryEntries().toArray());
             pack();
             setVisible(true);
         }
