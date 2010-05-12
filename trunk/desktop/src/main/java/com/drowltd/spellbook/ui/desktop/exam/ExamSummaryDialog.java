@@ -1,6 +1,7 @@
 package com.drowltd.spellbook.ui.desktop.exam;
 
 import com.drowltd.spellbook.core.i18n.Translator;
+import com.drowltd.spellbook.core.model.ExamGrade;
 import com.drowltd.spellbook.core.model.ExamScoreEntry;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.core.service.exam.ExamService;
@@ -269,7 +270,7 @@ public class ExamSummaryDialog extends StandardDialog {
         int score = (correctWords * 100) / totalWords;
 
         this.score.setText(Integer.toString(score) + "%");
-        this.grade.setText("A");
+        this.grade.setText(ExamGrade.getGrade(score).toString());
         this.correctWords.setText(Integer.toString(correctWords));
         this.incorrectWords.setText(Integer.toString(examStats.getIncorrectWords().size()));
         this.totalWords.setText(Integer.toString(totalWords));
