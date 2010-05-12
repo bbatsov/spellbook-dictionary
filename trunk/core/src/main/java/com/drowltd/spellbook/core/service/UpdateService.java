@@ -14,12 +14,7 @@ import com.drowltd.spellbook.core.model.UpdateEntry;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
@@ -51,6 +46,7 @@ public class UpdateService extends AbstractPersistenceService {
     private final Map<String, RemoteDictionary> remoteDictMap = new HashMap<String, RemoteDictionary>();
     private final Set<DictionaryEntry> updatedEntries = new HashSet<DictionaryEntry>();
     private boolean isOpen = true;
+    private boolean updatedSuccessfuly = false;
 
     private UpdateService() throws UpdateServiceException {
         if (EM == null) {
@@ -178,7 +174,7 @@ public class UpdateService extends AbstractPersistenceService {
      * Updates the local database.
      */
     public void update() throws InterruptedException {
-        if(!isOpen){
+        if (!isOpen) {
             LOGGER.error("UpdateService is closed");
             throw new IllegalStateException("UpdateService is closed");
         }
@@ -288,19 +284,20 @@ public class UpdateService extends AbstractPersistenceService {
         }
     }
 
-    public Set<DictionaryEntry> getUpdatedEntries() {
-        return updatedEntries;
-    }
 
     public boolean haveUncommited() {
         return !EM.createQuery("select ue from UncommittedEntries ue where (select count(de) from ue.dictionaryEntries de) > 0 and ue.committed = false").getResultList().isEmpty();
+    }
+
+    public UncommittedEntries getUncommitted() {
+        return DictionaryService.getInstance().getUncommitted();
     }
 
     public void commit() {
         if (!isAuthenticated) {
             return;
         }
-        if(!isOpen){
+        if (!isOpen) {
             LOGGER.error("UpdateService is closed");
             throw new IllegalStateException("UpdateService is closed");
         }
@@ -358,10 +355,12 @@ public class UpdateService extends AbstractPersistenceService {
 
 
             t.commit();
+            updatedSuccessfuly = true;
         }
         finally {
             if (t.isActive()) {
                 t.rollback();
+                updatedSuccessfuly = false;
             }
         }
 
@@ -373,15 +372,20 @@ public class UpdateService extends AbstractPersistenceService {
         EM.getTransaction().commit();
     }
 
+    public Set<DictionaryEntry> getUpdatedEntries() {
+        if (!updatedSuccessfuly) return Collections.emptySet();
+        return updatedEntries;
+    }
+
     public void close() {
         if (EM_REMOTE.isOpen())
             EM_REMOTE.close();
-        if(INSTANCE != null)
+        if (INSTANCE != null)
             INSTANCE = null;
         isOpen = false;
     }
 
-    public boolean isOpen(){
+    public boolean isOpen() {
         return isOpen;
     }
 
