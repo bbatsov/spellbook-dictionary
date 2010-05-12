@@ -63,6 +63,7 @@ public class PreferencesExtractor {
 
             if (clipboardIntegrationEnabled) {
                 LOGGER.info("Clipboard integration is enabled");
+                ClipboardIntegration.getInstance(spellbookFrame).start();
             } else {
                 LOGGER.info("Clipboard integration is disabled");
             }
