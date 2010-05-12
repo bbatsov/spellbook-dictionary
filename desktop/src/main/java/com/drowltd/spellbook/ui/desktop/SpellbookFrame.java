@@ -370,6 +370,7 @@ public class SpellbookFrame extends JFrame {
 
     private void addWordDefinition() throws HeadlessException {
         AddUpdateWordDialog addUpdateWordDialog = new AddUpdateWordDialog(this, true);
+        addUpdateWordDialog.setWhetherAddWord(true);
         addUpdateWordDialog.setLocationRelativeTo(this);
         addUpdateWordDialog.setVisible(true);
 

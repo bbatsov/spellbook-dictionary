@@ -13,10 +13,13 @@ package com.drowltd.spellbook.ui.desktop;
 import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.ui.swing.validation.ButtonControllingDocumentListener;
+import com.jidesoft.dialog.BannerPanel;
 import com.jidesoft.dialog.ButtonPanel;
 import com.jidesoft.dialog.ButtonResources;
 import com.jidesoft.dialog.StandardDialog;
-import com.jidesoft.plaf.UIDefaultsLookup;
+import com.jidesoft.icons.JideIconsFactory;
+import java.awt.Color;
+import java.awt.Font;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.AbstractAction;
@@ -29,17 +32,14 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.SwingUtilities;
-import javax.swing.text.DefaultEditorKit;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import javax.swing.KeyStroke;
 
 /**
  * @author bozhidar
@@ -47,41 +47,38 @@ import java.util.ResourceBundle;
 public class AddUpdateWordDialog extends StandardDialog {
 
     private static final Translator TRANSLATOR = Translator.getTranslator("AddUpdateWordDialog");
-    private boolean wetherToChange = false;
+    private static final Translator STANDART = Translator.getTranslator("StandartDialog");
+    private List<String> translationRows = new ArrayList<String>();
+    private boolean whetherAddWord = false;
     private JButton saveButton;
     private JTextField newMeaningTextField;
     private JTextField wordTextField;
     private JTextPane translationPane;
     private Dictionary dictionary;
-    private String toBeEdited;
-    private Action selectLine;
     private JButton okButton;
+    private static final int FONT_SIZE = 11;
 
     public AddUpdateWordDialog(Frame parent, boolean modal) {
         super(parent, modal);
 
         TRANSLATOR.reset();
 
-        saveButton = new JButton(TRANSLATOR.translate("Save(JButton)"));
+        saveButton = new JButton(TRANSLATOR.translate("Add(JButton)"));
 
         saveButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                boolean isNullTextField = newMeaningTextField.getText().isEmpty();
-                if (wetherToChange) {
-                    String editedText = translationPane.getText().replaceAll(toBeEdited, newMeaningTextField.getText());
-                    toBeEdited = newMeaningTextField.getText();
-                    translationPane.setText(editedText);
-
-                    if (isNullTextField) {  //enter in this block if we deleted a row
-                        deleteEmptyRows();
+                if (!translationRows.contains(newMeaningTextField.getText())) {
+                    translationRows.add(newMeaningTextField.getText());
+                    if(translationPane.getText().isEmpty()){
+                        translationPane.setText(translationPane.getText() + newMeaningTextField.getText());
+                    } else {
+                        translationPane.setText(translationPane.getText() + "\n" + newMeaningTextField.getText());
                     }
-                } else {
-                    translationPane.setText(translationPane.getText() + newMeaningTextField.getText() + "\n");
                 }
-                wetherToChange = false;
+                newMeaningTextField.selectAll();
+                newMeaningTextField.requestFocus();
             }
         });
 
@@ -94,65 +91,49 @@ public class AddUpdateWordDialog extends StandardDialog {
         newMeaningTextField = new JTextField();
         translationPane = new JTextPane();
 
-        translationPane.addMouseListener(new MouseAdapter() {
+        Action doNothing = new AbstractAction() {
 
             @Override
-            public void mouseClicked(MouseEvent e) {
-                if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 1) {
-                    selectLine.actionPerformed(null);
-                }
-
-                toBeEdited = translationPane.getSelectedText();
-                newMeaningTextField.setText(toBeEdited);
-                wetherToChange = true;
+            public void actionPerformed(ActionEvent e) {
+                //do nothing
             }
-        });
-
-        translationPane.setEditable(false);
+        };
+        translationPane.getInputMap().put(KeyStroke.getKeyStroke("ENTER"),
+                "doNothing");
+        translationPane.getActionMap().put("doNothing",
+                doNothing);
 
         setLocationRelativeTo(parent);
 
-        setSize(400, 400);
+        setSize(500, 500);
 
-        selectLine = getSelectLineAction();
-    }
-
-    private void deleteEmptyRows() {
-        //enter in this block if we deleted a row
-        String translation = translationPane.getText();
-        String row = null;
-        int endIndex = 0;
-        List<String> rows = new ArrayList<String>();
-        while (translation.contains("\n")) {
-            endIndex = translation.indexOf("\n");
-            row = translation.substring(0, endIndex);
-            if (!row.isEmpty()) {
-                rows.add(row);
-            }
-            translation = translation.substring(endIndex + 1);
-        }
-        StringBuilder newTranslation = new StringBuilder();
-        for (String tRow : rows) {
-            newTranslation.append(tRow + "\n");
-        }
-        translationPane.setText(newTranslation.toString());
     }
 
     @Override
     public JComponent createBannerPanel() {
-        return null;
+        BannerPanel bannerPanel = new BannerPanel(TRANSLATOR.translate("BannerTitle(Message)"),
+                TRANSLATOR.translate("Banner(Message)"),
+                JideIconsFactory.getImageIcon("/icons/48x48/pencil.png"));
+        bannerPanel.setFont(new Font("Tahoma", Font.PLAIN, FONT_SIZE));
+        bannerPanel.setBackground(Color.WHITE);
+        return bannerPanel;
     }
 
     @Override
     public JComponent createContentPanel() {
         JPanel panel = new JPanel(new MigLayout("wrap 2", "[grow][]", "[][][][][][grow]"));
-
-        panel.add(new JLabel(TRANSLATOR.translate("Word(TextFieldBorder)")), "span 2, left");
+        if (whetherAddWord) {
+            panel.add(new JLabel(TRANSLATOR.translate("AddWord(TextFieldBorder)")), "span 2, left");
+            setTitle(TRANSLATOR.translate("AddDialogTitle(Title)"));
+        } else {
+            panel.add(new JLabel(TRANSLATOR.translate("EditWord(TextFieldBorder)")), "span 2, left");
+            setTitle(TRANSLATOR.translate("UpdateDialogTitle(Title)"));
+        }
         panel.add(wordTextField, "span 2, growx, top");
-        panel.add(new JLabel(TRANSLATOR.translate("Add/Edit(TextFieldBorder)")), "span 2, left");
+        panel.add(new JLabel(TRANSLATOR.translate("AddMeaning(TextFieldBorder)")), "span 2, left");
         panel.add(newMeaningTextField, "growx, top");
         panel.add(saveButton, "w 73::,gapright 2,top");
-        panel.add(new JLabel(TRANSLATOR.translate("Preview(TextFieldBorde)")), "span 2, left");
+        panel.add(new JLabel(TRANSLATOR.translate("EditMeaning(TextFieldBorde)")), "span 2, left");
         panel.add(new JScrollPane(translationPane), "span 2,grow");
 
         return panel;
@@ -165,12 +146,13 @@ public class AddUpdateWordDialog extends StandardDialog {
         JButton helpButton = new JButton();
         okButton.setName(OK);
         cancelButton.setName(CANCEL);
+        cancelButton.setText("sasho");
         helpButton.setName(HELP);
         buttonPanel.addButton(okButton, ButtonPanel.AFFIRMATIVE_BUTTON);
         buttonPanel.addButton(cancelButton, ButtonPanel.CANCEL_BUTTON);
         buttonPanel.addButton(helpButton, ButtonPanel.HELP_BUTTON);
 
-        okButton.setAction(new AbstractAction(UIDefaultsLookup.getString("OptionPane.okButtonText")) {
+        okButton.setAction(new AbstractAction(STANDART.translate("OK(JButton)")) {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -183,7 +165,7 @@ public class AddUpdateWordDialog extends StandardDialog {
                 }
             }
         });
-        cancelButton.setAction(new AbstractAction(UIDefaultsLookup.getString("OptionPane.cancelButtonText")) {
+        cancelButton.setAction(new AbstractAction(STANDART.translate("Cancel(JButton)")) {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -193,7 +175,7 @@ public class AddUpdateWordDialog extends StandardDialog {
             }
         });
         final ResourceBundle resourceBundle = ButtonResources.getResourceBundle(Locale.getDefault());
-        helpButton.setAction(new AbstractAction(resourceBundle.getString("Button.help")) {
+        helpButton.setAction(new AbstractAction(STANDART.translate("Help(JButton)")) {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -210,6 +192,10 @@ public class AddUpdateWordDialog extends StandardDialog {
         }
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         return buttonPanel;
+    }
+
+    public void setWhetherAddWord(boolean whetherAddWord) {
+        this.whetherAddWord = whetherAddWord;
     }
 
     public void setDictionary(Dictionary dictionary) {
@@ -229,25 +215,25 @@ public class AddUpdateWordDialog extends StandardDialog {
     }
 
     public void setTranslation(String translation) {
+        translation = translation.substring(0, translation.length() - 3); //delete last "\n"
         translationPane.setText(translation);
+        translationRows = splitTranslationOfRows(translation);
+    }
+
+    private List<String> splitTranslationOfRows(String translation) {
+        List<String> rows = new ArrayList<String>();
+        int endIndex = 0;
+        while (translation.contains("\n")) {
+            endIndex = translation.indexOf("\n");
+            rows.add(translation.substring(0, endIndex));
+            translation = translation.substring(endIndex + 1);
+        }
+
+        return rows;
     }
 
     public String getTranslation() {
         return translationPane.getText();
-    }
-
-    private Action getSelectLineAction() {
-        Action[] action = translationPane.getActions();
-
-        for (int i = 0; i < action.length; i++) {
-
-            if (action[i].getValue(Action.NAME).equals(DefaultEditorKit.selectLineAction)) {
-                selectLine = action[i];
-            }
-
-        }
-
-        return selectLine;
     }
 
     public static void main(String[] args) {
