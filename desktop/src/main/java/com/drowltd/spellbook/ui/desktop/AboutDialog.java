@@ -19,6 +19,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Font;
@@ -165,25 +166,21 @@ public class AboutDialog extends StandardDialog {
     private void creditsButtonActionPerformed() {
         String team = String.format("<html>\n  <head>\n\n  </head>\n  <body>\n    <p style=\"margin-top: 0\"; style=\"text-align:center\">\n"
                 + "\n\t <b>%s</b> <br />"
-                + "\n\t <a href=\"mailto:bozhidar@drowltd.com?subject=Spellbook\">%s</a> <br />"
+                + "\n\t <a href=\"mailto:bozhidar@drowltd.com?subject=Spellbook\">%s</a> <br /><br/>"
                 + "\n\t <b>%s</b> <br />"
                 + "\n\t <a href=\"mailto:iivalchev@gmail.com?subject=Spellbook\">%s</a> <br />"
-                + "\n\t <b>%s</b> <br />"
                 + "\n\t <a \nhref=\"mailto:frankeys89@gmail.com?subject=Spellbook\">%s</a> <br />"
                 + "\n\t <a href=\"mailto:mireflame@gmail.com?subject=Spellbook\">%s</a> <br />"
                 + "\n\t <a \nhref=\"mailto:george.angelow@gmail.com?subject=Spellbook\">%s</a> <br />"
-                + "\n\t <b>%s</b> <br /> "
                 + "\n\t <a href=\"mailto:AlexanderNikolovNikolov@gmail.com?subject=Spellbook\">%s</a> <br />"
                 + "\n\t   \n\t</p>\n\t\n  </body>\n</html>\n",
                 TEAM_TRANSLATOR.translate("ProjectLead"),
                 TEAM_TRANSLATOR.translate("BozhidarBatsov"),
-                TEAM_TRANSLATOR.translate("CoreUiSpellcheck"),
+                TEAM_TRANSLATOR.translate("Team"),
                 TEAM_TRANSLATOR.translate("IvanValchev"),
-                TEAM_TRANSLATOR.translate("ExamModule"),
                 TEAM_TRANSLATOR.translate("IvanSpasov"),
                 TEAM_TRANSLATOR.translate("MiroslavaStancheva"),
                 TEAM_TRANSLATOR.translate("GeorgiAngelov"),
-                TEAM_TRANSLATOR.translate("StudyModule"),
                 TEAM_TRANSLATOR.translate("AlexanderNikolov"));
 
         infoTextPane.setText(team);
