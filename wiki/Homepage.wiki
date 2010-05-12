@@ -22,7 +22,7 @@ Spellbook is an open source dictionary written in Java. In order to run the appl
 ===_Exam Module :_===
 
 
-  http://i48.tinypic.com/2qsvz7q.jpg
+  http://i43.tinypic.com/21livcj.png
 
 
   * English-Bulgarian and Bulgarian-English exam.
