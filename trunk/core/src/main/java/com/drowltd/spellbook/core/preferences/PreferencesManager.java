@@ -12,7 +12,6 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 /**
- *
  * @author bozhidar
  */
 public class PreferencesManager {
@@ -67,7 +66,7 @@ public class PreferencesManager {
     }
 
     public double getDouble(Preference key, double def) {
-       return preferences.getDouble(key.toString(), def);
+        return preferences.getDouble(key.toString(), def);
     }
 
     public void clear() throws BackingStoreException {
@@ -99,7 +98,6 @@ public class PreferencesManager {
         FRAME_HEIGHT,
         FRAME_WIDTH,
         DIVIDER_LOCATION,
-        PATH_TO_DB,
         DICTIONARIES,
         STUDY_SETS,
         LEARNING_IN_ORDER,

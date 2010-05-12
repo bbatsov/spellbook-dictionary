@@ -1,47 +1,53 @@
 package com.drowltd.spellbook.ui.desktop;
 
+import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
+import com.drowltd.spellbook.core.service.DictionaryService;
+import com.drowltd.spellbook.ui.swing.component.DownloadDialog;
 import com.drowltd.spellbook.ui.swing.component.SpellbookDefaultExceptionHandler;
+import com.drowltd.spellbook.util.ArchiveUtils;
+import com.jidesoft.dialog.StandardDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
+import java.io.File;
 import java.util.Locale;
 
 import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preference;
 
 /**
- * The entry point in Spellbook. Here the preferences manager get initialized, some 
+ * The entry point in Spellbook. Here the preferences manager get initialized, some
  * important settings are take into account(such as the initial look and feel and language)
  * and the application's main frame is created and displayed.
- * 
+ *
  * @author Bozhidar Batsov
  * @since 0.1
- *
  */
 public class SpellbookApp {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellbookApp.class);
 
-    private static int MIN_FRAME_WIDTH = 640;
-    private static int MIN_FRAME_HEIGHT = 200;
+    private static final Translator TRANSLATOR = Translator.getTranslator("SpellbookFrame");
+
+    private static final int MIN_FRAME_WIDTH = 640;
+    private static final int MIN_FRAME_HEIGHT = 200;
+    private static final String SPELLBOOK_USER_DIR = System.getProperty("user.home") + File.separator + ".spellbook";
+    private static final String SPELLBOOK_DB_PATH = SPELLBOOK_USER_DIR + File.separator + "db" + File.separator + "spellbook.data.db";
 
     public static void main(final String[] args) {
         init();
     }
 
     public static void init() {
-        // enable anti-aliased text:
-//        System.setProperty("awt.useSystemAAFontSettings", "on");
-//        System.setProperty("swing.aatext", "true");
-
         // install the default exception handler
         Thread.setDefaultUncaughtExceptionHandler(new SpellbookDefaultExceptionHandler());
 
@@ -84,6 +90,15 @@ public class SpellbookApp {
             // handle exception
         }
 
+        // check the presence of the dictionary database
+        if (!verifyDbPresence()) {
+            JOptionPane.showMessageDialog(null, TRANSLATOR.translate("NoDbSelected(Message)"),
+                    TRANSLATOR.translate("Error(Title)"), JOptionPane.ERROR_MESSAGE);
+            System.exit(-1);
+        }
+
+        DictionaryService.init(SPELLBOOK_DB_PATH);
+
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -118,11 +133,36 @@ public class SpellbookApp {
 
                 tAppFrame.setMinimumSize(new Dimension(MIN_FRAME_WIDTH, MIN_FRAME_HEIGHT));
                 tAppFrame.setAlwaysOnTop(pm.getBoolean(Preference.ALWAYS_ON_TOP, false));
-                
+
                 if (!pm.getBoolean(Preference.START_IN_TRAY, false)) {
                     tAppFrame.setVisible(true);
                 }
             }
         });
+    }
+
+    private static boolean verifyDbPresence() {
+        final File userDir = new File(SPELLBOOK_USER_DIR);
+        if (!userDir.exists()) {
+            if (userDir.mkdir()) {
+                LOGGER.info("Successfully create user dir: " + SPELLBOOK_USER_DIR);
+            }
+        }
+
+        File file = new File(SPELLBOOK_DB_PATH);
+
+        if (!file.exists() || file.isDirectory()) {
+            DownloadDialog downloadDialog = new DownloadDialog();
+
+            if (downloadDialog.showDialog() == StandardDialog.RESULT_AFFIRMED) {
+                if (downloadDialog.isCompressed()) {
+                    ArchiveUtils.extractDbFromArchive(downloadDialog.getDownloadedDbPath());
+                }
+            } else {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
