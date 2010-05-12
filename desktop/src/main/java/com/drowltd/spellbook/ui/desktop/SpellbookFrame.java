@@ -8,12 +8,10 @@ import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.ui.desktop.exam.ExamDialog;
 import com.drowltd.spellbook.ui.desktop.spellcheck.SpellCheckFrame;
 import com.drowltd.spellbook.ui.desktop.study.StudyWordsDialog;
-import com.drowltd.spellbook.ui.swing.component.DownloadDialog;
 import com.drowltd.spellbook.ui.swing.model.ListBackedListModel;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.drowltd.spellbook.ui.swing.util.IconManager.IconSize;
 import com.drowltd.spellbook.ui.swing.util.SwingUtil;
-import com.drowltd.spellbook.util.ArchiveUtils;
 import com.drowltd.spellbook.util.SearchUtils;
 import com.jidesoft.dialog.StandardDialog;
 import com.jidesoft.hints.ListDataIntelliHints;
@@ -61,7 +59,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -89,7 +86,6 @@ public class SpellbookFrame extends JFrame {
     private List<String> searchedWords = new ArrayList<String>();
     private int searchWordsIndex = -1;
     private static final int BYTES_IN_ONE_MEGABYTE = 1024 * 1024;
-    private static final String SPELLBOOK_USER_DIR = System.getProperty("user.home") + File.separator + ".spellbook";
     private static DictionaryService dictionaryService;
     private static Dictionary selectedDictionary;
 
@@ -125,14 +121,6 @@ public class SpellbookFrame extends JFrame {
     public SpellbookFrame() {
         TRANSLATOR.reset();
 
-        // check the presence of the dictionary database
-        if (!verifyDbPresence()) {
-            JOptionPane.showMessageDialog(null, TRANSLATOR.translate("NoDbSelected(Message)"),
-                    TRANSLATOR.translate("Error(Title)"), JOptionPane.ERROR_MESSAGE);
-            System.exit(-1);
-        }
-
-        DictionaryService.init(PM.get(Preference.PATH_TO_DB, ""));
         dictionaryService = DictionaryService.getInstance();
 
         // the first invocation of a db related method is special - we have to check
@@ -632,35 +620,6 @@ public class SpellbookFrame extends JFrame {
         } else {
             throw new IllegalArgumentException("Unknown dictionary " + dictionary);
         }
-    }
-
-    private boolean verifyDbPresence() {
-        final File userDir = new File(SPELLBOOK_USER_DIR);
-        if (!userDir.exists()) {
-            if (userDir.mkdir()) {
-                LOGGER.info("Successfully create user dir: " + SPELLBOOK_USER_DIR);
-            }
-        }
-
-        final String dbPath = PM.get(Preference.PATH_TO_DB, "");
-
-        File file = new File(dbPath);
-
-        if (!file.exists() || file.isDirectory()) {
-            DownloadDialog downloadDialog = new DownloadDialog();
-
-            if (downloadDialog.showDialog() == StandardDialog.RESULT_AFFIRMED) {
-                if (downloadDialog.isCompressed()) {
-                    PM.put(Preference.PATH_TO_DB, ArchiveUtils.extractDbFromArchive(downloadDialog.getDownloadedDbPath()));
-                } else {
-                    PM.put(Preference.PATH_TO_DB, downloadDialog.getLocalDbFile());
-                }
-            } else {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     public void setSelectedFont(Font font) {
