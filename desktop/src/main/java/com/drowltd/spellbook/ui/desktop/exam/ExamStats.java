@@ -83,4 +83,8 @@ public class ExamStats {
 
         return scoreEntry;
     }
+
+    public int getScore() {
+        return (int)((correctWords.size() / (double)getTotalWords()) * 100);
+    }
 }

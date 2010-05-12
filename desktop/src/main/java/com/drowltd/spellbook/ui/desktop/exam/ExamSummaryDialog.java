@@ -10,6 +10,7 @@ import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.drowltd.spellbook.ui.swing.util.SwingUtil;
 import com.drowltd.spellbook.ui.swing.validation.ButtonControllingDocumentListener;
 import com.drowltd.spellbook.util.DateUtils;
+import com.jidesoft.dialog.BannerPanel;
 import com.jidesoft.dialog.ButtonPanel;
 import com.jidesoft.dialog.StandardDialog;
 import com.jidesoft.dialog.StandardDialogPane;
@@ -20,6 +21,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -31,12 +33,15 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.WindowConstants;
+import javax.swing.border.BevelBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dialog;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -53,8 +58,6 @@ public class ExamSummaryDialog extends StandardDialog {
 
     private JLabel incorrectWords;
     private JLabel correctWords;
-    private JLabel message;
-    private JLabel iconLabel;
     private JLabel score;
     private JLabel grade;
     private JLabel totalWords;
@@ -83,8 +86,6 @@ public class ExamSummaryDialog extends StandardDialog {
         averageTime = new JLabel();
         grade = new JLabel();
         totalWords = new JLabel();
-        message = new JLabel();
-        iconLabel = new JLabel();
         score = new JLabel();
         nameTextField = new JTextField();
         submitScoreButton = new JButton(TRANSLATOR.translate("SubmitScore(Button)"));
@@ -115,7 +116,17 @@ public class ExamSummaryDialog extends StandardDialog {
 
     @Override
     public JComponent createBannerPanel() {
-        return null;
+
+        ImageIcon tImageIcon = examStats.getScore() >= MIN_PASSING_SCORE ? IconManager.getImageIcon("bell2_green.png", IconManager.IconSize.SIZE48) :
+                IconManager.getImageIcon("bell2_red.png", IconManager.IconSize.SIZE48);
+
+        BannerPanel bannerPanel = new BannerPanel(examStats.getScore() >= MIN_PASSING_SCORE ? TRANSLATOR.translate("Success(Title)") : TRANSLATOR.translate("Failure(Title)"),
+                examStats.getScore() >= MIN_PASSING_SCORE ? TRANSLATOR.translate("Passed(Message)") : TRANSLATOR.translate("Failed(Message)"),
+                tImageIcon);
+        bannerPanel.setFont(new Font("Tahoma", Font.PLAIN, 12));
+        bannerPanel.setBackground(Color.WHITE);
+        bannerPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+        return bannerPanel;
     }
 
     @Override
@@ -145,8 +156,6 @@ public class ExamSummaryDialog extends StandardDialog {
     public JComponent createContentPanel() {
         JPanel panel = new JPanel(new MigLayout("wrap 2", "[][grow]"));
 
-        panel.add(message);
-        panel.add(iconLabel);
         panel.add(new JLabel(TRANSLATOR.translate("Score(Label)")));
         panel.add(score);
         panel.add(new JLabel(TRANSLATOR.translate("Grade(Label)")));
@@ -267,7 +276,7 @@ public class ExamSummaryDialog extends StandardDialog {
         int correctWords = examStats.getCorrectWords().size();
         int totalWords = examStats.getTotalWords();
 
-        int score = (correctWords * 100) / totalWords;
+        int score = examStats.getScore();
 
         this.score.setText(Integer.toString(score) + "%");
         this.grade.setText(ExamGrade.getGrade(score).toString());
@@ -276,14 +285,6 @@ public class ExamSummaryDialog extends StandardDialog {
         this.totalWords.setText(Integer.toString(totalWords));
         this.totalTime.setText(DateUtils.dateDifference(examStats.getStartTime(), examStats.getEndTime()));
         this.averageTime.setText(DateUtils.getAvgDuration(examStats.getStartTime(), examStats.getEndTime(), totalWords));
-
-        if (score > MIN_PASSING_SCORE) {
-            message.setText(TRANSLATOR.translate("Passed(Label)"));
-            iconLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconManager.IconSize.SIZE48));
-        } else {
-            message.setText(TRANSLATOR.translate("Failed(Label)"));
-            iconLabel.setIcon(IconManager.getImageIcon("bell2_red.png", IconManager.IconSize.SIZE48));
-        }
 
         pack();
         setLocationRelativeTo(owner);
