@@ -44,10 +44,12 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.text.DefaultEditorKit;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.HeadlessException;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -114,12 +116,47 @@ public class SpellbookFrame extends JFrame {
     private JList wordsList;
     private static final int DEFAULT_FONT_SIZE = 14;
     private static final int DIVIDER_LOCATION = 180;
+    private static final int MIN_FRAME_WIDTH = 640;
+    private static final int MIN_FRAME_HEIGHT = 200;
 
-    /**
-     * Creates new form SpellbookFrame
-     */
-    public SpellbookFrame() {
+    public SpellbookFrame(boolean dbPresent) {
+        setMinimumSize(new Dimension(MIN_FRAME_WIDTH, MIN_FRAME_HEIGHT));
+
+        if (PM.getBoolean(Preference.CLOSE_TO_TRAY, false)) {
+            LOGGER.info("Minimize to tray on close is enabled");
+            setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        } else {
+            LOGGER.info("Minimize to tray on close is disabled");
+            setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        }
+
+        setAlwaysOnTop(PM.getBoolean(Preference.ALWAYS_ON_TOP, false));
+
+        if (!PM.getBoolean(Preference.START_IN_TRAY, false)) {
+            setVisible(true);
+        }
+
+        //set the frame title
+        setTitle(TRANSLATOR.translate("ApplicationName(Title)"));
+
+        //set the frame icon
+        setIconImage(IconManager.getImageIcon("dictionary.png", IconSize.SIZE16).getImage());
+
+        //create tray
+        trayIcon = SpellbookTray.createTraySection(this);
+
+        // implemented a very nasty clipboard ownership hack to simulate notifications
+        clipboardIntegration = ClipboardIntegration.getInstance(this);
+
+        if (dbPresent) {
+            init();
+        }
+    }
+
+    public void init() {
         TRANSLATOR.reset();
+
+        DictionaryService.init("~/.spellbook/db/spellbook.data.db");
 
         dictionaryService = DictionaryService.getInstance();
 
@@ -144,16 +181,6 @@ public class SpellbookFrame extends JFrame {
         } else {
             setSelectedDictionary(dictionaryService.getDictionary(defaultDictionaryName));
         }
-
-
-        //set the frame title
-        setTitle(TRANSLATOR.translate("ApplicationName(Title)"));
-
-        //set the frame icon
-        setIconImage(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE16).getImage());
-
-        //create tray
-        trayIcon = SpellbookTray.createTraySection(this);
 
         initComponents();
 
@@ -196,8 +223,25 @@ public class SpellbookFrame extends JFrame {
             hideMemoryUsage();
         }
 
-        // implemented a very nasty clipboard ownership hack to simulate notifications
-        clipboardIntegration = ClipboardIntegration.getInstance(this);
+        // restore last size and position of the frame
+        if (PM.getDouble(Preference.FRAME_X, 0.0) > 0) {
+            double x = PM.getDouble(Preference.FRAME_X, 0.0);
+            double y = PM.getDouble(Preference.FRAME_Y, 0.0);
+            double width = PM.getDouble(Preference.FRAME_WIDTH, 0.0);
+            double height = PM.getDouble(Preference.FRAME_HEIGHT, 0.0);
+
+            setBounds((int) x, (int) y, (int) width, (int) height);
+        } else {
+            //or dynamically determine an adequate frame size
+            Toolkit toolkit = Toolkit.getDefaultToolkit();
+
+            Dimension screenSize = toolkit.getScreenSize();
+
+            setSize(screenSize.width / 2, screenSize.height / 2);
+            // center on screen
+            setLocationRelativeTo(null);
+        }
+
     }
 
     private void addListeners() {

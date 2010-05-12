@@ -1,5 +1,6 @@
 package com.drowltd.spellbook.ui.desktop;
 
+import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +33,10 @@ public final class ClipboardIntegration implements ClipboardOwner {
     }
 
     private ClipboardIntegration() {
+        start();
+    }
+
+    public void start() {
         setClipboardContents(getClipboardContents());
     }
 
@@ -41,20 +46,22 @@ public final class ClipboardIntegration implements ClipboardOwner {
      */
     @Override
     public void lostOwnership(Clipboard clipboard, Transferable contents) {
-        try {
-            // this delay in necessary - otherwise all sort of nasty things happen
-            Thread.sleep(200);
-        } catch (Exception e) {
-            System.out.println("Exception: " + e);
+        if (PreferencesManager.getInstance().getBoolean(PreferencesManager.Preference.CLIPBOARD_INTEGRATION, false)) {
+            try {
+                // this delay in necessary - otherwise all sort of nasty things happen
+                Thread.sleep(200);
+            } catch (Exception e) {
+                System.out.println("Exception: " + e);
+            }
+
+            LOGGER.info("Clipboard ownership lost");
+            // replace the contents in the clipboard with the same contents
+            // just to restore the ownership to Spellbook
+            clipboard.setContents(clipboard.getContents(this), this);
+
+            // call the frame callback
+            spellbookFrame.clipboardCallback();
         }
-
-        LOGGER.info("Clipboard ownership lost");
-        // replace the contents in the clipboard with the same contents
-        // just to restore the ownership to Spellbook
-        clipboard.setContents(clipboard.getContents(this), this);
-
-        // call the frame callback
-        spellbookFrame.clipboardCallback();
     }
 
     /**

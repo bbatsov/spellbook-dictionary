@@ -24,7 +24,6 @@ import javax.swing.JTextField;
 import javax.swing.ProgressMonitor;
 import javax.swing.SwingWorker;
 import javax.swing.border.BevelBorder;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -57,11 +56,11 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
     private JButton okButton = new JButton();
     private static final int MIN_WIDTH = 600;
     private static final int MIN_HEIGHT = 250;
-    private boolean compressed = true;
 
     private static final String DB_FILE_NAME = "spellbook.data.db";
     private static final String DB_URL = "http://spellbook-dictionary.googlecode.com/files/spellbook-db-0.3.tar.bz2";
     private static final String DOWNLOAD_DIR = System.getProperty("java.io.tmpdir");
+    private static final int FONT_SIZE = 14;
 
     public DownloadDialog() {
         setModal(true);
@@ -106,17 +105,10 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
                     localDbFolder = folderChooser.getSelectedFolder().getAbsolutePath();
                     localDbFolderTextField.setText(localDbFolder);
 
-                    File dbFile = new File(localDbFolder + File.separator + "db" + File.separator + DB_FILE_NAME);
+                    File dbFile = new File(localDbFolder + File.separator + getFileName());
 
                     if (dbFile.exists()) {
                         okButton.getAction().setEnabled(true);
-                        compressed = false;
-                    } else {
-                        dbFile = new File(localDbFolder + File.separator + getFileName());
-
-                        if (dbFile.exists()) {
-                            okButton.getAction().setEnabled(true);
-                        }
                     }
                 }
             }
@@ -126,19 +118,11 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
         setTitle(TRANSLATOR.translate("SelectDb(Title)"));
     }
 
-    public boolean isCompressed() {
-        return compressed;
-    }
-
-    public String getLocalDbFile() {
-        return localDbFolder + File.separator + DB_FILE_NAME;
-    }
-
     @Override
     public JComponent createBannerPanel() {
         BannerPanel bannerPanel = new BannerPanel(TRANSLATOR.translate("MissingDb(Title)"), TRANSLATOR.translate("MissingDb(Message)"),
                 JideIconsFactory.getImageIcon("/icons/48x48/data_unknown.png"));
-        bannerPanel.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        bannerPanel.setFont(new Font("Tahoma", Font.PLAIN, FONT_SIZE));
         bannerPanel.setBackground(Color.WHITE);
         bannerPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
         return bannerPanel;

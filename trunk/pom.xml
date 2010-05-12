@@ -5,10 +5,10 @@
     <groupId>com.drowltd.spellbook</groupId>
     <artifactId>spellbook</artifactId>
     <packaging>pom</packaging>
-    <version>0.3-SNAPSHOT</version>
+    <version>0.3</version>
 
     <name>Spellbook Dictionary</name>
-    <description>Spellbook Dictionary is multiplatfom dictionary written in Java</description>
+    <description>Spellbook Dictionary is platform independent dictionary written in Java</description>
 
     <modules>
         <module>core</module>
