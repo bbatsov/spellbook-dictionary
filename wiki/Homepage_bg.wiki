@@ -5,7 +5,7 @@
 Spellbook е речник с отворен код написан на Java. За да пуснете програмата е необходимо да имате инсталиран [http://www.java.com/en/download/manual.jsp JRE]. Речникът Spellbook може да свалите от [http://code.google.com/p/spellbook-dictionary/downloads/list тук].
 
 
- http://i49.tinypic.com/6dv9mp.jpg
+ http://i44.tinypic.com/8xj3bt.jpg
 
 
  * Поддържани речници:
@@ -52,7 +52,7 @@ Spellbook е речник с отворен код написан на Java. З�
 ===_Look&Feel и езици :_===
 
 
-  http://i46.tinypic.com/2nukj6p.jpg
+  http://i44.tinypic.com/2clu6a.png
 
 
   * От панела с настройки може да изберете различни look&feels.
