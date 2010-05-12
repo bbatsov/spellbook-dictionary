@@ -369,7 +369,7 @@ public class ExamDialog extends StandardDialog {
         }
 
         wordsProgressBar.setString(examStats.getCorrectWords().size() + "/" + examStats.getTotalWords());
-        wordsProgressBar.setValue(examStats.getTotalWords());
+        wordsProgressBar.setValue(examStats.getTotalWords() + 1);
     }
 
     private Timer swingTimer = new Timer(1000, new ActionListener() {
