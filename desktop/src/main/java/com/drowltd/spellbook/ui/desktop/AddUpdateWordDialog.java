@@ -18,8 +18,6 @@ import com.jidesoft.dialog.ButtonPanel;
 import com.jidesoft.dialog.ButtonResources;
 import com.jidesoft.dialog.StandardDialog;
 import com.jidesoft.icons.JideIconsFactory;
-import java.awt.Color;
-import java.awt.Font;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.AbstractAction;
@@ -32,6 +30,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.KeyStroke;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -39,7 +40,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import javax.swing.KeyStroke;
 
 /**
  * @author bozhidar
@@ -47,7 +47,7 @@ import javax.swing.KeyStroke;
 public class AddUpdateWordDialog extends StandardDialog {
 
     private static final Translator TRANSLATOR = Translator.getTranslator("AddUpdateWordDialog");
-    private static final Translator STANDART = Translator.getTranslator("StandartDialog");
+    private static final Translator STANDARD_DIALOG_TRANSLATOR = Translator.getTranslator("StandardDialog");
     private List<String> translationRows = new ArrayList<String>();
     private boolean whetherAddWord = false;
     private JButton saveButton;
@@ -71,7 +71,7 @@ public class AddUpdateWordDialog extends StandardDialog {
             public void actionPerformed(ActionEvent e) {
                 if (!translationRows.contains(newMeaningTextField.getText())) {
                     translationRows.add(newMeaningTextField.getText());
-                    if(translationPane.getText().isEmpty()){
+                    if (translationPane.getText().isEmpty()) {
                         translationPane.setText(translationPane.getText() + newMeaningTextField.getText());
                     } else {
                         translationPane.setText(translationPane.getText() + "\n" + newMeaningTextField.getText());
@@ -152,7 +152,7 @@ public class AddUpdateWordDialog extends StandardDialog {
         buttonPanel.addButton(cancelButton, ButtonPanel.CANCEL_BUTTON);
         buttonPanel.addButton(helpButton, ButtonPanel.HELP_BUTTON);
 
-        okButton.setAction(new AbstractAction(STANDART.translate("OK(JButton)")) {
+        okButton.setAction(new AbstractAction(STANDARD_DIALOG_TRANSLATOR.translate("OK(JButton)")) {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -165,7 +165,7 @@ public class AddUpdateWordDialog extends StandardDialog {
                 }
             }
         });
-        cancelButton.setAction(new AbstractAction(STANDART.translate("Cancel(JButton)")) {
+        cancelButton.setAction(new AbstractAction(STANDARD_DIALOG_TRANSLATOR.translate("Cancel(JButton)")) {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -175,7 +175,7 @@ public class AddUpdateWordDialog extends StandardDialog {
             }
         });
         final ResourceBundle resourceBundle = ButtonResources.getResourceBundle(Locale.getDefault());
-        helpButton.setAction(new AbstractAction(STANDART.translate("Help(JButton)")) {
+        helpButton.setAction(new AbstractAction(STANDARD_DIALOG_TRANSLATOR.translate("Help(JButton)")) {
 
             @Override
             public void actionPerformed(ActionEvent e) {
