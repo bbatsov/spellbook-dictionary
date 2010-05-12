@@ -50,7 +50,7 @@ public class AddUpdateWordDialog extends StandardDialog {
     private static final Translator STANDARD_DIALOG_TRANSLATOR = Translator.getTranslator("StandardDialog");
     private List<String> translationRows = new ArrayList<String>();
     private boolean whetherAddWord = false;
-    private JButton saveButton;
+    private JButton addButton;
     private JTextField newMeaningTextField;
     private JTextField wordTextField;
     private JTextPane translationPane;
@@ -63,9 +63,9 @@ public class AddUpdateWordDialog extends StandardDialog {
 
         TRANSLATOR.reset();
 
-        saveButton = new JButton(TRANSLATOR.translate("Add(JButton)"));
+        addButton = new JButton(TRANSLATOR.translate("Add(JButton)"));
 
-        saveButton.addActionListener(new ActionListener() {
+        addButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -132,7 +132,7 @@ public class AddUpdateWordDialog extends StandardDialog {
         panel.add(wordTextField, "span 2, growx, top");
         panel.add(new JLabel(TRANSLATOR.translate("AddMeaning(TextFieldBorder)")), "span 2, left");
         panel.add(newMeaningTextField, "growx, top");
-        panel.add(saveButton, "w 73::,gapright 2,top");
+        panel.add(addButton, "w 73::,gapright 2,top");
         panel.add(new JLabel(TRANSLATOR.translate("EditMeaning(TextFieldBorde)")), "span 2, left");
         panel.add(new JScrollPane(translationPane), "span 2,grow");
 
