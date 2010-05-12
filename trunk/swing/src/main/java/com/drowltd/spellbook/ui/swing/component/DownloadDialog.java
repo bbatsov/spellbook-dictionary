@@ -55,9 +55,8 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
     private String localDbFolder;
     private JButton okButton = new JButton();
     private static final int MIN_WIDTH = 600;
-    private static final int MIN_HEIGHT = 250;
+    private static final int MIN_HEIGHT = 270;
 
-    private static final String DB_FILE_NAME = "spellbook.data.db";
     private static final String DB_URL = "http://spellbook-dictionary.googlecode.com/files/spellbook-db-0.3.tar.bz2";
     private static final String DOWNLOAD_DIR = System.getProperty("java.io.tmpdir");
     private static final int FONT_SIZE = 14;
@@ -115,6 +114,7 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
         });
 
         setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
+        setLocationRelativeTo(null);
         setTitle(TRANSLATOR.translate("SelectDb(Title)"));
     }
 
