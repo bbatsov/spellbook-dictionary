@@ -53,7 +53,7 @@ Allows you to view meaning of a copied to clipboard word. If you enable that fun
 ===_Look&Feel and Languages :_===
 
 
-  http://i46.tinypic.com/2nukj6p.jpg
+  http://i44.tinypic.com/2clu6a.png
 
 
   * In preferences menu you can choose between few look&feels.
