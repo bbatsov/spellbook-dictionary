@@ -232,8 +232,7 @@ public class ExamDialog extends StandardDialog {
         timerIconLabel.setIcon(IconManager.getImageIcon("stopwatch.png", IconManager.IconSize.SIZE48));
         contentPanel.add(timerProgressBar, "span, growx");
         timerProgressBar.setForeground(Color.GREEN);
-        timerProgressBar.setToolTipText(TRANSLATOR.translate("Timer(String)"));
-        timerProgressBar.setString(TRANSLATOR.translate("Timer(String)"));
+        timerProgressBar.setString(TRANSLATOR.translate("NotActive(Message)"));
         timerProgressBar.setStringPainted(true);
 
         return contentPanel;
@@ -312,9 +311,10 @@ public class ExamDialog extends StandardDialog {
         }
 
         // clear state
-        timerProgressBar.setString(TRANSLATOR.translate("Timer(String)"));
+        timerProgressBar.setString(TRANSLATOR.translate("NotActive(Message)"));
         wordsProgressBar.setValue(0);
         answerIconLabel.setIcon(IconManager.getImageIcon("bell2_grey.png", IconManager.IconSize.SIZE24));
+        feedbackField.setText(TRANSLATOR.translate("EndOfExam(Message)"));
         
         enableComponents(true);
         translateField.setText(null);
