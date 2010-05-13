@@ -1,7 +1,7 @@
 #!/bin/sh
 
 DEFAULT_INSTALLATION_FOLDER=/opt/spellbook
-SPELLBOOK_VERSION=0.3-SNAPSHOT
+SPELLBOOK_VERSION=0.3.0
 SPELLBOOK_JAR=spellbook-ui-$SPELLBOOK_VERSION-jar-with-dependencies.jar
 JAVA_OPTS="-Xmx64m"
 
