@@ -46,7 +46,7 @@ public final class ClipboardIntegration implements ClipboardOwner {
      */
     @Override
     public void lostOwnership(Clipboard clipboard, Transferable contents) {
-        if (PreferencesManager.getInstance().getBoolean(PreferencesManager.Preference.CLIPBOARD_INTEGRATION, false)) {
+        if (PreferencesManager.getInstance().getBoolean(PreferencesManager.Preference.CLIPBOARD_INTEGRATION, true)) {
             try {
                 // this delay in necessary - otherwise all sort of nasty things happen
                 Thread.sleep(200);
