@@ -17,7 +17,7 @@
    -->
     <info>
         <appname>Spellbook Desktop Edition</appname>
-        <appversion>0.3-SNAPSHOT</appversion>
+        <appversion>0.3.0</appversion>
         <authors>
             <author name="Bozhidar Batsov" email="bozhidar@drowltd.com"/>
             <author name="Ivan Valchev" email="iivalchev@gmail.com"/>
