@@ -43,7 +43,6 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.text.DefaultEditorKit;
-
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -509,7 +508,7 @@ public class SpellbookFrame extends JFrame {
 
             // the tray popup translation should appear is the main frame is not active and not always on top
             if ((trayIcon != null) && match && !SpellbookFrame.this.isActive() && !SpellbookFrame.this.isAlwaysOnTop()
-                    && PM.getBoolean(Preference.TRAY_POPUP, false)) {
+                    && PM.getBoolean(Preference.TRAY_POPUP, true)) {
                 trayIcon.displayMessage(foundWord, dictionaryService.getTranslation((String) wordsList.getSelectedValue(), selectedDictionary),
                         TrayIcon.MessageType.INFO);
             }
