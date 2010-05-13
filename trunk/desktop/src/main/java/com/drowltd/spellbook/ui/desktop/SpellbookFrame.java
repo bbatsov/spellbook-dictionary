@@ -115,6 +115,7 @@ public class SpellbookFrame extends JFrame {
     private JTextField wordSearchField;
     private JTextPane wordTranslationTextPane;
     private JList wordsList;
+    private boolean initialized = false;
     private static final int DEFAULT_FONT_SIZE = 14;
     private static final int DIVIDER_LOCATION = 180;
     private static final int MIN_FRAME_WIDTH = 640;
@@ -242,6 +243,12 @@ public class SpellbookFrame extends JFrame {
         if (!PM.getBoolean(Preference.START_IN_TRAY, false)) {
             setVisible(true);
         }
+
+        initialized = true;
+    }
+
+    public boolean isInitialized() {
+        return initialized;
     }
 
     private void addListeners() {
