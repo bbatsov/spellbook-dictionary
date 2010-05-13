@@ -24,6 +24,7 @@ import javax.swing.JTextField;
 import javax.swing.ProgressMonitor;
 import javax.swing.SwingWorker;
 import javax.swing.border.BevelBorder;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -245,6 +246,7 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
         public void done() {
             Toolkit.getDefaultToolkit().beep();
             downloadButton.setEnabled(true);
+            okButton.getAction().setEnabled(true);
         }
 
     }
