@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.JFrame;
+
 import java.awt.AWTException;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
@@ -29,7 +30,7 @@ public class SpellbookTray {
 
     private static TrayIcon trayIcon;
 
-    public static TrayIcon createTraySection(final JFrame appFrame) {
+    public static TrayIcon createTraySection(final SpellbookFrame appFrame) {
         TRANSLATOR.reset();
 
         //Check the SystemTray support
@@ -89,16 +90,20 @@ public class SpellbookTray {
             @Override
             public void mouseClicked(MouseEvent e) {
                 LOGGER.info("Tray icon clicked");
+                if (appFrame.isInitialized()) {
 
-                if (appFrame.getState() == JFrame.ICONIFIED) {
-                    LOGGER.info("App is iconified");
-                    appFrame.setState(JFrame.NORMAL);
-                }
+                    if (appFrame.getState() == JFrame.ICONIFIED) {
+                        LOGGER.info("App is iconified");
+                        appFrame.setState(JFrame.NORMAL);
+                    }
 
-                appFrame.setVisible(!appFrame.isVisible());
+                    appFrame.setVisible(!appFrame.isVisible());
 
-                if (appFrame.isVisible()) {
-                    appFrame.toFront();
+                    if (appFrame.isVisible()) {
+                        appFrame.toFront();
+                    }
+                } else {
+                    LOGGER.info("Initialization is not yet complete - ignoring...");
                 }
             }
         });
@@ -108,9 +113,13 @@ public class SpellbookTray {
             @Override
             public void actionPerformed(ActionEvent e) {
                 LOGGER.info("About dialog opened from tray");
-                AboutDialog aboutDialog = new AboutDialog(appFrame, true);
-                aboutDialog.setLocationRelativeTo(appFrame.isVisible() ? appFrame : null);
-                aboutDialog.setVisible(true);
+                if (appFrame.isInitialized()) {
+                    AboutDialog aboutDialog = new AboutDialog(appFrame, true);
+                    aboutDialog.setLocationRelativeTo(appFrame.isVisible() ? appFrame : null);
+                    aboutDialog.setVisible(true);
+                } else {
+                    LOGGER.info("Initialization is not yet complete - ignoring...");
+                }
             }
         });
 
