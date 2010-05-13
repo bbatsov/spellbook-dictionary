@@ -44,6 +44,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.text.DefaultEditorKit;
+
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -131,10 +132,6 @@ public class SpellbookFrame extends JFrame {
         }
 
         setAlwaysOnTop(PM.getBoolean(Preference.ALWAYS_ON_TOP, false));
-
-        if (!PM.getBoolean(Preference.START_IN_TRAY, false)) {
-            setVisible(true);
-        }
 
         //set the frame title
         setTitle(TRANSLATOR.translate("ApplicationName(Title)"));
@@ -242,6 +239,9 @@ public class SpellbookFrame extends JFrame {
             setLocationRelativeTo(null);
         }
 
+        if (!PM.getBoolean(Preference.START_IN_TRAY, false)) {
+            setVisible(true);
+        }
     }
 
     private void addListeners() {

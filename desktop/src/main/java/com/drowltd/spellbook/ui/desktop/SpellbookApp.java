@@ -16,6 +16,7 @@ import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
+
 import java.awt.EventQueue;
 import java.io.File;
 import java.util.Locale;
@@ -99,8 +100,6 @@ public class SpellbookApp {
             @Override
             public void run() {
                 tAppFrame = new SpellbookFrame(dbPresent);
-
-
             }
         });
     }
