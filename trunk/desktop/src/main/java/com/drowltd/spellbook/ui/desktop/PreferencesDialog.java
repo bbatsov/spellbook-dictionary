@@ -37,6 +37,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
@@ -190,18 +191,20 @@ public class PreferencesDialog extends StandardDialog {
 
         minimizeToTrayOnCloseCheckBox.setSelected(PM.getBoolean(Preference.CLOSE_TO_TRAY, false));
 
-        clipboardIntegrationCheckBox.setSelected(PM.getBoolean(Preference.CLIPBOARD_INTEGRATION, false));
+        clipboardIntegrationCheckBox.setSelected(PM.getBoolean(Preference.CLIPBOARD_INTEGRATION, true));
 
         if (!clipboardIntegrationCheckBox.isSelected()) {
             trayPopupCheckBox.setEnabled(false);
             trayPopupCheckBox.setSelected(false);
         } else {
-            trayPopupCheckBox.setSelected(PM.getBoolean(Preference.TRAY_POPUP, false));
+            trayPopupCheckBox.setSelected(PM.getBoolean(Preference.TRAY_POPUP, true));
         }
 
         showMemoryUsageCheckBox.setSelected(PM.getBoolean(Preference.SHOW_MEMORY_USAGE, false));
 
         alwaysOnTopCheckBox.setSelected(PM.getBoolean(Preference.ALWAYS_ON_TOP, false));
+
+        emptyLineCheckBox.setSelected(PM.getBoolean(Preference.EMPTY_LINE, true));
 
         startMinimizedCheckBox.setSelected(PM.getBoolean(Preference.START_IN_TRAY, false));
 
@@ -263,8 +266,6 @@ public class PreferencesDialog extends StandardDialog {
     }
 
     private void initFontTab() {
-        emptyLineCheckBox.setSelected(PM.getBoolean(Preference.EMPTY_LINE, false));
-
         String[] availableFonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
         fontList.setListData(availableFonts);
 
