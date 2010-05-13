@@ -425,7 +425,7 @@ public class PreferencesDialog extends StandardDialog {
         examSettingsPanel.add(new JLabel(TRANSLATOR.translate("DefaultExamDifficulty(Label)")), "growx");
         examSettingsPanel.add(difficultyComboBox);
         examSettingsPanel.add(new JLabel(TRANSLATOR.translate("ExamSize(Label)")), "growx");
-        examSettingsPanel.add(wordCountField, "wrap");
+        examSettingsPanel.add(wordCountField, "wrap, width 100");
         examSettingsPanel.add(timerCheckBox);
 
         timerCheckBox.setText(TRANSLATOR.translate("TimeBasedExam(Label)"));
