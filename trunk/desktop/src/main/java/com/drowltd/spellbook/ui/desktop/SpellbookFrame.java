@@ -36,7 +36,6 @@ import javax.swing.JTextPane;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
-import javax.swing.WindowConstants;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
@@ -700,7 +699,6 @@ public class SpellbookFrame extends JFrame {
     }
 
     private void initComponents() {
-
         topPanel = new JPanel(new MigLayout("wrap 1", "[grow]", "[grow]"));
 
         // this is where the magic happens
@@ -710,8 +708,6 @@ public class SpellbookFrame extends JFrame {
 
         wordsList = new JList();
         wordSearchField = new JTextField();
-
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         splitPane.setBorder(null);
         splitPane.setDividerLocation(DIVIDER_LOCATION);
