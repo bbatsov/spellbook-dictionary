@@ -185,41 +185,6 @@ public class SpellbookFrame extends JFrame {
 
         addListeners();
 
-        // restore the divider location from the last session
-        splitPane.setDividerLocation(PM.getInt(Preference.DIVIDER_LOCATION, DIVIDER_LOCATION));
-
-        updateDictionaryButton(selectedDictionary);
-
-        // update word menu item is initially disabled
-        updateWordMenuItem.setEnabled(false);
-        updateWordButton.setEnabled(false);
-        deleteWordMenuItem.setEnabled(false);
-        deleteWordButton.setEnabled(false);
-
-        // history buttons should be disabled initially
-        forwardButton.setEnabled(false);
-        backButton.setEnabled(false);
-
-        // clear button is disabled initially
-        clearButton.setEnabled(false);
-
-        cutButton.setEnabled(false);
-        cutMenuItem.setEnabled(false);
-        copyButton.setEnabled(false);
-        copyButton.setEnabled(false);
-
-        // setup intellihints for words search field
-        ListDataIntelliHints<String> intelliHints = new ListDataIntelliHints<String>(wordSearchField, searchedWords);
-        intelliHints.setCaseSensitive(false);
-
-        setDefaultFont();
-
-        if (PM.getBoolean(Preference.SHOW_MEMORY_USAGE, false)) {
-            showMemoryUsage();
-        } else {
-            hideMemoryUsage();
-        }
-
         // restore last size and position of the frame
         if (PM.getDouble(Preference.FRAME_X, 0.0) > 0) {
             double x = PM.getDouble(Preference.FRAME_X, 0.0);
@@ -771,6 +736,23 @@ public class SpellbookFrame extends JFrame {
 
         initMenuBar();
 
+        // restore the divider location from the last session
+        splitPane.setDividerLocation(PM.getInt(Preference.DIVIDER_LOCATION, DIVIDER_LOCATION));
+
+        updateDictionaryButton(selectedDictionary);
+
+        // setup intellihints for words search field
+        ListDataIntelliHints<String> intelliHints = new ListDataIntelliHints<String>(wordSearchField, searchedWords);
+        intelliHints.setCaseSensitive(false);
+
+        setDefaultFont();
+
+        if (PM.getBoolean(Preference.SHOW_MEMORY_USAGE, false)) {
+            showMemoryUsage();
+        } else {
+            hideMemoryUsage();
+        }
+
         pack();
     }
 
@@ -953,6 +935,11 @@ public class SpellbookFrame extends JFrame {
         helpMenu.add(aboutMenuItem);
 
         spellbookMenuBar.add(helpMenu);
+
+        cutMenuItem.setEnabled(false);
+        // update word menu item is initially disabled
+        updateWordMenuItem.setEnabled(false);
+        deleteWordMenuItem.setEnabled(false);
 
         setJMenuBar(spellbookMenuBar);
     }
@@ -1178,6 +1165,20 @@ public class SpellbookFrame extends JFrame {
             }
         });
         mainToolBar.add(memoryButton);
+
+        // history buttons should be disabled initially
+        forwardButton.setEnabled(false);
+        backButton.setEnabled(false);
+
+        // clear button is disabled initially
+        clearButton.setEnabled(false);
+
+        cutButton.setEnabled(false);
+        copyButton.setEnabled(false);
+        copyButton.setEnabled(false);
+
+        updateWordButton.setEnabled(false);
+        deleteWordButton.setEnabled(false);
 
         topPanel.add(mainToolBar, "north, growx");
     }

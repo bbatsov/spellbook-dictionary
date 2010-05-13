@@ -16,6 +16,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
+
 import java.awt.Font;
 import java.util.logging.Level;
 
@@ -35,129 +36,10 @@ public class PreferencesExtractor {
 
     public static void extract(SpellbookFrame spellbookFrame, PreferencesDialog preferencesDialog) {
         if (preferencesDialog.showDialog()) {
-            PM.put(Preference.DEFAULT_DICTIONARY, preferencesDialog.getDefaultDictionary());
-
-            final boolean minimizeToTrayEnabled = preferencesDialog.isMinimizeToTrayEnabled();
-
-            if (minimizeToTrayEnabled) {
-                LOGGER.info("Minimize to tray is enabled");
-            } else {
-                LOGGER.info("Minimize to tray is disabled");
-            }
-
-            PM.putBoolean(Preference.MIN_TO_TRAY, minimizeToTrayEnabled);
-
-            boolean minimizeToTrayOnCloseEnabled = preferencesDialog.isMinimizeToTrayOnCloseEnabled();
-
-            if (minimizeToTrayOnCloseEnabled) {
-                LOGGER.info("Minimize to tray on close is enabled");
-                spellbookFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-            } else {
-                LOGGER.info("Minimize to tray on close is disabled");
-                spellbookFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            }
-
-            PM.putBoolean(Preference.CLOSE_TO_TRAY, minimizeToTrayOnCloseEnabled);
-
-            final boolean clipboardIntegrationEnabled = preferencesDialog.isClipboardIntegrationEnabled();
-
-            if (clipboardIntegrationEnabled) {
-                LOGGER.info("Clipboard integration is enabled");
-                ClipboardIntegration.getInstance(spellbookFrame).start();
-            } else {
-                LOGGER.info("Clipboard integration is disabled");
-            }
-
-            PM.putBoolean(Preference.CLIPBOARD_INTEGRATION, clipboardIntegrationEnabled);
-
-            final boolean trayPopupEnabled = preferencesDialog.isTrayPopupEnabled();
-
-            if (trayPopupEnabled) {
-                LOGGER.info("Tray popup is enabled");
-            } else {
-                LOGGER.info("Tray popup is disabled");
-            }
-
-            PM.putBoolean(Preference.TRAY_POPUP, trayPopupEnabled);
-
-            final boolean showMemoryUsageEnabled = preferencesDialog.isShowMemoryUsageEnabled();
-
-            if (showMemoryUsageEnabled) {
-                LOGGER.info("Show memory usage is enabled");
-                spellbookFrame.showMemoryUsage();
-            } else {
-                LOGGER.info("Show memory usage is disabled");
-                spellbookFrame.hideMemoryUsage();
-            }
-
-            PM.putBoolean(Preference.SHOW_MEMORY_USAGE, showMemoryUsageEnabled);
-
-            final boolean alwaysOnTopEnabled = preferencesDialog.isAlwaysOnTopEnabled();
-
-            if (alwaysOnTopEnabled) {
-                LOGGER.info("Always on top enabled");
-                spellbookFrame.setAlwaysOnTop(true);
-            } else {
-                LOGGER.info("Always on top disabled");
-                spellbookFrame.setAlwaysOnTop(false);
-            }
-
-            PM.putBoolean(Preference.ALWAYS_ON_TOP, alwaysOnTopEnabled);
-
-            String selectedLookAndFeel = preferencesDialog.getSelectedLookAndFeel();
-
-            if (!selectedLookAndFeel.equals(PM.get(Preference.LOOK_AND_FEEL, "System"))) {
-                PM.put(Preference.LOOK_AND_FEEL, selectedLookAndFeel);
-            }
-
-            final boolean emptyLineSelected = preferencesDialog.isEmptyLineEnabled();
-
-            if (emptyLineSelected) {
-                LOGGER.info("Empty line after each meaning enabled");
-            } else {
-                LOGGER.info("Empty line after each meaning disabled");
-            }
-
-            PM.putBoolean(Preference.EMPTY_LINE, emptyLineSelected);
-
-            final boolean startMinimized = preferencesDialog.isStartMinimizedEnabled();
-
-            if (startMinimized) {
-                LOGGER.info("Start minimized is enabled");
-            } else {
-                LOGGER.info("Start minimized is disabled");
-            }
-
-            PM.putBoolean(Preference.START_IN_TRAY, startMinimized);
-
-            // set the font
-            final Font selectedFont = preferencesDialog.generateFont();
-
-            PM.put(Preference.FONT_NAME, selectedFont.getName());
-            PM.putInt(Preference.FONT_SIZE, selectedFont.getSize());
-            PM.putInt(Preference.FONT_STYLE, selectedFont.getStyle());
-
-            spellbookFrame.setSelectedFont(selectedFont);
-
-            // exam prefs
-            PM.put(Preference.EXAM_DIFFICULTY, preferencesDialog.getExamDifficulty().name());
-            PM.putInt(Preference.EXAM_WORDS, preferencesDialog.getExamWords());
-            PM.putBoolean(Preference.EXAM_TIMER, preferencesDialog.isExamTimerEnabled());
-
-            // language settings should be changed last because they may require restart
-            String oldLanguage = PM.get(Preference.UI_LANG, Language.ENGLISH.getName());
-            final String newLanguage = preferencesDialog.getSelectedLanguage().getName();
-            PM.put(Preference.UI_LANG, newLanguage);
-
-            if (!oldLanguage.equals(newLanguage)) {
-                LOGGER.info("Language changed from " + oldLanguage + " to " + newLanguage);
-                int selectedOption = JOptionPane.showConfirmDialog(spellbookFrame, TRANSLATOR.translate("Restart(Message)"), "Restart",
-                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
-
-                if (selectedOption == JOptionPane.OK_OPTION) {
-                    spellbookFrame.restart();
-                }
-            }
+            extractFontPreferences(spellbookFrame, preferencesDialog);
+            extractExamPreferences(preferencesDialog);
+            // general settings should be last since they may require restart to take effect
+            extractGeneralPreferences(spellbookFrame, preferencesDialog);
         } else {
             // we need to restore the old look and feel manually since it was changed on selection
             String currentLookAndFeel = UIManager.getLookAndFeel().getName();
@@ -173,7 +55,6 @@ public class PreferencesExtractor {
             }
 
             LookAndFeelInfo[] lookAndFeelInfos = UIManager.getInstalledLookAndFeels();
-
 
             if (selectedLookAndFeel.equals("System")) {
                 try {
@@ -207,5 +88,135 @@ public class PreferencesExtractor {
 
             SwingUtilities.updateComponentTreeUI(spellbookFrame);
         }
+    }
+
+    private static void extractExamPreferences(final PreferencesDialog preferencesDialog) {
+        // exam prefs
+        PM.put(Preference.EXAM_DIFFICULTY, preferencesDialog.getExamDifficulty().name());
+        PM.putInt(Preference.EXAM_WORDS, preferencesDialog.getExamWords());
+        PM.putBoolean(Preference.EXAM_TIMER, preferencesDialog.isExamTimerEnabled());
+    }
+
+    private static void extractGeneralPreferences(final SpellbookFrame spellbookFrame, final PreferencesDialog preferencesDialog) {
+        PM.put(Preference.DEFAULT_DICTIONARY, preferencesDialog.getDefaultDictionary());
+
+        final boolean minimizeToTrayEnabled = preferencesDialog.isMinimizeToTrayEnabled();
+
+        if (minimizeToTrayEnabled) {
+            LOGGER.info("Minimize to tray is enabled");
+        } else {
+            LOGGER.info("Minimize to tray is disabled");
+        }
+
+        PM.putBoolean(Preference.MIN_TO_TRAY, minimizeToTrayEnabled);
+
+        boolean minimizeToTrayOnCloseEnabled = preferencesDialog.isMinimizeToTrayOnCloseEnabled();
+
+        if (minimizeToTrayOnCloseEnabled) {
+            LOGGER.info("Minimize to tray on close is enabled");
+            spellbookFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        } else {
+            LOGGER.info("Minimize to tray on close is disabled");
+            spellbookFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        }
+
+        PM.putBoolean(Preference.CLOSE_TO_TRAY, minimizeToTrayOnCloseEnabled);
+
+        final boolean clipboardIntegrationEnabled = preferencesDialog.isClipboardIntegrationEnabled();
+
+        if (clipboardIntegrationEnabled) {
+            LOGGER.info("Clipboard integration is enabled");
+            ClipboardIntegration.getInstance(spellbookFrame).start();
+        } else {
+            LOGGER.info("Clipboard integration is disabled");
+        }
+
+        PM.putBoolean(Preference.CLIPBOARD_INTEGRATION, clipboardIntegrationEnabled);
+
+        final boolean trayPopupEnabled = preferencesDialog.isTrayPopupEnabled();
+
+        if (trayPopupEnabled) {
+            LOGGER.info("Tray popup is enabled");
+        } else {
+            LOGGER.info("Tray popup is disabled");
+        }
+
+        PM.putBoolean(Preference.TRAY_POPUP, trayPopupEnabled);
+
+        final boolean showMemoryUsageEnabled = preferencesDialog.isShowMemoryUsageEnabled();
+
+        if (showMemoryUsageEnabled) {
+            LOGGER.info("Show memory usage is enabled");
+            spellbookFrame.showMemoryUsage();
+        } else {
+            LOGGER.info("Show memory usage is disabled");
+            spellbookFrame.hideMemoryUsage();
+        }
+
+        PM.putBoolean(Preference.SHOW_MEMORY_USAGE, showMemoryUsageEnabled);
+
+        final boolean alwaysOnTopEnabled = preferencesDialog.isAlwaysOnTopEnabled();
+
+        if (alwaysOnTopEnabled) {
+            LOGGER.info("Always on top enabled");
+            spellbookFrame.setAlwaysOnTop(true);
+        } else {
+            LOGGER.info("Always on top disabled");
+            spellbookFrame.setAlwaysOnTop(false);
+        }
+
+        PM.putBoolean(Preference.ALWAYS_ON_TOP, alwaysOnTopEnabled);
+
+        String selectedLookAndFeel = preferencesDialog.getSelectedLookAndFeel();
+
+        if (!selectedLookAndFeel.equals(PM.get(Preference.LOOK_AND_FEEL, "System"))) {
+            PM.put(Preference.LOOK_AND_FEEL, selectedLookAndFeel);
+        }
+
+        final boolean emptyLineSelected = preferencesDialog.isEmptyLineEnabled();
+
+        if (emptyLineSelected) {
+            LOGGER.info("Empty line after each meaning enabled");
+        } else {
+            LOGGER.info("Empty line after each meaning disabled");
+        }
+
+        PM.putBoolean(Preference.EMPTY_LINE, emptyLineSelected);
+
+        final boolean startMinimized = preferencesDialog.isStartMinimizedEnabled();
+
+        if (startMinimized) {
+            LOGGER.info("Start minimized is enabled");
+        } else {
+            LOGGER.info("Start minimized is disabled");
+        }
+
+        PM.putBoolean(Preference.START_IN_TRAY, startMinimized);
+
+        // language settings should be changed last because they may require restart
+        String oldLanguage = PM.get(Preference.UI_LANG, Language.ENGLISH.getName());
+        final String newLanguage = preferencesDialog.getSelectedLanguage().getName();
+        PM.put(Preference.UI_LANG, newLanguage);
+
+        if (!oldLanguage.equals(newLanguage)) {
+            LOGGER.info("Language changed from " + oldLanguage + " to " + newLanguage);
+            int selectedOption = JOptionPane.showConfirmDialog(spellbookFrame, TRANSLATOR.translate("Restart(Message)"), "Restart",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+
+            if (selectedOption == JOptionPane.OK_OPTION) {
+                spellbookFrame.restart();
+            }
+        }
+    }
+
+    private static void extractFontPreferences(final SpellbookFrame spellbookFrame, final PreferencesDialog preferencesDialog) {
+        // set the font
+        final Font selectedFont = preferencesDialog.generateFont();
+
+        PM.put(Preference.FONT_NAME, selectedFont.getName());
+        PM.putInt(Preference.FONT_SIZE, selectedFont.getSize());
+        PM.putInt(Preference.FONT_STYLE, selectedFont.getStyle());
+
+        spellbookFrame.setSelectedFont(selectedFont);
     }
 }
