@@ -48,6 +48,7 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.HeadlessException;
 import java.awt.Rectangle;
+import java.awt.SplashScreen;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
@@ -205,6 +206,11 @@ public class SpellbookFrame extends JFrame {
 
         if (!PM.getBoolean(Preference.START_IN_TRAY, false)) {
             setVisible(true);
+        }
+
+        // workaround for an issue manifesting only on windows
+        if (SplashScreen.getSplashScreen() != null) {
+            SplashScreen.getSplashScreen().close();
         }
 
         initialized = true;
