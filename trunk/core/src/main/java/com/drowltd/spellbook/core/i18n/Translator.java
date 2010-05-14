@@ -40,6 +40,10 @@ public class Translator {
         }
     }
 
+    public String translate(String resourceKey, Object... formatArgs) {
+        return String.format(translate(resourceKey), formatArgs);
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
