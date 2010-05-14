@@ -4,7 +4,7 @@ import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
-import com.drowltd.spellbook.ui.swing.component.DownloadDialog;
+import com.drowltd.spellbook.ui.swing.component.SelectDbDialog;
 import com.drowltd.spellbook.ui.swing.component.SpellbookDefaultExceptionHandler;
 import com.drowltd.spellbook.util.ArchiveUtils;
 import com.jidesoft.dialog.StandardDialog;
@@ -16,7 +16,6 @@ import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
-
 import java.awt.EventQueue;
 import java.io.File;
 import java.util.Locale;
@@ -117,13 +116,13 @@ public class SpellbookApp {
         if (!file.exists() || file.isDirectory()) {
             final File archiveFile = new File(SPELLBOOK_USER_DIR + File.separator + "spellbook-db-0.3.tar.bz2");
 
-            final DownloadDialog downloadDialog = new DownloadDialog();
+            final SelectDbDialog selectDbDialog = new SelectDbDialog();
 
-            if (archiveFile.exists() || downloadDialog.showDialog() == StandardDialog.RESULT_AFFIRMED) {
+            if (archiveFile.exists() || selectDbDialog.showDialog() == StandardDialog.RESULT_AFFIRMED) {
                 SwingWorker<Void, Void> swingWorker = new SwingWorker<Void, Void>() {
                     @Override
                     protected Void doInBackground() throws Exception {
-                        ArchiveUtils.extractDbFromArchive(archiveFile.exists() ? archiveFile.getAbsolutePath() : downloadDialog.getDownloadedDbPath());
+                        ArchiveUtils.extractDbFromArchive(archiveFile.exists() ? archiveFile.getAbsolutePath() : selectDbDialog.getDbPath());
 
                         return null;
                     }

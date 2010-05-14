@@ -8,7 +8,11 @@ import com.jidesoft.dialog.ButtonResources;
 import com.jidesoft.dialog.StandardDialog;
 import com.jidesoft.icons.JideIconsFactory;
 import com.jidesoft.plaf.UIDefaultsLookup;
+import com.jidesoft.swing.DefaultOverlayable;
 import com.jidesoft.swing.FolderChooser;
+import com.jidesoft.swing.OverlayTextField;
+import com.jidesoft.swing.OverlayableIconsFactory;
+import com.jidesoft.swing.OverlayableUtils;
 import net.miginfocom.swing.MigLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +28,6 @@ import javax.swing.JTextField;
 import javax.swing.ProgressMonitor;
 import javax.swing.SwingWorker;
 import javax.swing.border.BevelBorder;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -43,9 +46,9 @@ import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-public class DownloadDialog extends StandardDialog implements PropertyChangeListener {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DownloadDialog.class);
-    private static final Translator TRANSLATOR = Translator.getTranslator("DownloadDialog");
+public class SelectDbDialog extends StandardDialog implements PropertyChangeListener {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SelectDbDialog.class);
+    private static final Translator TRANSLATOR = Translator.getTranslator("SelectDbDialog");
 
     private JButton downloadButton;
     private JButton changeFolderButton;
@@ -61,11 +64,14 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
     private static final String DB_URL = "http://spellbook-dictionary.googlecode.com/files/spellbook-db-0.3.tar.bz2";
     private static final String DOWNLOAD_DIR = System.getProperty("java.io.tmpdir");
     private static final int FONT_SIZE = 14;
+    private JLabel localDbFolderValidationLabel;
+    private boolean downloaded = false;
 
-    public DownloadDialog() {
+    public SelectDbDialog() {
         setModal(true);
 
-        localDbFolderTextField = new JTextField();
+        localDbFolderValidationLabel = new JLabel();
+        localDbFolderTextField = new OverlayTextField();
         localDbFolderTextField.setEditable(false);
         downloadUrlTextField = new JTextField(DB_URL);
         downloadUrlTextField.setEditable(false);
@@ -80,14 +86,14 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
             @Override
             public void actionPerformed(ActionEvent e) {
                 //careful not to overwrite existing files
-                File file = new File(getDownloadedDbPath());
+                File file = new File(getDbPath());
                 if (file.exists() &&
-                        JOptionPane.showConfirmDialog(DownloadDialog.this,
+                        JOptionPane.showConfirmDialog(SelectDbDialog.this,
                                 TRANSLATOR.translate("Overwrite(Message)")) != JOptionPane.YES_OPTION) {
                     LOGGER.info("don't overwrite existing file");
                 } else {
                     task = new Task();
-                    task.addPropertyChangeListener(DownloadDialog.this);
+                    task.addPropertyChangeListener(SelectDbDialog.this);
                     task.execute();
                     downloadButton.setEnabled(false);
                 }
@@ -99,17 +105,13 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
             public void actionPerformed(ActionEvent e) {
                 FolderChooser folderChooser = new FolderChooser();
 
-                int result = folderChooser.showOpenDialog(DownloadDialog.this);
+                int result = folderChooser.showOpenDialog(SelectDbDialog.this);
 
                 if (result == FolderChooser.APPROVE_OPTION) {
                     localDbFolder = folderChooser.getSelectedFolder().getAbsolutePath();
                     localDbFolderTextField.setText(localDbFolder);
 
-                    File dbFile = new File(localDbFolder + File.separator + getFileName());
-
-                    if (dbFile.exists()) {
-                        okButton.getAction().setEnabled(true);
-                    }
+                    validateLocalDbPath();
                 }
             }
         });
@@ -119,9 +121,22 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
         setTitle(TRANSLATOR.translate("SelectDb(Title)"));
     }
 
+    private void validateLocalDbPath() {
+        File dbFile = new File(localDbFolder + File.separator + getFileName());
+
+        if (dbFile.exists()) {
+            okButton.getAction().setEnabled(true);
+            localDbFolderValidationLabel.setIcon(OverlayableUtils.getPredefinedOverlayIcon(OverlayableIconsFactory.CORRECT));
+        } else {
+            okButton.getAction().setEnabled(false);
+            localDbFolderValidationLabel.setIcon(OverlayableUtils.getPredefinedOverlayIcon(OverlayableIconsFactory.ERROR));
+            localDbFolderValidationLabel.setToolTipText(TRANSLATOR.translate("InvalidFolder(Label)", getFileName()));
+        }
+    }
+
     @Override
     public JComponent createBannerPanel() {
-        BannerPanel bannerPanel = new BannerPanel(TRANSLATOR.translate("MissingDb(Title)"), TRANSLATOR.translate("MissingDb(Message)"),
+        BannerPanel bannerPanel = new BannerPanel(TRANSLATOR.translate("MissingDb(Title)"), TRANSLATOR.translate("MissingDb(Message)", getFileName()),
                 JideIconsFactory.getImageIcon("/icons/48x48/data_unknown.png"));
         bannerPanel.setFont(new Font("Tahoma", Font.PLAIN, FONT_SIZE));
         bannerPanel.setBackground(Color.WHITE);
@@ -144,7 +159,7 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
         panel.add(downloadUrlTextField, "span 2, growx");
         panel.add(downloadButton, "growx");
         panel.add(new JLabel(TRANSLATOR.translate("DbFolder(Label)")));
-        panel.add(localDbFolderTextField, "span 2, growx");
+        panel.add(new DefaultOverlayable(localDbFolderTextField, localDbFolderValidationLabel, DefaultOverlayable.SOUTH_EAST), "span 2, growx");
         panel.add(changeFolderButton, "growx");
 
         return panel;
@@ -191,7 +206,7 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
         setDefaultAction(okButton.getAction());
         getRootPane().setDefaultButton(okButton);
 
-        okButton.getAction().setEnabled(false);
+        validateLocalDbPath();
 
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         return buttonPanel;
@@ -217,7 +232,7 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
                 int contentLength = dbUrl.openConnection().getContentLength();
 
                 BufferedInputStream in = new BufferedInputStream(dbUrl.openStream());
-                FileOutputStream fos = new FileOutputStream(getDownloadedDbPath());
+                FileOutputStream fos = new FileOutputStream(getDbPath());
                 BufferedOutputStream bout = new BufferedOutputStream(fos, BUFFER_SIZE);
                 byte[] data = new byte[BUFFER_SIZE];
                 int x;
@@ -247,12 +262,13 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
             Toolkit.getDefaultToolkit().beep();
             downloadButton.setEnabled(true);
             okButton.getAction().setEnabled(true);
+            downloaded = true;
         }
 
     }
 
-    public String getDownloadedDbPath() {
-        return DOWNLOAD_DIR + File.separator + getFileName();
+    public String getDbPath() {
+        return downloaded ? DOWNLOAD_DIR + File.separator + getFileName() : localDbFolder + File.separator + getFileName();
     }
 
     private String getFileName() {
@@ -270,7 +286,7 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
                 Toolkit.getDefaultToolkit().beep();
                 if (progressMonitor.isCanceled()) {
                     task.cancel(true);
-                    File file = new File(getDownloadedDbPath());
+                    File file = new File(getDbPath());
 
                     if (file.exists()) {
                         // removing partially downloaded file
@@ -292,13 +308,5 @@ public class DownloadDialog extends StandardDialog implements PropertyChangeList
             }
         }
 
-    }
-
-    public static void main(String[] args) {
-        DownloadDialog dialog = new DownloadDialog();
-
-        dialog.showDialog();
-
-        System.exit(0);
     }
 }
