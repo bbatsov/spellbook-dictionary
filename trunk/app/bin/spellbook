@@ -16,5 +16,5 @@ else
     cd "$script_dir"
 
     # run Spellbook's binary
-    java -jar $SPELLBOOK_JAR
+    java $JAVA_OPTS -jar $SPELLBOOK_JAR
 fi
