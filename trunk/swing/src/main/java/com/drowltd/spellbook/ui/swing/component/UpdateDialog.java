@@ -1,6 +1,7 @@
 package com.drowltd.spellbook.ui.swing.component;
 
 import com.drowltd.spellbook.core.exception.UpdateServiceException;
+import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.service.UpdateService;
 import com.jidesoft.dialog.ButtonPanel;
 import com.jidesoft.dialog.StandardDialog;
@@ -8,17 +9,9 @@ import net.miginfocom.swing.MigLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.SwingConstants;
-import javax.swing.WindowConstants;
-import java.awt.Dimension;
-import java.awt.EventQueue;
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ResourceBundle;
@@ -31,12 +24,13 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author iivalchev
  */
-public class UpdateDialog extends StandardDialog implements UpdateService.ConflictHandler {
+public class UpdateDialog extends AbstractDialog implements UpdateService.ConflictHandler {
 
     private ExecutorService executor = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
     private Future<?> updateFuture = null;
     private static Logger LOGGER = LoggerFactory.getLogger(UpdateDialog.class);
     private ResourceBundle bundle = ResourceBundle.getBundle("i18n/UpdateDialog");
+    private static final Translator TRANSLATOR = Translator.getTranslator("UpdateDialog");
     private String acceptedText = null;
     //components
     private JButton cancelButton;
@@ -44,13 +38,21 @@ public class UpdateDialog extends StandardDialog implements UpdateService.Confli
     private JLabel statusLabel;
     private JButton updateButton;
 
+    private static final int MIN_WIDTH = 150;
+    private static final int MIN_HEIGHT = 200;
+
+
     public UpdateDialog(JFrame parent, boolean modal) {
         super(parent, modal);
-        setLocationRelativeTo(parent);
         initComponents0();
     }
 
-    public void showUpdateDialog() {
+    @Override
+    protected Translator getTranslator() {
+        return TRANSLATOR;
+    }
+
+    public void showDialog() {
         pack();
         checkForUpdates();
         progressBar.setIndeterminate(true);
@@ -83,6 +85,9 @@ public class UpdateDialog extends StandardDialog implements UpdateService.Confli
 
         statusLabel.setText(bundle.getString("Dialog(CheckingForUpdates)"));
         statusLabel.setVerticalAlignment(SwingConstants.TOP);
+
+        setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
+        setLocationRelativeTo(getParent());
     }
 
     private void cancelButtonActionPerformed(ActionEvent evt) {
@@ -108,16 +113,12 @@ public class UpdateDialog extends StandardDialog implements UpdateService.Confli
         LOGGER.info("CheckForUpdates submitted");
     }
 
-    @Override
-    public JComponent createBannerPanel() {
-        return null;
-    }
 
     @Override
     public JComponent createContentPanel() {
-        MigLayout migLayout = new MigLayout("wrap 1", "4[]4[]");
+        MigLayout migLayout = new MigLayout("wrap 1", "[grow]");
         JPanel panel = new JPanel(migLayout);
-        panel.add(statusLabel, "align 50 %");
+        panel.add(statusLabel, "grow, align 50 %");
         panel.add(progressBar, "growx");
         return panel;
     }
@@ -195,10 +196,11 @@ public class UpdateDialog extends StandardDialog implements UpdateService.Confli
 
         @Override
         public void run() {
-            UpdateService us = null;
+            final UpdateService us;
+            UpdateService us0 = null;
             try {
                 us = UpdateService.getInstance();
-
+                us0 = us;
                 try {
                     setStatus(bundle.getString("Dialog(Updating)"));
                     us.setHandler(UpdateDialog.this);
@@ -208,12 +210,22 @@ public class UpdateDialog extends StandardDialog implements UpdateService.Confli
                     EventQueue.invokeLater(new UpdateResponseTask(bundle.getString("MessageDialog(Cancelled)")));
                 }
 
-                EventQueue.invokeLater(new UpdateResponseTask(bundle.getString("MessageDialog(Success)")));
+//                EventQueue.invokeLater(new UpdateResponseTask(bundle.getString("MessageDialog(Success)")));
+                EventQueue.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        new UpdateSummaryDialog(us.getUpdatedEntries().toArray()).showDialog();
+                    }
+
+                });
             } catch (Exception ex) {
+                LOGGER.error(ex.getMessage());
+                ex.printStackTrace(System.out);
                 EventQueue.invokeLater(new UpdateResponseTask(bundle.getString("MessageDialog(Error)")));
             }
             finally {
-                us.close();
+                if (us0 != null)
+                    us0.close();
             }
         }
     }
@@ -250,6 +262,60 @@ public class UpdateDialog extends StandardDialog implements UpdateService.Confli
         public void run() {
             JOptionPane.showMessageDialog(UpdateDialog.this, message, "Info", JOptionPane.INFORMATION_MESSAGE);
             UpdateDialog.this.dispose();
+        }
+
+    }
+
+    private class UpdateSummaryDialog extends StandardDialog {
+
+        private JList list;
+        private JButton okButton;
+
+        public UpdateSummaryDialog(Object[] wordList) {
+            setLocationRelativeTo(UpdateDialog.this.getParent());
+            initComponents0(wordList);
+        }
+
+        private void initComponents0(Object[] wordList) {
+            list = new JList(wordList);
+            okButton = new JButton();
+
+            list.setBorder(new LineBorder(Color.BLACK, 1));
+
+            okButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    dispose();
+                    UpdateDialog.this.dispose();
+                }
+            });
+
+        }
+
+        public void showDialog() {
+            pack();
+            setVisible(true);
+        }
+
+        @Override
+        public JComponent createBannerPanel() {
+            return null;  //To change body of implemented methods use File | Settings | File Templates.
+        }
+
+        @Override
+        public JComponent createContentPanel() {
+            MigLayout layout = new MigLayout("wrap 1", "[grow]");
+            JPanel panel = new JPanel(layout);
+            panel.add(list, "grow, h 250, w 200");
+
+            return panel;
+        }
+
+        @Override
+        public ButtonPanel createButtonPanel() {
+            ButtonPanel buttonPanel = new ButtonPanel();
+            buttonPanel.add(okButton, ButtonPanel.AFFIRMATIVE_BUTTON);
+            return buttonPanel;
         }
     }
 }
