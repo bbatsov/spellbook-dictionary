@@ -2,11 +2,14 @@ package com.drowltd.spellbook.ui.swing.component;
 
 import com.drowltd.spellbook.core.exception.AuthenticationException;
 import com.drowltd.spellbook.core.exception.UpdateServiceException;
+import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.core.service.UpdateService;
+import com.jidesoft.dialog.BannerPanel;
 import com.jidesoft.dialog.ButtonPanel;
 import com.jidesoft.dialog.StandardDialog;
+import com.jidesoft.icons.JideIconsFactory;
 import net.miginfocom.swing.MigLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +32,7 @@ import static javax.swing.JOptionPane.showConfirmDialog;
  *         Date: May 7, 2010
  *         Time: 4:24:27 PM
  */
-public class CommitDialog extends StandardDialog {
+public class CommitDialog extends AbstractDialog {
 
     private JLabel message;
     private JProgressBar progressBar;
@@ -40,12 +43,21 @@ public class CommitDialog extends StandardDialog {
     private UpdateService updateService;
     private ExecutorService executor = Executors.newSingleThreadExecutor();
     private static ResourceBundle bundle = ResourceBundle.getBundle("i18n/CommitDialog");
+    private static final Translator TRANSLATOR = Translator.getTranslator("CommitDialog");
     private static Logger LOGGER = LoggerFactory.getLogger(CommitDialog.class);
+
+    private static final int MIN_WIDTH = 350;
+    private static final int MIN_HEIGHT = 400;
+    private static final int FONT_SIZE = 11;
 
     public CommitDialog(JFrame parent, boolean modal) {
         super(parent, modal);
-        setLocationRelativeTo(parent);
         initComponents0();
+    }
+
+    @Override
+    protected Translator getTranslator() {
+        return TRANSLATOR;
     }
 
     private void initComponents0() {
@@ -54,7 +66,7 @@ public class CommitDialog extends StandardDialog {
         commitButton = new JButton(bundle.getString("CommitDialog(commitButton)"));
         cancelButton = new JButton(bundle.getString("CommitDialog(cancelButton)"));
         list = new JList();
-                     list.setBorder(new LineBorder(Color.BLACK, 1));
+        list.setBorder(new LineBorder(Color.BLACK, 1));
 
         commitButton.addActionListener(new ActionListener() {
             @Override
@@ -74,21 +86,19 @@ public class CommitDialog extends StandardDialog {
         });
 
         setTitle(bundle.getString("CommitDialog(Title)"));
-    }
-    
 
-    @Override
-    public JComponent createBannerPanel() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
+        setLocationRelativeTo(getParent());
     }
+
 
     @Override
     public JComponent createContentPanel() {
 
-        JPanel panel = new JPanel(new MigLayout("wrap 1", "[][grow][grow]", "5[]5[]5[]10"));
+        JPanel panel = new JPanel(new MigLayout("wrap 1", "[grow]", "5[]5[grow]5[]10"));
         panel.add(message);
-        panel.add(list,"grow, h 250, w 200");
-        panel.add(progressBar,"grow");
+        panel.add(list, "grow");
+        panel.add(progressBar, "growx");
 
         return panel;
     }
@@ -143,7 +153,7 @@ public class CommitDialog extends StandardDialog {
         return false;
     }
 
-    public void showUpdateDialog() {
+    public void showDialog() {
         if (login()) {
             if (!updateService.haveUncommited()) {
                 JOptionPane.showMessageDialog(CommitDialog.this, bundle.getString("CommitDialog(noUncommitted)"), "Info", JOptionPane.INFORMATION_MESSAGE);
@@ -168,7 +178,7 @@ public class CommitDialog extends StandardDialog {
                 else
                     showMessasge(bundle.getString("CommitDialog(commitFailedMessage)"), JOptionPane.ERROR_MESSAGE);
             } catch (Exception e) {
-                
+
                 updateService.close();
                 isSuccessful = false;
             }

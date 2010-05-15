@@ -19,7 +19,7 @@ import javax.persistence.Table;
 @Table(name = "REMOTE_DICTIONARY_ENTRY")
 @NamedQueries({
 @NamedQuery(name = "RemoteDictionaryEntry.getLastRevision",
-query = "select re from RevisionEntry re where re.created = (select max(re.created) from re) and re.remoteDictionaryEntry = :remoteDictionaryEntry"),
+query = "select re from RevisionEntry re where re.created = (select max(re.created) from re where re.remoteDictionaryEntry = :remoteDictionaryEntry) and re.remoteDictionaryEntry = :remoteDictionaryEntry"),
 @NamedQuery(name="RemoteDictionaryEntry.getRemoteDictionaryEntry", query="select rde from RemoteDictionaryEntry rde where rde.word = :word")})
 public class RemoteDictionaryEntry extends AbstractEntity {
 
