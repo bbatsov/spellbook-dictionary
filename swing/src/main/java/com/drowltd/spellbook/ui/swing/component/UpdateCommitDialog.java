@@ -227,22 +227,21 @@ public class UpdateCommitDialog extends StandardDialog implements UpdateService.
             try {
                 us = UpdateService.getInstance();
                 us0 = us;
-                boolean updateSuccesfull = true;
+                boolean updateSuccessfull = true;
                 try {
                     us.setHandler(UpdateCommitDialog.this);
                     us.update();
                 } catch (UpdatesNotAvailableException ex) {
-                    updateSuccesfull = false;
+                    updateSuccessfull = false;
                     EventQueue.invokeLater(new UpdateResponseTask("No updates available"));
                 }
                 catch (InterruptedException ex) {
-                    updateSuccesfull = false;
+                    updateSuccessfull = false;
                     Thread.currentThread().interrupt();
                     EventQueue.invokeLater(new UpdateResponseTask(TRANSLATOR.translate("MessageDialog(Cancelled)")));
                 }
 
-//                EventQueue.invokeLater(new UpdateResponseTask(TRANSLATOR.translate("MessageDialog(Success)")));
-                if (updateSuccesfull)
+                if (updateSuccessfull)
                     EventQueue.invokeLater(new Runnable() {
                         @Override
                         public void run() {
