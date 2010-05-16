@@ -109,7 +109,7 @@ public class DictionaryService extends AbstractPersistenceService {
                 + " where de.word = :word and de.dictionary = :dictionary", String.class).setParameter("word", word).setParameter("dictionary", d).getSingleResult();
     }
 
-    protected UncommittedEntries getUncommitted() {
+    public UncommittedEntries getUncommitted() {
         UncommittedEntries uncommittedEntry = null;
         try {
             uncommittedEntry = EM.createNamedQuery("UncommittedEntries.getUncommittedEntries", UncommittedEntries.class).getSingleResult();
@@ -137,6 +137,10 @@ public class DictionaryService extends AbstractPersistenceService {
 
         }
         return uncommittedEntry;
+    }
+
+    public boolean haveUncommited() {
+        return !EM.createQuery("select ue from UncommittedEntries ue where (select count(de) from ue.dictionaryEntries de) > 0 and ue.committed = false").getResultList().isEmpty();
     }
 
     /**

@@ -23,8 +23,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
-import java.awt.Color;
-import java.awt.Dialog;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -39,6 +38,8 @@ import java.util.ResourceBundle;
 public class DiffDialog extends StandardDialog {
 
     private static Logger LOGGER = LoggerFactory.getLogger(DiffDialog.class);
+    private static int MIN_HEIGHT = 300;
+    private static int MIN_WIDTH = 500;
 
     private JButton jAcceptBaseButton;
     private JButton jAcceptRemoteButton;
@@ -135,6 +136,9 @@ public class DiffDialog extends StandardDialog {
             }
         });
 
+        setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
+        setLocationRelativeTo(getParent());
+
     }
 
 
@@ -152,8 +156,8 @@ public class DiffDialog extends StandardDialog {
         panel.add(jWordLabel, "growx, span 2");
         panel.add(new JLabel(bundle.getString("Dialog(Base)")), "growx");
         panel.add(new JLabel(bundle.getString("Dialog(Remote)")), "growx");
-        panel.add(jBaseScrollPane, "grow, w 320, h 400");
-        panel.add(jRemoteScrollPane, "grow, w 320, h 400");
+        panel.add(jBaseScrollPane, "grow");
+        panel.add(jRemoteScrollPane, "grow");
         panel.add(jAcceptBaseButton, "align 20%");
         panel.add(jAcceptRemoteButton, "align 20%");
 

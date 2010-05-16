@@ -2,6 +2,7 @@ package com.drowltd.spellbook.core.service;
 
 import com.drowltd.spellbook.core.exception.AuthenticationException;
 import com.drowltd.spellbook.core.exception.UpdateServiceException;
+import com.drowltd.spellbook.core.exception.UpdatesNotAvailableException;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.DictionaryEntry;
 import com.drowltd.spellbook.core.model.LastUpdateEntity;
@@ -154,7 +155,7 @@ public class UpdateService extends AbstractPersistenceService {
     }
 
     /**
-     * Checks for updates. Must be called before update().
+     * Checks for updates.
      *
      * @return true if updates are available
      */
@@ -173,14 +174,14 @@ public class UpdateService extends AbstractPersistenceService {
     /**
      * Updates the local database.
      */
-    public void update() throws InterruptedException {
+    public void update() throws InterruptedException, UpdatesNotAvailableException {
         if (!isOpen) {
             LOGGER.error("UpdateService is closed");
             throw new IllegalStateException("UpdateService is closed");
         }
         if (lastUpdate == null) {
             if (!checkForUpdates()) {
-                return;
+                throw new UpdatesNotAvailableException("no updates available");
             }
         }
         initDictMap();
@@ -285,15 +286,11 @@ public class UpdateService extends AbstractPersistenceService {
     }
 
 
-    public boolean haveUncommited() {
-        return !EM.createQuery("select ue from UncommittedEntries ue where (select count(de) from ue.dictionaryEntries de) > 0 and ue.committed = false").getResultList().isEmpty();
-    }
-
     public UncommittedEntries getUncommitted() {
         return DictionaryService.getInstance().getUncommitted();
     }
 
-    public void commit() {
+    public void commit() throws InterruptedException {
         if (!isAuthenticated) {
             return;
         }
@@ -313,6 +310,13 @@ public class UpdateService extends AbstractPersistenceService {
 
 
             for (DictionaryEntry de : uncommitted.getDictionaryEntries()) {
+
+                if (Thread.interrupted()) {
+                    LOGGER.warn("update interrupted");
+                    t.rollback();
+                    throw new InterruptedException();
+                }
+
                 RemoteDictionaryEntry rde;
                 boolean persist = false;
                 try {
