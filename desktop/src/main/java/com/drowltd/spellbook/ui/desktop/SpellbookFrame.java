@@ -909,7 +909,7 @@ public class SpellbookFrame extends JFrame {
         spellcheckMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                SpellCheckFrame.getInstance().setVisible(true);
+                SpellCheckFrame.getInstance(SpellbookFrame.this).setVisible(true);
             }
         });
         toolMenu.add(spellcheckMenuItem);
@@ -1153,7 +1153,7 @@ public class SpellbookFrame extends JFrame {
         spellcheckButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                SpellCheckFrame.getInstance().setVisible(true);
+                SpellCheckFrame.getInstance(SpellbookFrame.this).setVisible(true);
             }
         });
         mainToolBar.add(spellcheckButton);

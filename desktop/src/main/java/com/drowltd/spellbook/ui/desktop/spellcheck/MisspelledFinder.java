@@ -90,7 +90,7 @@ public class MisspelledFinder {
                 registry.clear();
             }
 
-            Pattern p = Pattern.compile("\\pL+");
+            Pattern p = Pattern.compile("\\p{L}+");
             Matcher m = p.matcher(text.getText());
 
             int index = 0;
