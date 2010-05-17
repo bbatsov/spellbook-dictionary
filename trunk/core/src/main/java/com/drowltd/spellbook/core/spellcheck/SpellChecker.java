@@ -26,7 +26,7 @@ public final class SpellChecker {
 
     /**
      *
-     * @param the Map<String, Integer> containing the words
+     * @param nWords containing the words
      */
 //    public SpellChecker(Map<String, Integer> nWords) {
 //        this(nWords, Dictionary.getSelectedDictionary());
