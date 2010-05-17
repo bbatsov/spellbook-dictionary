@@ -6,23 +6,25 @@ package com.drowltd.spellbook.core.service;
 
 import com.drowltd.spellbook.core.exception.AuthenticationException;
 import com.drowltd.spellbook.core.exception.UpdateServiceException;
+import com.drowltd.spellbook.core.exception.UpdatesNotAvailableException;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.model.RemoteDictionary;
 import com.drowltd.spellbook.core.model.RemoteDictionaryEntry;
 import com.drowltd.spellbook.core.model.RevisionEntry;
 import com.drowltd.spellbook.core.model.UpdateEntry;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Random;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -132,7 +134,11 @@ public class UpdateServiceTest {
         }
         assertTrue("no updates available", updateService.checkForUpdates());
         //assertFalse("no updates available",updateService.checkForUpdates());
-        updateService.update();
+        try {
+            updateService.update();
+        } catch (UpdatesNotAvailableException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
         DictionaryService service = DictionaryService.getInstance();
         service.getTranslation(word, service.getDictionary(dictionaryName));
         assertTrue(service.getRatings(Language.ENGLISH).containsKey(word));
@@ -140,7 +146,11 @@ public class UpdateServiceTest {
 
     @Test
     public void testCommit() {
-        updateService.commit();
+        try {
+            updateService.commit();
+        } catch (InterruptedException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
         assertTrue("no updates available", updateService.checkForUpdates());
     }
 }
