@@ -8,6 +8,7 @@ import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.ui.desktop.exam.ExamDialog;
 import com.drowltd.spellbook.ui.desktop.spellcheck.SpellCheckFrame;
 import com.drowltd.spellbook.ui.desktop.study.StudyWordsDialog;
+import com.drowltd.spellbook.ui.swing.component.WordOfTheDayDialog;
 import com.drowltd.spellbook.ui.swing.model.ListBackedListModel;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.drowltd.spellbook.ui.swing.util.IconManager.IconSize;
@@ -43,6 +44,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.text.DefaultEditorKit;
+
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -214,6 +216,10 @@ public class SpellbookFrame extends JFrame {
         }
 
         initialized = true;
+
+        WordOfTheDayDialog tWordOfTheDayDialog = new WordOfTheDayDialog(words, selectedDictionary);
+        tWordOfTheDayDialog.setLocationRelativeTo(this);
+        tWordOfTheDayDialog.setVisible(true);
     }
 
     public boolean isInitialized() {
