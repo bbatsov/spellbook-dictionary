@@ -58,7 +58,7 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
     private JTextPane jTextPane;
     private DefaultOverlayable overlay;
     private JProgressBar progressBar;
-    private boolean eventsEnabled = true;
+    private boolean eventsEnabled = false;
     private Executor executor = Executors.newSingleThreadExecutor();
 
 
