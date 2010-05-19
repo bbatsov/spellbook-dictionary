@@ -149,6 +149,7 @@ public class SpellbookFrame extends JFrame {
 
         if (dbPresent) {
             init();
+            showWordOfTheDay();
         }
     }
 
@@ -216,10 +217,14 @@ public class SpellbookFrame extends JFrame {
         }
 
         initialized = true;
+    }
 
-        WordOfTheDayDialog tWordOfTheDayDialog = new WordOfTheDayDialog(words, selectedDictionary);
-        tWordOfTheDayDialog.setLocationRelativeTo(this);
-        tWordOfTheDayDialog.setVisible(true);
+    private void showWordOfTheDay() {
+        if (PM.getBoolean(Preference.WORD_OF_THE_DAY, true)) {
+            WordOfTheDayDialog wordOfTheDayDialog = new WordOfTheDayDialog(words, selectedDictionary);
+            wordOfTheDayDialog.setLocationRelativeTo(this);
+            wordOfTheDayDialog.setVisible(true);
+        }
     }
 
     public boolean isInitialized() {

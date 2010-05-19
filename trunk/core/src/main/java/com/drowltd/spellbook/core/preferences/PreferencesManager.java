@@ -84,6 +84,8 @@ public class PreferencesManager {
         ALWAYS_ON_TOP,
         LOOK_AND_FEEL,
         START_IN_TRAY,
+        WORD_OF_THE_DAY,
+        CHECK_FOR_UPDATES,
         FONT_NAME,
         FONT_SIZE,
         FONT_STYLE,

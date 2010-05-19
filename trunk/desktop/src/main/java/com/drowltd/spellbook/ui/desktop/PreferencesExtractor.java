@@ -193,6 +193,26 @@ public class PreferencesExtractor {
 
         PM.putBoolean(Preference.START_IN_TRAY, startMinimized);
 
+        final boolean showWordOfTheDay = preferencesDialog.showWordOfTheDay();
+
+        if (showWordOfTheDay) {
+            LOGGER.info("Word of the day is enabled");
+        } else {
+            LOGGER.info("Word of the day is disabled");
+        }
+
+        PM.putBoolean(Preference.WORD_OF_THE_DAY, showWordOfTheDay);
+
+        final boolean checkForUpdates = preferencesDialog.isCheckForUpdatesEnabled();
+
+        if (checkForUpdates) {
+            LOGGER.info("Check for updates is enabled");
+        } else {
+            LOGGER.info("Check for updates is disabled");
+        }
+
+        PM.putBoolean(Preference.CHECK_FOR_UPDATES, checkForUpdates);
+
         // language settings should be changed last because they may require restart
         String oldLanguage = PM.get(Preference.UI_LANG, Language.ENGLISH.getName());
         final String newLanguage = preferencesDialog.getSelectedLanguage().getName();

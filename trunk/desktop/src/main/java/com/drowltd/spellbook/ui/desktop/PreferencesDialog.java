@@ -79,6 +79,8 @@ public class PreferencesDialog extends StandardDialog {
     private JComboBox lookAndFeelComboBox;
     private JCheckBox minimizeToTrayCheckBox;
     private JCheckBox minimizeToTrayOnCloseCheckBox;
+    private JCheckBox wordOfTheDay;
+    private JCheckBox checkForUpdates;
     private JLabel previewText;
     private JCheckBox showMemoryUsageCheckBox;
     private JTabbedPane tabbedPane;
@@ -207,6 +209,10 @@ public class PreferencesDialog extends StandardDialog {
         emptyLineCheckBox.setSelected(PM.getBoolean(Preference.EMPTY_LINE, true));
 
         startMinimizedCheckBox.setSelected(PM.getBoolean(Preference.START_IN_TRAY, false));
+
+        wordOfTheDay.setSelected(PM.getBoolean(Preference.WORD_OF_THE_DAY, true));
+
+        checkForUpdates.setSelected(PM.getBoolean(Preference.CHECK_FOR_UPDATES, true));
 
         // build the look and feel section
         final LookAndFeelInfo[] lookAndFeelInfos = UIManager.getInstalledLookAndFeels();
@@ -383,6 +389,14 @@ public class PreferencesDialog extends StandardDialog {
         return emptyLineCheckBox.isSelected();
     }
 
+    public boolean showWordOfTheDay() {
+        return wordOfTheDay.isSelected();
+    }
+
+    public boolean isCheckForUpdatesEnabled() {
+        return checkForUpdates.isSelected();
+    }
+
     public String getSelectedLookAndFeel() {
         return (String) lookAndFeelComboBox.getSelectedItem();
     }
@@ -461,13 +475,16 @@ public class PreferencesDialog extends StandardDialog {
 
     private JPanel createGeneralPreferencesPanel() {
         JPanel generalSettingsPanel = new JPanel(new MigLayout("wrap 2", "[grow][grow]", "[][][]20[]10[]10[]10[]10[]"));
-        minimizeToTrayCheckBox = new JCheckBox();
-        minimizeToTrayOnCloseCheckBox = new JCheckBox();
-        clipboardIntegrationCheckBox = new JCheckBox();
-        trayPopupCheckBox = new JCheckBox();
-        showMemoryUsageCheckBox = new JCheckBox();
-        alwaysOnTopCheckBox = new JCheckBox();
-        emptyLineCheckBox = new JCheckBox();
+        minimizeToTrayCheckBox = new JCheckBox(TRANSLATOR.translate("MinimizeToTray(Label)"));
+        minimizeToTrayOnCloseCheckBox = new JCheckBox(TRANSLATOR.translate("CloseToTray(Label)"));
+        clipboardIntegrationCheckBox = new JCheckBox(TRANSLATOR.translate("ClipboardIntegration(Label)"));
+        trayPopupCheckBox = new JCheckBox(TRANSLATOR.translate("TrayPopup(Label)"));
+        showMemoryUsageCheckBox = new JCheckBox(TRANSLATOR.translate("ShowMemory(Label)"));
+        alwaysOnTopCheckBox = new JCheckBox(TRANSLATOR.translate("AlwaysOnTop(Label)"));
+        emptyLineCheckBox = new JCheckBox(TRANSLATOR.translate("EmptyLine(Label)"));
+        startMinimizedCheckBox = new JCheckBox(TRANSLATOR.translate("StartMinimized(CheckBox)"));
+        checkForUpdates = new JCheckBox(TRANSLATOR.translate("CheckForUpdates(CheckBox)"));
+        wordOfTheDay = new JCheckBox(TRANSLATOR.translate("ShowWordOfTheDay(CheckBox)"));
         languageComboBox = new JComboBox();
         lookAndFeelComboBox = new JComboBox();
         defaultDictionaryComboBox = new DictionaryComboBox(DICTIONARY_SERVICE.getDictionaries());
@@ -475,11 +492,6 @@ public class PreferencesDialog extends StandardDialog {
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(TRANSLATOR.translate("Preferences(Title)"));
 
-        minimizeToTrayCheckBox.setText(TRANSLATOR.translate("MinimizeToTray(Label)"));
-
-        minimizeToTrayOnCloseCheckBox.setText(TRANSLATOR.translate("CloseToTray(Label)"));
-
-        clipboardIntegrationCheckBox.setText(TRANSLATOR.translate("ClipboardIntegration(Label)"));
         clipboardIntegrationCheckBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -492,31 +504,24 @@ public class PreferencesDialog extends StandardDialog {
             }
         });
 
-        trayPopupCheckBox.setText(TRANSLATOR.translate("TrayPopup(Label)"));
-
-        showMemoryUsageCheckBox.setText(TRANSLATOR.translate("ShowMemory(Label)"));
-
-        alwaysOnTopCheckBox.setText(TRANSLATOR.translate("AlwaysOnTop(Label)"));
-
-        emptyLineCheckBox.setText(TRANSLATOR.translate("EmptyLine(Label)"));
-
         languageComboBox.setModel(new DefaultComboBoxModel(new Language[]{Language.ENGLISH, Language.BULGARIAN}));
 
-        generalSettingsPanel.add(new JLabel(TRANSLATOR.translate("Language(Label)")), "growx");
+        generalSettingsPanel.add(new JLabel(TRANSLATOR.translate("Language(Label)")));
         generalSettingsPanel.add(languageComboBox, "growx");
-        generalSettingsPanel.add(new JLabel(TRANSLATOR.translate("DefaultDictionary(Label)")), "growx");
+        generalSettingsPanel.add(new JLabel(TRANSLATOR.translate("DefaultDictionary(Label)")));
         generalSettingsPanel.add(defaultDictionaryComboBox, "growx");
-        generalSettingsPanel.add(new JLabel(TRANSLATOR.translate("LookAndFeel(Label)")), "growx");
+        generalSettingsPanel.add(new JLabel(TRANSLATOR.translate("LookAndFeel(Label)")));
         generalSettingsPanel.add(lookAndFeelComboBox, "growx");
-        generalSettingsPanel.add(minimizeToTrayCheckBox, "growx");
-        generalSettingsPanel.add(minimizeToTrayOnCloseCheckBox, "growx");
-        generalSettingsPanel.add(clipboardIntegrationCheckBox, "growx");
-        generalSettingsPanel.add(trayPopupCheckBox, "growx");
-        generalSettingsPanel.add(showMemoryUsageCheckBox, "growx");
-        generalSettingsPanel.add(alwaysOnTopCheckBox, "growx");
-        generalSettingsPanel.add(emptyLineCheckBox, "growx");
+        generalSettingsPanel.add(minimizeToTrayCheckBox);
+        generalSettingsPanel.add(minimizeToTrayOnCloseCheckBox);
+        generalSettingsPanel.add(clipboardIntegrationCheckBox);
+        generalSettingsPanel.add(trayPopupCheckBox);
+        generalSettingsPanel.add(showMemoryUsageCheckBox);
+        generalSettingsPanel.add(alwaysOnTopCheckBox);
+        generalSettingsPanel.add(emptyLineCheckBox);
+        generalSettingsPanel.add(wordOfTheDay);
+        generalSettingsPanel.add(checkForUpdates);
 
-        startMinimizedCheckBox = new JCheckBox(TRANSLATOR.translate("StartMinimized(CheckBox)"));
         generalSettingsPanel.add(startMinimizedCheckBox);
 
         return generalSettingsPanel;
