@@ -127,5 +127,6 @@ public class WordOfTheDayDialog extends StandardDialog {
         bannerPanel.setSubtitle(TRANSLATOR.translate("Banner(Message)", word));
 
         translationPane.setText(SwingUtil.formatTranslation(word, DICTIONARY_SERVICE.getTranslation(word, dictionary)));
+        translationPane.setCaretPosition(0);
     }
 }
