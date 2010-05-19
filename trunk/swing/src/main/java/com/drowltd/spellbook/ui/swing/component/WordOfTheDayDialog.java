@@ -52,6 +52,8 @@ public class WordOfTheDayDialog extends StandardDialog {
         setTitle(TRANSLATOR.translate("Dialog(Title)"));
 
         setMinimumSize(new Dimension(600, 300));
+
+        setIconImage(IconManager.getImageIcon("lightbulb_on.png", IconManager.IconSize.SIZE16).getImage());
     }
 
     @Override
@@ -81,7 +83,7 @@ public class WordOfTheDayDialog extends StandardDialog {
 
     @Override
     public ButtonPanel createButtonPanel() {
-        ButtonPanel buttonPanel = new ButtonPanel(SwingConstants.CENTER);
+        ButtonPanel buttonPanel = new ButtonPanel(SwingConstants.RIGHT);
 
         JButton previousButton = new JButton();
 
