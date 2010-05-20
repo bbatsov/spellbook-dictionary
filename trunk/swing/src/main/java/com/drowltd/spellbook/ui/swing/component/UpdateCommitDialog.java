@@ -63,6 +63,8 @@ public class UpdateCommitDialog extends StandardDialog implements UpdateService.
 
         list = new JList();
 //        list.setBorder(new LineBorder(Color.BLACK, 1));
+
+
         tabbedPane.addTab(TRANSLATOR.translate("UpdateCommitDialog(modifiedWords)"), list);
 
 
@@ -99,7 +101,7 @@ public class UpdateCommitDialog extends StandardDialog implements UpdateService.
         setLocationRelativeTo(getParent());
     }
 
-     @Override
+    @Override
     public JComponent createBannerPanel() {
         BannerPanel bannerPanel = new BannerPanel(TRANSLATOR.translate("BannerTitle(Message)"),
                 TRANSLATOR.translate("Banner(Message)"),
@@ -127,7 +129,7 @@ public class UpdateCommitDialog extends StandardDialog implements UpdateService.
         buttonPanel.add(commitButton, ButtonPanel.AFFIRMATIVE_BUTTON);
         buttonPanel.add(cancelButton, ButtonPanel.CANCEL_BUTTON);
 
-        return buttonPanel;  
+        return buttonPanel;
     }
 
     private boolean login() {
@@ -182,17 +184,18 @@ public class UpdateCommitDialog extends StandardDialog implements UpdateService.
 
     private class CommitTask implements Runnable {
 
+        boolean isSuccessful = true;
+
         @Override
         public void run() {
-
-            boolean isSuccessful = true;
             try {
                 if (updateService.isOpen())
                     updateService.commit();
-                else
+                else {
+                    isSuccessful = false;
                     showMessage(TRANSLATOR.translate("UpdateCommitDialog(commitFailedMessage)"), JOptionPane.ERROR_MESSAGE);
+                }
             } catch (Exception e) {
-
                 updateService.close();
                 isSuccessful = false;
             }
@@ -212,6 +215,7 @@ public class UpdateCommitDialog extends StandardDialog implements UpdateService.
 
                 @Override
                 public void run() {
+                    if (isSuccessful) list.setListData(new Object[0]);
                     JOptionPane.showMessageDialog(UpdateCommitDialog.this, message, "Info", type);
                 }
             });
@@ -253,10 +257,10 @@ public class UpdateCommitDialog extends StandardDialog implements UpdateService.
                         }
 
                     });
-            } catch (Exception ex) {
+            } catch (UpdateServiceException ex) {
                 LOGGER.error(ex.getMessage());
-                ex.printStackTrace(System.out);
-                EventQueue.invokeLater(new UpdateResponseTask(TRANSLATOR.translate("MessageDialog(Error)")));
+//                ex.printStackTrace(System.out);
+                EventQueue.invokeLater(new UpdateResponseTask(TRANSLATOR.translate("UpdateCommitDialog(connectionFailure)")));
             }
             finally {
                 if (us0 != null)
