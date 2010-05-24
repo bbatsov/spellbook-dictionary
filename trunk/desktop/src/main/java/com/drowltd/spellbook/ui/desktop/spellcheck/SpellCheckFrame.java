@@ -43,6 +43,7 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellCheckFrame.class);
     private static final int MIN_WIDTH = 540;
     private static final int MIN_HEIGHT = 550;
+    private static final long MIN_SPELLCHECK_MSIZE = 104857600l;
 
     private UndoManager undoManager = new UndoManager();
     private SpellCheckPopupMenu popupMenu;
@@ -62,10 +63,13 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
     private Executor executor = Executors.newSingleThreadExecutor();
 
 
-    public static SpellCheckFrame getInstance(JFrame parent) {
-        if (INSTANCE == null) {
-            INSTANCE = new SpellCheckFrame(parent);
+    public static SpellCheckFrame getInstance(JFrame parent) throws HeapSizeException {
+        if (Runtime.getRuntime().maxMemory() < MIN_SPELLCHECK_MSIZE){
+            throw new HeapSizeException();
         }
+            if (INSTANCE == null) {
+                INSTANCE = new SpellCheckFrame(parent);
+            }
         return INSTANCE;
     }
 
@@ -222,7 +226,7 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
         add(jStatusLabel, "split 2, align left, growx");
         add(jLanguageLabel, "align right, growx");
 
-        setMinimumSize(new Dimension(MIN_WIDTH,MIN_HEIGHT));
+        setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
         setLocationRelativeTo(parent);
         pack();
 
