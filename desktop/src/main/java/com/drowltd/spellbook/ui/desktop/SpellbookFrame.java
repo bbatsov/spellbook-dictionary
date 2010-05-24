@@ -6,6 +6,7 @@ import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.ui.desktop.exam.ExamDialog;
+import com.drowltd.spellbook.ui.desktop.spellcheck.HeapSizeException;
 import com.drowltd.spellbook.ui.desktop.spellcheck.SpellCheckFrame;
 import com.drowltd.spellbook.ui.desktop.study.StudyWordsDialog;
 import com.drowltd.spellbook.ui.swing.component.WordOfTheDayDialog;
@@ -920,7 +921,7 @@ public class SpellbookFrame extends JFrame {
         spellcheckMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                SpellCheckFrame.getInstance(SpellbookFrame.this).setVisible(true);
+                showSpellCheker();
             }
         });
         toolMenu.add(spellcheckMenuItem);
@@ -958,6 +959,15 @@ public class SpellbookFrame extends JFrame {
         deleteWordMenuItem.setEnabled(false);
 
         setJMenuBar(spellbookMenuBar);
+    }
+
+    private void showSpellCheker() {
+        try {
+            SpellCheckFrame.getInstance(this).setVisible(true);
+        } catch (HeapSizeException e) {
+            JOptionPane.showMessageDialog(this, TRANSLATOR.translate("HeapLimit(Message)"),
+                    TRANSLATOR.translate("HeapLimit(Title)"), JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void initToolBar() {
@@ -1164,7 +1174,7 @@ public class SpellbookFrame extends JFrame {
         spellcheckButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                SpellCheckFrame.getInstance(SpellbookFrame.this).setVisible(true);
+                showSpellCheker();
             }
         });
         mainToolBar.add(spellcheckButton);
