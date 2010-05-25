@@ -1,6 +1,6 @@
 package com.drowltd.spellbook.ui.desktop.spellcheck;
 
-import com.drowltd.spellbook.core.spellcheck.SpellChecker;
+import com.drowltd.spellbook.core.spellcheck.MapSpellChecker;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -8,6 +8,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.drowltd.spellbook.core.spellcheck.SpellChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +57,7 @@ public class MisspelledFinder {
             }
         }
         LOGGER.info("Starting execution of new search");
-        currentFTask = executor.submit(new SearchTask(text, SpellChecker.getInstance(), clearRegistry));
+        currentFTask = executor.submit(new SearchTask(text, MapSpellChecker.getInstance(), clearRegistry));
     }
 
     private class SearchTask implements Runnable {
