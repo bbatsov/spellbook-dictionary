@@ -3,7 +3,7 @@ package com.drowltd.spellbook.ui.desktop.spellcheck;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.service.DictionaryService;
-import com.drowltd.spellbook.core.spellcheck.SpellChecker;
+import com.drowltd.spellbook.core.spellcheck.MapSpellChecker;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.jidesoft.swing.DefaultOverlayable;
 import com.jidesoft.swing.OverlayableUtils;
@@ -43,7 +43,7 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellCheckFrame.class);
     private static final int MIN_WIDTH = 540;
     private static final int MIN_HEIGHT = 550;
-    private static final long MIN_SPELLCHECK_MSIZE = 104857600l;
+    private static final long MIN_SPELLCHECK_HEAP_SIZE = 100000000l;
 
     private UndoManager undoManager = new UndoManager();
     private SpellCheckPopupMenu popupMenu;
@@ -64,7 +64,7 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
 
 
     public static SpellCheckFrame getInstance(JFrame parent) throws HeapSizeException {
-        if (Runtime.getRuntime().maxMemory() < MIN_SPELLCHECK_MSIZE){
+        if (Runtime.getRuntime().maxMemory() <= MIN_SPELLCHECK_HEAP_SIZE){
             throw new HeapSizeException();
         }
             if (INSTANCE == null) {
@@ -114,7 +114,7 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
         JMenuItem jPasteMenuItem = new JMenuItem();
         jDictionaryMenu = new JMenu();
 
-        setTitle("SpellBook SpellChecker");
+        setTitle("SpellBook MapSpellChecker");
 
         jTextPane.setBackground(Color.white);
         jTextPane.addMouseListener(new MouseAdapter() {
@@ -384,7 +384,7 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
             @Override
             public void run() {
                 Map<String, Integer> ratingsMap = DictionaryService.getInstance().getRatings(selectedLanguage);
-                new SpellChecker(ratingsMap, selectedLanguage);
+                new MapSpellChecker(ratingsMap, selectedLanguage);
 
                 EventQueue.invokeLater(new Runnable() {
                     @Override

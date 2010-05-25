@@ -1,6 +1,7 @@
 package com.drowltd.spellbook.ui.desktop.spellcheck;
 
 import com.drowltd.spellbook.core.service.DictionaryService;
+import com.drowltd.spellbook.core.spellcheck.MapSpellChecker;
 import com.drowltd.spellbook.core.spellcheck.SpellChecker;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
 import org.slf4j.Logger;
@@ -74,6 +75,7 @@ public class SpellCheckPopupMenu extends JPopupMenu {
 
         LOGGER.info("Popup menu triggered index at: " + cordsToCursor(mouseEvent));
 
+        //removing all components
         removeAll();
 
 
@@ -96,7 +98,7 @@ public class SpellCheckPopupMenu extends JPopupMenu {
     }
 
     private void addCorrectionsItems() {
-        SpellChecker spellChecker = SpellChecker.getInstance();
+        SpellChecker spellChecker = MapSpellChecker.getInstance();
 
         if (misspelledWord == null) {
             return;
@@ -219,7 +221,7 @@ public class SpellCheckPopupMenu extends JPopupMenu {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    DictionaryService.getInstance().addRankEntry(misspelled, SpellChecker.getInstance().getLanguage());
+                    DictionaryService.getInstance().addRankEntry(misspelled, MapSpellChecker.getInstance().getLanguage());
                     MisspelledFinder.getInstance().addUserMisspelled(misspelled);
                     MisspelledFinder.getInstance().findMisspelled(SpellCheckPopupMenu.this.spellCheckFrame.getVisibleText(), true);
                     StatusManager.getInstance().setStatus(misspelled + " added to dictionary");
