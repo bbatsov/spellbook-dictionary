@@ -30,6 +30,10 @@
             <url>http://repository.jboss.org/maven2/</url>
             <layout>default</layout>
         </repository>
+        <repository>
+            <id>my-local-repo</id>
+            <url>file://${basedir}/hunspell-repository</url>
+        </repository>
     </repositories>
 
     <build>
