@@ -31,8 +31,8 @@
             <layout>default</layout>
         </repository>
         <repository>
-            <id>my-local-repo</id>
-            <url>file://${basedir}/hunspell-repository</url>
+            <id>spellbook-repo</id>
+            <url>http://spellbook-dictionary.googlecode.com/svn/trunk/spellbook-maven-repository</url>
         </repository>
     </repositories>
 
