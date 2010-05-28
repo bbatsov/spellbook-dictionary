@@ -3,6 +3,7 @@ package com.drowltd.spellbook.ui.desktop.spellcheck;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.service.DictionaryService;
+import com.drowltd.spellbook.core.spellcheck.HunSpellChecker;
 import com.drowltd.spellbook.core.spellcheck.MapSpellChecker;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.jidesoft.swing.DefaultOverlayable;
@@ -26,6 +27,8 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
@@ -64,12 +67,12 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
 
 
     public static SpellCheckFrame getInstance(JFrame parent) throws HeapSizeException {
-        if (Runtime.getRuntime().maxMemory() <= MIN_SPELLCHECK_HEAP_SIZE){
-            throw new HeapSizeException();
+//        if (Runtime.getRuntime().maxMemory() <= MIN_SPELLCHECK_HEAP_SIZE) {
+//            throw new HeapSizeException();
+//        }
+        if (INSTANCE == null) {
+            INSTANCE = new SpellCheckFrame(parent);
         }
-            if (INSTANCE == null) {
-                INSTANCE = new SpellCheckFrame(parent);
-            }
         return INSTANCE;
     }
 
@@ -311,15 +314,15 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
 
         jTextPane.getDocument().addUndoableEditListener(undoManager);
 
-        EventQueue.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
-                popupMenu = SpellCheckPopupMenu.init(INSTANCE);
-                checkHighlighter = SpellCheckHighlighter.init(jTextPane.getHighlighter());
-                loadSpellChecker();
-            }
-        });
+//        EventQueue.invokeLater(new Runnable() {
+//
+//            @Override
+//            public void run() {
+//                popupMenu = SpellCheckPopupMenu.init(INSTANCE);
+//                checkHighlighter = SpellCheckHighlighter.init(jTextPane.getHighlighter());
+////                loadSpellChecker();
+//            }
+//        });
 
         int INTERVAL = 550;
         documentChangedTimer = new Timer(INTERVAL, new ActionListener() {
@@ -342,6 +345,20 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
 
         StatusManager.getInstance().addObserver(this);
         setLanguageStatus(languageToLowerCase(selectedLanguage));
+
+        popupMenu = SpellCheckPopupMenu.init(this);
+                checkHighlighter = SpellCheckHighlighter.init(jTextPane.getHighlighter());
+
+        //init the spellchecker
+        try {
+            HunSpellChecker.init(selectedLanguage);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        setTextEditable(true);
 
     }
 
@@ -403,7 +420,15 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
 
         if (selectedLanguage != language) {
             selectedLanguage = language;
-            loadSpellChecker();
+//            loadSpellChecker();
+            try {
+                HunSpellChecker.init(selectedLanguage);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+            setTextEditable(true);
             triggerMisspelledSearch(documentChangedTimer, true);
             setLanguageStatus(languageToLowerCase(language));
         }

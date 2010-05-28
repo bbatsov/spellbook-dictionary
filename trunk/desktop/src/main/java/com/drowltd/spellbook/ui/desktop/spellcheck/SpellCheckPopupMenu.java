@@ -1,23 +1,19 @@
 package com.drowltd.spellbook.ui.desktop.spellcheck;
 
 import com.drowltd.spellbook.core.service.DictionaryService;
-import com.drowltd.spellbook.core.spellcheck.MapSpellChecker;
+import com.drowltd.spellbook.core.spellcheck.HunSpellChecker;
 import com.drowltd.spellbook.core.spellcheck.SpellChecker;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JTextPane;
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author iivalchev
@@ -98,13 +94,13 @@ public class SpellCheckPopupMenu extends JPopupMenu {
     }
 
     private void addCorrectionsItems() {
-        SpellChecker spellChecker = MapSpellChecker.getInstance();
+        SpellChecker spellChecker = HunSpellChecker.getInstance();
 
         if (misspelledWord == null) {
             return;
         }
 
-        final Map<String, Integer> corrections = spellChecker.correct(misspelledWord.getWord());
+        List<String> corrections = spellChecker.correct(misspelledWord.getWord());
 
         if (corrections.isEmpty()) {
             add(noCorrectionsItem);
@@ -112,21 +108,11 @@ public class SpellCheckPopupMenu extends JPopupMenu {
             return;
         }
 
-        List<Integer> ratingList = new LinkedList<Integer>(corrections.values());
-        Collections.sort(ratingList, comparator);
 
-
-        for (Integer i : ratingList) {
-            for (String s : corrections.keySet()) {
-                if (corrections.get(s).equals(i)) {
-                    final CorrectionItem correctionItem = new CorrectionItem(s);
-                    add(correctionItem);
-                    corrections.remove(s);
-                    break;
-                }
-            }
-
+        for (String s : corrections) {
+            add(new CorrectionItem(s));
         }
+
 
         addToDictionoray();
 
@@ -221,7 +207,7 @@ public class SpellCheckPopupMenu extends JPopupMenu {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    DictionaryService.getInstance().addRankEntry(misspelled, MapSpellChecker.getInstance().getLanguage());
+                    DictionaryService.getInstance().addRankEntry(misspelled, HunSpellChecker.getInstance().getLanguage());
                     MisspelledFinder.getInstance().addUserMisspelled(misspelled);
                     MisspelledFinder.getInstance().findMisspelled(SpellCheckPopupMenu.this.spellCheckFrame.getVisibleText(), true);
                     StatusManager.getInstance().setStatus(misspelled + " added to dictionary");

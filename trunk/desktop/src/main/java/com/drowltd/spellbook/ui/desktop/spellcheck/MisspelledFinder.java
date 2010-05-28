@@ -1,6 +1,7 @@
 package com.drowltd.spellbook.ui.desktop.spellcheck;
 
-import com.drowltd.spellbook.core.spellcheck.MapSpellChecker;
+import com.drowltd.spellbook.core.spellcheck.HunSpellChecker;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -57,7 +58,7 @@ public class MisspelledFinder {
             }
         }
         LOGGER.info("Starting execution of new search");
-        currentFTask = executor.submit(new SearchTask(text, MapSpellChecker.getInstance(), clearRegistry));
+        currentFTask = executor.submit(new SearchTask(text, HunSpellChecker.getInstance(), clearRegistry));
     }
 
     private class SearchTask implements Runnable {
@@ -105,7 +106,7 @@ public class MisspelledFinder {
 
                 LOGGER.info("checking word " + mWord);
 
-                if (isWordMisspelled(mWord)) {
+                if (misspelled(mWord)) {
 
                     int start = text.getText().indexOf(mWord, index);
                     index = start + mWord.length();
@@ -134,7 +135,7 @@ public class MisspelledFinder {
             LOGGER.info("search ended");
         }
 
-        private boolean isWordMisspelled(String word) {
+        private boolean misspelled(String word) {
             if (spellChecker == null || word == null) {
                 return false;
             }
@@ -146,7 +147,7 @@ public class MisspelledFinder {
                 return false;
             }
 
-            return !spellChecker.checkWord(word.toLowerCase());
+            return spellChecker.misspelled(word);
         }
     }
 }

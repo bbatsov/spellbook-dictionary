@@ -67,8 +67,8 @@ public class MapSpellChecker implements SpellChecker {
      * @return true if the word is contained, false otherwise.
      */
     @Override
-    public boolean checkWord(String word) {
-        return nWords.containsKey(word.toLowerCase());
+    public boolean misspelled(String word) {
+        return !nWords.containsKey(word.toLowerCase());
     }
 
     /**
@@ -81,41 +81,24 @@ public class MapSpellChecker implements SpellChecker {
      * no correction candidates are found.
      */
     @Override
-    public Map<String, Integer> correct(String word) {
+    public List<String> correct(String word) {
 
         if (word == null) {
-            return Collections.emptyMap();
+            return Collections.emptyList();
         }
 
         String wordInLowerCase = word.toLowerCase();
 
         if (nWords.containsKey(wordInLowerCase)) {
-            return Collections.emptyMap();
+            return Collections.emptyList();
         }
 
         List<String> list = edits0(wordInLowerCase, language.getAlphabet());
-        Map<String, Integer> candidates = new HashMap<String, Integer>();
-        for (String s : list) {
-            if (nWords.containsKey(s)) {
-                candidates.put(s, nWords.get(s));
-            }
+
+        if (list.size() > 0) {
+            return list;
         }
-        if (candidates.size() > 0) {
-            return candidates;
-        }
-//        System.gc();
-//        for (String s : list) {
-//            for (String w : edits0(s, language.getAlphabet())) {
-//                if (nWords.containsKey(w)) {
-//                    candidates.put(w, nWords.get(w));
-//                }
-//            }
-//        }
-//
-//        if (candidates.size() > 0) {
-//            return candidates;
-//        }
-        return Collections.emptyMap();
+        return Collections.emptyList();
     }
 
     @Override
