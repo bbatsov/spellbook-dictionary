@@ -1,5 +1,6 @@
 package com.drowltd.spellbook.ui.desktop;
 
+import com.drowltd.spellbook.core.exception.SpellCheckerException;
 import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.Language;
@@ -963,10 +964,15 @@ public class SpellbookFrame extends JFrame {
 
     private void showSpellCheker() {
         try {
+
             SpellCheckFrame.getInstance(this).setVisible(true);
+
         } catch (HeapSizeException e) {
             JOptionPane.showMessageDialog(this, TRANSLATOR.translate("HeapLimit(Message)"),
                     TRANSLATOR.translate("HeapLimit(Title)"), JOptionPane.ERROR_MESSAGE);
+        } catch (SpellCheckerException e) {
+            JOptionPane.showMessageDialog(this, TRANSLATOR.translate("SpellChekerException(Message)"),
+                    TRANSLATOR.translate("SpellChekerException(Title)"), JOptionPane.ERROR_MESSAGE);
         }
     }
 

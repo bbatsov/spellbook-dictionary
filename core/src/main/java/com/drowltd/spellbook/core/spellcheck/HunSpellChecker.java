@@ -1,5 +1,6 @@
 package com.drowltd.spellbook.core.spellcheck;
 
+import com.drowltd.spellbook.core.exception.SpellCheckerException;
 import com.drowltd.spellbook.core.model.Language;
 import com.stibocatalog.hunspell.Hunspell;
 import org.slf4j.Logger;
@@ -29,7 +30,7 @@ public class HunSpellChecker implements SpellChecker {
     private static Logger LOGGER = LoggerFactory.getLogger(HunSpellChecker.class);
     private static final String HUNSPELL_DIC_DIR = System.getProperty("user.home") + File.separator + ".spellbook" + File.separator + "hundict" + File.separator;
 
-    public static void init(Language language) throws FileNotFoundException, UnsupportedEncodingException {
+    public static void init(Language language) throws SpellCheckerException {
 
         if (INSTANCE == null || language != INSTANCE.getLanguage()) {
             INSTANCE = new HunSpellChecker(language);
@@ -45,7 +46,7 @@ public class HunSpellChecker implements SpellChecker {
     }
 
 
-    public HunSpellChecker(Language language) throws FileNotFoundException, UnsupportedEncodingException {
+    public HunSpellChecker(Language language) throws SpellCheckerException {
         if (language == null) {
             throw new IllegalArgumentException("language null");
         }
@@ -77,20 +78,20 @@ public class HunSpellChecker implements SpellChecker {
                     dicOutStream.write(data, 0, len);
                 }
             } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                throw new SpellCheckerException(e);
             }
             finally {
                 if (dicInStream != null)
                     try {
                         dicInStream.close();
                     } catch (IOException e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                        throw new SpellCheckerException(e);
                     }
                 if (dicOutStream != null)
                     try {
                         dicOutStream.close();
                     } catch (IOException e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                        throw new SpellCheckerException(e);
                     }
             }
 
@@ -109,25 +110,29 @@ public class HunSpellChecker implements SpellChecker {
                     affOutStream.write(data, 0, len);
                 }
             } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                throw new SpellCheckerException(e);
             }
             finally {
                 if (affInStream != null)
                     try {
                         affInStream.close();
                     } catch (IOException e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                        throw new SpellCheckerException(e);
                     }
                 if (affOutStream != null)
                     try {
                         affOutStream.close();
                     } catch (IOException e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                        throw new SpellCheckerException(e);
                     }
             }
         }
 
-        dictionary = Hunspell.getInstance().getDictionary(baseFileName);
+        try {
+            dictionary = Hunspell.getInstance().getDictionary(baseFileName);
+        } catch (Exception e) {
+           throw new SpellCheckerException(e);
+        }
         this.language = language;
     }
 
