@@ -2,7 +2,6 @@ package com.drowltd.spellbook.core.spellcheck;
 
 import com.drowltd.spellbook.core.model.Language;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -13,9 +12,9 @@ import java.util.Map;
  */
 public interface SpellChecker {
     
-    boolean checkWord(String word);
+    boolean misspelled(String word);
 
-    Map<String, Integer> correct(String word);
+    List<String> correct(String word);
 
     Language getLanguage();
 
