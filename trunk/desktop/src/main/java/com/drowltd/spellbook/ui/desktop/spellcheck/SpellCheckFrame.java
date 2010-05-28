@@ -1,5 +1,6 @@
 package com.drowltd.spellbook.ui.desktop.spellcheck;
 
+import com.drowltd.spellbook.core.exception.SpellCheckerException;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.service.DictionaryService;
@@ -66,7 +67,7 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
     private Executor executor = Executors.newSingleThreadExecutor();
 
 
-    public static SpellCheckFrame getInstance(JFrame parent) throws HeapSizeException {
+    public static SpellCheckFrame getInstance(JFrame parent) throws HeapSizeException, SpellCheckerException {
 //        if (Runtime.getRuntime().maxMemory() <= MIN_SPELLCHECK_HEAP_SIZE) {
 //            throw new HeapSizeException();
 //        }
@@ -79,7 +80,7 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
     /**
      * Creates new form SpellCheckFrame
      */
-    private SpellCheckFrame(JFrame parent) {
+    private SpellCheckFrame(JFrame parent) throws SpellCheckerException {
         initComponents0(parent);
         init();
         initLanguageMenu();
@@ -282,7 +283,9 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
     /**
      * Custom initializations.
      */
-    private void init() {
+    private void init() throws SpellCheckerException {
+
+        HunSpellChecker.init(selectedLanguage);
 
         setIconImage(IconManager.getImageIcon("spellcheck.png", IconManager.IconSize.SIZE16).getImage());
 
@@ -347,16 +350,7 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
         setLanguageStatus(languageToLowerCase(selectedLanguage));
 
         popupMenu = SpellCheckPopupMenu.init(this);
-                checkHighlighter = SpellCheckHighlighter.init(jTextPane.getHighlighter());
-
-        //init the spellchecker
-        try {
-            HunSpellChecker.init(selectedLanguage);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
+        checkHighlighter = SpellCheckHighlighter.init(jTextPane.getHighlighter());
 
         setTextEditable(true);
 
@@ -421,13 +415,13 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
         if (selectedLanguage != language) {
             selectedLanguage = language;
 //            loadSpellChecker();
+
             try {
                 HunSpellChecker.init(selectedLanguage);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            } catch (UnsupportedEncodingException e) {
+            } catch (SpellCheckerException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
+
             setTextEditable(true);
             triggerMisspelledSearch(documentChangedTimer, true);
             setLanguageStatus(languageToLowerCase(language));
