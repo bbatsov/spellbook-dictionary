@@ -10,4 +10,8 @@ public class SpellCheckerException extends Exception{
     public SpellCheckerException(Throwable cause){
         super(cause);
     }
+
+    public SpellCheckerException(String message){
+        super(message);
+    }
 }
