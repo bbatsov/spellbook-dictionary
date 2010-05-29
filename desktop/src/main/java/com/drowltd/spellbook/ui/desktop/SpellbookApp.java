@@ -98,12 +98,6 @@ public class SpellbookApp {
     }
 
     private static void increaseProgress(String message) {
-        try {
-            Thread.sleep(3300);
-        } catch (InterruptedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-
         progressBar.setValue(progressBar.getValue() + 1);
         progressBar.setString(message);
     }
