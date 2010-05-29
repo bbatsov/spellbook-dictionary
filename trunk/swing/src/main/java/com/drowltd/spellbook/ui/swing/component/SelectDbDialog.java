@@ -29,7 +29,6 @@ import javax.swing.ProgressMonitor;
 import javax.swing.SwingWorker;
 import javax.swing.border.BevelBorder;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -58,8 +57,6 @@ public class SelectDbDialog extends StandardDialog implements PropertyChangeList
     private Task task;
     private String localDbFolder;
     private JButton okButton = new JButton();
-    private static final int MIN_WIDTH = 600;
-    private static final int MIN_HEIGHT = 270;
 
     private static final String DB_URL = "http://spellbook-dictionary.googlecode.com/files/spellbook-db-0.3.tar.bz2";
     private static final String DOWNLOAD_DIR = System.getProperty("java.io.tmpdir");
@@ -116,7 +113,7 @@ public class SelectDbDialog extends StandardDialog implements PropertyChangeList
             }
         });
 
-        setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
+        pack();
         setLocationRelativeTo(null);
         setTitle(TRANSLATOR.translate("SelectDb(Title)"));
     }
