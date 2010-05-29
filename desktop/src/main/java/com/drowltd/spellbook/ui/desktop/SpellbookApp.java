@@ -194,7 +194,7 @@ public class SpellbookApp {
 
             final SelectDbDialog selectDbDialog = new SelectDbDialog();
 
-            if (archiveFile.exists() || selectDbDialog.showDialog() == StandardDialog.RESULT_AFFIRMED) {
+            if (archiveFile.exists() || (selectDbDialog.showDialog() == StandardDialog.RESULT_AFFIRMED)) {
                 increaseProgress("Extracting database");
                 ArchiveUtils.extractDbFromArchive(archiveFile.exists() ? archiveFile.getAbsolutePath() : selectDbDialog.getDbPath());
                 increaseProgress("Loading database");
