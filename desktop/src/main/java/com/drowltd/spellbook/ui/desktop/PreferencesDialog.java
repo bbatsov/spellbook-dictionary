@@ -37,7 +37,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
@@ -416,6 +415,9 @@ public class PreferencesDialog extends StandardDialog {
 
         trayPopupCheckBox.setSelected(false);
         trayPopupCheckBox.setEnabled(false);
+
+        startMinimizedCheckBox.setSelected(false);
+        startMinimizedCheckBox.setEnabled(false);
     }
 
     private void initGuiComponents() {

@@ -103,11 +103,6 @@ public class SpellbookApp {
     }
 
     public static void init() {
-        // don't show splash on restart
-        if (startup) {
-            createSplashWindow();
-        }
-
         // install the default exception handler
         Thread.setDefaultUncaughtExceptionHandler(new SpellbookDefaultExceptionHandler());
 
@@ -148,6 +143,11 @@ public class SpellbookApp {
             // handle exception
         } catch (IllegalAccessException e) {
             // handle exception
+        }
+
+        // don't show splash on restart
+        if (startup) {
+            createSplashWindow();
         }
 
         increaseProgress("Verifying database...");
