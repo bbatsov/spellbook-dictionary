@@ -187,7 +187,6 @@ public class SelectDbDialog extends StandardDialog implements PropertyChangeList
             public void actionPerformed(ActionEvent e) {
                 setDialogResult(RESULT_CANCELLED);
                 setVisible(false);
-                dispose();
             }
         });
 
