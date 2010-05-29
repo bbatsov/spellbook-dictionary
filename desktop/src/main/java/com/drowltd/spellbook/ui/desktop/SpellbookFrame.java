@@ -46,13 +46,11 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.text.DefaultEditorKit;
-
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.HeadlessException;
 import java.awt.Rectangle;
-import java.awt.SplashScreen;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
@@ -151,7 +149,6 @@ public class SpellbookFrame extends JFrame {
 
         if (dbPresent) {
             init();
-            showWordOfTheDay();
         }
     }
 
@@ -209,19 +206,10 @@ public class SpellbookFrame extends JFrame {
             setLocationRelativeTo(null);
         }
 
-        if (!PM.getBoolean(Preference.START_IN_TRAY, false)) {
-            setVisible(true);
-        }
-
-        // workaround for an issue manifesting only on windows
-        if (SplashScreen.getSplashScreen() != null) {
-            SplashScreen.getSplashScreen().close();
-        }
-
         initialized = true;
     }
 
-    private void showWordOfTheDay() {
+    public void showWordOfTheDay() {
         if (PM.getBoolean(Preference.WORD_OF_THE_DAY, true)) {
             WordOfTheDayDialog wordOfTheDayDialog = new WordOfTheDayDialog(words, selectedDictionary);
             wordOfTheDayDialog.setLocationRelativeTo(this);

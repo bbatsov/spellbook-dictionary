@@ -8,15 +8,23 @@ import com.drowltd.spellbook.ui.swing.component.SelectDbDialog;
 import com.drowltd.spellbook.ui.swing.component.SpellbookDefaultExceptionHandler;
 import com.drowltd.spellbook.util.ArchiveUtils;
 import com.jidesoft.dialog.StandardDialog;
+import net.miginfocom.swing.MigLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.SwingWorker;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JWindow;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 import java.awt.EventQueue;
+import java.awt.Rectangle;
+import java.awt.SplashScreen;
+import java.awt.Toolkit;
 import java.io.File;
 import java.util.Locale;
 
@@ -41,11 +49,71 @@ public class SpellbookApp {
     private static SpellbookFrame tAppFrame;
     private static boolean dbPresent = false;
 
+    private static JWindow splashWindow;
+    private static JProgressBar progressBar;
+    private static boolean startup = true;
+
     public static void main(final String[] args) {
         init();
     }
 
+    private static void createSplashWindow() {
+        final SplashScreen splashScreen = SplashScreen.getSplashScreen();
+
+        final ImageIcon icon = new ImageIcon(SpellbookApp.class.getResource("/images/spellbook-splash.png"));
+
+        Rectangle bounds;
+
+        if (splashScreen != null) {
+            bounds = splashScreen.getBounds();
+            System.out.println(bounds);
+        } else {
+            splashWindow = new JWindow();
+            Toolkit toolkit = Toolkit.getDefaultToolkit();
+            bounds = new Rectangle(toolkit.getScreenSize().width / 2, toolkit.getScreenSize().height / 2, icon.getIconWidth(), icon.getIconHeight());
+        }
+
+        splashWindow.setBounds((int) bounds.getX() - icon.getIconWidth() / 2, (int) bounds.getY() - icon.getIconHeight() / 2, (int) bounds.getWidth(), (int) bounds.getHeight());
+        JPanel panel = new JPanel(new MigLayout("wrap 1", "[][grow]", "[][grow]"));
+
+        JLabel splashImage = new JLabel();
+
+        splashImage.setIcon(icon);
+
+        panel.add(splashImage);
+        progressBar = new JProgressBar(0, 4);
+        progressBar.setStringPainted(true);
+        progressBar.setString("Starting up Spellbook");
+        panel.add(progressBar, "grow");
+
+        splashWindow.setContentPane(panel);
+        splashWindow.pack();
+        splashWindow.setVisible(true);
+    }
+
+    private static void closeSplashWindow() {
+        progressBar.setValue(progressBar.getMaximum());
+        progressBar.setString("Done");
+        splashWindow.setVisible(false);
+    }
+
+    private static void increaseProgress(String message) {
+        try {
+            Thread.sleep(3300);
+        } catch (InterruptedException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        progressBar.setValue(progressBar.getValue() + 1);
+        progressBar.setString(message);
+    }
+
     public static void init() {
+        // don't show splash on restart
+        if (startup) {
+            createSplashWindow();
+        }
+
         // install the default exception handler
         Thread.setDefaultUncaughtExceptionHandler(new SpellbookDefaultExceptionHandler());
 
@@ -88,6 +156,8 @@ public class SpellbookApp {
             // handle exception
         }
 
+        increaseProgress("Verifying database...");
+
         // check the presence of the dictionary database
         if (!verifyDbPresence()) {
             JOptionPane.showMessageDialog(null, TRANSLATOR.translate("NoDbSelected(Message)"),
@@ -99,8 +169,20 @@ public class SpellbookApp {
             @Override
             public void run() {
                 tAppFrame = new SpellbookFrame(dbPresent);
+
+                tAppFrame.init();
+
+                closeSplashWindow();
+
+                if (!pm.getBoolean(Preference.START_IN_TRAY, false)) {
+                    tAppFrame.setVisible(true);
+                    tAppFrame.showWordOfTheDay();
+                }
             }
         });
+
+        // next time we enter this method it will be a restart
+        startup = false;
     }
 
     private static boolean verifyDbPresence() {
@@ -119,25 +201,15 @@ public class SpellbookApp {
             final SelectDbDialog selectDbDialog = new SelectDbDialog();
 
             if (archiveFile.exists() || selectDbDialog.showDialog() == StandardDialog.RESULT_AFFIRMED) {
-                SwingWorker<Void, Void> swingWorker = new SwingWorker<Void, Void>() {
-                    @Override
-                    protected Void doInBackground() throws Exception {
-                        ArchiveUtils.extractDbFromArchive(archiveFile.exists() ? archiveFile.getAbsolutePath() : selectDbDialog.getDbPath());
-
-                        return null;
-                    }
-
-                    @Override
-                    protected void done() {
-                        tAppFrame.init();
-                    }
-                };
-
-                swingWorker.execute();
+                increaseProgress("Extracting database");
+                ArchiveUtils.extractDbFromArchive(archiveFile.exists() ? archiveFile.getAbsolutePath() : selectDbDialog.getDbPath());
+                increaseProgress("Loading database");
             } else {
                 return false;
             }
         } else {
+            increaseProgress("Loading database");
+
             dbPresent = true;
         }
 

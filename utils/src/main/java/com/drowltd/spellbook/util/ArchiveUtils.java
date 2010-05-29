@@ -6,7 +6,6 @@ import org.apache.tools.tar.TarInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.ProgressMonitorInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -47,10 +46,7 @@ public class ArchiveUtils {
             }
 
             // Open the gzip file and open the output file
-            CBZip2InputStream bz2 = new CBZip2InputStream(new ProgressMonitorInputStream(
-                    null,
-                    "Decompressing " + pathToArchive,
-                    archiveFileStream));
+            CBZip2InputStream bz2 = new CBZip2InputStream(archiveFileStream);
             FileOutputStream out = new FileOutputStream(ARCHIVED_DB_NAME);
 
             LOGGER.info("Extracting the tar file...");
@@ -73,10 +69,7 @@ public class ArchiveUtils {
         try {
             TarInputStream tarInputStream = null;
             TarEntry tarEntry;
-            tarInputStream = new TarInputStream(new ProgressMonitorInputStream(
-                    null,
-                    "Extracting " + ARCHIVED_DB_NAME,
-                    new FileInputStream(ARCHIVED_DB_NAME)));
+            tarInputStream = new TarInputStream(new FileInputStream(ARCHIVED_DB_NAME));
 
             tarEntry = tarInputStream.getNextEntry();
 
