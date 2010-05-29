@@ -179,9 +179,9 @@ public class SelectDbDialog extends StandardDialog implements PropertyChangeList
             public void actionPerformed(ActionEvent e) {
                 setDialogResult(RESULT_AFFIRMED);
                 setVisible(false);
-                dispose();
             }
         });
+
         cancelButton.setAction(new AbstractAction(UIDefaultsLookup.getString("OptionPane.cancelButtonText")) {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -190,6 +190,7 @@ public class SelectDbDialog extends StandardDialog implements PropertyChangeList
                 dispose();
             }
         });
+
         final ResourceBundle resourceBundle = ButtonResources.getResourceBundle(Locale.getDefault());
         helpButton.setAction(new AbstractAction(resourceBundle.getString("Button.help")) {
             @Override
@@ -197,6 +198,7 @@ public class SelectDbDialog extends StandardDialog implements PropertyChangeList
                 // do something
             }
         });
+
         helpButton.setMnemonic(resourceBundle.getString("Button.help.mnemonic").charAt(0));
 
         setDefaultCancelAction(cancelButton.getAction());
