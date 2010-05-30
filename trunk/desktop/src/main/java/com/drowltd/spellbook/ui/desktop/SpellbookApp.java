@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -170,6 +171,7 @@ public class SpellbookApp {
 
                 if (!pm.getBoolean(Preference.START_IN_TRAY, false)) {
                     tAppFrame.setVisible(true);
+                    checkJavaRuntime(tAppFrame);
                     tAppFrame.showWordOfTheDay();
                 }
             }
@@ -177,6 +179,14 @@ public class SpellbookApp {
 
         // next time we enter this method it will be a restart
         startup = false;
+    }
+
+    private static void checkJavaRuntime(JFrame frame) {
+        String vmName = System.getProperty("java.vm.name");
+
+        if (!vmName.startsWith("Java HotSpot")) {
+            JOptionPane.showMessageDialog(frame, TRANSLATOR.translate("JavaRuntimeWarning(Message)", vmName), "Warning", JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     private static boolean verifyDbPresence() {
