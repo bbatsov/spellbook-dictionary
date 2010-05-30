@@ -910,7 +910,7 @@ public class SpellbookFrame extends JFrame {
         spellcheckMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                showSpellCheker();
+                showSpellChecker();
             }
         });
         toolMenu.add(spellcheckMenuItem);
@@ -950,7 +950,7 @@ public class SpellbookFrame extends JFrame {
         setJMenuBar(spellbookMenuBar);
     }
 
-    private void showSpellCheker() {
+    private void showSpellChecker() {
         try {
 
             SpellCheckFrame.getInstance(this).setVisible(true);
@@ -959,8 +959,8 @@ public class SpellbookFrame extends JFrame {
             JOptionPane.showMessageDialog(this, TRANSLATOR.translate("HeapLimit(Message)"),
                     TRANSLATOR.translate("HeapLimit(Title)"), JOptionPane.ERROR_MESSAGE);
         } catch (SpellCheckerException e) {
-            JOptionPane.showMessageDialog(this, TRANSLATOR.translate("SpellChekerException(Message)"),
-                    TRANSLATOR.translate("SpellChekerException(Title)"), JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, TRANSLATOR.translate("SpellCheckerException(Message)"),
+                    TRANSLATOR.translate("SpellCheckerException(Title)"), JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -1168,7 +1168,7 @@ public class SpellbookFrame extends JFrame {
         spellcheckButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                showSpellCheker();
+                showSpellChecker();
             }
         });
         mainToolBar.add(spellcheckButton);
