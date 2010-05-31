@@ -171,14 +171,18 @@ public class SpellbookApp {
 
                 if (!pm.getBoolean(Preference.START_IN_TRAY, false)) {
                     tAppFrame.setVisible(true);
-                    checkJavaRuntime(tAppFrame);
-                    tAppFrame.showWordOfTheDay();
+
+                    // these actions should only happen on startup, on restart we ignore them
+                    if (startup) {
+                        checkJavaRuntime(tAppFrame);
+                        tAppFrame.showWordOfTheDay();
+                    }
                 }
+
+                // next time we enter this method it will be a restart
+                startup = false;
             }
         });
-
-        // next time we enter this method it will be a restart
-        startup = false;
     }
 
     private static void checkJavaRuntime(JFrame frame) {
