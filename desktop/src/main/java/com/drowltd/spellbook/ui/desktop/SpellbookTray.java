@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.JFrame;
-
 import java.awt.AWTException;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
@@ -137,8 +136,10 @@ public class SpellbookTray {
     }
 
     public static void destroyTrayIcon() {
-        final SystemTray tray = SystemTray.getSystemTray();
+        if (SystemTray.isSupported()) {
+            final SystemTray tray = SystemTray.getSystemTray();
 
-        tray.remove(trayIcon);
+            tray.remove(trayIcon);
+        }
     }
 }
