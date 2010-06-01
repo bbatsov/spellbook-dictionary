@@ -37,7 +37,6 @@ import javax.swing.border.BevelBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
-
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dialog;
@@ -95,11 +94,11 @@ public class ExamSummaryDialog extends StandardDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!submitted) {
-                final ExamScoreEntry tEntry = examStats.createExamScoreEntry(nameTextField.getText());
-                examService.addScoreboardResult(tEntry);
-                scoreboardTableModel.getScoreEntries().add(tEntry);
-                scoreboardTableModel.fireTableRowsInserted(0, scoreboardTableModel.getRowCount());
-                submitted = true;
+                    final ExamScoreEntry tEntry = examStats.createExamScoreEntry(nameTextField.getText());
+                    examService.addScoreboardResult(tEntry);
+                    scoreboardTableModel.getScoreEntries().add(tEntry);
+                    scoreboardTableModel.fireTableRowsInserted(0, scoreboardTableModel.getRowCount());
+                    submitted = true;
                 } else {
                     JOptionPane.showMessageDialog(ExamSummaryDialog.this, TRANSLATOR.translate("ScoreAlreadySubmitted(Message)"));
                 }
@@ -304,22 +303,27 @@ class ScoreboardTableModel extends AbstractTableModel {
         return scoreEntries;
     }
 
+    @Override
     public int getColumnCount() {
         return columnNames.length;
     }
 
+    @Override
     public int getRowCount() {
         return scoreEntries.size();
     }
 
+    @Override
     public String getColumnName(int col) {
         return columnNames[col];
     }
 
+    @Override
     public Object getValueAt(int row, int col) {
         return scoreEntries.get(row).toArray()[col];
     }
 
+    @Override
     public Class getColumnClass(int c) {
         return getValueAt(0, c).getClass();
     }
