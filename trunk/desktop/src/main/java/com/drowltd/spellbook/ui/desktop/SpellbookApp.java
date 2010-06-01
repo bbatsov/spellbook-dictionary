@@ -44,7 +44,6 @@ public class SpellbookApp {
 
     private static final Translator TRANSLATOR = Translator.getTranslator("SpellbookFrame");
 
-
     private static final String SPELLBOOK_USER_DIR = System.getProperty("user.home") + File.separator + ".spellbook";
     private static final String SPELLBOOK_DB_PATH = SPELLBOOK_USER_DIR + File.separator + "db" + File.separator + "spellbook.data.db";
     private static SpellbookFrame tAppFrame;
@@ -84,7 +83,7 @@ public class SpellbookApp {
         panel.add(splashImage);
         progressBar = new JProgressBar(0, 4);
         progressBar.setStringPainted(true);
-        progressBar.setString("Starting up Spellbook");
+        progressBar.setString(TRANSLATOR.translate("Starting(Message)"));
         panel.add(progressBar, "grow");
 
         splashWindow.setContentPane(panel);
@@ -94,7 +93,7 @@ public class SpellbookApp {
 
     private static void closeSplashWindow() {
         progressBar.setValue(progressBar.getMaximum());
-        progressBar.setString("Done");
+        progressBar.setString(TRANSLATOR.translate("Done(Message)"));
         splashWindow.setVisible(false);
     }
 
@@ -151,7 +150,7 @@ public class SpellbookApp {
             createSplashWindow();
         }
 
-        increaseProgress("Verifying database...");
+        increaseProgress(TRANSLATOR.translate("VerifyingDb(Message)"));
 
         // check the presence of the dictionary database
         if (!verifyDbPresence()) {
@@ -189,7 +188,8 @@ public class SpellbookApp {
         String vmName = System.getProperty("java.vm.name");
 
         if (!vmName.startsWith("Java HotSpot")) {
-            JOptionPane.showMessageDialog(frame, TRANSLATOR.translate("JavaRuntimeWarning(Message)", vmName), "Warning", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(frame, TRANSLATOR.translate("JavaRuntimeWarning(Message)", vmName),
+                    TRANSLATOR.translate("JavaRuntimeWarning(Title)"), JOptionPane.WARNING_MESSAGE);
         }
     }
 
@@ -209,14 +209,14 @@ public class SpellbookApp {
             final SelectDbDialog selectDbDialog = new SelectDbDialog();
 
             if (archiveFile.exists() || (selectDbDialog.showDialog() == StandardDialog.RESULT_AFFIRMED)) {
-                increaseProgress("Extracting database");
+                increaseProgress(TRANSLATOR.translate("ExtractingDb(Message)"));
                 ArchiveUtils.extractDbFromArchive(archiveFile.exists() ? archiveFile.getAbsolutePath() : selectDbDialog.getDbPath());
-                increaseProgress("Loading database");
+                increaseProgress(TRANSLATOR.translate("LoadingDb(Message)"));
             } else {
                 return false;
             }
         } else {
-            increaseProgress("Loading database");
+            increaseProgress(TRANSLATOR.translate("LoadingDb(Message)"));
 
             dbPresent = true;
         }
