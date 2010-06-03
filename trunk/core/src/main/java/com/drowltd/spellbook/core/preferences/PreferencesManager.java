@@ -108,6 +108,7 @@ public class PreferencesManager {
         REPEAT_MISSPELLED_WORDS,
         REPEAT_WORDS,
         REMOTE_DB_USERNAME,
-        REMOTE_DB_PASSWORD
+        REMOTE_DB_PASSWORD,
+        CHECK_JAVA_VERSION
     }
 }
