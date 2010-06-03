@@ -1,10 +1,12 @@
 package com.drowltd.spellbook.core.service;
 
+import com.google.gdata.util.AuthenticationException;
 import com.google.gdata.util.ServiceException;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 
 /**
  * @author ikkari
@@ -14,13 +16,22 @@ import java.io.IOException;
 @Ignore
 public class CodeHostingServiceTest {
 
-    public CodeHostingServiceTest(){
+    public CodeHostingServiceTest() {
     }
 
     @Test
     public void testCreateIssue() throws IOException, ServiceException {
         CodeHostingService service = CodeHostingService.getInstance();
-        service.createIssue("Generated issue","This is a test, for the feedback capability", "iivalchev");
+        service.createIssue("Generated issue", "This is a test, for the feedback capability", "iivalchev");
     }
 
+    @Test
+    public void testCrateIssueFormException() throws IOException, ServiceException {
+        CodeHostingService service = CodeHostingService.getInstance();
+        try {
+            throw new IllegalArgumentException();
+        } catch (Exception e) {
+            service.createIssue(e, "iivalchev");
+        }
+    }
 }

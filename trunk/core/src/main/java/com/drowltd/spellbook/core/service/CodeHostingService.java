@@ -3,11 +3,17 @@ package com.drowltd.spellbook.core.service;
 import com.google.gdata.client.projecthosting.ProjectHostingService;
 import com.google.gdata.data.HtmlTextConstruct;
 import com.google.gdata.data.Person;
-import com.google.gdata.data.projecthosting.*;
+import com.google.gdata.data.projecthosting.IssuesEntry;
+import com.google.gdata.data.projecthosting.Label;
+import com.google.gdata.data.projecthosting.Owner;
+import com.google.gdata.data.projecthosting.Status;
+import com.google.gdata.data.projecthosting.Username;
 import com.google.gdata.util.AuthenticationException;
 import com.google.gdata.util.ServiceException;
+import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.MalformedURLException;
 
 /**
@@ -40,6 +46,10 @@ public class CodeHostingService {
 
     public void createIssue(String title, String content, String owner) throws IOException, ServiceException {
 
+        if (title == null || content == null || owner == null) {
+            throw new IllegalArgumentException("title == null || content == null || owner == null");
+        }
+
         IssuesEntry issue = new IssuesEntry();
         issue.setTitle(new HtmlTextConstruct(title));
         issue.setContent(new HtmlTextConstruct(content));
@@ -55,4 +65,22 @@ public class CodeHostingService {
 
         client.insertIssue(issue);
     }
+
+    public void createIssue(Throwable t, String owner) throws IOException, ServiceException {
+        if (t == null) {
+            throw new IllegalArgumentException("t == null");
+        }
+
+        if (owner == null) {
+            throw new IllegalArgumentException("owner == null");
+        }
+
+        ByteOutputStream byteStream = new ByteOutputStream(0);
+        PrintWriter writer = new PrintWriter(byteStream);
+        t.printStackTrace(writer);
+        writer.close();
+
+        createIssue(t.toString(), new String(byteStream.getBytes()), owner);
+    }
+
 }
