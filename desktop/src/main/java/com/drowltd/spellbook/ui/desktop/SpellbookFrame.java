@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JMenu;
@@ -121,6 +122,7 @@ public class SpellbookFrame extends JFrame {
     private static final int DIVIDER_LOCATION = 180;
     private static final int MIN_FRAME_WIDTH = 640;
     private static final int MIN_FRAME_HEIGHT = 200;
+    private JToolBar mainToolBar;
 
     public SpellbookFrame(boolean dbPresent) {
         setMinimumSize(new Dimension(MIN_FRAME_WIDTH, MIN_FRAME_HEIGHT));
@@ -866,6 +868,30 @@ public class SpellbookFrame extends JFrame {
 
         spellbookMenuBar.add(editMenu);
 
+        //build the vew menu
+        JMenu viewMenu = new JMenu();
+
+        viewMenu.setMnemonic('v');
+        viewMenu.setText(TRANSLATOR.translate("View(Menu)"));
+        spellbookMenuBar.add(viewMenu);
+
+        JMenuItem toolBarMenuItem = new JCheckBoxMenuItem();
+        toolBarMenuItem.setText(TRANSLATOR.translate("ToolBar(MenuItem)"));
+
+        toolBarMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                mainToolBar.setVisible(!mainToolBar.isVisible());
+            }
+        }
+        );
+
+        viewMenu.add(toolBarMenuItem);
+
+        JMenuItem statusBarMenuItem = new JCheckBoxMenuItem();
+        statusBarMenuItem.setText(TRANSLATOR.translate("StatusBar(MenuItem)"));
+        viewMenu.add(statusBarMenuItem);
+
         // build dictionary menu
         dictionaryMenu = new JMenu();
 
@@ -966,7 +992,7 @@ public class SpellbookFrame extends JFrame {
 
     private void initToolBar() {
 
-        JToolBar mainToolBar = new JToolBar();
+        mainToolBar = new JToolBar();
         backButton = new JButton();
         forwardButton = new JButton();
         clearButton = new JButton();

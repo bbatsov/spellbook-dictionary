@@ -173,7 +173,10 @@ public class SpellbookApp {
 
                     // these actions should only happen on startup, on restart we ignore them
                     if (startup) {
-                        checkJavaRuntime(tAppFrame);
+                        if (pm.getBoolean(Preference.CHECK_JAVA_VERSION, true)) {
+                            checkJavaRuntime(tAppFrame);
+                        }
+
                         tAppFrame.showWordOfTheDay();
                     }
                 }

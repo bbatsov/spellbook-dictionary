@@ -16,7 +16,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
-
 import java.awt.Font;
 import java.util.logging.Level;
 
@@ -212,6 +211,16 @@ public class PreferencesExtractor {
         }
 
         PM.putBoolean(Preference.CHECK_FOR_UPDATES, checkForUpdates);
+
+        final boolean checkJavaVersion = preferencesDialog.isCheckJavaVersionEnabled();
+
+        if (checkJavaVersion) {
+            LOGGER.info("Check Java version is enabled");
+        } else {
+            LOGGER.info("Check Java version is disabled");
+        }
+
+        PM.putBoolean(Preference.CHECK_JAVA_VERSION, checkJavaVersion);
 
         // language settings should be changed last because they may require restart
         String oldLanguage = PM.get(Preference.UI_LANG, Language.ENGLISH.getName());

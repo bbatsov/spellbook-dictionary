@@ -87,6 +87,7 @@ public class PreferencesDialog extends StandardDialog {
     private JCheckBox trayPopupCheckBox;
     private JTextField wordCountField;
     private DifficultyComboBox difficultyComboBox;
+    private JCheckBox checkJavaVersionCheckBox;
 
     public PreferencesDialog(final Frame parent, boolean modal) {
         super(parent, modal);
@@ -212,6 +213,8 @@ public class PreferencesDialog extends StandardDialog {
         wordOfTheDay.setSelected(PM.getBoolean(Preference.WORD_OF_THE_DAY, true));
 
         checkForUpdates.setSelected(PM.getBoolean(Preference.CHECK_FOR_UPDATES, true));
+
+        checkJavaVersionCheckBox.setSelected(PM.getBoolean(Preference.CHECK_JAVA_VERSION, true));
 
         // build the look and feel section
         final LookAndFeelInfo[] lookAndFeelInfos = UIManager.getInstalledLookAndFeels();
@@ -396,6 +399,10 @@ public class PreferencesDialog extends StandardDialog {
         return checkForUpdates.isSelected();
     }
 
+    public boolean isCheckJavaVersionEnabled() {
+        return checkJavaVersionCheckBox.isSelected();
+    }
+
     public String getSelectedLookAndFeel() {
         return (String) lookAndFeelComboBox.getSelectedItem();
     }
@@ -487,6 +494,7 @@ public class PreferencesDialog extends StandardDialog {
         startMinimizedCheckBox = new JCheckBox(TRANSLATOR.translate("StartMinimized(CheckBox)"));
         checkForUpdates = new JCheckBox(TRANSLATOR.translate("CheckForUpdates(CheckBox)"));
         wordOfTheDay = new JCheckBox(TRANSLATOR.translate("ShowWordOfTheDay(CheckBox)"));
+        checkJavaVersionCheckBox = new JCheckBox(TRANSLATOR.translate("CheckJavaVersion(CheckBox)"));
         languageComboBox = new JComboBox();
         lookAndFeelComboBox = new JComboBox();
         defaultDictionaryComboBox = new DictionaryComboBox(DICTIONARY_SERVICE.getDictionaries());
@@ -523,8 +531,8 @@ public class PreferencesDialog extends StandardDialog {
         generalSettingsPanel.add(emptyLineCheckBox);
         generalSettingsPanel.add(wordOfTheDay);
         generalSettingsPanel.add(checkForUpdates);
-
         generalSettingsPanel.add(startMinimizedCheckBox);
+        generalSettingsPanel.add(checkJavaVersionCheckBox);
 
         return generalSettingsPanel;
     }
