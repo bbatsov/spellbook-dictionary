@@ -100,6 +100,24 @@
             <artifactId>hunspell-win32-x86</artifactId>
         </dependency>
 
+        <!--google-api-->
+        <dependency>
+            <groupId>com.google.gdata</groupId>
+            <artifactId>core</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.gdata</groupId>
+            <artifactId>projecthosting</artifactId>
+            <version>2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google</groupId>
+            <artifactId>common</artifactId>
+            <version>1.0</version>
+        </dependency>
+
         <!-- test -->
         <dependency>
             <groupId>junit</groupId>
