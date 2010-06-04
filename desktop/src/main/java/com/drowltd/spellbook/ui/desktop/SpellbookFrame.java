@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -33,6 +34,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
@@ -123,6 +125,9 @@ public class SpellbookFrame extends JFrame {
     private static final int MIN_FRAME_WIDTH = 640;
     private static final int MIN_FRAME_HEIGHT = 200;
     private JToolBar mainToolBar;
+    private JPanel statusBar;
+    private JLabel dictionaryInfoLabel;
+    private JProgressBar memoryProgressBar;
 
     public SpellbookFrame(boolean dbPresent) {
         setMinimumSize(new Dimension(MIN_FRAME_WIDTH, MIN_FRAME_HEIGHT));
@@ -426,6 +431,7 @@ public class SpellbookFrame extends JFrame {
     public void showMemoryUsage() {
         lastToolbarSeparator.setVisible(true);
         memoryButton.setVisible(true);
+        memoryProgressBar.setVisible(true);
 
         if (memoryUsageExecutorService == null) {
             Runnable memoryRunnable = new Runnable() {
@@ -439,7 +445,9 @@ public class SpellbookFrame extends JFrame {
                     int usedMemInMb = (int) (totalMemory - freeMemory) / BYTES_IN_ONE_MEGABYTE;
                     int totalMemInMb = (int) totalMemory / BYTES_IN_ONE_MEGABYTE;
 
-                    //memoryButton.setText(usedMemInMb + "M of " + totalMemInMb + "M");
+                    memoryProgressBar.setString(usedMemInMb + "M of " + totalMemInMb + "M");
+                    memoryProgressBar.setValue((int) (usedMemInMb * 100 / (double) totalMemInMb));
+                    memoryProgressBar.setToolTipText(String.format(TRANSLATOR.translate("MemoryUsage(ToolTip)"), totalMemInMb, usedMemInMb));
                     memoryButton.setToolTipText(String.format(TRANSLATOR.translate("MemoryUsage(ToolTip)"), totalMemInMb, usedMemInMb));
                 }
             };
@@ -452,6 +460,7 @@ public class SpellbookFrame extends JFrame {
     public void hideMemoryUsage() {
         lastToolbarSeparator.setVisible(false);
         memoryButton.setVisible(false);
+        memoryProgressBar.setVisible(false);
     }
 
     private void clear() {
@@ -632,18 +641,8 @@ public class SpellbookFrame extends JFrame {
     }
 
     private void updateDictionaryButton(Dictionary dictionary) {
-        dictionaryButton.setToolTipText(String.format(dictionary.getName() + "dictionary containing %d words", words.size()));
+        dictionaryButton.setToolTipText(TRANSLATOR.translate("DictSize(Label)", selectedDictionary.getName(), words.size()));
         dictionaryButton.setIcon(IconManager.getImageIcon(dictionary.getIconName(), IconManager.IconSize.SIZE24));
-
-        if (dictionary.getName().equals("English-Bulgarian")) {
-            dictionaryButton.setToolTipText(String.format(TRANSLATOR.translate("EnBgDictSize(Label)"), words.size()));
-            dictionaryButton.setIcon(IconManager.getImageIcon(dictionary.getIconName(), IconManager.IconSize.SIZE24));
-        } else if (dictionary.getName().equals("Bulgarian-English")) {
-            dictionaryButton.setToolTipText(String.format(TRANSLATOR.translate("BgEnDictSize(Label)"), words.size()));
-            dictionaryButton.setIcon(IconManager.getImageIcon(dictionary.getIconName(), IconManager.IconSize.SIZE24));
-        } else {
-            throw new IllegalArgumentException("Unknown dictionary " + dictionary);
-        }
     }
 
     public void setSelectedFont(Font font) {
@@ -743,6 +742,8 @@ public class SpellbookFrame extends JFrame {
         initToolBar();
 
         initMenuBar();
+
+        initStatusBar();
 
         // restore the divider location from the last session
         splitPane.setDividerLocation(PM.getInt(Preference.DIVIDER_LOCATION, DIVIDER_LOCATION));
@@ -891,6 +892,14 @@ public class SpellbookFrame extends JFrame {
         JMenuItem statusBarMenuItem = new JCheckBoxMenuItem();
         statusBarMenuItem.setText(TRANSLATOR.translate("StatusBar(MenuItem)"));
         viewMenu.add(statusBarMenuItem);
+
+        statusBarMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                statusBar.setVisible(!statusBar.isVisible());
+            }
+        }
+        );
 
         // build dictionary menu
         dictionaryMenu = new JMenu();
@@ -1077,7 +1086,7 @@ public class SpellbookFrame extends JFrame {
         });
         mainToolBar.add(statusButton);
 
-        dictionaryButton.setIcon(IconManager.getImageIcon("en-bg.png", IconSize.SIZE24));
+        dictionaryButton.setIcon(IconManager.getImageIcon(selectedDictionary.getIconName(), IconSize.SIZE24));
         dictionaryButton.setFocusable(false);
         dictionaryButton.setHorizontalTextPosition(SwingConstants.CENTER);
         dictionaryButton.setVerticalTextPosition(SwingConstants.BOTTOM);
@@ -1227,6 +1236,20 @@ public class SpellbookFrame extends JFrame {
         deleteWordButton.setEnabled(false);
 
         topPanel.add(mainToolBar, "north, growx");
+    }
+
+    private void initStatusBar() {
+        statusBar = new JPanel(new MigLayout("wrap 2", "[grow][]"));
+        dictionaryInfoLabel = new JLabel(IconManager.getMenuIcon(selectedDictionary.getIconName()));
+        dictionaryInfoLabel.setText(TRANSLATOR.translate("DictSize(Label)", selectedDictionary.getName(), words.size()));
+        statusBar.add(dictionaryInfoLabel);
+
+        memoryProgressBar = new JProgressBar(0, 100);
+        memoryProgressBar.setStringPainted(true);
+
+        statusBar.add(memoryProgressBar, "right");
+
+        topPanel.add(statusBar, "south, growx");
     }
 
     private void showPreferencesDialog() {
