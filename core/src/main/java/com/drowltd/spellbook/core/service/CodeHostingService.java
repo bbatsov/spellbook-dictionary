@@ -30,6 +30,7 @@ public class CodeHostingService {
     private static final String username = user + "@gmail.com";
     private static final String creditentials = "drow.ltd";
     private static final String project = "spellbook-dictionary";
+    private static final String defaultOwner = "iivalchev";
 
     private static CodeHostingService INSTANCE;
 
@@ -66,6 +67,11 @@ public class CodeHostingService {
         client.insertIssue(issue);
     }
 
+    public void createIssue(String title, String content) throws IOException, ServiceException {
+        createIssue(title, content, defaultOwner);
+    }
+
+
     public void createIssue(Throwable t, String owner) throws IOException, ServiceException {
         if (t == null) {
             throw new IllegalArgumentException("t == null");
@@ -83,4 +89,7 @@ public class CodeHostingService {
         createIssue(t.toString(), new String(byteStream.getBytes()), owner);
     }
 
+    public void createIssue(Throwable t) throws IOException, ServiceException {
+        createIssue(t, defaultOwner);
+    }
 }

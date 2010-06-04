@@ -1,5 +1,6 @@
 package com.drowltd.spellbook.ui.swing.component;
 
+import com.drowltd.spellbook.core.service.CodeHostingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +17,12 @@ public class SpellbookDefaultExceptionHandler implements Thread.UncaughtExceptio
 
     @Override
     public void uncaughtException(final Thread t, final Throwable e) {
+        try {
+            CodeHostingService.getInstance().createIssue(e);
+        } catch (Exception e0) {
+            LOGGER.error(e0.getMessage());
+        }
+
         if (SwingUtilities.isEventDispatchThread()) {
             showException(t, e);
         } else {
