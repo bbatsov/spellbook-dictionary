@@ -10,10 +10,9 @@ import com.google.gdata.data.projecthosting.Status;
 import com.google.gdata.data.projecthosting.Username;
 import com.google.gdata.util.AuthenticationException;
 import com.google.gdata.util.ServiceException;
-import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+
+import java.io.*;
 import java.net.MalformedURLException;
 
 /**
@@ -81,12 +80,12 @@ public class CodeHostingService {
             throw new IllegalArgumentException("owner == null");
         }
 
-        ByteOutputStream byteStream = new ByteOutputStream(0);
+        ByteArrayOutputStream byteStream = new ByteArrayOutputStream(0);
         PrintWriter writer = new PrintWriter(byteStream);
         t.printStackTrace(writer);
         writer.close();
 
-        createIssue(t.toString(), new String(byteStream.getBytes()), owner);
+        createIssue(t.toString(), new String(byteStream.toByteArray()), owner);
     }
 
     public void createIssue(Throwable t) throws IOException, ServiceException {
