@@ -1,8 +1,9 @@
 package com.drowltd.spellbook.ui.swing.component;
 
 import com.drowltd.spellbook.core.service.CodeHostingService;
-import com.jidesoft.dialog.ButtonPanel;
-import com.jidesoft.dialog.StandardDialog;
+import com.drowltd.spellbook.ui.swing.util.*;
+import com.jidesoft.dialog.*;
+import com.jidesoft.icons.*;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JButton;
@@ -12,7 +13,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import java.awt.Dimension;
+import javax.swing.border.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -25,6 +27,8 @@ public class IssueDialog extends StandardDialog {
 
     private static final int MIN_WIDTH = 350;
     private static final int MIN_HEIGHT = 400;
+    private static final int BORDER_THIKNESS = 1;
+
 
     private JTextField titleTextField;
     private JTextArea contentTextArea;
@@ -44,6 +48,8 @@ public class IssueDialog extends StandardDialog {
         cancelButton = new JButton("cancel");
         titleLabel = new JLabel("Issue Title");
         contentLabel = new JLabel("Content");
+
+        contentTextArea.setBorder(new LineBorder(Color.BLACK, BORDER_THIKNESS));
 
         submitButton.addActionListener(new ActionListener() {
             @Override
@@ -65,7 +71,9 @@ public class IssueDialog extends StandardDialog {
 
     @Override
     public JComponent createBannerPanel() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return SwingUtil.createBannerPanel("BannerTitle(Message)",
+                "Banner(Message)",
+                JideIconsFactory.getImageIcon("/icons/48x48/pencil.png"));
     }
 
     @Override
@@ -92,13 +100,22 @@ public class IssueDialog extends StandardDialog {
         String title = titleTextField.getText();
         String content = contentTextArea.getText();
 
-        if (!(title.isEmpty() || content.isEmpty())) {
-            //perhaps, some better handling
-            try {
-                CodeHostingService.getInstance().createIssue(title, content);
-            } catch (Exception e) {
-                showMessage("can't submit issue");
-            }
+        if (title.isEmpty()) {
+            showMessage("enter title");
+            titleTextField.requestFocus();
+            return;
+        }
+
+        if (content.isEmpty()) {
+            showMessage("enter content");
+            contentTextArea.requestFocus();
+            return;
+        }
+
+        try {
+            CodeHostingService.getInstance().createIssue(title, content);
+        } catch (Exception e) {
+            showMessage("can't submit issue");
         }
 
         this.dispose();
@@ -109,7 +126,7 @@ public class IssueDialog extends StandardDialog {
     }
 
     private void showMessage(String message) {
-        JOptionPane.showMessageDialog(IssueDialog.this, message, "Info", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, message, "Info", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public void showDialog() {

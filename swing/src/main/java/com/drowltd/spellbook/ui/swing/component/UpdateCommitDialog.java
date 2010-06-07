@@ -7,6 +7,7 @@ import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.core.service.UpdateService;
+import com.drowltd.spellbook.ui.swing.util.*;
 import com.jidesoft.dialog.BannerPanel;
 import com.jidesoft.dialog.ButtonPanel;
 import com.jidesoft.dialog.StandardDialog;
@@ -103,12 +104,10 @@ public class UpdateCommitDialog extends StandardDialog implements UpdateService.
 
     @Override
     public JComponent createBannerPanel() {
-        BannerPanel bannerPanel = new BannerPanel(TRANSLATOR.translate("BannerTitle(Message)"),
+
+        return SwingUtil.createBannerPanel(TRANSLATOR.translate("BannerTitle(Message)"),
                 TRANSLATOR.translate("Banner(Message)"),
                 JideIconsFactory.getImageIcon("/icons/48x48/pencil.png"));
-        bannerPanel.setFont(new Font("Tahoma", Font.PLAIN, FONT_SIZE));
-        bannerPanel.setBackground(Color.WHITE);
-        return bannerPanel;
     }
 
     @Override
