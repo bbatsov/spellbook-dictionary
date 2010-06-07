@@ -109,6 +109,8 @@ public class PreferencesManager {
         REPEAT_WORDS,
         REMOTE_DB_USERNAME,
         REMOTE_DB_PASSWORD,
-        CHECK_JAVA_VERSION
+        CHECK_JAVA_VERSION,
+        SHOW_TOOLBAR,
+        SHOW_STATUSBAR
     }
 }

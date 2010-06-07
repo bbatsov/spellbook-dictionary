@@ -876,27 +876,45 @@ public class SpellbookFrame extends JFrame {
         viewMenu.setText(TRANSLATOR.translate("View(Menu)"));
         spellbookMenuBar.add(viewMenu);
 
-        JMenuItem toolBarMenuItem = new JCheckBoxMenuItem();
+        final JMenuItem toolBarMenuItem = new JCheckBoxMenuItem();
         toolBarMenuItem.setText(TRANSLATOR.translate("ToolBar(MenuItem)"));
+        toolBarMenuItem.setSelected(PM.getBoolean(Preference.SHOW_TOOLBAR, true));
 
         toolBarMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                mainToolBar.setVisible(!mainToolBar.isVisible());
+                if (!toolBarMenuItem.isSelected()) {
+                    topPanel.remove(mainToolBar);
+                    PM.putBoolean(Preference.SHOW_TOOLBAR, false);
+                } else {
+                    topPanel.add(mainToolBar, "dock north");
+                    PM.putBoolean(Preference.SHOW_TOOLBAR, true);
+                }
+
+                topPanel.validate();
             }
         }
         );
 
         viewMenu.add(toolBarMenuItem);
 
-        JMenuItem statusBarMenuItem = new JCheckBoxMenuItem();
+        final JMenuItem statusBarMenuItem = new JCheckBoxMenuItem();
         statusBarMenuItem.setText(TRANSLATOR.translate("StatusBar(MenuItem)"));
+        statusBarMenuItem.setSelected(PM.getBoolean(Preference.SHOW_STATUSBAR, true));
         viewMenu.add(statusBarMenuItem);
 
         statusBarMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                statusBar.setVisible(!statusBar.isVisible());
+                if (!statusBarMenuItem.isSelected()) {
+                    topPanel.remove(statusBar);
+                    PM.putBoolean(Preference.SHOW_STATUSBAR, false);
+                } else {
+                    topPanel.add(statusBar, "dock south");
+                    PM.putBoolean(Preference.SHOW_STATUSBAR, true);
+                }
+
+                topPanel.validate();
             }
         }
         );
@@ -1235,7 +1253,9 @@ public class SpellbookFrame extends JFrame {
         updateWordButton.setEnabled(false);
         deleteWordButton.setEnabled(false);
 
-        topPanel.add(mainToolBar, "north, growx");
+        if (PM.getBoolean(Preference.SHOW_TOOLBAR, true)) {
+            topPanel.add(mainToolBar, "north, growx");
+        }
     }
 
     private void initStatusBar() {
@@ -1249,7 +1269,9 @@ public class SpellbookFrame extends JFrame {
 
         statusBar.add(memoryProgressBar, "right");
 
-        topPanel.add(statusBar, "south, growx");
+        if (PM.getBoolean(Preference.SHOW_STATUSBAR, true)) {
+            topPanel.add(statusBar, "south, growx");
+        }
     }
 
     private void showPreferencesDialog() {
