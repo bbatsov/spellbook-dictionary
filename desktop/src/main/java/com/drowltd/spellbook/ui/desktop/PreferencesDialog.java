@@ -182,12 +182,7 @@ public class PreferencesDialog extends StandardDialog {
         // set the selected values from preferences
         languageComboBox.setSelectedItem(selectedLanguage);
 
-        defaultDictionaryComboBox.setSelectedItem(PM.get(Preference.DEFAULT_DICTIONARY, null));
-
-        // select the first dictionary in case none is selected
-        if (defaultDictionaryComboBox.getSelectedItem() == null) {
-            defaultDictionaryComboBox.setSelectedIndex(0);
-        }
+        defaultDictionaryComboBox.setSelectedItem(DICTIONARY_SERVICE.getDictionary(PM.get(Preference.DEFAULT_DICTIONARY, "English-Bulgarian")));
 
         minimizeToTrayCheckBox.setSelected(PM.getBoolean(Preference.MIN_TO_TRAY, false));
 
