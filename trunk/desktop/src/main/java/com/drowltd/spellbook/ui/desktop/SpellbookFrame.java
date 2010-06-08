@@ -641,7 +641,7 @@ public class SpellbookFrame extends JFrame {
     }
 
     private void updateDictionaryButton(Dictionary dictionary) {
-        dictionaryButton.setToolTipText(TRANSLATOR.translate("DictSize(Label)", selectedDictionary.getName(), words.size()));
+        dictionaryButton.setToolTipText(TRANSLATOR.translate("DictSize(Label)", selectedDictionary, words.size()));
         dictionaryButton.setIcon(IconManager.getImageIcon(dictionary.getIconName(), IconManager.IconSize.SIZE24));
     }
 
@@ -1005,9 +1005,7 @@ public class SpellbookFrame extends JFrame {
 
     private void showSpellChecker() {
         try {
-
             SpellCheckFrame.getInstance(this).setVisible(true);
-
         } catch (HeapSizeException e) {
             JOptionPane.showMessageDialog(this, TRANSLATOR.translate("HeapLimit(Message)"),
                     TRANSLATOR.translate("HeapLimit(Title)"), JOptionPane.ERROR_MESSAGE);
@@ -1018,7 +1016,6 @@ public class SpellbookFrame extends JFrame {
     }
 
     private void initToolBar() {
-
         mainToolBar = new JToolBar();
         backButton = new JButton();
         forwardButton = new JButton();
@@ -1261,7 +1258,7 @@ public class SpellbookFrame extends JFrame {
     private void initStatusBar() {
         statusBar = new JPanel(new MigLayout("wrap 2", "[grow][]"));
         dictionaryInfoLabel = new JLabel(IconManager.getMenuIcon(selectedDictionary.getIconName()));
-        dictionaryInfoLabel.setText(TRANSLATOR.translate("DictSize(Label)", selectedDictionary.getName(), words.size()));
+        dictionaryInfoLabel.setText(TRANSLATOR.translate("DictSize(Label)", selectedDictionary, words.size()));
         statusBar.add(dictionaryInfoLabel);
 
         memoryProgressBar = new JProgressBar(0, 100);
