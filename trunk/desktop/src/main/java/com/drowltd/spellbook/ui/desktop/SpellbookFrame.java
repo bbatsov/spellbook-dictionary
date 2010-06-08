@@ -887,7 +887,7 @@ public class SpellbookFrame extends JFrame {
                     topPanel.remove(mainToolBar);
                     PM.putBoolean(Preference.SHOW_TOOLBAR, false);
                 } else {
-                    topPanel.add(mainToolBar, "dock north");
+                    topPanel.add(mainToolBar, "north, growx");
                     PM.putBoolean(Preference.SHOW_TOOLBAR, true);
                 }
 
@@ -910,7 +910,7 @@ public class SpellbookFrame extends JFrame {
                     topPanel.remove(statusBar);
                     PM.putBoolean(Preference.SHOW_STATUSBAR, false);
                 } else {
-                    topPanel.add(statusBar, "dock south");
+                    topPanel.add(statusBar, "south, growx");
                     PM.putBoolean(Preference.SHOW_STATUSBAR, true);
                 }
 
