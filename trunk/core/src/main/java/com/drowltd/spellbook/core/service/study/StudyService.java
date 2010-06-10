@@ -4,22 +4,22 @@
  */
 package com.drowltd.spellbook.core.service.study;
 
-import com.drowltd.spellbook.core.model.DictionaryEntry;
 import com.drowltd.spellbook.core.model.Dictionary;
-import com.drowltd.spellbook.core.model.StudySetEntry;
+import com.drowltd.spellbook.core.model.DictionaryEntry;
 import com.drowltd.spellbook.core.model.StudySet;
+import com.drowltd.spellbook.core.model.StudySetEntry;
 import com.drowltd.spellbook.core.service.AbstractPersistenceService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.persistence.EntityTransaction;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
-import javax.persistence.EntityTransaction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- *
  * @author Sasho
  */
 public class StudyService extends AbstractPersistenceService {
@@ -29,8 +29,6 @@ public class StudyService extends AbstractPersistenceService {
 
     /**
      * Builds a service object.
-     *
-     * @throws DictionaryDbLockedException
      */
     public StudyService() {
         super(null);
@@ -104,8 +102,8 @@ public class StudyService extends AbstractPersistenceService {
     /**
      * Adds a new word for study
      *
-     * @param word the word to add
-     * @param dictionary dictionary from which will be taken the word
+     * @param word         the word to add
+     * @param dictionary   dictionary from which will be taken the word
      * @param studySetName a name which uniquely identifies a study set
      * @see Dictionary
      */
@@ -134,13 +132,11 @@ public class StudyService extends AbstractPersistenceService {
     /**
      * Deletes a word which no want any more to study
      *
-     * @param word word to delete
+     * @param word         word to delete
      * @param studySetName
      */
     public void deleteWord(String word, String studySetName) {
-        word.replaceAll("'", "''");
-
-        long wordID = (Long) EM.createQuery("select id from DictionaryEntry where word = :word").setParameter("word", word).getSingleResult();
+        long wordID = (Long) EM.createQuery("select id from DictionaryEntry where word = :word").setParameter("word", word.replaceAll("'", "''")).getSingleResult();
         long studySetID = (Long) EM.createQuery("select id from StudySet where name = :name").setParameter("name", studySetName).getSingleResult();
 
         EntityTransaction t = EM.getTransaction();
@@ -151,6 +147,7 @@ public class StudyService extends AbstractPersistenceService {
 
     /**
      * Adds a new study set
+     *
      * @param name study set's name
      * @see StudySet
      */
@@ -217,10 +214,10 @@ public class StudyService extends AbstractPersistenceService {
         int endIndex = 0;
 
         String[] identificatorsForRowsWithPossibleTranslations = {
-            "1.", "2.", "3.", "4.", "5.", "6.", "7.", "8.", "9.", "10.", "11.", "12.", "13.", "14.", "15.", "16.", "17.", "18.", "19.", "20.",
-            "21.","22.", "23.", "24.", "25.", "26.", "27.", "28.", "29.", "30.", "31.", "32.", "33.", "34.","35.",
-            "n", "pl", "a", "adv", "v", "int", "sl.","prep","\u043E\u0431\u0438\u043A\u002E","\u0438",
-            "i.", "ii.", "iii.", "iv.", "v.", "vi.", "vii.", "viii.", "ix.", "x.", "xi.", "xii.", "xiii.", "xiv.", "xv."
+                "1.", "2.", "3.", "4.", "5.", "6.", "7.", "8.", "9.", "10.", "11.", "12.", "13.", "14.", "15.", "16.", "17.", "18.", "19.", "20.",
+                "21.", "22.", "23.", "24.", "25.", "26.", "27.", "28.", "29.", "30.", "31.", "32.", "33.", "34.", "35.",
+                "n", "pl", "a", "adv", "v", "int", "sl.", "prep", "\u043E\u0431\u0438\u043A\u002E", "\u0438",
+                "i.", "ii.", "iii.", "iv.", "v.", "vi.", "vii.", "viii.", "ix.", "x.", "xi.", "xii.", "xiii.", "xiv.", "xv."
         };
 
         for (String row : rows) {
@@ -364,8 +361,8 @@ public class StudyService extends AbstractPersistenceService {
     }
 
     private void slash(String s) {
-        String first = new String();
-        String last = new String();
+        String first = "";
+        String last = "";
 
         if (s.contains("/")) {
             String[] slash = s.split("/");
