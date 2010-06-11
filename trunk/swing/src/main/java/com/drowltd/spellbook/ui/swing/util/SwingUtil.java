@@ -1,14 +1,12 @@
 package com.drowltd.spellbook.ui.swing.util;
 
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
-
-import javax.swing.ImageIcon;
-import javax.swing.JComponent;
-
 import com.jidesoft.dialog.BannerPanel;
 import net.java.balloontip.BalloonTip;
 import net.java.balloontip.utils.TimingUtils;
 
+import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import java.awt.Color;
 import java.awt.Font;
 
@@ -20,7 +18,6 @@ import java.awt.Font;
  */
 public class SwingUtil {
 
-    private static String textFormatting = new String();
     private static final PreferencesManager PM = PreferencesManager.getInstance();
     private static final int DEFAULT_BALLOONTIP_DISPLAY_TIME = 5000;
     private static final int FONT_SIZE = 11;
@@ -41,9 +38,9 @@ public class SwingUtil {
 
         result.append("<html><head></head><body>");
 
-        result.append("<b>" + word + "</b>");
+        result.append("<b>").append(word).append("</b>");
 
-        result.append("<p>" + formatTranslation(translation) + "</p>");
+        result.append("<p>").append(formatTranslation(translation)).append("</p>");
 
         result.append("</body></html>");
 
@@ -53,6 +50,7 @@ public class SwingUtil {
     private static String formatTranslation(String translation) {
         StringBuffer result = new StringBuffer();
 
+        String textFormatting;
         if (PM.getBoolean(PreferencesManager.Preference.EMPTY_LINE, false)) {
             textFormatting = "<br/>";
         } else {

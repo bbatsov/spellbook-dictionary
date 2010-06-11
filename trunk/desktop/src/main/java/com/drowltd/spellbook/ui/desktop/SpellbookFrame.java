@@ -982,6 +982,14 @@ public class SpellbookFrame extends JFrame {
         helpContentsMenuItem.setText(TRANSLATOR.translate("HelpContents(MenuItem)"));
         helpMenu.add(helpContentsMenuItem);
 
+        JMenuItem reportBugMenuItem = new JMenuItem(TRANSLATOR.translate("HelpReportBug(MenuItem)"), IconManager.getMenuIcon("bug-mail.png"));
+
+        helpMenu.add(reportBugMenuItem);
+
+        JMenuItem checkForUpdates = new JMenuItem(TRANSLATOR.translate("HelpCheckForUpdates(MenuItem)"), IconManager.getMenuIcon("telescope.png"));
+
+        helpMenu.add(checkForUpdates);
+
         aboutMenuItem.setIcon(IconManager.getMenuIcon("about.png"));
         aboutMenuItem.setMnemonic('a');
         aboutMenuItem.setText(TRANSLATOR.translate("HelpAbout(MenuItem)"));
@@ -1381,7 +1389,7 @@ public class SpellbookFrame extends JFrame {
 
             dictionaryName = dictionary.getName();
             setIcon(IconManager.getMenuIcon(dictionary.getIconName()));
-            setText(TRANSLATOR.translate(dictionary.getName() + "(Dictionary)"));
+            setText(dictionary.toString());
             addActionListener(this);
         }
 
