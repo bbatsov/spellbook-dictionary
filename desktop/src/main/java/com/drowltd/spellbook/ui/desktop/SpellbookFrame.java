@@ -10,6 +10,7 @@ import com.drowltd.spellbook.ui.desktop.exam.ExamDialog;
 import com.drowltd.spellbook.ui.desktop.spellcheck.HeapSizeException;
 import com.drowltd.spellbook.ui.desktop.spellcheck.SpellCheckFrame;
 import com.drowltd.spellbook.ui.desktop.study.StudyWordsDialog;
+import com.drowltd.spellbook.ui.swing.component.IssueDialog;
 import com.drowltd.spellbook.ui.swing.component.WordOfTheDayDialog;
 import com.drowltd.spellbook.ui.swing.model.ListBackedListModel;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
@@ -983,6 +984,13 @@ public class SpellbookFrame extends JFrame {
         helpMenu.add(helpContentsMenuItem);
 
         JMenuItem reportBugMenuItem = new JMenuItem(TRANSLATOR.translate("HelpReportBug(MenuItem)"), IconManager.getMenuIcon("bug-mail.png"));
+
+        reportBugMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                new IssueDialog().showDialog();
+            }
+        });
 
         helpMenu.add(reportBugMenuItem);
 
