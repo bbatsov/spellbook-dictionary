@@ -1,9 +1,12 @@
 package com.drowltd.spellbook.ui.swing.component;
 
+import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.service.CodeHostingService;
-import com.drowltd.spellbook.ui.swing.util.*;
-import com.jidesoft.dialog.*;
-import com.jidesoft.icons.*;
+import com.drowltd.spellbook.ui.swing.util.IconManager;
+import com.drowltd.spellbook.ui.swing.util.SwingUtil;
+import com.jidesoft.dialog.ButtonPanel;
+import com.jidesoft.dialog.StandardDialog;
+import com.jidesoft.icons.JideIconsFactory;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JButton;
@@ -13,8 +16,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.border.*;
-import java.awt.*;
+import javax.swing.border.LineBorder;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -27,7 +31,7 @@ public class IssueDialog extends StandardDialog {
 
     private static final int MIN_WIDTH = 350;
     private static final int MIN_HEIGHT = 400;
-    private static final int BORDER_THIKNESS = 1;
+    private static final int BORDER_THICKNESS = 1;
 
 
     private JTextField titleTextField;
@@ -37,6 +41,8 @@ public class IssueDialog extends StandardDialog {
     private JLabel titleLabel;
     private JLabel contentLabel;
 
+    private static final Translator TRANSLATOR = Translator.getTranslator("IssueDialog");
+
     public IssueDialog() {
         initComponents0();
     }
@@ -44,12 +50,12 @@ public class IssueDialog extends StandardDialog {
     private void initComponents0() {
         titleTextField = new JTextField();
         contentTextArea = new JTextArea();
-        submitButton = new JButton("submit");
-        cancelButton = new JButton("cancel");
-        titleLabel = new JLabel("Issue Title");
-        contentLabel = new JLabel("Content");
+        submitButton = new JButton(TRANSLATOR.translate("Submit(Button)"));
+        cancelButton = new JButton(TRANSLATOR.translate("Cancel(Button)"));
+        titleLabel = new JLabel(TRANSLATOR.translate("IssueSummary(Title)"));
+        contentLabel = new JLabel(TRANSLATOR.translate("IssueDescription(Title)"));
 
-        contentTextArea.setBorder(new LineBorder(Color.BLACK, BORDER_THIKNESS));
+        contentTextArea.setBorder(new LineBorder(Color.BLACK, BORDER_THICKNESS));
 
         submitButton.addActionListener(new ActionListener() {
             @Override
@@ -67,13 +73,15 @@ public class IssueDialog extends StandardDialog {
 
         setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
         setLocationRelativeTo(getParent());
+        setTitle(TRANSLATOR.translate("Banner(Title)"));
+        setIconImage(IconManager.getMenuIcon("bug-mail.png").getImage());
     }
 
     @Override
     public JComponent createBannerPanel() {
-        return SwingUtil.createBannerPanel("BannerTitle(Message)",
-                "Banner(Message)",
-                JideIconsFactory.getImageIcon("/icons/48x48/pencil.png"));
+        return SwingUtil.createBannerPanel(TRANSLATOR.translate("Banner(Title)"),
+                TRANSLATOR.translate("Banner(Message)"),
+                JideIconsFactory.getImageIcon("/icons/48x48/bug-mail.png"));
     }
 
     @Override
