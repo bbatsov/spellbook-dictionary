@@ -178,7 +178,7 @@ public class SpellbookApp {
                         }
 
                         if (pm.getBoolean(Preference.CHECK_FOR_UPDATES, true)) {
-                            tAppFrame.checkForUpdates();
+                            tAppFrame.checkForUpdates(true);
                         }
 
                         tAppFrame.showWordOfTheDay();
