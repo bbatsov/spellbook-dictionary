@@ -67,8 +67,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -82,6 +86,8 @@ import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preferen
  * @since 0.1
  */
 public class SpellbookFrame extends JFrame {
+    private static final String VERSION = "0.3.0";
+    private static final String VERSION_FILE_URL = "http://spellbook-dictionary.googlecode.com/svn/trunk/app/spellbook-version.txt";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellbookFrame.class);
     private static final Translator TRANSLATOR = Translator.getTranslator("SpellbookFrame");
@@ -996,6 +1002,14 @@ public class SpellbookFrame extends JFrame {
 
         JMenuItem checkForUpdates = new JMenuItem(TRANSLATOR.translate("HelpCheckForUpdates(MenuItem)"), IconManager.getMenuIcon("telescope.png"));
 
+        checkForUpdates.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                checkForUpdates();
+
+            }
+        });
+
         helpMenu.add(checkForUpdates);
 
         aboutMenuItem.setIcon(IconManager.getMenuIcon("about.png"));
@@ -1017,6 +1031,29 @@ public class SpellbookFrame extends JFrame {
         deleteWordMenuItem.setEnabled(false);
 
         setJMenuBar(spellbookMenuBar);
+    }
+
+    public void checkForUpdates() {
+        URL versionUrl = null;
+        try {
+            versionUrl = new URL(VERSION_FILE_URL);
+
+            Scanner in = new Scanner(versionUrl.openStream());
+
+            String availableVersion = in.next();
+
+            if (!VERSION.equals(availableVersion)) {
+                JOptionPane.showMessageDialog(this, TRANSLATOR.translate("NewVersion(Message)", availableVersion),
+                        TRANSLATOR.translate("NewVersion(Title)"), JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, TRANSLATOR.translate("NoNewVersion(Message)"),
+                        TRANSLATOR.translate("NoNewVersion(Title)"), JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     private void showSpellChecker() {

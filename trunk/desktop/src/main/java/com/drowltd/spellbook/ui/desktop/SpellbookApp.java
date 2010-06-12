@@ -177,6 +177,10 @@ public class SpellbookApp {
                             checkJavaRuntime(tAppFrame);
                         }
 
+                        if (pm.getBoolean(Preference.CHECK_FOR_UPDATES, true)) {
+                            tAppFrame.checkForUpdates();
+                        }
+
                         tAppFrame.showWordOfTheDay();
                     }
                 }
