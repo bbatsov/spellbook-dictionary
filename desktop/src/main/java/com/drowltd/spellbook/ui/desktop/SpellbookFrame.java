@@ -1005,7 +1005,7 @@ public class SpellbookFrame extends JFrame {
         checkForUpdates.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                checkForUpdates();
+                checkForUpdates(false);
 
             }
         });
@@ -1033,7 +1033,7 @@ public class SpellbookFrame extends JFrame {
         setJMenuBar(spellbookMenuBar);
     }
 
-    public void checkForUpdates() {
+    public void checkForUpdates(boolean startup) {
         URL versionUrl = null;
         try {
             versionUrl = new URL(VERSION_FILE_URL);
@@ -1045,7 +1045,7 @@ public class SpellbookFrame extends JFrame {
             if (!VERSION.equals(availableVersion)) {
                 JOptionPane.showMessageDialog(this, TRANSLATOR.translate("NewVersion(Message)", availableVersion),
                         TRANSLATOR.translate("NewVersion(Title)"), JOptionPane.INFORMATION_MESSAGE);
-            } else {
+            } else if (!startup) {
                 JOptionPane.showMessageDialog(this, TRANSLATOR.translate("NoNewVersion(Message)"),
                         TRANSLATOR.translate("NoNewVersion(Title)"), JOptionPane.INFORMATION_MESSAGE);
             }
