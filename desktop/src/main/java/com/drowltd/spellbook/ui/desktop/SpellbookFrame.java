@@ -977,6 +977,13 @@ public class SpellbookFrame extends JFrame {
 
         spellbookMenuBar.add(toolMenu);
 
+        JMenu gamesMenu = new JMenu(TRANSLATOR.translate("Games(Menu)"));
+        gamesMenu.setMnemonic('g');
+
+        JMenuItem hangmanMenuItem = new JMenuItem(TRANSLATOR.translate("GamesHangman(MenuItem)"));
+
+        gamesMenu.add(hangmanMenuItem);
+
         // build help menu
         JMenu helpMenu = new JMenu();
         JMenuItem helpContentsMenuItem = new JMenuItem();
