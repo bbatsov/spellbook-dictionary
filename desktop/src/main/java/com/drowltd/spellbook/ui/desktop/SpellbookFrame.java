@@ -4,6 +4,7 @@ import com.drowltd.spellbook.core.exception.SpellCheckerException;
 import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.Language;
+import com.drowltd.spellbook.core.model.Version;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.ui.desktop.exam.ExamDialog;
@@ -86,7 +87,7 @@ import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preferen
  * @since 0.1
  */
 public class SpellbookFrame extends JFrame {
-    private static final String VERSION = "0.3.0";
+    private static final Version VERSION = new Version("0.4.0");
     private static final String VERSION_FILE_URL = "http://spellbook-dictionary.googlecode.com/svn/trunk/app/spellbook-version.txt";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellbookFrame.class);
@@ -1047,9 +1048,9 @@ public class SpellbookFrame extends JFrame {
 
             Scanner in = new Scanner(versionUrl.openStream());
 
-            String availableVersion = in.next();
+            Version availableVersion = new Version(in.next());
 
-            if (!VERSION.equals(availableVersion)) {
+            if (VERSION.compareTo(availableVersion) < 0) {
                 JOptionPane.showMessageDialog(this, TRANSLATOR.translate("NewVersion(Message)", availableVersion),
                         TRANSLATOR.translate("NewVersion(Title)"), JOptionPane.INFORMATION_MESSAGE);
             } else if (!startup) {
