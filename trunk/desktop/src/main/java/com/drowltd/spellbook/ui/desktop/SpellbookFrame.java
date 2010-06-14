@@ -804,6 +804,55 @@ public class SpellbookFrame extends JFrame {
                 "showHelp");
         topPanel.getActionMap().put("showHelp",
                 showHelp);
+
+        Action addWord = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addWordDefinition();
+            }
+        };
+
+        topPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F5"),
+                "addWord");
+        topPanel.getActionMap().put("addWord",
+                addWord);
+
+
+        Action editWord = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateWordDefinition();
+            }
+        };
+
+        topPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F6"),
+                "editWord");
+        topPanel.getActionMap().put("editWord",
+                editWord);
+
+        Action deleteWord = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                deleteWordDefinition();
+            }
+        };
+
+        topPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("DELETE"),
+                "deleteWord");
+        topPanel.getActionMap().put("deleteWord",
+                deleteWord);
+
+        Action clear = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                clear();
+            }
+        };
+
+        topPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F2"),
+                "clear");
+        topPanel.getActionMap().put("clear",
+                clear);
     }
 
     private void initMenuBar() {
