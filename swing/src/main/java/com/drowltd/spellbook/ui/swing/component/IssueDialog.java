@@ -109,13 +109,13 @@ public class IssueDialog extends StandardDialog {
         String content = contentTextArea.getText();
 
         if (title.isEmpty()) {
-            showMessage("enter title");
+            showMessage(TRANSLATOR.translate("Message(Description)"));
             titleTextField.requestFocus();
             return;
         }
 
         if (content.isEmpty()) {
-            showMessage("enter content");
+            showMessage(TRANSLATOR.translate("Message(Summary)"));
             contentTextArea.requestFocus();
             return;
         }
@@ -123,7 +123,7 @@ public class IssueDialog extends StandardDialog {
         try {
             CodeHostingService.getInstance().createIssue(title, content);
         } catch (Exception e) {
-            showMessage("can't submit issue");
+            showMessage(TRANSLATOR.translate("Message(Error)"));
         }
 
         this.dispose();
@@ -134,7 +134,7 @@ public class IssueDialog extends StandardDialog {
     }
 
     private void showMessage(String message) {
-        JOptionPane.showMessageDialog(this, message, "Info", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, message, TRANSLATOR.translate("Banner(Title)"), JOptionPane.INFORMATION_MESSAGE);
     }
 
     public void showDialog() {
