@@ -25,8 +25,11 @@ import net.miginfocom.swing.MigLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -42,6 +45,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.event.CaretEvent;
@@ -770,7 +774,36 @@ public class SpellbookFrame extends JFrame {
             hideMemoryUsage();
         }
 
+        initKeyboardShortcuts();
+
         pack();
+    }
+
+    private void initKeyboardShortcuts() {
+        Action goToSearchField = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                wordSearchField.requestFocusInWindow();
+                wordSearchField.selectAll();
+            }
+        };
+
+        topPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("control F"),
+                "goToSearchField");
+        topPanel.getActionMap().put("goToSearchField",
+                goToSearchField);
+
+        Action showHelp = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showHelpContents();
+            }
+        };
+
+        topPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F1"),
+                "showHelp");
+        topPanel.getActionMap().put("showHelp",
+                showHelp);
     }
 
     private void initMenuBar() {
@@ -995,6 +1028,14 @@ public class SpellbookFrame extends JFrame {
 
         helpContentsMenuItem.setIcon(IconManager.getMenuIcon("help2.png"));
         helpContentsMenuItem.setText(TRANSLATOR.translate("HelpContents(MenuItem)"));
+
+        helpContentsMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showHelpContents();
+            }
+        });
+
         helpMenu.add(helpContentsMenuItem);
 
         JMenuItem reportBugMenuItem = new JMenuItem(TRANSLATOR.translate("HelpReportBug(MenuItem)"), IconManager.getMenuIcon("bug-mail.png"));
@@ -1428,6 +1469,10 @@ public class SpellbookFrame extends JFrame {
             wordsList.setSelectedIndex(selectedIndex);
             dictionaryService.deleteWord(selectedWord, selectedDictionary);
         }
+    }
+
+    private void showHelpContents() {
+        JOptionPane.showMessageDialog(this, "Help contents are under construction");
     }
 
 
