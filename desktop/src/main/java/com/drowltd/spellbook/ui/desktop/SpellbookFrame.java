@@ -8,6 +8,7 @@ import com.drowltd.spellbook.core.model.Version;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.ui.desktop.exam.ExamDialog;
+import com.drowltd.spellbook.ui.desktop.game.HangmanDialog;
 import com.drowltd.spellbook.ui.desktop.spellcheck.HeapSizeException;
 import com.drowltd.spellbook.ui.desktop.spellcheck.SpellCheckFrame;
 import com.drowltd.spellbook.ui.desktop.study.StudyWordsDialog;
@@ -1069,7 +1070,16 @@ public class SpellbookFrame extends JFrame {
 
         JMenuItem hangmanMenuItem = new JMenuItem(TRANSLATOR.translate("GamesHangman(MenuItem)"));
 
+        hangmanMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showHangmanDialog();
+            }
+        });
+
         gamesMenu.add(hangmanMenuItem);
+
+        spellbookMenuBar.add(gamesMenu);
 
         // build help menu
         JMenu helpMenu = new JMenu();
@@ -1447,12 +1457,17 @@ public class SpellbookFrame extends JFrame {
     private void showStudyDialog() {
         StudyWordsDialog studyWords = new StudyWordsDialog(this, true);
         studyWords.setLocationRelativeTo(this);
-        studyWords.showLearningWordsDialog();
+        studyWords.showDialog();
     }
 
     private void showExamDialog() {
         ExamDialog examDialog = new ExamDialog(this, true);
         examDialog.showExamDialog();
+    }
+
+    private void showHangmanDialog() {
+        HangmanDialog hangmanDialog = new HangmanDialog(this, true);
+        hangmanDialog.showDialog();
     }
 
     private void initDictionaries() {

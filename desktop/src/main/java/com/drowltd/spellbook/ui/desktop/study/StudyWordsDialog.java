@@ -41,7 +41,6 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
@@ -812,7 +811,7 @@ public class StudyWordsDialog extends JDialog {
         addWordsLabel.setText(TRANSLATOR.translate("AddWordsLabel(Message)"));
     }
 
-    public void showLearningWordsDialog() {
+    public void showDialog() {
 
         inOrderOfInputRadioButton.setSelected(PM.getBoolean(Preference.LEARNING_IN_ORDER, true));
         inReverseOrderOfInputRadioButton.setSelected(PM.getBoolean(Preference.LEARNING_IN_REVERSE_ORDER, false));
