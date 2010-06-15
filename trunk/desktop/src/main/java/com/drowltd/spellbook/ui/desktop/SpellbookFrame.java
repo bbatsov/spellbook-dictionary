@@ -655,6 +655,9 @@ public class SpellbookFrame extends JFrame {
     private void updateDictionaryButton(Dictionary dictionary) {
         dictionaryButton.setToolTipText(TRANSLATOR.translate("DictSize(Label)", selectedDictionary, words.size()));
         dictionaryButton.setIcon(IconManager.getImageIcon(dictionary.getIconName(), IconManager.IconSize.SIZE24));
+
+        dictionaryInfoLabel.setText(TRANSLATOR.translate("DictSize(Label)", selectedDictionary, words.size()));
+        dictionaryInfoLabel.setIcon(IconManager.getMenuIcon(dictionary.getIconName()));
     }
 
     public void setSelectedFont(Font font) {
@@ -680,6 +683,7 @@ public class SpellbookFrame extends JFrame {
         wordsList.setModel(new ListBackedListModel(words));
         updateDictionaryButton(dictionary);
 
+        SwingUtil.showBalloonTip(dictionaryInfoLabel, TRANSLATOR.translate("DictLoaded(Message)", selectedDictionary.toString()));
     }
 
     private void initComponents() {
@@ -1132,9 +1136,8 @@ public class SpellbookFrame extends JFrame {
     }
 
     public void checkForUpdates(boolean startup) {
-        URL versionUrl = null;
         try {
-            versionUrl = new URL(VERSION_FILE_URL);
+            URL versionUrl = new URL(VERSION_FILE_URL);
 
             Scanner in = new Scanner(versionUrl.openStream());
 
@@ -1148,9 +1151,9 @@ public class SpellbookFrame extends JFrame {
                         TRANSLATOR.translate("NoNewVersion(Title)"), JOptionPane.INFORMATION_MESSAGE);
             }
         } catch (MalformedURLException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
     }
 
