@@ -1267,6 +1267,19 @@ public class SpellbookFrame extends JFrame {
         }
 
         mainToolBar.add(dictionaryButton);
+
+        JButton syncButton = new JButton();
+        syncButton.setIcon(IconManager.getImageIcon("replace2.png", IconSize.SIZE24));
+        syncButton.setToolTipText(TRANSLATOR.translate("Sync(ToolTip)"));
+
+        syncButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        });
+
+        mainToolBar.add(syncButton);
         mainToolBar.add(new JToolBar.Separator());
 
         addWordButton.setIcon(IconManager.getImageIcon("add2.png", IconSize.SIZE24));
@@ -1460,6 +1473,17 @@ public class SpellbookFrame extends JFrame {
         for (Dictionary dictionary : availableDictionaries) {
             dictionaryMenu.add(new DictionaryItem(dictionary));
         }
+
+        JMenuItem syncMenuItem = new JMenuItem(TRANSLATOR.translate("Sync(MenuItem)"), IconManager.getMenuIcon("replace2.png"));
+
+        syncMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        });
+
+        dictionaryMenu.add(syncMenuItem);
     }
 
     private void autoCorrectDictionary(String searchString) {
