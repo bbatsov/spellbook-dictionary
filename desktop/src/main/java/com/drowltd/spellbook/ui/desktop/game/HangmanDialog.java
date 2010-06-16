@@ -64,6 +64,8 @@ public class HangmanDialog extends BaseDialog {
     private JTextField guessField;
     private JLabel remainingGuessesLabel;
 
+    private HangmanDrawing hangmanDrawing = new HangmanDrawing();
+
     private String currentWord;
 
     public HangmanDialog(Frame parent, boolean modal) {
@@ -91,7 +93,7 @@ public class HangmanDialog extends BaseDialog {
 
     @Override
     public JComponent createContentPanel() {
-        JPanel contentPanel = new JPanel(new MigLayout("wrap 5", "[grow][grow][grow][grow][grow]", "[grow][][][][grow][grow][grow][grow][][grow][grow][]"));
+        JPanel contentPanel = new JPanel(new MigLayout("wrap 5", "[grow][grow][grow][grow][grow]", "[grow][][][][grow][grow][grow][grow][][grow][grow][][][]"));
         contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         contentPanel.add(new JLabel(TRANSLATOR.translate("Languages(Label)")), "span, left");
@@ -139,6 +141,12 @@ public class HangmanDialog extends BaseDialog {
             }
         });
 
+        remainingGuessesLabel = new JLabel();
+        remainingGuessesLabel.setText(TRANSLATOR.translate("RemainingGuesses(Label)", MAX_ATTEMPTS - attempts));
+        contentPanel.add(remainingGuessesLabel, "span");
+
+        contentPanel.add(hangmanDrawing, "center, span, width 150::, height 150::");
+
         contentPanel.add(new JLabel(TRANSLATOR.translate("WordField(Label)")), "span, left");
 
         contentPanel.add(wordField, "span, left, growx");
@@ -175,10 +183,6 @@ public class HangmanDialog extends BaseDialog {
 
         contentPanel.add(feedbackField, "span, left");
         feedbackField.setText(TRANSLATOR.translate("Feedback(Field)"));
-
-        remainingGuessesLabel = new JLabel();
-        remainingGuessesLabel.setText(TRANSLATOR.translate("RemainingGuesses(Label)", MAX_ATTEMPTS - attempts));
-        contentPanel.add(remainingGuessesLabel, "span");
 
         return contentPanel;
     }
@@ -242,6 +246,8 @@ public class HangmanDialog extends BaseDialog {
             nextGuess();
         }
 
+        hangmanDrawing.setStage(attempts);
+        hangmanDrawing.repaint();
         remainingGuessesLabel.setText(TRANSLATOR.translate("RemainingGuesses(Label)", MAX_ATTEMPTS - attempts));
 
         guessField.setText(null);
