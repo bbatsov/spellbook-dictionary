@@ -183,16 +183,10 @@ public class SpellbookFrame extends JFrame {
 
         dictionaryService = DictionaryService.getInstance();
 
-        // the first invocation of a db related method is special - we have to check
-        // if another process is not using the connection already
-        try {
-            if (dictionaryService.getDictionaries().size() == 0) {
-                JOptionPane.showMessageDialog(null, TRANSLATOR.translate("NoDictionaries(Message)"), TRANSLATOR.translate("Error(Title)"), JOptionPane.WARNING_MESSAGE);
+        // if there are no dictionaries - something is wrong with the database
+        if (dictionaryService.getDictionaries().size() == 0) {
+            JOptionPane.showMessageDialog(null, TRANSLATOR.translate("NoDictionaries(Message)"), TRANSLATOR.translate("Error(Title)"), JOptionPane.WARNING_MESSAGE);
 
-                System.exit(0);
-            }
-        } catch (Exception exception) {
-            JOptionPane.showMessageDialog(null, TRANSLATOR.translate("AlreadyRunning(Message)"), "Warning", JOptionPane.WARNING_MESSAGE);
             System.exit(0);
         }
 
