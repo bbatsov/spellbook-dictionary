@@ -54,13 +54,15 @@ public class HangmanDialog extends BaseDialog {
     private JComboBox fromLanguageComboBox;
     private JComboBox toLanguageComboBox;
     private DifficultyComboBox difficultyComboBox;
-    private JLabel answerIconLabel;
+    private JLabel guessIconLabel;
     private JLabel feedbackField;
     private JButton startButton;
     private JButton stopButton;
-    private JButton answerButton;
-    private JTextField guessWordField;
-    private JTextField answerField;
+    private JButton guessButton;
+    private JTextField wordField;
+    private JTextField translationField;
+    private JTextField guessField;
+    private JLabel remainingGuessesLabel;
 
     private String currentWord;
 
@@ -73,11 +75,12 @@ public class HangmanDialog extends BaseDialog {
         toLanguageComboBox = new JComboBox();
         difficultyComboBox = new DifficultyComboBox();
         startButton = new JButton();
-        guessWordField = new JTextField();
-        answerField = new JTextField();
+        wordField = new JTextField();
+        translationField = new JTextField();
+        guessField = new JTextField();
         stopButton = new JButton();
-        answerButton = new JButton();
-        answerIconLabel = new JLabel();
+        guessButton = new JButton();
+        guessIconLabel = new JLabel();
         feedbackField = new JLabel();
 
         setIconImage(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE16).getImage());
@@ -125,7 +128,7 @@ public class HangmanDialog extends BaseDialog {
             }
         });
 
-        contentPanel.add(stopButton, "growx");
+        contentPanel.add(stopButton, "growx, wrap");
         stopButton.setIcon(IconManager.getMenuIcon("media_stop_red.png"));
         stopButton.setText(TRANSLATOR.translate("Stop(Button)"));
         stopButton.setEnabled(false);
@@ -136,37 +139,46 @@ public class HangmanDialog extends BaseDialog {
             }
         });
 
-        contentPanel.add(new JLabel(TRANSLATOR.translate("OverTranslateField(Label)")), "span, left");
+        contentPanel.add(new JLabel(TRANSLATOR.translate("WordField(Label)")), "span, left");
 
-        contentPanel.add(guessWordField, "span 5, left, growx");
-        guessWordField.setEditable(false);
+        contentPanel.add(wordField, "span, left, growx");
+        wordField.setEditable(false);
 
-        contentPanel.add(new JLabel(TRANSLATOR.translate("OverAnswerField(Label)")), "span, left");
+        contentPanel.add(new JLabel(TRANSLATOR.translate("TranslationField(Label)")), "span, left");
 
-        contentPanel.add(answerField, "span 5, left, growx");
-        answerField.addActionListener(new ActionListener() {
+        contentPanel.add(translationField, "span, left, growx");
+        translationField.setEditable(false);
+
+        contentPanel.add(new JLabel(TRANSLATOR.translate("GuessField(Label)")), "span, left");
+
+        contentPanel.add(guessField, "span 5, left, growx");
+        guessField.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                answered();
+                guessed();
             }
         });
 
-        contentPanel.add(answerIconLabel, "span 4, right");
-        answerIconLabel.setIcon(IconManager.getImageIcon("bell2_grey.png", IconManager.IconSize.SIZE24));
-        contentPanel.add(answerButton, "left, span, growx");
-        answerButton.setIcon(IconManager.getMenuIcon("check2.png"));
-        answerButton.setText(TRANSLATOR.translate("Answer(Button)"));
-        answerButton.setEnabled(false);
-        answerButton.addActionListener(new ActionListener() {
+        contentPanel.add(guessIconLabel, "span 4, right");
+        guessIconLabel.setIcon(IconManager.getImageIcon("bell2_grey.png", IconManager.IconSize.SIZE24));
+        contentPanel.add(guessButton, "left, span, growx");
+        guessButton.setIcon(IconManager.getMenuIcon("check2.png"));
+        guessButton.setText(TRANSLATOR.translate("Guess(Button)"));
+        guessButton.setEnabled(false);
+        guessButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                answered();
-                answerField.requestFocus();
+                guessed();
+                guessField.requestFocus();
             }
         });
 
         contentPanel.add(feedbackField, "span, left");
         feedbackField.setText(TRANSLATOR.translate("Feedback(Field)"));
+
+        remainingGuessesLabel = new JLabel();
+        remainingGuessesLabel.setText(TRANSLATOR.translate("RemainingGuesses(Label)", MAX_ATTEMPTS - attempts));
+        contentPanel.add(remainingGuessesLabel, "span");
 
         return contentPanel;
     }
@@ -188,51 +200,52 @@ public class HangmanDialog extends BaseDialog {
         examService.getDifficultyWords(selectedDictionary, selectedLanguage, difficulty);
 
         currentWord = examService.examWord();
+        translationField.setText(dictionaryService.getTranslation(currentWord, selectedDictionary).split("\n")[selectedDictionary.getFromLanguage() == Language.ENGLISH ? 1 : 0]);
 
         nextGuess();
 
         enableComponents(false);
 
         feedbackField.setText(TRANSLATOR.translate("GameStarted(Label)"));
-        answerField.requestFocus();
+        guessField.requestFocus();
     }
 
     private void stopGame() {
-        answerIconLabel.setIcon(IconManager.getImageIcon("bell2_grey.png", IconManager.IconSize.SIZE24));
+        guessIconLabel.setIcon(IconManager.getImageIcon("bell2_grey.png", IconManager.IconSize.SIZE24));
         feedbackField.setText(TRANSLATOR.translate("EndOfGame(Message)"));
 
         enableComponents(true);
-        guessWordField.setText(null);
-        answerField.setText(null);
+        wordField.setText(null);
+        guessField.setText(null);
     }
 
     private void nextGuess() {
-        guessWordField.setText(maskWord(currentWord));
+        wordField.setText(maskWord(currentWord));
     }
 
-    private void answered() {
-        displayTranslation();
+    private void guessed() {
+        final String currentGuess = guessField.getText();
 
-        if (attempts >= MAX_ATTEMPTS) {
+        guessedChars.add(currentGuess.charAt(0));
+
+        if (currentWord.indexOf(currentGuess) > 0) {
+            feedbackField.setText(TRANSLATOR.translate("CorrectGuess(String)"));
+            guessIconLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconManager.IconSize.SIZE24));
+        } else {
+            feedbackField.setText(TRANSLATOR.translate("WrongGuess(String)"));
+            guessIconLabel.setIcon(IconManager.getImageIcon("bell2_red.png", IconManager.IconSize.SIZE24));
+        }
+
+        if (++attempts >= MAX_ATTEMPTS) {
             stopGame();
         } else {
             nextGuess();
         }
 
-        answerField.setText(null);
-        answerField.requestFocusInWindow();
-    }
+        remainingGuessesLabel.setText(TRANSLATOR.translate("RemainingGuesses(Label)", MAX_ATTEMPTS - attempts));
 
-    private void displayTranslation() {
-        examService.possibleAnswers();
-
-        if (examService.isCorrect(answerField.getText())) {
-            feedbackField.setText(TRANSLATOR.translate("CorrectAnswer(String)"));
-            answerIconLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconManager.IconSize.SIZE24));
-        } else {
-            feedbackField.setText(TRANSLATOR.translate("WrongAnswer(String)"));
-            answerIconLabel.setIcon(IconManager.getImageIcon("bell2_red.png", IconManager.IconSize.SIZE24));
-        }
+        guessField.setText(null);
+        guessField.requestFocusInWindow();
     }
 
     private void enableComponents(Boolean enable) {
@@ -240,8 +253,8 @@ public class HangmanDialog extends BaseDialog {
         toLanguageComboBox.setEnabled(enable);
         startButton.setEnabled(enable);
         stopButton.setEnabled(!enable);
-        answerButton.setEnabled(!enable);
-        answerField.setEnabled(!enable);
+        guessButton.setEnabled(!enable);
+        guessField.setEnabled(!enable);
     }
 
     private void initLanguages() {
@@ -292,6 +305,8 @@ public class HangmanDialog extends BaseDialog {
             } else {
                 result.append("_");
             }
+
+            result.append(" ");
         }
 
         return result.toString();
