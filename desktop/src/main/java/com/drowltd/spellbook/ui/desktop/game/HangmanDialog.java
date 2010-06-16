@@ -85,7 +85,7 @@ public class HangmanDialog extends BaseDialog {
         guessIconLabel = new JLabel();
         feedbackField = new JLabel();
 
-        setIconImage(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE16).getImage());
+        setIconImage(IconManager.getImageIcon("brain.png", IconManager.IconSize.SIZE16).getImage());
         setTitle(TRANSLATOR.translate("Hangman(Title)"));
 
         initLanguages();
@@ -202,6 +202,9 @@ public class HangmanDialog extends BaseDialog {
         LOGGER.info("Selected language is " + selectedLanguage);
 
         examService.getDifficultyWords(selectedDictionary, selectedLanguage, difficulty);
+
+        hangmanDrawing.setStage(0);
+        hangmanDrawing.repaint();
 
         currentWord = examService.examWord();
         translationField.setText(dictionaryService.getTranslation(currentWord, selectedDictionary).split("\n")[selectedDictionary.getFromLanguage() == Language.ENGLISH ? 1 : 0]);

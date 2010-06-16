@@ -1077,6 +1077,8 @@ public class SpellbookFrame extends JFrame {
             }
         });
 
+        hangmanMenuItem.setIcon(IconManager.getMenuIcon("brain.png"));
+
         gamesMenu.add(hangmanMenuItem);
 
         spellbookMenuBar.add(gamesMenu);
