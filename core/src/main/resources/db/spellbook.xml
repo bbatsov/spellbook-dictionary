@@ -253,4 +253,23 @@
             </column>
         </createTable>
     </changeSet>
+    <changeSet id="12" author="bozhidar">
+        <createTable tableName="SYNC_STATS">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="pulled_entries" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="pushed_entries" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified" type="datetime">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>
