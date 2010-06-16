@@ -21,7 +21,11 @@ import com.drowltd.spellbook.ui.swing.util.SwingUtil;
 import com.drowltd.spellbook.util.SearchUtils;
 import com.jidesoft.dialog.StandardDialog;
 import com.jidesoft.hints.ListDataIntelliHints;
+import com.jidesoft.swing.DefaultOverlayable;
 import com.jidesoft.swing.JideSplitButton;
+import com.jidesoft.swing.OverlayTextField;
+import com.jidesoft.swing.OverlayableIconsFactory;
+import com.jidesoft.swing.OverlayableUtils;
 import net.miginfocom.swing.MigLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -126,12 +130,12 @@ public class SpellbookFrame extends JFrame {
     private JButton pasteButton;
     private JMenuItem pasteMenuItem;
     private JSplitPane splitPane;
-    private JButton statusButton;
     private JButton updateWordButton;
     private JMenuItem updateWordMenuItem;
     private JTextField wordSearchField;
     private JTextPane wordTranslationTextPane;
     private JList wordsList;
+    private JLabel wordSearchFieldStatusLabel = new JLabel();
     private boolean initialized = false;
     private static final int DEFAULT_FONT_SIZE = 14;
     private static final int DIVIDER_LOCATION = 180;
@@ -418,8 +422,8 @@ public class SpellbookFrame extends JFrame {
             wordsList.setSelectedIndex(index);
             wordsList.ensureIndexIsVisible(index);
 
-            statusButton.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
-            statusButton.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
+            wordSearchFieldStatusLabel.setIcon(OverlayableUtils.getPredefinedOverlayIcon(OverlayableIconsFactory.CORRECT));
+            wordSearchFieldStatusLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
 
             exactMatch = true;
         } else if ((approximation = getApproximation(searchString)) != null) {
@@ -429,14 +433,11 @@ public class SpellbookFrame extends JFrame {
             wordsList.setSelectedIndex(index);
             wordsList.ensureIndexIsVisible(index);
 
-            statusButton.setIcon(IconManager.getImageIcon("bell2_gold.png", IconSize.SIZE24));
-            statusButton.setToolTipText(TRANSLATOR.translate("PartialMatchFound(ToolTip)"));
+            wordSearchFieldStatusLabel.setIcon(OverlayableUtils.getPredefinedOverlayIcon(OverlayableIconsFactory.ATTENTION));
+            wordSearchFieldStatusLabel.setToolTipText(TRANSLATOR.translate("PartialMatchFound(ToolTip)"));
 
             exactMatch = false;
         } else {
-            statusButton.setIcon(IconManager.getImageIcon("bell2_red.png", IconSize.SIZE24));
-            statusButton.setToolTipText(TRANSLATOR.translate("NoMatchFound(ToolTip)"));
-
             exactMatch = false;
         }
     }
@@ -488,8 +489,7 @@ public class SpellbookFrame extends JFrame {
         deleteWordButton.setEnabled(false);
         deleteWordMenuItem.setEnabled(false);
         wordTranslationTextPane.setText(null);
-        statusButton.setIcon(IconManager.getImageIcon("bell2_grey.png", IconSize.SIZE24));
-
+        wordSearchFieldStatusLabel.setIcon(null);
         clearButton.setEnabled(false);
     }
 
@@ -522,8 +522,8 @@ public class SpellbookFrame extends JFrame {
 
                 match = true;
 
-                statusButton.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
-                statusButton.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
+                wordSearchFieldStatusLabel.setIcon(OverlayableUtils.getPredefinedOverlayIcon(OverlayableIconsFactory.CORRECT));
+                wordSearchFieldStatusLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
             } else if ((approximation = getApproximation(searchString)) != null) {
                 foundWord = approximation;
                 int index = words.indexOf(foundWord);
@@ -533,8 +533,8 @@ public class SpellbookFrame extends JFrame {
 
                 match = true;
 
-                statusButton.setIcon(IconManager.getImageIcon("bell2_gold.png", IconSize.SIZE24));
-                statusButton.setToolTipText(TRANSLATOR.translate("PartialMatchFound(ToolTip)"));
+                wordSearchFieldStatusLabel.setIcon(OverlayableUtils.getPredefinedOverlayIcon(OverlayableIconsFactory.ATTENTION));
+                wordSearchFieldStatusLabel.setToolTipText(TRANSLATOR.translate("PartialMatchFound(ToolTip)"));
             }
 
             // the tray popup translation should appear is the main frame is not active and not always on top
@@ -696,7 +696,7 @@ public class SpellbookFrame extends JFrame {
         splitPane = new JSplitPane();
 
         wordsList = new JList();
-        wordSearchField = new JTextField();
+        wordSearchField = new OverlayTextField();
 
         splitPane.setBorder(null);
         splitPane.setDividerLocation(DIVIDER_LOCATION);
@@ -741,7 +741,7 @@ public class SpellbookFrame extends JFrame {
 
         JPanel searchPanel = new JPanel(new MigLayout("wrap 1", "[grow]", "[][grow]"));
 
-        searchPanel.add(wordSearchField, "growx");
+        searchPanel.add(new DefaultOverlayable(wordSearchField, wordSearchFieldStatusLabel, DefaultOverlayable.SOUTH_EAST), "growx");
         searchPanel.add(new JScrollPane(wordsList), "grow");
 
         splitPane.setLeftComponent(searchPanel);
@@ -1186,7 +1186,6 @@ public class SpellbookFrame extends JFrame {
         backButton = new JButton();
         forwardButton = new JButton();
         clearButton = new JButton();
-        statusButton = new JButton();
         dictionaryButton = new JideSplitButton();
         dictionaryButton.setButtonStyle(JideSplitButton.TOOLBAR_STYLE);
         JButton addWordButton = new JButton();
@@ -1254,18 +1253,6 @@ public class SpellbookFrame extends JFrame {
             }
         });
         mainToolBar.add(clearButton);
-
-        statusButton.setIcon(IconManager.getImageIcon("bell2_grey.png", IconSize.SIZE24));
-        statusButton.setFocusable(false);
-        statusButton.setHorizontalTextPosition(SwingConstants.CENTER);
-        statusButton.setVerticalTextPosition(SwingConstants.BOTTOM);
-        statusButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                onWordSearchFieldAction();
-            }
-        });
-        mainToolBar.add(statusButton);
 
         dictionaryButton.setIcon(IconManager.getImageIcon(selectedDictionary.getIconName(), IconSize.SIZE24));
         dictionaryButton.setFocusable(false);
@@ -1580,8 +1567,8 @@ public class SpellbookFrame extends JFrame {
         if (!wordSearchField.hasFocus()) {
             wordSearchField.setText(selectedWord);
 
-            statusButton.setIcon(IconManager.getImageIcon("bell2_green.png", IconSize.SIZE24));
-            statusButton.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
+            wordSearchFieldStatusLabel.setIcon(OverlayableUtils.getPredefinedOverlayIcon(OverlayableIconsFactory.CORRECT));
+            wordSearchFieldStatusLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
         }
 
         wordTranslationTextPane.setText(SwingUtil.formatTranslation(selectedWord, dictionaryService.getTranslation(words.get(selectedIndex), selectedDictionary)));
