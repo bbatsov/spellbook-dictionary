@@ -45,7 +45,7 @@ public class SpellCheckHighlighter {
         return INSTANCE;
     }
 
-    private SpellCheckHighlighter(javax.swing.text.Highlighter highlighter) {
+    public SpellCheckHighlighter(javax.swing.text.Highlighter highlighter) {
         this.highlighter = highlighter;
     }
 
