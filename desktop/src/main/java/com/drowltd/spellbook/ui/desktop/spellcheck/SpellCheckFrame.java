@@ -6,7 +6,8 @@ import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.core.spellcheck.HunSpellChecker;
 import com.drowltd.spellbook.core.spellcheck.MapSpellChecker;
-import com.drowltd.spellbook.ui.swing.util.IconManager;
+import com.drowltd.spellbook.ui.swing.component.*;
+import com.drowltd.spellbook.ui.swing.util.*;
 import com.jidesoft.swing.DefaultOverlayable;
 import com.jidesoft.swing.OverlayableUtils;
 import net.miginfocom.swing.MigLayout;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.accessibility.AccessibleEditableText;
 import javax.swing.*;
+import javax.swing.Timer;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
@@ -28,12 +30,10 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.FileNotFoundException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -61,10 +61,14 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
     private JScrollPane jScrollPane;
     private JLabel jStatusLabel;
     private JTextPane jTextPane;
+    private JTabbedPane jTabbedPane;
+    private JFileChooser jFileChooser;
     private DefaultOverlayable overlay;
     private JProgressBar progressBar;
+
     private boolean eventsEnabled = false;
-    private Executor executor = Executors.newSingleThreadExecutor();
+    private static final ExecutorService executor = Executors.newCachedThreadPool();
+    private Map<JComponent, FileTextPane> tabsMap = new HashMap<JComponent, FileTextPane>();
 
 
     public static SpellCheckFrame getInstance(JFrame parent) throws HeapSizeException, SpellCheckerException {
@@ -88,7 +92,6 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
 
     private void initComponents0(JFrame parent) {
 
-
         jScrollPane = new JScrollPane() {
             @Override
             public void paintComponent(Graphics g) {
@@ -99,10 +102,22 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
             }
         };
 
+        jFileChooser = new JFileChooser();
+        jTabbedPane = new JTabbedPane();
+        JComponent tab = createNewTab();
+        jTabbedPane.addTab(tabsMap.get(tab).getFileName(), tab);
+        if (jFileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            JComponent tab1 = createNewTab(jFileChooser.getSelectedFile());
+            jTabbedPane.addTab(tabsMap.get(tab1).getFileName(), tab1);
+        }
+
+
         jTextPane = new JTextPane();
         progressBar = new JProgressBar();
         progressBar.setIndeterminate(true);
-        overlay = new DefaultOverlayable(jScrollPane, progressBar, DefaultOverlayable.CENTER);
+//        overlay = new DefaultOverlayable(jScrollPane, progressBar, DefaultOverlayable.CENTER);
+        overlay = new DefaultOverlayable(jTabbedPane, progressBar, DefaultOverlayable.CENTER);
+
 
         jStatusLabel = new JLabel();
         jLanguageLabel = new JLabel();
@@ -570,6 +585,32 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
         }
     }
 
+    private JComponent createNewTab(File file) {
+        JComponent scrollPane = null;
+
+        if (file != null) {
+            try {
+                FileTextPane textPane = new FileTextPane(file);
+                scrollPane = new JScrollPane(textPane);
+                tabsMap.put(scrollPane, textPane);
+
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "cant open file", "Info", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+
+        return scrollPane != null ? scrollPane : createNewTab();
+    }
+
+    private JComponent createNewTab() {
+        FileTextPane textPane = new FileTextPane();
+        JScrollPane scrollPane = new JScrollPane(textPane);
+        tabsMap.put(scrollPane, textPane);
+
+        return scrollPane;
+    }
+
+
     /**
      * Represents a visble text.
      */
@@ -601,4 +642,26 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
             return text;
         }
     }
+
+    public static interface SpellCheckable {
+        void correct(String correction, MisspelledWord misspelledWord, int cursorPostion);
+
+        List<String> getCorrections(MisspelledWord misspelledWord);
+
+        boolean misspelled(String word);
+
+        MisspelledWord getMisspelledWord(int cursorPosition);
+
+        void addMisspelled(MisspelledWord misspelledWord);
+
+        void addOccurance(String mWord, int startIndex);
+
+        Collection<MisspelledWord> getMisspelled();
+
+        void spellCheck(boolean clear);
+
+        void highlightMisspelled();
+    }
+
+
 }

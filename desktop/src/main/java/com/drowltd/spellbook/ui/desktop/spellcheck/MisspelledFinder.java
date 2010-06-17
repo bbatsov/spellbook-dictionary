@@ -25,8 +25,8 @@ public class MisspelledFinder {
     private static final MisspelledFinder INSTANCE = new MisspelledFinder();
     private final MisspelledWordsRegistry registry = MisspelledWordsRegistry.getInstance();
     private final Set<String> userMisspelledSet = new HashSet<String>();
-    private final SpellCheckHighlighter checkHighlighter = SpellCheckHighlighter.getInstance();
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private SpellCheckHighlighter highlighter;
+    private static final ExecutorService executor = Executors.newCachedThreadPool();
     private Future<?> currentFTask;
 
     public static MisspelledFinder getInstance() {
@@ -35,6 +35,14 @@ public class MisspelledFinder {
 
     private MisspelledFinder() {
         
+    }
+
+    public MisspelledFinder(SpellCheckHighlighter highlighter){
+        if(highlighter == null){
+            throw new IllegalArgumentException("highlighter is null");
+        }
+
+        this.highlighter = highlighter;
     }
 
     public void addUserMisspelled(String misspelled) {
@@ -131,7 +139,7 @@ public class MisspelledFinder {
             }
 
 
-            checkHighlighter.highlightMisspelled();
+            highlighter.highlightMisspelled();
             LOGGER.info("search ended");
         }
 

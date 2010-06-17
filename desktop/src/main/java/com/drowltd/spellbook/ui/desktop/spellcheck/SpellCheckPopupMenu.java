@@ -23,8 +23,7 @@ public class SpellCheckPopupMenu extends JPopupMenu {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellCheckPopupMenu.class);
     private static SpellCheckPopupMenu INSTANCE;
-    private static final IntegerComparator comparator = new IntegerComparator();
-    private final MisspelledWordsRegistry registry = MisspelledWordsRegistry.getInstance();
+    private MisspelledWordsRegistry registry;
     private final SpellCheckFrame spellCheckFrame;
     private MisspelledWord misspelledWord;
     private final JTextPane invokerTextPane;

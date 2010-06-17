@@ -23,7 +23,7 @@ public class MisspelledWordsRegistry {
         return INSTANCE;
     }
 
-    private MisspelledWordsRegistry() {
+    public MisspelledWordsRegistry() {
     }
 
     public MisspelledWord getMisspelledWord(int cursorPosition) {
