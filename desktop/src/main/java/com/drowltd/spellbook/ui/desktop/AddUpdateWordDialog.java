@@ -215,7 +215,9 @@ public class AddUpdateWordDialog extends StandardDialog {
     }
 
     public void setTranslation(String translation) {
-        translation = translation.substring(0, translation.length() - 3); //delete last "\n"
+        if (translation.subSequence(translation.length() - 2, translation.length() - 1).equals("\n")) {
+            translation = translation.substring(0, translation.length() - 3); //delete last "\n"
+        }
         translationPane.setText(translation);
         translationRows = splitTranslationOfRows(translation);
     }
