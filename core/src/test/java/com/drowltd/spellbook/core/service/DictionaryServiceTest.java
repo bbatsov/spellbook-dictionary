@@ -4,7 +4,7 @@ import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.DictionaryEntry;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.model.RankEntry;
-import com.drowltd.spellbook.core.model.UncommittedEntries;
+
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Set;
@@ -86,13 +86,7 @@ public class DictionaryServiceTest {
 //        assertTrue("word not added", dictionaryService.getWordsFromDictionary(dictionary).contains(nWord));
 //        assertEquals("translation not added", nTranslation, dictionaryService.getTranslation(nWord, dictionary));
 //        assertTrue("ratings entry not inserted", dictionaryService.getRatings(English).keySet().contains(nWord));
-        UncommittedEntries ue = EM.createNamedQuery("UncommittedEntries.getUncommittedEntries", UncommittedEntries.class).getSingleResult();
-        assertTrue(ue != null);
-        Set<DictionaryEntry> de = ue.getDictionaryEntries();
-        assertTrue(!de.isEmpty());
-        for(DictionaryEntry d: de){
-            System.out.println(d.getWord());
-        }
+        
 
 
     }
