@@ -643,25 +643,4 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
         }
     }
 
-    public static interface SpellCheckable {
-        void correct(String correction, MisspelledWord misspelledWord, int cursorPostion);
-
-        List<String> getCorrections(MisspelledWord misspelledWord);
-
-        boolean misspelled(String word);
-
-        MisspelledWord getMisspelledWord(int cursorPosition);
-
-        void addMisspelled(MisspelledWord misspelledWord);
-
-        void addOccurance(String mWord, int startIndex);
-
-        Collection<MisspelledWord> getMisspelled();
-
-        void spellCheck(boolean clear);
-
-        void highlightMisspelled();
-    }
-
-
 }
