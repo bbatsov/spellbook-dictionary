@@ -6,12 +6,10 @@
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <class>com.drowltd.spellbook.core.model.Dictionary</class>
         <class>com.drowltd.spellbook.core.model.DictionaryEntry</class>
-        <class>com.drowltd.spellbook.core.model.LastUpdateEntity</class>
         <class>com.drowltd.spellbook.core.model.RankEntry</class>
         <class>com.drowltd.spellbook.core.model.ExamScoreEntry</class>
         <class>com.drowltd.spellbook.core.model.StudySet</class>
         <class>com.drowltd.spellbook.core.model.StudySetEntry</class>
-        <class>com.drowltd.spellbook.core.model.UncommittedEntries</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="hibernate.connection.username" value="spellbook"/>
@@ -22,24 +20,6 @@
             <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
             <!--<property name="hibernate.hbm2ddl.auto" value="validate"/>-->
             <property name="hibernate.hbm2ddl.auto" value="update"/>
-        </properties>
-    </persistence-unit>
-    <persistence-unit name="SpellbookRemote" transaction-type="RESOURCE_LOCAL">
-        <provider>org.hibernate.ejb.HibernatePersistence</provider>
-        <class>com.drowltd.spellbook.core.model.RemoteDictionaryEntry</class>
-        <class>com.drowltd.spellbook.core.model.UpdateEntry</class>
-        <class>com.drowltd.spellbook.core.model.RemoteDictionary</class>
-        <class>com.drowltd.spellbook.core.model.RevisionEntry</class>
-        <exclude-unlisted-classes>true</exclude-unlisted-classes>
-        <properties>
-            <property name="hibernate.connection.username" value="spellbook"/>
-            <!--<property name="hibernate.connection.username" value="iivalchev"/>-->
-            <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
-            <property name="hibernate.connection.password" value=""/>
-            <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/SpellbookRemote"/>
-            <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
-            <property name="hibernate.hbm2ddl.auto" value="validate"/>
         </properties>
     </persistence-unit>
 </persistence>

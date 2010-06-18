@@ -272,4 +272,10 @@
             </column>
         </createTable>
     </changeSet>
+    <changeSet id="13" author="iivalchev">
+        <dropTable tableName="LAST_UPDATE"/>
+        <dropTable tableName="UNCOMMITTED_ENTRIES"/>
+        <dropTable tableName="UNCOMMITTED_DICTIONARY_ENTRIES"/>
+    </changeSet>
+
 </databaseChangeLog>

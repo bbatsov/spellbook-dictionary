@@ -4,13 +4,13 @@ import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.DictionaryEntry;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.model.RankEntry;
-import com.drowltd.spellbook.core.model.UncommittedEntries;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
-import javax.persistence.NonUniqueResultException;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -109,40 +109,6 @@ public class DictionaryService extends AbstractPersistenceService {
                 + " where de.word = :word and de.dictionary = :dictionary", String.class).setParameter("word", word).setParameter("dictionary", d).getSingleResult();
     }
 
-    public UncommittedEntries getUncommitted() {
-        UncommittedEntries uncommittedEntry = null;
-        try {
-            uncommittedEntry = EM.createNamedQuery("UncommittedEntries.getUncommittedEntries", UncommittedEntries.class).getSingleResult();
-        } catch (NoResultException e) {
-            LOGGER.info("getting the last uncommitted entry");
-
-            uncommittedEntry = new UncommittedEntries();
-            uncommittedEntry.setCommitted(false);
-            EM.getTransaction().begin();
-            EM.persist(uncommittedEntry);
-            EM.getTransaction().commit();
-        } catch (NonUniqueResultException e) {
-            LOGGER.warn("more than one uncommitted entry returned");
-
-            List<UncommittedEntries> resultList = EM.createNamedQuery("UncommittedEntries.getUncommittedEntries", UncommittedEntries.class).getResultList();
-            uncommittedEntry = resultList.get(0);
-            EM.getTransaction().begin();
-            for (UncommittedEntries ue : resultList) {
-                if (ue != uncommittedEntry) {
-                    uncommittedEntry.getDictionaryEntries().addAll(ue.getDictionaryEntries());
-                    EM.remove(ue);
-                }
-            }
-            EM.getTransaction().commit();
-
-        }
-        return uncommittedEntry;
-    }
-
-    public boolean haveUncommited() {
-        return !EM.createQuery("select ue from UncommittedEntries ue where (select count(de) from ue.dictionaryEntries de) > 0 and ue.committed = false").getResultList().isEmpty();
-    }
-
     /**
      * Adds a new word to a dictionary
      *
@@ -180,8 +146,6 @@ public class DictionaryService extends AbstractPersistenceService {
         re.setWord(word);
         re.setRank(1);
         re.setLanguage(d.getFromLanguage());
-
-        getUncommitted().addDicionaryEntry(de);
 
         EntityTransaction t = EM.getTransaction();
         t.begin();
@@ -224,9 +188,6 @@ public class DictionaryService extends AbstractPersistenceService {
         de.setWord(newWord);
         de.setTranslation(translation);
 
-        getUncommitted().addDicionaryEntry(de);
-
-
         final EntityTransaction t = EM.getTransaction();
         t.begin();
         EM.merge(de);
@@ -240,14 +201,8 @@ public class DictionaryService extends AbstractPersistenceService {
      * @param dictionary the dictionary to remove the word from
      */
     public void deleteWord(String word, Dictionary dictionary) {
-        UncommittedEntries ue = getUncommitted();
-        DictionaryEntry de = EM.createQuery("select de from DictionaryEntry de where de.word = :word and de.dictionary = :dictionary", DictionaryEntry.class).setParameter("word", word).setParameter("dictionary", dictionary).getSingleResult();
-        ue.getDictionaryEntries().remove(de);
-
+        
         EntityTransaction entityTransaction = EM.getTransaction();
-        entityTransaction.begin();
-        EM.merge(ue);
-        entityTransaction.commit();
 
         entityTransaction.begin();
         DictionaryEntry dictionaryEntry = EM.createQuery("select de from DictionaryEntry de where de.word = :word and de.dictionary = :dictionary", DictionaryEntry.class).setParameter("word", word).setParameter("dictionary", dictionary).getSingleResult();
