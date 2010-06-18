@@ -120,6 +120,7 @@ public class SpellbookApp {
 
         Language.TRANSLATOR.reset();
         Dictionary.TRANSLATOR.reset();
+        TRANSLATOR.reset();
 
         try {
             String selectedLookAndFeel = pm.get(Preference.LOOK_AND_FEEL, "System");
@@ -152,7 +153,8 @@ public class SpellbookApp {
         File lockFile = new File(SPELLBOOK_USER_DIR + File.separator + "spellbook.lock");
 
         if (lockFile.exists()) {
-            JOptionPane.showMessageDialog(null, TRANSLATOR.translate("AlreadyRunning(Message)"), "Warning", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(null, TRANSLATOR.translate("AlreadyRunning(Message)"),
+                    TRANSLATOR.translate("Warning(Title)"), JOptionPane.WARNING_MESSAGE);
             System.exit(0);
         } else {
             try {
@@ -215,7 +217,7 @@ public class SpellbookApp {
 
         if (!vmName.startsWith("Java HotSpot")) {
             JOptionPane.showMessageDialog(frame, TRANSLATOR.translate("JavaRuntimeWarning(Message)", vmName),
-                    TRANSLATOR.translate("JavaRuntimeWarning(Title)"), JOptionPane.WARNING_MESSAGE);
+                    TRANSLATOR.translate("Warning(Title)"), JOptionPane.WARNING_MESSAGE);
         }
     }
 
