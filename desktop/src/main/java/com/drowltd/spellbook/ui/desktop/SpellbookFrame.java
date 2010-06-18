@@ -1275,7 +1275,7 @@ public class SpellbookFrame extends JFrame {
         syncButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //To change body of implemented methods use File | Settings | File Templates.
+                showSyncDialog();
             }
         });
 
@@ -1466,6 +1466,14 @@ public class SpellbookFrame extends JFrame {
         hangmanDialog.showDialog();
     }
 
+    private void showSyncDialog() {
+
+    }
+
+    private void showImportDialog() {
+
+    }
+
     private void initDictionaries() {
         dictionaryMenu.removeAll();
 
@@ -1479,11 +1487,20 @@ public class SpellbookFrame extends JFrame {
         syncMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //To change body of implemented methods use File | Settings | File Templates.
+                showSyncDialog();
             }
         });
 
         dictionaryMenu.add(syncMenuItem);
+
+        JMenuItem importMenuItem = new JMenuItem(TRANSLATOR.translate("Import(MenuItem)", IconManager.getMenuIcon("import1.png")));
+
+        importMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showImportDialog();
+            }
+        });
     }
 
     private void autoCorrectDictionary(String searchString) {
