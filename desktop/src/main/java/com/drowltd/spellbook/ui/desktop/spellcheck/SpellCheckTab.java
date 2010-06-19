@@ -52,6 +52,8 @@ public class SpellCheckTab extends JPanel {
         setLayout(new BorderLayout());
         fileTextPane.getDocument().addUndoableEditListener(undoManager);
         add(fileTextPane, BorderLayout.CENTER);
+
+        popupMenu = new SpellCheckPopupMenu(this);
     }
 
 
@@ -369,6 +371,10 @@ public class SpellCheckTab extends JPanel {
         } catch (IOException e) {
             showMessage("can't open", "Open");
         }
+    }
+
+    public FileTextPane getFileTextPane() {
+        return fileTextPane;
     }
 
     private class UnderlineHighlightPainter extends LayeredHighlighter.LayerPainter {

@@ -23,10 +23,10 @@ public class SpellCheckPopupMenu extends JPopupMenu {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellCheckPopupMenu.class);
     private static SpellCheckPopupMenu INSTANCE;
-    private MisspelledWordsRegistry registry;
-    private final SpellCheckFrame spellCheckFrame;
+
     private MisspelledWord misspelledWord;
-    private final JTextPane invokerTextPane;
+    private SpellCheckTab spellCheckTab;
+    private JTextPane invokerTextPane;
     private final JMenuItem noCorrectionsItem;
     private final List<JMenuItem> commonItems = new LinkedList<JMenuItem>();
     private int cursorPosition = -1;
@@ -53,11 +53,23 @@ public class SpellCheckPopupMenu extends JPopupMenu {
         this.noCorrectionsItem = new JMenuItem("no corrections");
         this.noCorrectionsItem.setEnabled(false);
 
-        this.spellCheckFrame = spellCheckFrame;
+/*        this.spellCheckFrame = spellCheckFrame;
         this.invokerTextPane = spellCheckFrame.getjTextPane();
 
-        setInvoker(invokerTextPane);
+        setInvoker(invokerTextPane);*/
 
+        initCommonItems();
+
+    }
+
+    public SpellCheckPopupMenu(SpellCheckTab spellCheckTab){
+        this.spellCheckTab = spellCheckTab;
+        this.invokerTextPane = spellCheckTab.getFileTextPane();
+
+        setInvoker(invokerTextPane);
+        
+        this.noCorrectionsItem = new JMenuItem("no corrections");
+        this.noCorrectionsItem.setEnabled(false);
         initCommonItems();
 
     }
@@ -74,7 +86,7 @@ public class SpellCheckPopupMenu extends JPopupMenu {
         removeAll();
 
 
-        misspelledWord = registry.getMisspelledWord(cordsToCursor(mouseEvent));
+        misspelledWord = spellCheckTab.getMisspelledWord(cordsToCursor(mouseEvent));
 
         if (misspelledWord != null) {
             addCorrectionsItems();
@@ -93,13 +105,12 @@ public class SpellCheckPopupMenu extends JPopupMenu {
     }
 
     private void addCorrectionsItems() {
-        SpellChecker spellChecker = HunSpellChecker.getInstance();
 
         if (misspelledWord == null) {
             return;
         }
 
-        List<String> corrections = spellChecker.correct(misspelledWord.getWord());
+        List<String> corrections = spellCheckTab.getCorrections(misspelledWord);
 
         if (corrections.isEmpty()) {
             add(noCorrectionsItem);
@@ -183,10 +194,7 @@ public class SpellCheckPopupMenu extends JPopupMenu {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    spellCheckFrame.correct(correction, misspelledWord, cursorPosition);
-                    synchronized (registry) {
-                        registry.corrected(misspelledWord);
-                    }
+                    spellCheckTab.correct(correction, misspelledWord, cursorPosition);
                 }
             });
         }
@@ -206,25 +214,11 @@ public class SpellCheckPopupMenu extends JPopupMenu {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    DictionaryService.getInstance().addRankEntry(misspelled, HunSpellChecker.getInstance().getLanguage());
-                    MisspelledFinder.getInstance().addUserMisspelled(misspelled);
-                    MisspelledFinder.getInstance().findMisspelled(SpellCheckPopupMenu.this.spellCheckFrame.getVisibleText(), true);
+
+                    spellCheckTab.addUserMisspelled(misspelled);
                     StatusManager.getInstance().setStatus(misspelled + " added to dictionary");
                 }
             });
-        }
-    }
-
-    private static class IntegerComparator implements Comparator<Integer> {
-
-        @Override
-        public int compare(Integer o1, Integer o2) {
-            if (o1.compareTo(o2) > 0) {
-                return -1;
-            } else if (o1.compareTo(o2) < 0) {
-                return 1;
-            }
-            return 0;
         }
     }
 }
