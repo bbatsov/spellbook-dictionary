@@ -5,6 +5,7 @@ import com.drowltd.spellbook.core.model.ExamGrade;
 import com.drowltd.spellbook.core.model.ExamScoreEntry;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.core.service.exam.ExamService;
+import com.drowltd.spellbook.ui.swing.component.BaseDialog;
 import com.drowltd.spellbook.ui.swing.model.ListBackedListModel;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.drowltd.spellbook.ui.swing.util.SwingUtil;
@@ -12,7 +13,6 @@ import com.drowltd.spellbook.ui.swing.validation.ButtonControllingDocumentListen
 import com.drowltd.spellbook.util.DateUtils;
 import com.jidesoft.dialog.BannerPanel;
 import com.jidesoft.dialog.ButtonPanel;
-import com.jidesoft.dialog.StandardDialog;
 import com.jidesoft.dialog.StandardDialogPane;
 import com.jidesoft.swing.JideBoxLayout;
 import net.miginfocom.swing.MigLayout;
@@ -49,7 +49,7 @@ import java.util.List;
  * @author Bozhidar Batsov
  * @author miroslava
  */
-public class ExamSummaryDialog extends StandardDialog {
+public class ExamSummaryDialog extends BaseDialog {
 
     private static final Translator TRANSLATOR = Translator.getTranslator("ExamSummaryDialog");
     private ExamService examService = ExamService.getInstance();
@@ -73,7 +73,7 @@ public class ExamSummaryDialog extends StandardDialog {
     private boolean submitted = false;
 
     public ExamSummaryDialog(final Dialog owner, final ExamStats examStats) {
-        super(owner, true);
+        super(null, true);
         TRANSLATOR.reset();
 
         this.examStats = examStats;

@@ -1,7 +1,7 @@
 package com.drowltd.spellbook.ui.swing.component;
 
+import com.drowltd.spellbook.core.i18n.Translator;
 import com.jidesoft.dialog.ButtonPanel;
-import com.jidesoft.dialog.StandardDialog;
 import com.jidesoft.dialog.StandardDialogPane;
 import com.jidesoft.swing.JideBoxLayout;
 
@@ -24,26 +24,25 @@ import java.awt.event.ActionEvent;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-public class ErrorDialog extends StandardDialog {
+public class ErrorDialog extends BaseDialog {
+    private static final Translator TRANSLATOR = Translator.getTranslator("ErrorDialog");
+
     private JComponent detailsPanel;
     private Throwable throwable;
 
-    public ErrorDialog(Throwable throwable) throws HeadlessException {
-        super((Frame) null, "Unexpected error");
+    public ErrorDialog(Frame parent, Throwable throwable) throws HeadlessException {
+        super(parent, true);
+
+        setTitle("ErrorDialog(Title)");
 
         this.throwable = throwable;
-    }
-
-    @Override
-    public JComponent createBannerPanel() {
-        return null;
     }
 
     public JComponent createDetailsPanel() {
         JTextArea textArea = new JTextArea(getStackTraceAsString(throwable));
         textArea.setRows(10);
 
-        JLabel label = new JLabel("Details:");
+        JLabel label = new JLabel(TRANSLATOR.translate("Details(Label)") + ": ");
 
         JPanel panel = new JPanel(new BorderLayout(6, 6));
         panel.add(new JScrollPane(textArea));
@@ -78,8 +77,8 @@ public class ErrorDialog extends StandardDialog {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(20, 40, 40, 40));
 
-        JLabel label = new JLabel("Unexpected error: " + (throwable.getLocalizedMessage() != null ?
-        throwable.getLocalizedMessage() : throwable.getClass().toString()));
+        JLabel label = new JLabel(TRANSLATOR.translate("UnexpectedError(Label)") + ": " + (throwable.getLocalizedMessage() != null ?
+                throwable.getLocalizedMessage() : throwable.getClass().toString()));
         label.setHorizontalAlignment(SwingConstants.CENTER);
 
         panel.add(label, BorderLayout.CENTER);
@@ -96,7 +95,7 @@ public class ErrorDialog extends StandardDialog {
         buttonPanel.addButton(closeButton, ButtonPanel.AFFIRMATIVE_BUTTON);
         buttonPanel.addButton(detailButton, ButtonPanel.OTHER_BUTTON);
 
-        closeButton.setAction(new AbstractAction("Close") {
+        closeButton.setAction(new AbstractAction(TRANSLATOR.translate("Close(Button)")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setDialogResult(RESULT_AFFIRMED);
@@ -105,17 +104,16 @@ public class ErrorDialog extends StandardDialog {
             }
         });
 
-        detailButton.setAction(new AbstractAction("Details >>") {
+        detailButton.setAction(new AbstractAction(TRANSLATOR.translate("Details(Label)") + " >>") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (detailsPanel.isVisible()) {
                     detailsPanel.setVisible(false);
-                    putValue(Action.NAME, "Details <<");
+                    putValue(Action.NAME, TRANSLATOR.translate("Details(Label)") + " <<");
                     pack();
-                }
-                else {
+                } else {
                     detailsPanel.setVisible(true);
-                    putValue(Action.NAME, "<< Details");
+                    putValue(Action.NAME, TRANSLATOR.translate("Details(Label)") + " Details");
                     pack();
                 }
             }

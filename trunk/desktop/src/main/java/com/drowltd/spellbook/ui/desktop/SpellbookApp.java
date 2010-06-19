@@ -60,6 +60,7 @@ public class SpellbookApp {
 
     private static void createSplashWindow() {
         final SplashScreen splashScreen = SplashScreen.getSplashScreen();
+        splashWindow = new JWindow();
 
         final ImageIcon icon = new ImageIcon(SpellbookApp.class.getResource("/images/spellbook-splash.png"));
 
@@ -69,7 +70,6 @@ public class SpellbookApp {
             bounds = splashScreen.getBounds();
             System.out.println(bounds);
         } else {
-            splashWindow = new JWindow();
             Toolkit toolkit = Toolkit.getDefaultToolkit();
             bounds = new Rectangle(toolkit.getScreenSize().width / 2, toolkit.getScreenSize().height / 2, icon.getIconWidth(), icon.getIconHeight());
         }

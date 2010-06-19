@@ -5,7 +5,6 @@ import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.jidesoft.dialog.BannerPanel;
 import com.jidesoft.dialog.ButtonPanel;
 import com.jidesoft.dialog.ButtonResources;
-import com.jidesoft.dialog.StandardDialog;
 import com.jidesoft.icons.JideIconsFactory;
 import com.jidesoft.plaf.UIDefaultsLookup;
 import com.jidesoft.swing.DefaultOverlayable;
@@ -45,7 +44,7 @@ import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-public class SelectDbDialog extends StandardDialog implements PropertyChangeListener {
+public class SelectDbDialog extends BaseDialog implements PropertyChangeListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(SelectDbDialog.class);
     private static final Translator TRANSLATOR = Translator.getTranslator("SelectDbDialog");
 
@@ -65,7 +64,7 @@ public class SelectDbDialog extends StandardDialog implements PropertyChangeList
     private boolean downloaded = false;
 
     public SelectDbDialog() {
-        setModal(true);
+        super(null, true);
 
         localDbFolderValidationLabel = new JLabel();
         localDbFolderTextField = new OverlayTextField();

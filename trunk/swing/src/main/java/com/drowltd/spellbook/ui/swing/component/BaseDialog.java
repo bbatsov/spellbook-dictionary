@@ -36,12 +36,14 @@ public class BaseDialog extends StandardDialog {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public void showDialog() {
+    public int showDialog() {
         pack();
 
         // this should be called after pack()!
         setLocationRelativeTo(parent);
 
         setVisible(true);
+
+        return getDialogResult();
     }
 }

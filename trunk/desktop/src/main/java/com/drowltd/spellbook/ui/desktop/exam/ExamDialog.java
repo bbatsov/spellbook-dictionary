@@ -11,10 +11,10 @@ import com.drowltd.spellbook.core.service.exam.ExamService;
 import com.drowltd.spellbook.ui.desktop.PreferencesDialog;
 import com.drowltd.spellbook.ui.desktop.PreferencesExtractor;
 import com.drowltd.spellbook.ui.desktop.SpellbookFrame;
+import com.drowltd.spellbook.ui.swing.component.BaseDialog;
 import com.drowltd.spellbook.ui.swing.component.DifficultyComboBox;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.jidesoft.dialog.ButtonPanel;
-import com.jidesoft.dialog.StandardDialog;
 import net.miginfocom.swing.MigLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +29,6 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.Timer;
-
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -47,7 +46,7 @@ import java.util.Set;
  * @author Miroslava Stancheva
  * @since 0.2
  */
-public class ExamDialog extends StandardDialog {
+public class ExamDialog extends BaseDialog {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExamDialog.class);
     private ExamService examService = ExamService.getInstance();
     private final DictionaryService dictionaryService = DictionaryService.getInstance();
@@ -122,11 +121,6 @@ public class ExamDialog extends StandardDialog {
 
         timerStatus = timerEnabled ? TimerStatus.STOPPED : TimerStatus.DISABLED;
         examWords = PM.getInt(Preference.EXAM_WORDS, 10);
-    }
-
-    @Override
-    public JComponent createBannerPanel() {
-        return null;
     }
 
     @Override
@@ -315,7 +309,7 @@ public class ExamDialog extends StandardDialog {
         wordsProgressBar.setValue(0);
         answerIconLabel.setIcon(IconManager.getImageIcon("bell2_grey.png", IconManager.IconSize.SIZE24));
         feedbackField.setText(TRANSLATOR.translate("EndOfExam(Message)"));
-        
+
         enableComponents(true);
         translateField.setText(null);
         answerField.setText(null);
@@ -391,15 +385,6 @@ public class ExamDialog extends StandardDialog {
             timerProgressBar.setString("Remaining time: " + remainingTime);
         }
     });
-
-    public void showExamDialog() {
-        pack();
-
-        // this should be called after pack()!
-        setLocationRelativeTo(parent);
-
-        setVisible(true);
-    }
 
     private void enableComponents(Boolean enable) {
         fromLanguageComboBox.setEnabled(enable);

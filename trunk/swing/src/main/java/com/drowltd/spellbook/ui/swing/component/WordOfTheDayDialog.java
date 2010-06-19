@@ -7,7 +7,6 @@ import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.drowltd.spellbook.ui.swing.util.SwingUtil;
 import com.jidesoft.dialog.BannerPanel;
 import com.jidesoft.dialog.ButtonPanel;
-import com.jidesoft.dialog.StandardDialog;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.AbstractAction;
@@ -19,7 +18,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -33,12 +31,12 @@ import java.util.Random;
  * Description goes here...
  *
  * @author Bozhidar Batsov
- * @since  0.3
+ * @since 0.3
  */
-public class WordOfTheDayDialog extends StandardDialog {
+public class WordOfTheDayDialog extends BaseDialog {
     private static final Translator TRANSLATOR = Translator.getTranslator("WordOfTheDayDialog");
     private static final DictionaryService DICTIONARY_SERVICE = DictionaryService.getInstance();
-    
+
     private List<String> words;
     private Dictionary dictionary;
     private List<String> wordsShown = new ArrayList<String>();
@@ -46,6 +44,8 @@ public class WordOfTheDayDialog extends StandardDialog {
     private BannerPanel bannerPanel;
 
     public WordOfTheDayDialog(List<String> words, Dictionary dictionary) throws HeadlessException {
+        super(null, true);
+
         this.words = words;
         this.dictionary = dictionary;
 
@@ -59,7 +59,7 @@ public class WordOfTheDayDialog extends StandardDialog {
     @Override
     public JComponent createBannerPanel() {
         bannerPanel = new BannerPanel(TRANSLATOR.translate("Banner(Header)"),
-               "",
+                "",
                 IconManager.getImageIcon("lightbulb_on.png", IconManager.IconSize.SIZE32));
         bannerPanel.setFont(new Font("Tahoma", Font.PLAIN, 12));
         bannerPanel.setBackground(Color.WHITE);
@@ -90,11 +90,11 @@ public class WordOfTheDayDialog extends StandardDialog {
         previousButton.setAction(new AbstractAction(TRANSLATOR.translate("Previous(Button)")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                
+
             }
         });
 
-        JButton nextButton = new JButton();        
+        JButton nextButton = new JButton();
         nextButton.setAction(new AbstractAction(TRANSLATOR.translate("Next(Button)")) {
             @Override
             public void actionPerformed(ActionEvent e) {

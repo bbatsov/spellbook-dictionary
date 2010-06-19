@@ -47,7 +47,7 @@ public class SpellbookDefaultExceptionHandler implements Thread.UncaughtExceptio
         // or dialog and use it as the parent. In this example, I'm just passing
         // a null owner, which means this dialog may get buried behind
         // some other screen.
-        ErrorDialog errorDialog = new ErrorDialog(e);
+        ErrorDialog errorDialog = new ErrorDialog(null, e);
         errorDialog.pack();
         errorDialog.setLocationRelativeTo(null);
         errorDialog.setVisible(true);

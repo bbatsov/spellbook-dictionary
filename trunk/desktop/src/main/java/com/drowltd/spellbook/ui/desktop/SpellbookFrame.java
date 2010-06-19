@@ -1430,7 +1430,7 @@ public class SpellbookFrame extends JFrame {
 
     private void showExamDialog() {
         ExamDialog examDialog = new ExamDialog(this, true);
-        examDialog.showExamDialog();
+        examDialog.showDialog();
     }
 
     private void showHangmanDialog() {
