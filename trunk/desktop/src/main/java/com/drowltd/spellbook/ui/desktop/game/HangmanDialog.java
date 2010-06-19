@@ -4,7 +4,6 @@ import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.Difficulty;
 import com.drowltd.spellbook.core.model.Language;
-import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.core.service.exam.ExamService;
 import com.drowltd.spellbook.ui.swing.component.BaseDialog;
@@ -48,7 +47,6 @@ public class HangmanDialog extends BaseDialog {
     private ExamService examService = ExamService.getInstance();
     private final DictionaryService dictionaryService = DictionaryService.getInstance();
     private static final Translator TRANSLATOR = Translator.getTranslator("HangmanDialog");
-    private static final PreferencesManager PM = PreferencesManager.getInstance();
 
     private Set<Character> guessedChars = new HashSet<Character>();
     private int attempts = 0;
@@ -195,7 +193,6 @@ public class HangmanDialog extends BaseDialog {
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-                //To change body of implemented methods use File | Settings | File Templates.
             }
         });
 
@@ -363,7 +360,7 @@ public class HangmanDialog extends BaseDialog {
     }
 
     private String maskWord(String word) {
-        StringBuilder result = new StringBuilder();
+        StringBuilder result = new StringBuilder(word.length() * 3);
 
         for (int i = 0; i < word.length(); i++) {
             if (guessedChars.contains(word.charAt(i))) {
