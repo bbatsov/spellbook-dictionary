@@ -1,9 +1,9 @@
 package com.drowltd.spellbook.ui.desktop;
 
 import com.drowltd.spellbook.core.i18n.Translator;
+import com.drowltd.spellbook.ui.swing.component.BaseDialog;
 import com.jidesoft.dialog.BannerPanel;
 import com.jidesoft.dialog.ButtonPanel;
-import com.jidesoft.dialog.StandardDialog;
 import com.jidesoft.icons.JideIconsFactory;
 import net.miginfocom.swing.MigLayout;
 
@@ -19,7 +19,6 @@ import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
-
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Font;
@@ -35,7 +34,7 @@ import java.net.URL;
  * @author Bozhidar Batsov
  * @since 0.3
  */
-public class AboutDialog extends StandardDialog {
+public class AboutDialog extends BaseDialog {
     private static final Translator TEAM_TRANSLATOR = Translator.getTranslator("Team");
     private static final Translator TRANSLATOR = Translator.getTranslator("AboutDialog");
     private JTextPane infoTextPane = new JTextPane();

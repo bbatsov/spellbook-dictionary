@@ -7,6 +7,7 @@ package com.drowltd.spellbook.ui.desktop;
 import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
+import com.drowltd.spellbook.ui.swing.component.BaseDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +35,7 @@ public class PreferencesExtractor {
     private static final PreferencesManager PM = PreferencesManager.getInstance();
 
     public static void extract(SpellbookFrame spellbookFrame, PreferencesDialog preferencesDialog) {
-        if (preferencesDialog.showDialog()) {
+        if (preferencesDialog.showDialog() == BaseDialog.RESULT_AFFIRMED) {
             extractFontPreferences(spellbookFrame, preferencesDialog);
             extractExamPreferences(preferencesDialog);
             // general settings should be last since they may require restart to take effect

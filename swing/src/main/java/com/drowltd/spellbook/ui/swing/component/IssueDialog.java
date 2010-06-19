@@ -5,7 +5,6 @@ import com.drowltd.spellbook.core.service.CodeHostingService;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.drowltd.spellbook.ui.swing.util.SwingUtil;
 import com.jidesoft.dialog.ButtonPanel;
-import com.jidesoft.dialog.StandardDialog;
 import com.jidesoft.icons.JideIconsFactory;
 import net.miginfocom.swing.MigLayout;
 
@@ -27,12 +26,11 @@ import java.awt.event.ActionListener;
  *         Date: Jun 5, 2010
  *         Time: 7:09:03 PM
  */
-public class IssueDialog extends StandardDialog {
+public class IssueDialog extends BaseDialog {
 
     private static final int MIN_WIDTH = 350;
     private static final int MIN_HEIGHT = 400;
     private static final int BORDER_THICKNESS = 1;
-
 
     private JTextField titleTextField;
     private JTextArea contentTextArea;
@@ -44,6 +42,8 @@ public class IssueDialog extends StandardDialog {
     private static final Translator TRANSLATOR = Translator.getTranslator("IssueDialog");
 
     public IssueDialog() {
+        super(null, true);
+
         initComponents0();
     }
 
@@ -135,10 +135,5 @@ public class IssueDialog extends StandardDialog {
 
     private void showMessage(String message) {
         JOptionPane.showMessageDialog(this, message, TRANSLATOR.translate("Banner(Title)"), JOptionPane.INFORMATION_MESSAGE);
-    }
-
-    public void showDialog() {
-        pack();
-        setVisible(true);
     }
 }

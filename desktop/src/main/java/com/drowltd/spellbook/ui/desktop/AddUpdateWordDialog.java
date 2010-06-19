@@ -12,11 +12,11 @@ package com.drowltd.spellbook.ui.desktop;
 
 import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.model.Dictionary;
+import com.drowltd.spellbook.ui.swing.component.BaseDialog;
 import com.drowltd.spellbook.ui.swing.validation.ButtonControllingDocumentListener;
 import com.jidesoft.dialog.BannerPanel;
 import com.jidesoft.dialog.ButtonPanel;
 import com.jidesoft.dialog.ButtonResources;
-import com.jidesoft.dialog.StandardDialog;
 import com.jidesoft.icons.JideIconsFactory;
 import net.miginfocom.swing.MigLayout;
 
@@ -44,7 +44,7 @@ import java.util.ResourceBundle;
 /**
  * @author bozhidar
  */
-public class AddUpdateWordDialog extends StandardDialog {
+public class AddUpdateWordDialog extends BaseDialog {
 
     private static final Translator TRANSLATOR = Translator.getTranslator("AddUpdateWordDialog");
     private static final Translator STANDARD_DIALOG_TRANSLATOR = Translator.getTranslator("StandardDialog");

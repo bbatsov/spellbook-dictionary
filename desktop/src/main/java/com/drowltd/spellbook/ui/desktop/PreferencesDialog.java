@@ -6,12 +6,12 @@ import com.drowltd.spellbook.core.model.Difficulty;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.core.service.DictionaryService;
+import com.drowltd.spellbook.ui.swing.component.BaseDialog;
 import com.drowltd.spellbook.ui.swing.component.DictionaryComboBox;
 import com.drowltd.spellbook.ui.swing.component.DifficultyComboBox;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.jidesoft.dialog.ButtonPanel;
 import com.jidesoft.dialog.ButtonResources;
-import com.jidesoft.dialog.StandardDialog;
 import com.jidesoft.plaf.UIDefaultsLookup;
 import net.miginfocom.swing.MigLayout;
 
@@ -57,7 +57,7 @@ import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preferen
  * @author Bozhidar Batsov
  * @since 0.2
  */
-public class PreferencesDialog extends StandardDialog {
+public class PreferencesDialog extends BaseDialog {
 
     private static final Translator TRANSLATOR = Translator.getTranslator("PreferencesDialog");
     private static final PreferencesManager PM = PreferencesManager.getInstance();
@@ -400,12 +400,6 @@ public class PreferencesDialog extends StandardDialog {
 
     public String getSelectedLookAndFeel() {
         return (String) lookAndFeelComboBox.getSelectedItem();
-    }
-
-    public boolean showDialog() {
-        setVisible(true);
-
-        return getDialogResult() == RESULT_AFFIRMED;
     }
 
     public void disableTrayOptions() {
