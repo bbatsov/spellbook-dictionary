@@ -10,9 +10,11 @@ import org.slf4j.*;
 
 import javax.accessibility.*;
 import javax.swing.*;
+import javax.swing.event.*;
 import javax.swing.text.*;
 import javax.swing.undo.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 import java.util.List;
@@ -23,12 +25,18 @@ import java.util.regex.*;
 public class SpellCheckTab extends JPanel {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellCheckTab.class);
-    private static final ExecutorService executor = Executors.newCachedThreadPool();
     private static final Map<Language, SpellChecker> spellCheckersMap = new HashMap<Language, SpellChecker>();
     private static final Translator TRANSLATOR = Translator.getTranslator("SpellCheckTab");
     private static final Set<String> userMisspelledSet = new HashSet<String>();
+    private static final long WAITING_PERIOD = 3000L;
+
+    private final ExecutorService executor = new WaitingExecutor(1, 1,
+            60, TimeUnit.SECONDS,
+            new LinkedBlockingQueue(1),
+            new ThreadPoolExecutor.DiscardOldestPolicy());
 
     private FileTextPane fileTextPane;
+    private JScrollPane scrollPane;
     private UndoManager undoManager = new UndoManager();
     private SpellCheckPopupMenu popupMenu;
     private Language selectedLanguage = Language.ENGLISH;
@@ -50,10 +58,55 @@ public class SpellCheckTab extends JPanel {
 
     private void init() {
         setLayout(new BorderLayout());
-        fileTextPane.getDocument().addUndoableEditListener(undoManager);
-        add(fileTextPane, BorderLayout.CENTER);
+        scrollPane = new JScrollPane(fileTextPane);
+        add(scrollPane, BorderLayout.CENTER);
 
         popupMenu = new SpellCheckPopupMenu(this);
+
+        fileTextPane.getDocument().addUndoableEditListener(undoManager);
+        fileTextPane.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent evt) {
+                jFileTextPaneMouseClicked(evt);
+            }
+        });
+
+        fileTextPane.getDocument().addDocumentListener(new DocumentListener() {
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                spellCheck(true);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                spellCheck(true);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                spellCheck(true);
+            }
+        });
+
+        scrollPane.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
+
+            @Override
+            public void adjustmentValueChanged(AdjustmentEvent e) {
+                if (e.getValueIsAdjusting() || fileTextPane.getSelectedText() != null) {
+                    return;
+                }
+
+                spellCheck(false);
+            }
+        });
+
+    }
+
+    private void jFileTextPaneMouseClicked(MouseEvent evt) {
+        if (evt.getButton() == MouseEvent.BUTTON3) {
+            popupMenu.show(evt);
+        }
     }
 
 
@@ -78,7 +131,6 @@ public class SpellCheckTab extends JPanel {
             throw new IllegalArgumentException("cursorPosition < 0");
         }
 
-        //@todo Extract Method
         if (Character.isUpperCase(misspelledWord.getWord().charAt(0))) {
             if (misspelledWord.getWord().equals(misspelledWord.getWord().toUpperCase())) {
                 correction = correction.toUpperCase();
@@ -145,7 +197,7 @@ public class SpellCheckTab extends JPanel {
     }
 
 
-    public boolean misspelled(String word) {
+    private boolean misspelled(String word) {
         if (word == null) {
             return false;
         }
@@ -236,12 +288,12 @@ public class SpellCheckTab extends JPanel {
         return null;
     }
 
-    public boolean contains(String word) {
+    private boolean contains(String word) {
         return misspelledMap.keySet().contains(word);
     }
 
 
-    public void addMisspelled(MisspelledWord misspelledWord) {
+    private void addMisspelled(MisspelledWord misspelledWord) {
         if (misspelledWord == null) {
             LOGGER.error("misspelledWord is null");
             throw new NullPointerException("misspelledWord is null");
@@ -253,7 +305,7 @@ public class SpellCheckTab extends JPanel {
     }
 
 
-    public void addOccurance(String mWord, int startIndex) {
+    private void addOccurance(String mWord, int startIndex) {
         if (mWord == null) {
             LOGGER.error("word is null");
             throw new NullPointerException("word is null");
@@ -272,7 +324,7 @@ public class SpellCheckTab extends JPanel {
     }
 
 
-    public Collection<MisspelledWord> getMisspelled() {
+    private Collection<MisspelledWord> getMisspelled() {
         return Collections.unmodifiableCollection(misspelledMap.values());
     }
 
@@ -286,7 +338,7 @@ public class SpellCheckTab extends JPanel {
         DictionaryService.getInstance().addRankEntry(misspelled, selectedLanguage);
     }
 
-    public void highlightMisspelled() {
+    private void highlightMisspelled() {
         if (SwingUtilities.isEventDispatchThread()) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
@@ -427,5 +479,37 @@ public class SpellCheckTab extends JPanel {
 
             return alloc;
         }
+    }
+
+    private class WaitingExecutor extends ThreadPoolExecutor {
+
+        private volatile boolean added = false;
+
+        public WaitingExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, RejectedExecutionHandler handler) {
+            super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, handler);
+        }
+
+        @Override
+        protected void beforeExecute(Thread t, Runnable r) {
+
+            boolean interrupted = false;
+            try {
+                Thread.sleep(WAITING_PERIOD);
+            } catch (InterruptedException e) {
+                interrupted = true;
+            }
+
+            if (interrupted || added) {
+                added = false;
+                throw new IllegalStateException();
+            }
+        }
+
+        @Override
+        public Future<?> submit(Runnable r) {
+            added = true;
+            return super.submit(r);
+        }
+
     }
 }
