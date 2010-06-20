@@ -17,12 +17,6 @@ public class SpellbookDefaultExceptionHandler implements Thread.UncaughtExceptio
 
     @Override
     public void uncaughtException(final Thread t, final Throwable e) {
-        try {
-            CodeHostingService.getInstance().createIssue(e);
-        } catch (Exception e0) {
-            LOGGER.error(e0.getMessage());
-        }
-
         if (SwingUtilities.isEventDispatchThread()) {
             showException(t, e);
         } else {
@@ -48,9 +42,14 @@ public class SpellbookDefaultExceptionHandler implements Thread.UncaughtExceptio
         // a null owner, which means this dialog may get buried behind
         // some other screen.
         ErrorDialog errorDialog = new ErrorDialog(null, e);
-        errorDialog.pack();
-        errorDialog.setLocationRelativeTo(null);
-        errorDialog.setVisible(true);
+
+        if (errorDialog.showDialog() == BaseDialog.RESULT_AFFIRMED) {
+            try {
+                CodeHostingService.getInstance().createIssue(e);
+            } catch (Exception e0) {
+                LOGGER.error(e0.getMessage());
+            }
+        }
     }
 
     private void logException(Thread t, Throwable e) {
