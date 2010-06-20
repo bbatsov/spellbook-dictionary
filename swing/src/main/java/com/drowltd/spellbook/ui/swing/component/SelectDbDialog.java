@@ -81,6 +81,9 @@ public class SelectDbDialog extends BaseDialog implements PropertyChangeListener
         downloadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // todo - change this flag - it caused a serious problem in the past
+                downloaded = true;
+
                 //careful not to overwrite existing files
                 File file = new File(getDbPath());
                 if (file.exists() &&
@@ -259,7 +262,6 @@ public class SelectDbDialog extends BaseDialog implements PropertyChangeListener
             Toolkit.getDefaultToolkit().beep();
             downloadButton.setEnabled(true);
             okButton.getAction().setEnabled(true);
-            downloaded = true;
         }
 
     }

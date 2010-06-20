@@ -104,6 +104,14 @@ public class SpellbookApp {
     }
 
     public static void init() {
+        // check for spellbook home dir presence and create if necessary
+        final File userDir = new File(SPELLBOOK_USER_DIR);
+        if (!userDir.exists()) {
+            if (userDir.mkdir()) {
+                LOGGER.info("Successfully create user dir: " + SPELLBOOK_USER_DIR);
+            }
+        }
+
         // install the default exception handler
         Thread.setDefaultUncaughtExceptionHandler(new SpellbookDefaultExceptionHandler());
 
@@ -222,13 +230,6 @@ public class SpellbookApp {
     }
 
     private static boolean verifyDbPresence() {
-        final File userDir = new File(SPELLBOOK_USER_DIR);
-        if (!userDir.exists()) {
-            if (userDir.mkdir()) {
-                LOGGER.info("Successfully create user dir: " + SPELLBOOK_USER_DIR);
-            }
-        }
-
         File file = new File(SPELLBOOK_DB_PATH);
 
         if (!file.exists() || file.isDirectory()) {
