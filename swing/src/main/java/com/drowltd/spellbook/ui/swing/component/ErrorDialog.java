@@ -88,19 +88,28 @@ public class ErrorDialog extends BaseDialog {
     @Override
     public ButtonPanel createButtonPanel() {
         ButtonPanel buttonPanel = new ButtonPanel();
-        JButton closeButton = new JButton();
+        JButton submitButton = new JButton();
+        JButton discardButton = new JButton();
         JButton detailButton = new JButton();
         detailButton.setMnemonic('D');
-        closeButton.setName(OK);
-        buttonPanel.addButton(closeButton, ButtonPanel.AFFIRMATIVE_BUTTON);
+        submitButton.setName(OK);
+        buttonPanel.addButton(submitButton, ButtonPanel.AFFIRMATIVE_BUTTON);
+        buttonPanel.addButton(discardButton, ButtonPanel.CANCEL_BUTTON);
         buttonPanel.addButton(detailButton, ButtonPanel.OTHER_BUTTON);
 
-        closeButton.setAction(new AbstractAction(TRANSLATOR.translate("Close(Button)")) {
+        submitButton.setAction(new AbstractAction(TRANSLATOR.translate("Submit(Button)")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setDialogResult(RESULT_AFFIRMED);
                 setVisible(false);
-                dispose();
+            }
+        });
+
+        discardButton.setAction(new AbstractAction(TRANSLATOR.translate("Discard(Button)")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setDialogResult(RESULT_CANCELLED);
+                setVisible(false);
             }
         });
 
@@ -119,9 +128,9 @@ public class ErrorDialog extends BaseDialog {
             }
         });
 
-        setDefaultCancelAction(closeButton.getAction());
-        setDefaultAction(closeButton.getAction());
-        getRootPane().setDefaultButton(closeButton);
+        setDefaultCancelAction(submitButton.getAction());
+        setDefaultAction(submitButton.getAction());
+        getRootPane().setDefaultButton(submitButton);
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         buttonPanel.setSizeConstraint(ButtonPanel.NO_LESS_THAN); // since the checkbox is quite wide, we don't want all of them have the same size.
         return buttonPanel;
