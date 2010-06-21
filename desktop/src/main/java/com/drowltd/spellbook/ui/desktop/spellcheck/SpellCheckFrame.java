@@ -5,27 +5,17 @@ import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.core.spellcheck.HunSpellChecker;
-import com.drowltd.spellbook.core.spellcheck.MapSpellChecker;
 import com.drowltd.spellbook.ui.swing.component.*;
 import com.drowltd.spellbook.ui.swing.util.*;
 import com.jidesoft.swing.DefaultOverlayable;
-import com.jidesoft.swing.OverlayableUtils;
 import net.miginfocom.swing.MigLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.accessibility.AccessibleEditableText;
 import javax.swing.*;
-import javax.swing.Timer;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.text.BadLocationException;
-import javax.swing.undo.UndoManager;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.AdjustmentEvent;
-import java.awt.event.AdjustmentListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -33,9 +23,6 @@ import java.awt.event.MouseEvent;
 import java.io.*;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author iivalchev
@@ -47,34 +34,21 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellCheckFrame.class);
     private static final int MIN_WIDTH = 540;
     private static final int MIN_HEIGHT = 550;
-    private static final long MIN_SPELLCHECK_HEAP_SIZE = 100000000l;
 
-    private UndoManager undoManager = new UndoManager();
-    private SpellCheckPopupMenu popupMenu;
-    private SpellCheckHighlighter checkHighlighter;
-    private Timer documentChangedTimer;
-    private Timer adjustmentValueTimer;
+
     private Language selectedLanguage = Language.ENGLISH;
     //components
     private JMenu jDictionaryMenu;
     private JLabel jLanguageLabel;
-    private JScrollPane jScrollPane;
     private JLabel jStatusLabel;
-    private JTextPane jTextPane;
     private JTabbedPane jTabbedPane;
     private JFileChooser jFileChooser;
-    private DefaultOverlayable overlay;
-    private JProgressBar progressBar;
 
-    private boolean eventsEnabled = false;
-    private static final ExecutorService executor = Executors.newCachedThreadPool();
     private Map<JComponent, FileTextPane> tabsMap = new HashMap<JComponent, FileTextPane>();
 
 
     public static SpellCheckFrame getInstance(JFrame parent) throws HeapSizeException, SpellCheckerException {
-//        if (Runtime.getRuntime().maxMemory() <= MIN_SPELLCHECK_HEAP_SIZE) {
-//            throw new HeapSizeException();
-//        }
+
         if (INSTANCE == null) {
             INSTANCE = new SpellCheckFrame(parent);
         }
@@ -92,32 +66,10 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
 
     private void initComponents0(JFrame parent) {
 
-        jScrollPane = new JScrollPane() {
-            @Override
-            public void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                if (!eventsEnabled)
-                    OverlayableUtils.repaintOverlayable(this);
-
-            }
-        };
-
         jFileChooser = new JFileChooser();
         jTabbedPane = new JTabbedPane();
         JComponent tab = createNewTab();
-        jTabbedPane.addTab(tabsMap.get(tab).getFileName(), tab);
-        if (jFileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-            JComponent tab1 = createNewTab(jFileChooser.getSelectedFile());
-            jTabbedPane.addTab(tabsMap.get(tab1).getFileName(), tab1);
-        }
-
-
-        jTextPane = new JTextPane();
-        progressBar = new JProgressBar();
-        progressBar.setIndeterminate(true);
-//        overlay = new DefaultOverlayable(jScrollPane, progressBar, DefaultOverlayable.CENTER);
-        overlay = new DefaultOverlayable(jTabbedPane, progressBar, DefaultOverlayable.CENTER);
-
+        jTabbedPane.addTab("tab", tab);
 
         jStatusLabel = new JLabel();
         jLanguageLabel = new JLabel();
@@ -135,15 +87,6 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
 
         setTitle("SpellBook MapSpellChecker");
 
-        jTextPane.setBackground(Color.white);
-        jTextPane.addMouseListener(new MouseAdapter() {
-
-            @Override
-            public void mouseClicked(MouseEvent evt) {
-                jTextPaneMouseClicked(evt);
-            }
-        });
-        jScrollPane.setViewportView(jTextPane);
 //        jScrollPane.setViewportView(overlay);
 
         jLanguageLabel.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -180,7 +123,7 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
 
             @Override
             public void actionPerformed(ActionEvent evt) {
-                jUndoMenuItemActionPerformed(evt);
+
             }
         });
         jMenu2.add(jUndoMenuItem);
@@ -191,7 +134,7 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
 
             @Override
             public void actionPerformed(ActionEvent evt) {
-                jRedoMenuItemActionPerformed(evt);
+
             }
         });
         jMenu2.add(jRedoMenuItem);
@@ -203,7 +146,7 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
 
             @Override
             public void actionPerformed(ActionEvent evt) {
-                jCutMenuItemActionPerformed(evt);
+
             }
         });
         jMenu2.add(jCutMenuItem);
@@ -214,7 +157,7 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
 
             @Override
             public void actionPerformed(ActionEvent evt) {
-                jCopyMenuItemActionPerformed(evt);
+
             }
         });
         jMenu2.add(jCopyMenuItem);
@@ -225,7 +168,7 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
 
             @Override
             public void actionPerformed(ActionEvent evt) {
-                jPasteMenuItemActionPerformed(evt);
+
             }
         });
         jMenu2.add(jPasteMenuItem);
@@ -241,7 +184,7 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
         MigLayout migLayout = new MigLayout("wrap 1", "0[grow]0", "0[grow][]");
         getContentPane().setLayout(migLayout);
 
-        add(overlay, "grow");
+        add(jTabbedPane, "grow");
         add(jStatusLabel, "split 2, align left, growx");
         add(jLanguageLabel, "align right, growx");
 
@@ -249,43 +192,6 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
         setLocationRelativeTo(parent);
         pack();
 
-    }
-
-    private void setTextEditable(boolean canEdit) {
-        overlay.setOverlayVisible(!canEdit);
-        jTextPane.setEnabled(canEdit);
-        eventsEnabled = canEdit;
-    }
-
-    private void jTextPaneMouseClicked(MouseEvent evt) {
-        if (evt.getButton() == MouseEvent.BUTTON3) {
-            popupMenu.show(evt);
-        }
-        //popupMenu.show(evt);
-    }
-
-    private void jUndoMenuItemActionPerformed(ActionEvent evt) {
-        if (undoManager.canUndo()) {
-            undoManager.undo();
-        }
-    }
-
-    private void jRedoMenuItemActionPerformed(ActionEvent evt) {
-        if (undoManager.canRedo()) {
-            undoManager.redo();
-        }
-    }
-
-    private void jCutMenuItemActionPerformed(ActionEvent evt) {
-        jTextPane.cut();
-    }
-
-    private void jCopyMenuItemActionPerformed(ActionEvent evt) {
-        jTextPane.copy();
-    }
-
-    private void jPasteMenuItemActionPerformed(ActionEvent evt) {
-        jTextPane.paste();
     }
 
     private void jExitMenuItemActionPerformed(ActionEvent evt) {
@@ -300,129 +206,13 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
      */
     private void init() throws SpellCheckerException {
 
-        HunSpellChecker.init(selectedLanguage);
-
         setIconImage(IconManager.getImageIcon("spellcheck.png", IconManager.IconSize.SIZE16).getImage());
-
-        jScrollPane.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
-
-            @Override
-            public void adjustmentValueChanged(AdjustmentEvent e) {
-                jScrollPaneAdjustmentValueChanged(e);
-            }
-        });
-
-        jTextPane.getDocument().addDocumentListener(new DocumentListener() {
-
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                triggerMisspelledSearch(documentChangedTimer, true);
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                triggerMisspelledSearch(documentChangedTimer, true);
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                triggerMisspelledSearch(documentChangedTimer, true);
-            }
-        });
-
-        jTextPane.getDocument().addUndoableEditListener(undoManager);
-
-//        EventQueue.invokeLater(new Runnable() {
-//
-//            @Override
-//            public void run() {
-//                popupMenu = SpellCheckPopupMenu.init(INSTANCE);
-//                checkHighlighter = SpellCheckHighlighter.init(jTextPane.getHighlighter());
-////                loadSpellChecker();
-//            }
-//        });
-
-        int INTERVAL = 550;
-        documentChangedTimer = new Timer(INTERVAL, new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                documentChangedTimer.stop();
-                MisspelledFinder.getInstance().findMisspelled(getVisibleText(), true);
-            }
-        });
-
-        adjustmentValueTimer = new Timer(INTERVAL, new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                adjustmentValueTimer.stop();
-                MisspelledFinder.getInstance().findMisspelled(getVisibleText(), false);
-            }
-        });
-
-        StatusManager.getInstance().addObserver(this);
-        setLanguageStatus(languageToLowerCase(selectedLanguage));
-
-        popupMenu = SpellCheckPopupMenu.init(this);
-        checkHighlighter = SpellCheckHighlighter.init(jTextPane.getHighlighter());
-
-        setTextEditable(true);
-
     }
 
     private String languageToLowerCase(Language language) {
         return language.toString().substring(0, 1) + language.toString().substring(1).toLowerCase();
     }
 
-    private void triggerMisspelledSearch(Timer timer, boolean removeHighlightOnCaret) {
-        if (timer == null || !eventsEnabled) {
-            return;
-        }
-
-        if (removeHighlightOnCaret) {
-            checkHighlighter.removeHighlight(jTextPane.getCaretPosition(), jTextPane.getCaretPosition());
-        }
-
-        if (timer.isRunning()) {
-            timer.restart();
-        } else {
-            timer.start();
-        }
-    }
-
-    private void jScrollPaneAdjustmentValueChanged(AdjustmentEvent e) {
-
-        if (e.getValueIsAdjusting() || documentChangedTimer.isRunning() || jTextPane.getSelectedText() != null) {
-            return;
-        }
-
-        triggerMisspelledSearch(adjustmentValueTimer, false);
-    }
-
-    /**
-     *
-     */
-    private void loadSpellChecker() {
-        setTextEditable(false);
-
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                Map<String, Integer> ratingsMap = DictionaryService.getInstance().getRatings(selectedLanguage);
-                new MapSpellChecker(ratingsMap, selectedLanguage);
-
-                EventQueue.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        setTextEditable(true);
-                        triggerMisspelledSearch(documentChangedTimer, true);
-                        jTextPane.requestFocus();
-                    }
-                });
-            }
-        });
-    }
 
     private void setSelectedLanguage(Language language) {
         assert language != null : "selectedLanguage is null";
@@ -437,8 +227,6 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
 
-            setTextEditable(true);
-            triggerMisspelledSearch(documentChangedTimer, true);
             setLanguageStatus(languageToLowerCase(language));
         }
     }
@@ -454,100 +242,6 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
 
     }
 
-    /**
-     * Gets the currently visible text in the jTextPane.
-     *
-     * @return VisibleText repersentig currently visible text
-     */
-    public VisibleText getVisibleText() {
-        int offset;
-        int length;
-
-        JViewport viewPort = (JViewport) jTextPane.getParent();
-        offset = jTextPane.viewToModel(viewPort.getViewRect().getLocation());
-
-        LOGGER.info("offset: " + offset);
-        int x = (int) viewPort.getViewRect().getWidth();
-        int y = (int) viewPort.getVisibleRect().getHeight();
-
-        Point endPoint = new Point(x, y);
-        length = jTextPane.viewToModel(endPoint);
-
-        LOGGER.info("length: " + length);
-
-        final int actualLength = jTextPane.getDocument().getLength();
-
-        if ((offset + length) > actualLength) {
-            length = actualLength - offset;
-        }
-
-        try {
-            return new VisibleText(jTextPane.getText(offset, length), offset);
-        } catch (BadLocationException ex) {
-            LOGGER.error(ex.getMessage() + " offset: " + offset + " length: " + length + " text length: " + jTextPane.getDocument().getLength());
-            throw new IllegalStateException(ex.getMessage());
-        }
-    }
-
-    public void correct(String correction, MisspelledWord misspelledWord, int cursorPosition) {
-        if (correction == null) {
-            LOGGER.error("correction is null");
-            throw new NullPointerException("correction is null");
-        }
-
-        if (correction.isEmpty()) {
-            LOGGER.error("correction is empty");
-            throw new IllegalArgumentException("correction is empty");
-        }
-
-        if (misspelledWord == null) {
-            LOGGER.error("misspelledWord is null");
-            throw new NullPointerException("misspelledWord is null");
-        }
-
-        if (cursorPosition < 0) {
-            LOGGER.error("cursorPosition < 0");
-            throw new IllegalArgumentException("cursorPosition < 0");
-        }
-
-        //@todo Extract Method
-        if (Character.isUpperCase(misspelledWord.getWord().charAt(0))) {
-            if (misspelledWord.getWord().equals(misspelledWord.getWord().toUpperCase())) {
-                correction = correction.toUpperCase();
-            } else {
-                correction = Character.toUpperCase(correction.charAt(0)) + correction.substring(1);
-            }
-        }
-
-        final AccessibleEditableText editableText = jTextPane.getAccessibleContext().getAccessibleEditableText();
-
-        Pattern p = Pattern.compile("\\b" + misspelledWord.getWord() + "\\b");
-        do {
-            Matcher m = p.matcher(jTextPane.getText());
-            if (!m.find()) {
-                break;
-            }
-            String misspelled = m.group();
-            int end = m.end();
-            int start = end - (misspelled.length());
-
-            checkHighlighter.removeHighlight(start, end);
-            editableText.replaceText(start, end, correction);
-
-        } while (true);
-
-        if (cursorPosition > -1) {
-            jTextPane.setCaretPosition(cursorPosition);
-        }
-
-        StatusManager.getInstance().setStatus(misspelledWord.getWord() + " corrected with " + correction);
-
-        MisspelledFinder.getInstance().findMisspelled(INSTANCE.getVisibleText(), true);
-    }
-
-    JTextPane getjTextPane() {
-        return jTextPane;
-    }
 
     @Override
     public void setStatus(final String message) {
@@ -603,44 +297,9 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
     }
 
     private JComponent createNewTab() {
-        FileTextPane textPane = new FileTextPane();
-        JScrollPane scrollPane = new JScrollPane(textPane);
-        tabsMap.put(scrollPane, textPane);
+        SpellCheckTab tab = new SpellCheckTab();
+//        tabsMap.put(scrollPane, textPane);
 
-        return scrollPane;
+        return tab;
     }
-
-
-    /**
-     * Represents a visble text.
-     */
-    public static class VisibleText {
-
-        private String text;
-        private int offset;
-
-        public VisibleText(String text, int offset) {
-            if (text == null) {
-                LOGGER.error("text is null");
-                throw new NullPointerException("text is null");
-            }
-
-            if (offset < 0) {
-                LOGGER.error("offset is < 0");
-                throw new IllegalArgumentException("offset is < 0");
-            }
-
-            this.text = text;
-            this.offset = offset;
-        }
-
-        public int getOffset() {
-            return offset;
-        }
-
-        public String getText() {
-            return text;
-        }
-    }
-
 }
