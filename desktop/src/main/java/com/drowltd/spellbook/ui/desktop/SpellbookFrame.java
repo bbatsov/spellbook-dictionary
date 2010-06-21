@@ -52,6 +52,7 @@ import javax.swing.JTextPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
+import javax.swing.border.BevelBorder;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
@@ -59,7 +60,6 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.text.DefaultEditorKit;
-
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -1398,6 +1398,8 @@ public class SpellbookFrame extends JFrame {
         memoryProgressBar.setStringPainted(true);
 
         statusBar.add(memoryProgressBar, "right");
+
+        statusBar.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
         if (PM.getBoolean(Preference.SHOW_STATUSBAR, true)) {
             topPanel.add(statusBar, "south, growx");
