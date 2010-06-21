@@ -59,6 +59,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.text.DefaultEditorKit;
+
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -1439,11 +1440,13 @@ public class SpellbookFrame extends JFrame {
     }
 
     private void showSyncDialog() {
-
+        SyncDialog syncDialog = new SyncDialog(this, true);
+        syncDialog.showDialog();
     }
 
     private void showImportDialog() {
-
+        ImportDialog importDialog = new ImportDialog(this, true);
+        importDialog.showDialog();
     }
 
     private void initDictionaries() {
