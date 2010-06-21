@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Frame;
@@ -33,7 +34,7 @@ public class ErrorDialog extends BaseDialog {
     public ErrorDialog(Frame parent, Throwable throwable) throws HeadlessException {
         super(parent, true);
 
-        setTitle("ErrorDialog(Title)");
+        setTitle(TRANSLATOR.translate("ErrorDialog(Title)"));
 
         this.throwable = throwable;
     }
