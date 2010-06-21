@@ -28,20 +28,20 @@ public class SpellCheckTab extends JPanel {
     private static final Map<Language, SpellChecker> spellCheckersMap = new HashMap<Language, SpellChecker>();
     private static final Translator TRANSLATOR = Translator.getTranslator("SpellCheckTab");
     private static final Set<String> userMisspelledSet = new HashSet<String>();
-    private static final long WAITING_PERIOD = 3000L;
+    private static final long WAITING_PERIOD = 500L;
 
     private final ExecutorService executor = new WaitingExecutor(1, 1,
             60, TimeUnit.SECONDS,
             new LinkedBlockingQueue(1),
             new ThreadPoolExecutor.DiscardOldestPolicy());
+    private volatile boolean added = false;
 
     private FileTextPane fileTextPane;
-    private JScrollPane scrollPane;
     private UndoManager undoManager = new UndoManager();
     private SpellCheckPopupMenu popupMenu;
     private Language selectedLanguage = Language.ENGLISH;
     private Future<?> spellCheckTask;
-    private Highlighter highlighter = fileTextPane.getHighlighter();
+    private Highlighter highlighter;
     private final javax.swing.text.Highlighter.HighlightPainter painter = new UnderlineHighlightPainter(Color.red);
 
     private final Map<String, MisspelledWord> misspelledMap = new ConcurrentHashMap<String, MisspelledWord>();
@@ -58,7 +58,7 @@ public class SpellCheckTab extends JPanel {
 
     private void init() {
         setLayout(new BorderLayout());
-        scrollPane = new JScrollPane(fileTextPane);
+        JScrollPane scrollPane = new JScrollPane(fileTextPane);
         add(scrollPane, BorderLayout.CENTER);
 
         popupMenu = new SpellCheckPopupMenu(this);
@@ -101,6 +101,8 @@ public class SpellCheckTab extends JPanel {
             }
         });
 
+        highlighter = fileTextPane.getHighlighter();
+
     }
 
     private void jFileTextPaneMouseClicked(MouseEvent evt) {
@@ -109,6 +111,9 @@ public class SpellCheckTab extends JPanel {
         }
     }
 
+    public void setSelectedLanguage(Language selectedLanguage) {
+        this.selectedLanguage = selectedLanguage;
+    }
 
     public void correct(String correction, MisspelledWord misspelledWord, int cursorPosition) {
         if (correction == null) {
@@ -225,7 +230,9 @@ public class SpellCheckTab extends JPanel {
         spellCheckTask = executor.submit(new Runnable() {
             @Override
             public void run() {
-                SpellCheckFrame.VisibleText text = getVisibleText();
+                if (added) return;
+
+                VisibleText text = getVisibleText();
 
                 Pattern p = Pattern.compile("\\p{L}+");
                 Matcher m = p.matcher(text.getText());
@@ -339,13 +346,15 @@ public class SpellCheckTab extends JPanel {
     }
 
     private void highlightMisspelled() {
-        if (SwingUtilities.isEventDispatchThread()) {
+        if (!SwingUtilities.isEventDispatchThread()) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     highlight();
                 }
             });
+        } else {
+            highlight();
         }
     }
 
@@ -375,7 +384,7 @@ public class SpellCheckTab extends JPanel {
         }
     }
 
-    private SpellCheckFrame.VisibleText getVisibleText() {
+    private VisibleText getVisibleText() {
         int offset;
         int length;
 
@@ -398,7 +407,7 @@ public class SpellCheckTab extends JPanel {
         }
 
         try {
-            return new SpellCheckFrame.VisibleText(fileTextPane.getText(offset, length), offset);
+            return new VisibleText(fileTextPane.getText(offset, length), offset);
         } catch (BadLocationException ex) {
             LOGGER.error(ex.getMessage() + " offset: " + offset + " length: " + length + " text length: " + fileTextPane.getDocument().getLength());
             throw new IllegalStateException(ex.getMessage());
@@ -483,7 +492,6 @@ public class SpellCheckTab extends JPanel {
 
     private class WaitingExecutor extends ThreadPoolExecutor {
 
-        private volatile boolean added = false;
 
         public WaitingExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, RejectedExecutionHandler handler) {
             super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, handler);
@@ -492,17 +500,13 @@ public class SpellCheckTab extends JPanel {
         @Override
         protected void beforeExecute(Thread t, Runnable r) {
 
-            boolean interrupted = false;
             try {
+                added = false;
                 Thread.sleep(WAITING_PERIOD);
             } catch (InterruptedException e) {
-                interrupted = true;
+                t.interrupt();
             }
 
-            if (interrupted || added) {
-                added = false;
-                throw new IllegalStateException();
-            }
         }
 
         @Override
@@ -511,5 +515,34 @@ public class SpellCheckTab extends JPanel {
             return super.submit(r);
         }
 
+    }
+
+    public static class VisibleText {
+
+        private String text;
+        private int offset;
+
+        public VisibleText(String text, int offset) {
+            if (text == null) {
+                LOGGER.error("text is null");
+                throw new NullPointerException("text is null");
+            }
+
+            if (offset < 0) {
+                LOGGER.error("offset is < 0");
+                throw new IllegalArgumentException("offset is < 0");
+            }
+
+            this.text = text;
+            this.offset = offset;
+        }
+
+        public int getOffset() {
+            return offset;
+        }
+
+        public String getText() {
+            return text;
+        }
     }
 }

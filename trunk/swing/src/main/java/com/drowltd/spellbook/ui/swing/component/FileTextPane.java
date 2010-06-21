@@ -5,6 +5,7 @@ import org.slf4j.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.text.*;
+import java.awt.*;
 import java.io.*;
 
 /**
@@ -25,6 +26,7 @@ public class FileTextPane extends JTextPane {
         this();
         setFile(file);
         readFromFile(file);
+        setBackground(Color.WHITE);
     }
 
     public FileTextPane() {
