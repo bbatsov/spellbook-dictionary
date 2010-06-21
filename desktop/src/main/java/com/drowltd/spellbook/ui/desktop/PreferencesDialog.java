@@ -264,6 +264,9 @@ public class PreferencesDialog extends BaseDialog {
 
                 SwingUtilities.updateComponentTreeUI(getContentPane());
                 SwingUtilities.updateComponentTreeUI(parent);
+
+                // the new look and feel may displace components so we need to pack the dialog again
+                pack();
             }
         });
     }

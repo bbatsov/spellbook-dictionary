@@ -71,10 +71,12 @@ public class SpellbookApp {
             System.out.println(bounds);
         } else {
             Toolkit toolkit = Toolkit.getDefaultToolkit();
-            bounds = new Rectangle(toolkit.getScreenSize().width / 2, toolkit.getScreenSize().height / 2, icon.getIconWidth(), icon.getIconHeight());
+            bounds = new Rectangle(toolkit.getScreenSize().width / 2 - icon.getIconWidth() / 2,
+                    toolkit.getScreenSize().height / 2  - icon.getIconHeight() / 2,
+                    icon.getIconWidth(), icon.getIconHeight());
         }
 
-        splashWindow.setBounds((int) bounds.getX() - icon.getIconWidth() / 2, (int) bounds.getY() - icon.getIconHeight() / 2, (int) bounds.getWidth(), (int) bounds.getHeight());
+        splashWindow.setBounds((int) bounds.getX(), (int) bounds.getY(), (int) bounds.getWidth(), (int) bounds.getHeight());
         JPanel panel = new JPanel(new MigLayout("wrap 1", "[][grow]", "[][grow]"));
 
         JLabel splashImage = new JLabel();
