@@ -4,20 +4,20 @@ import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.DictionaryEntry;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.model.RankEntry;
-
-import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Set;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import java.lang.reflect.Field;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
- *
  * @author ikkari
  */
 @Ignore
@@ -54,22 +54,26 @@ public class DictionaryServiceTest {
     }
 
     //@Test
+
     public void testGetInstance() {
         assertNotNull(dictionaryService);
     }
 
     //@Test
+
     public void testGetDictionaries() {
 
         assertTrue("dictionary not added", dictionaryService.getDictionaries().contains(dictionary));
     }
 
     //@Test
+
     public void testGetWordsFromDictionary() {
         assertTrue("word is not not in the db", dictionaryService.getWordsFromDictionary(dictionary).contains(word));
     }
 
     //@Test
+
     public void testGetTranslation() {
         assertEquals("translation is not not in the db", translation, dictionaryService.getTranslation(word, dictionary));
     }
@@ -86,22 +90,24 @@ public class DictionaryServiceTest {
 //        assertTrue("word not added", dictionaryService.getWordsFromDictionary(dictionary).contains(nWord));
 //        assertEquals("translation not added", nTranslation, dictionaryService.getTranslation(nWord, dictionary));
 //        assertTrue("ratings entry not inserted", dictionaryService.getRatings(English).keySet().contains(nWord));
-        
 
 
     }
 
     //@Test
+
     public void testContainsWord() {
         assertTrue("word is not contained", dictionaryService.containsWord(word, dictionary));
     }
 
     //@Test
+
     public void testGetRatings() {
         assertTrue("ratings doesn't match", dictionaryService.getRatings(English).containsKey(ratingsWord));
     }
 
-   // @Test
+    // @Test
+
     public void testGetDictionary() {
 
         assertEquals("dictionaries doesn't match", dictionary, dictionaryService.getDictionary(English, Bulgarian));
@@ -122,7 +128,7 @@ public class DictionaryServiceTest {
         dictionaryEntry.setDictionary(dictionary);
         dictionaryEntry.setWord(word);
         dictionaryEntry.setTranslation(translation);
-        dictionaryEntry.setAddedByUser(true);
+        dictionaryEntry.setUpdatedByUser(true);
 
         final RankEntry re = new RankEntry();
         re.setLanguage(English);

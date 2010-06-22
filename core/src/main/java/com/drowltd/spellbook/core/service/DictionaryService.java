@@ -4,13 +4,11 @@ import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.DictionaryEntry;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.model.RankEntry;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -140,7 +138,7 @@ public class DictionaryService extends AbstractPersistenceService {
         de.setDictionary(d);
         de.setWord(word);
         de.setTranslation(translation);
-        de.setAddedByUser(true);
+        de.setUpdatedByUser(true);
 
         RankEntry re = new RankEntry();
         re.setWord(word);
@@ -201,7 +199,7 @@ public class DictionaryService extends AbstractPersistenceService {
      * @param dictionary the dictionary to remove the word from
      */
     public void deleteWord(String word, Dictionary dictionary) {
-        
+
         EntityTransaction entityTransaction = EM.getTransaction();
 
         entityTransaction.begin();

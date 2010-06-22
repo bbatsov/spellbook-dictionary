@@ -277,5 +277,11 @@
         <dropTable tableName="UNCOMMITTED_ENTRIES"/>
         <dropTable tableName="UNCOMMITTED_DICTIONARY_ENTRIES"/>
     </changeSet>
+    <changeSet id="14" author="bozhidar">
+        <renameColumn tableName="DICTIONARY_ENTRIES" oldColumnName="added_by_user" newColumnName="updated_by_user"/>
+        <createIndex tableName="DICTIONARY_ENTRIES" indexName="idx_de_updated_by_user">
+            <column name="updated_by_user"/>
+        </createIndex>
+    </changeSet>
 
 </databaseChangeLog>
