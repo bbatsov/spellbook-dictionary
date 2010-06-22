@@ -1,7 +1,9 @@
 package com.drowltd.spellbook.ui.desktop;
 
 import com.drowltd.spellbook.core.i18n.Translator;
+import com.drowltd.spellbook.core.service.SynchronizeService;
 import com.drowltd.spellbook.ui.swing.component.BaseDialog;
+import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.jidesoft.dialog.ButtonPanel;
 import net.miginfocom.swing.MigLayout;
 
@@ -13,10 +15,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-
 import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Database synchronization dialog.
@@ -27,8 +29,13 @@ import java.awt.event.ActionEvent;
 public class SyncDialog extends BaseDialog {
     private static final Translator TRANSLATOR = Translator.getTranslator("SyncDialog");
 
+    private static final SynchronizeService SYNCHRONIZE_SERVICE = SynchronizeService.getInstance();
+
     public SyncDialog(Frame owner, boolean modal) throws HeadlessException {
         super(owner, modal);
+
+        setTitle(TRANSLATOR.translate("Dialog(Title)"));
+        setIconImage(IconManager.getMenuIcon("replace2.png").getImage());
     }
 
     @Override
@@ -38,20 +45,41 @@ public class SyncDialog extends BaseDialog {
         mainPanel.add(new JLabel(TRANSLATOR.translate("LastSync(Label)")), "grow");
 
         JTextField lastSync = new JTextField();
+        lastSync.setText(SYNCHRONIZE_SERVICE.getLastSyncDate() == null ? "n/a" : SYNCHRONIZE_SERVICE.getLastSyncDate().toString());
+        lastSync.setEditable(false);
 
         mainPanel.add(lastSync, "grow");
 
         JButton remotePullButton = new JButton(TRANSLATOR.translate("RemotePull(Button)"));
+        remotePullButton.setIcon(IconManager.getImageIcon("download.png", IconManager.IconSize.SIZE24));
+
+        remotePullButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SYNCHRONIZE_SERVICE.pullUpdates();
+            }
+        });
 
         mainPanel.add(remotePullButton, "grow");
 
         mainPanel.add(new JLabel(TRANSLATOR.translate("LocalChanges(Label)")), "growx");
 
         JTextField localChanges = new JTextField();
+        localChanges.setText(SYNCHRONIZE_SERVICE.getNumberOfLocalChanges() + "");
+        localChanges.setEditable(false);
 
         mainPanel.add(localChanges, "grow");
 
         JButton submitLocalButton = new JButton(TRANSLATOR.translate("SubmitLocal(Button)"));
+        submitLocalButton.setIcon(IconManager.getImageIcon("upload.png", IconManager.IconSize.SIZE24));
+
+
+        submitLocalButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SYNCHRONIZE_SERVICE.pushUpdates();
+            }
+        });
 
         mainPanel.add(submitLocalButton, "grow");
 
