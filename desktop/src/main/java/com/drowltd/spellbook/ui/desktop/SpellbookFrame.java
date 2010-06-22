@@ -146,7 +146,7 @@ public class SpellbookFrame extends JFrame {
     private JPanel statusBar;
     private JLabel dictionaryInfoLabel;
     private JProgressBar memoryProgressBar;
-    private static final String SPELLBOOK_DB_FILE = "~/.spellbook/db/spellbook.data.db";
+    private static final String SPELLBOOK_DB_FILE = System.getProperty("user.home") + File.separator + ".spellbook/db/spellbook.data.db";
 
     public SpellbookFrame(boolean dbPresent) {
         setMinimumSize(new Dimension(MIN_FRAME_WIDTH, MIN_FRAME_HEIGHT));
@@ -185,6 +185,7 @@ public class SpellbookFrame extends JFrame {
 
         if (!dbFile.exists()) {
             JOptionPane.showMessageDialog(this, TRANSLATOR.translate("MissingDb(Message)", SPELLBOOK_DB_FILE), TRANSLATOR.translate("Error(Title)"), JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
         }
 
         DictionaryService.init(SPELLBOOK_DB_FILE);
