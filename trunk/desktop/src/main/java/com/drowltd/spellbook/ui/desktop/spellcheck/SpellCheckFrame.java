@@ -1,6 +1,7 @@
 package com.drowltd.spellbook.ui.desktop.spellcheck;
 
 import com.drowltd.spellbook.core.exception.SpellCheckerException;
+import com.drowltd.spellbook.core.i18n.*;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.service.DictionaryService;
@@ -30,6 +31,7 @@ import java.util.List;
  */
 public class SpellCheckFrame extends JFrame implements StatusManager.StatusObserver {
 
+    private static final Translator TRANSLATOR = Translator.getTranslator("SpellCheckFrame");
     private static SpellCheckFrame INSTANCE;
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellCheckFrame.class);
     private static final int MIN_WIDTH = 540;
@@ -43,9 +45,6 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
     private JLabel jStatusLabel;
     private JTabbedPane jTabbedPane;
     private JFileChooser jFileChooser;
-
-    private Map<JComponent, FileTextPane> tabsMap = new HashMap<JComponent, FileTextPane>();
-
 
     public static SpellCheckFrame getInstance(JFrame parent) throws HeapSizeException, SpellCheckerException {
 
@@ -67,6 +66,8 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
     private void initComponents0(JFrame parent) {
 
         jFileChooser = new JFileChooser();
+        SpellCheckTab.setjFileChooser(jFileChooser);
+
         jTabbedPane = new JTabbedPane();
         JComponent tab = createNewTab();
         jTabbedPane.addTab("tab", tab);
@@ -74,9 +75,9 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
         jStatusLabel = new JLabel();
         jLanguageLabel = new JLabel();
         JMenuBar jMenuBar1 = new JMenuBar();
-        JMenu jMenu1 = new JMenu();
+        JMenu jFileMenu = new JMenu();
         JMenuItem jExitMenuItem = new JMenuItem();
-        JMenu jMenu2 = new JMenu();
+        JMenu jEditMenu = new JMenu();
         JMenuItem jUndoMenuItem = new JMenuItem();
         JMenuItem jRedoMenuItem = new JMenuItem();
         JPopupMenu.Separator jSeparator1 = new JPopupMenu.Separator();
@@ -85,9 +86,7 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
         JMenuItem jPasteMenuItem = new JMenuItem();
         jDictionaryMenu = new JMenu();
 
-        setTitle("SpellBook MapSpellChecker");
-
-//        jScrollPane.setViewportView(overlay);
+        setTitle("SpellBook SpellChecker");
 
         jLanguageLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         jLanguageLabel.setText("l");
@@ -99,7 +98,41 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
             }
         });
 
-        jMenu1.setText("File");
+        jFileMenu.setText("File");
+
+        JMenuItem jOpenJMenuItem = new JMenuItem("Open");
+        jOpenJMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int result = jFileChooser.showOpenDialog(SpellCheckFrame.this);
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    SpellCheckTab tab1 = createNewTab(jFileChooser.getSelectedFile());
+                    jTabbedPane.addTab(tab1.getFileName(), tab1);
+                }
+            }
+        });
+
+        jFileMenu.add(jOpenJMenuItem);
+
+        JMenuItem jSaveJMenuItem = new JMenuItem("Save");
+        jSaveJMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ((SpellCheckTab)jTabbedPane.getSelectedComponent()).save();
+            }
+        });
+        jFileMenu.add(jSaveJMenuItem);
+
+        JMenuItem jSaveAsJMenuItem = new JMenuItem("Save as");
+        jSaveAsJMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SpellCheckTab tab1 = (SpellCheckTab) jTabbedPane.getSelectedComponent();
+                tab1.saveAs();
+                jTabbedPane.setTitleAt(jTabbedPane.getSelectedIndex(), tab1.getFileName());
+            }
+        });
+        jFileMenu.add(jSaveAsJMenuItem);
 
         jExitMenuItem.setIcon(IconManager.getMenuIcon("exit.png")); // NOI18N
         jExitMenuItem.setText("Exit");
@@ -110,11 +143,11 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
                 jExitMenuItemActionPerformed(evt);
             }
         });
-        jMenu1.add(jExitMenuItem);
+        jFileMenu.add(jExitMenuItem);
 
-        jMenuBar1.add(jMenu1);
+        jMenuBar1.add(jFileMenu);
 
-        jMenu2.setText("Edit");
+        jEditMenu.setText("Edit");
 
         jUndoMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_MASK));
         jUndoMenuItem.setIcon(IconManager.getMenuIcon("undo.png"));
@@ -126,7 +159,7 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
 
             }
         });
-        jMenu2.add(jUndoMenuItem);
+        jEditMenu.add(jUndoMenuItem);
 
         jRedoMenuItem.setIcon(IconManager.getMenuIcon("redo.png"));
         jRedoMenuItem.setText("Redo");
@@ -137,8 +170,8 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
 
             }
         });
-        jMenu2.add(jRedoMenuItem);
-        jMenu2.add(jSeparator1);
+        jEditMenu.add(jRedoMenuItem);
+        jEditMenu.add(jSeparator1);
 
         jCutMenuItem.setIcon(IconManager.getMenuIcon("cut.png"));
         jCutMenuItem.setText("Cut");
@@ -149,7 +182,7 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
 
             }
         });
-        jMenu2.add(jCutMenuItem);
+        jEditMenu.add(jCutMenuItem);
 
         jCopyMenuItem.setIcon(IconManager.getMenuIcon("copy.png"));
         jCopyMenuItem.setText("Copy");
@@ -160,7 +193,7 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
 
             }
         });
-        jMenu2.add(jCopyMenuItem);
+        jEditMenu.add(jCopyMenuItem);
 
         jPasteMenuItem.setIcon(IconManager.getMenuIcon("paste.png"));
         jPasteMenuItem.setText("Paste");
@@ -171,9 +204,9 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
 
             }
         });
-        jMenu2.add(jPasteMenuItem);
+        jEditMenu.add(jPasteMenuItem);
 
-        jMenuBar1.add(jMenu2);
+        jMenuBar1.add(jEditMenu);
 
         jDictionaryMenu.setText("Languages");
         jMenuBar1.add(jDictionaryMenu);
@@ -279,27 +312,22 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
         }
     }
 
-    private JComponent createNewTab(File file) {
-        JComponent scrollPane = null;
+    private SpellCheckTab createNewTab(File file) {
+        SpellCheckTab tab = null;
 
         if (file != null) {
             try {
-                FileTextPane textPane = new FileTextPane(file);
-                scrollPane = new JScrollPane(textPane);
-                tabsMap.put(scrollPane, textPane);
-
+                tab = new SpellCheckTab(file);
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(this, "cant open file", "Info", JOptionPane.INFORMATION_MESSAGE);
             }
         }
 
-        return scrollPane != null ? scrollPane : createNewTab();
+        return tab != null ? tab : createNewTab();
     }
 
-    private JComponent createNewTab() {
+    private SpellCheckTab createNewTab() {
         SpellCheckTab tab = new SpellCheckTab();
-//        tabsMap.put(scrollPane, textPane);
-
         return tab;
     }
 }
