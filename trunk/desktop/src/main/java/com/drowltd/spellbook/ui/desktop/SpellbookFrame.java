@@ -77,6 +77,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -145,6 +146,7 @@ public class SpellbookFrame extends JFrame {
     private JPanel statusBar;
     private JLabel dictionaryInfoLabel;
     private JProgressBar memoryProgressBar;
+    private static final String SPELLBOOK_DB_FILE = "~/.spellbook/db/spellbook.data.db";
 
     public SpellbookFrame(boolean dbPresent) {
         setMinimumSize(new Dimension(MIN_FRAME_WIDTH, MIN_FRAME_HEIGHT));
@@ -179,7 +181,13 @@ public class SpellbookFrame extends JFrame {
     public void init() {
         TRANSLATOR.reset();
 
-        DictionaryService.init("~/.spellbook/db/spellbook.data.db");
+        File dbFile = new File(SPELLBOOK_DB_FILE);
+
+        if (!dbFile.exists()) {
+            JOptionPane.showMessageDialog(this, TRANSLATOR.translate("MissingDb(Message)", SPELLBOOK_DB_FILE), TRANSLATOR.translate("Error(Title)"), JOptionPane.ERROR_MESSAGE);
+        }
+
+        DictionaryService.init(SPELLBOOK_DB_FILE);
 
         dictionaryService = DictionaryService.getInstance();
 
