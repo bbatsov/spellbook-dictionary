@@ -1,7 +1,5 @@
 package com.drowltd.spellbook.core.model;
 
-import java.util.HashSet;
-import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,37 +7,38 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
- *
  * @author bozhidar
  */
 @Entity(name = "DictionaryEntry")
 @Table(name = "DICTIONARY_ENTRIES")
 public class DictionaryEntry extends AbstractEntity {
-    @ManyToOne(optional=false, fetch=FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Dictionary dictionary;
 
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "dictionaryEntry", fetch=FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "dictionaryEntry", fetch = FetchType.LAZY)
     private Set<StudySetEntry> dictionaryEntries = new HashSet<StudySetEntry>();
 
-    @Column(nullable=false, unique=true)
+    @Column(nullable = false, unique = true)
     private String word;
-    @Column(name="word_translation", nullable=false, length=10000)
+    @Column(name = "word_translation", nullable = false, length = 10000)
     private String translation;
 
-    @Column(name = "added_by_user", nullable=false)
-    private boolean addedByUser;
+    @Column(name = "updated_by_user", nullable = false)
+    private boolean updatedByUser;
 
     public DictionaryEntry() {
     }
 
-    public boolean isAddedByUser() {
-        return addedByUser;
+    public boolean isUpdatedByUser() {
+        return updatedByUser;
     }
 
-    public void setAddedByUser(boolean addedByUser) {
-        this.addedByUser = addedByUser;
+    public void setUpdatedByUser(boolean updatedByUser) {
+        this.updatedByUser = updatedByUser;
     }
 
     public Dictionary getDictionary() {
@@ -100,7 +99,7 @@ public class DictionaryEntry extends AbstractEntity {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return getWord();
     }
 }

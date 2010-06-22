@@ -100,7 +100,7 @@ public class SynchronizeService extends AbstractPersistenceService {
     }
 
     public List<DictionaryEntry> getLocalChanges() {
-        return EM.createQuery("select de from DictionaryEntry de where de.addedByUser = true").getResultList();
+        return EM.createQuery("select de from DictionaryEntry de where de.updatedByUser = true").getResultList();
     }
 
     public int getNumberOfLocalChanges() {
