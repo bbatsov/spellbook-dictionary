@@ -10,6 +10,7 @@
         <class>com.drowltd.spellbook.core.model.ExamScoreEntry</class>
         <class>com.drowltd.spellbook.core.model.StudySet</class>
         <class>com.drowltd.spellbook.core.model.StudySetEntry</class>
+        <class>com.drowltd.spellbook.core.model.SyncStats</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="hibernate.connection.username" value="spellbook"/>

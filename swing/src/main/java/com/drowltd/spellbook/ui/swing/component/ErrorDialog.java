@@ -1,6 +1,7 @@
 package com.drowltd.spellbook.ui.swing.component;
 
 import com.drowltd.spellbook.core.i18n.Translator;
+import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.jidesoft.dialog.ButtonPanel;
 import com.jidesoft.dialog.StandardDialogPane;
 import com.jidesoft.swing.JideBoxLayout;
@@ -16,7 +17,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Frame;
@@ -35,6 +35,7 @@ public class ErrorDialog extends BaseDialog {
         super(parent, true);
 
         setTitle(TRANSLATOR.translate("ErrorDialog(Title)"));
+        setIconImage(IconManager.getMenuIcon("bug_green.png").getImage());
 
         this.throwable = throwable;
     }
@@ -119,11 +120,11 @@ public class ErrorDialog extends BaseDialog {
             public void actionPerformed(ActionEvent e) {
                 if (detailsPanel.isVisible()) {
                     detailsPanel.setVisible(false);
-                    putValue(Action.NAME, TRANSLATOR.translate("Details(Label)") + " <<");
+                    putValue(Action.NAME, TRANSLATOR.translate("Details(Label)") + " >>");
                     pack();
                 } else {
                     detailsPanel.setVisible(true);
-                    putValue(Action.NAME, TRANSLATOR.translate("Details(Label)") + " Details");
+                    putValue(Action.NAME, TRANSLATOR.translate("Details(Label)") + " <<");
                     pack();
                 }
             }

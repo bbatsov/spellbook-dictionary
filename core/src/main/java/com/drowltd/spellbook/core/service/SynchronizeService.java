@@ -1,6 +1,7 @@
 package com.drowltd.spellbook.core.service;
 
 import com.drowltd.spellbook.core.model.DictionaryEntry;
+import com.drowltd.spellbook.core.model.SyncStats;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -11,9 +12,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.BufferedInputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-public class SynchronizeService {
+public class SynchronizeService extends AbstractPersistenceService {
     private static final String UPDATE_URL = "http://78.128.18.63:7777/update/1276242306.xml";
 
     private static SynchronizeService instance;
@@ -80,16 +82,39 @@ public class SynchronizeService {
     }
 
     public void pullUpdates() {
+        //TODO
+        SyncStats syncStats = new SyncStats();
+        syncStats.setPulledEntries(0);
+        syncStats.setPushedEntries(0);
 
+        EM.persist(syncStats);
     }
 
     public void pushUpdates() {
-
+        List<DictionaryEntry> localChanges = getLocalChanges();
     }
 
     public static void main(String[] args) {
         SynchronizeService synchronizeService = getInstance();
         synchronizeService.retrieveUpdatedEntries();
+    }
+
+    public List<DictionaryEntry> getLocalChanges() {
+        return EM.createQuery("select de from DictionaryEntry de where de.addedByUser = true").getResultList();
+    }
+
+    public int getNumberOfLocalChanges() {
+        return getLocalChanges().size();
+    }
+
+    public Date getLastSyncDate() {
+        List<SyncStats> syncStats = EM.createQuery("select ss from SyncStats ss order by ss.created asc").getResultList();
+
+        if (syncStats.isEmpty()) {
+            return null;
+        } else {
+            return syncStats.get(syncStats.size() - 1).getCreated();
+        }
     }
 
 
