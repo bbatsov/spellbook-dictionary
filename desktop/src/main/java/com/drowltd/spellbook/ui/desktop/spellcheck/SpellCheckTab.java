@@ -22,12 +22,13 @@ import java.util.concurrent.*;
 import java.util.regex.*;
 
 
-public class SpellCheckTab extends JPanel {
+public class SpellCheckTab extends JPanel implements FileTextPane.NoFileHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellCheckTab.class);
     private static final Map<Language, SpellChecker> spellCheckersMap = new HashMap<Language, SpellChecker>();
     private static final Translator TRANSLATOR = Translator.getTranslator("SpellCheckTab");
     private static final Set<String> userMisspelledSet = new HashSet<String>();
+    private static JFileChooser jFileChooser;
     private static final long WAITING_PERIOD = 500L;
 
     private final ExecutorService executor = new WaitingExecutor(1, 1,
@@ -63,6 +64,7 @@ public class SpellCheckTab extends JPanel {
 
         popupMenu = new SpellCheckPopupMenu(this);
 
+        fileTextPane.setHandler(this);
         fileTextPane.getDocument().addUndoableEditListener(undoManager);
         fileTextPane.addMouseListener(new MouseAdapter() {
             @Override
@@ -113,6 +115,12 @@ public class SpellCheckTab extends JPanel {
 
     public void setSelectedLanguage(Language selectedLanguage) {
         this.selectedLanguage = selectedLanguage;
+    }
+
+    public static void setjFileChooser(JFileChooser jFileChooser) {
+        if (jFileChooser == null)
+            throw new IllegalArgumentException("jFileChooser is null");
+        SpellCheckTab.jFileChooser = jFileChooser;
     }
 
     public void correct(String correction, MisspelledWord misspelledWord, int cursorPosition) {
@@ -343,6 +351,7 @@ public class SpellCheckTab extends JPanel {
         userMisspelledSet.add(misspelled);
 
         DictionaryService.getInstance().addRankEntry(misspelled, selectedLanguage);
+        spellCheck(false);
     }
 
     private void highlightMisspelled() {
@@ -418,12 +427,16 @@ public class SpellCheckTab extends JPanel {
         try {
             fileTextPane.save();
         } catch (IOException e) {
-
+            showMessage("can't save", "Save");
         }
     }
 
     public void saveAs() {
-        fileTextPane.saveAs();
+        try {
+            fileTextPane.saveAs();
+        } catch (IOException e) {
+            showMessage("can't save", "Save");
+        }
     }
 
     public void open(File file) {
@@ -436,6 +449,19 @@ public class SpellCheckTab extends JPanel {
 
     public FileTextPane getFileTextPane() {
         return fileTextPane;
+    }
+
+    @Override
+    public File handle() {
+        int result = jFileChooser.showSaveDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION)
+            return jFileChooser.getSelectedFile();
+        else
+            return null;
+    }
+
+    public String getFileName(){
+        return fileTextPane.getFileName();
     }
 
     private class UnderlineHighlightPainter extends LayeredHighlighter.LayerPainter {

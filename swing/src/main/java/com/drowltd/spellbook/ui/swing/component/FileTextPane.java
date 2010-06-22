@@ -26,7 +26,6 @@ public class FileTextPane extends JTextPane {
         this();
         setFile(file);
         readFromFile(file);
-        setBackground(Color.WHITE);
     }
 
     public FileTextPane() {
@@ -37,10 +36,12 @@ public class FileTextPane extends JTextPane {
         getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
+                contentChanged = true;
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
+                contentChanged = true;
             }
 
             @Override
@@ -48,6 +49,8 @@ public class FileTextPane extends JTextPane {
                 contentChanged = true;
             }
         });
+
+        setBackground(Color.WHITE);
     }
 
     private void setFile(File file) {
@@ -78,11 +81,19 @@ public class FileTextPane extends JTextPane {
         writeToFile(file);
     }
 
-    public void saveAs() {
+    public void saveAs() throws IOException {
         if (handler == null) {
             throw new IllegalStateException("no NoFileHandler set");
         }
-        setFile(handler.handle());
+        File file0 = handler.handle();
+        if (file0 == null)
+            return;
+
+        if(!file0.createNewFile()){
+            
+        }
+        setFile(file0);
+        writeToFile(file0);
     }
 
     private void readFromFile(File file) throws IOException {
@@ -128,6 +139,7 @@ public class FileTextPane extends JTextPane {
                 LOGGER.error(e.getMessage(), e);
             }
         }
+        contentChanged = false;
     }
 
 
