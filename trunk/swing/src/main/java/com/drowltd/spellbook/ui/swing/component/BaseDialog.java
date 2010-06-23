@@ -13,7 +13,7 @@ import java.awt.HeadlessException;
  * @author Bozhidar Batsov
  * @since 0.4
  */
-public class BaseDialog extends StandardDialog {
+public abstract class BaseDialog extends StandardDialog {
     protected Frame parent;
 
     public BaseDialog(Frame owner, boolean modal) throws HeadlessException {
@@ -23,17 +23,12 @@ public class BaseDialog extends StandardDialog {
 
     @Override
     public JComponent createBannerPanel() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public JComponent createContentPanel() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     @Override
     public ButtonPanel createButtonPanel() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     public int showDialog() {
