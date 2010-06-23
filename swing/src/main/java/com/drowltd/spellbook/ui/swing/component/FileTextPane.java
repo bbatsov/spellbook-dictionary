@@ -1,5 +1,6 @@
 package com.drowltd.spellbook.ui.swing.component;
 
+import com.drowltd.spellbook.core.i18n.*;
 import org.slf4j.*;
 
 import javax.swing.*;
@@ -18,9 +19,10 @@ public class FileTextPane extends JTextPane {
     private File file;
     private NoFileHandler handler;
     private boolean contentChanged = false;
-    private String fileName = "Unsaved Document";
+    private String fileName = TRANSLATOR.translate("UnsavedDocument");
 
     private final static Logger LOGGER = LoggerFactory.getLogger(FileTextPane.class);
+    private final static  Translator TRANSLATOR = Translator.getTranslator("FileTextPane");
 
     public FileTextPane(File file) throws IOException {
         this();
