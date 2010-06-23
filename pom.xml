@@ -96,6 +96,11 @@
                 <artifactId>miglayout</artifactId>
                 <version>3.7.1</version>
             </dependency>
+            <dependency>
+                <groupId>org.pdfhelp</groupId>
+                <artifactId>pdfhelp</artifactId>
+                <version>4.22b16</version>
+            </dependency>
 
             <!-- misc -->
             <dependency>
