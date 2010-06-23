@@ -6,6 +6,8 @@ import com.drowltd.spellbook.core.model.*;
 import com.drowltd.spellbook.core.service.*;
 import com.drowltd.spellbook.core.spellcheck.*;
 import com.drowltd.spellbook.ui.swing.component.*;
+import com.drowltd.spellbook.ui.swing.util.*;
+import net.miginfocom.swing.*;
 import org.slf4j.*;
 
 import javax.accessibility.*;
@@ -33,14 +35,17 @@ public class SpellCheckTab extends JPanel implements FileTextPane.NoFileHandler 
 
     private final ExecutorService executor = new WaitingExecutor(1, 1,
             60, TimeUnit.SECONDS,
-            new LinkedBlockingQueue(1),
+            new LinkedBlockingQueue<Runnable>(1),
             new ThreadPoolExecutor.DiscardOldestPolicy());
     private volatile boolean added = false;
 
     private FileTextPane fileTextPane;
     private UndoManager undoManager = new UndoManager();
     private SpellCheckPopupMenu popupMenu;
-    private Language selectedLanguage = Language.ENGLISH;
+    private JScrollPane scrollPane;
+    private JLabel jLanguageLabel;
+    private JLabel jStatusLabel;
+    private Language selectedLanguage;
     private Future<?> spellCheckTask;
     private Highlighter highlighter;
     private final javax.swing.text.Highlighter.HighlightPainter painter = new UnderlineHighlightPainter(Color.red);
@@ -58,14 +63,31 @@ public class SpellCheckTab extends JPanel implements FileTextPane.NoFileHandler 
     }
 
     private void init() {
-        setLayout(new BorderLayout());
-        JScrollPane scrollPane = new JScrollPane(fileTextPane);
-        add(scrollPane, BorderLayout.CENTER);
-
+        scrollPane = new JScrollPane(fileTextPane);
+        jStatusLabel = new JLabel();
+        jLanguageLabel = new JLabel();
         popupMenu = new SpellCheckPopupMenu(this);
-
         fileTextPane.setHandler(this);
         fileTextPane.getDocument().addUndoableEditListener(undoManager);
+        highlighter = fileTextPane.getHighlighter();
+
+        jLanguageLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        setSelectedLanguage(Language.ENGLISH);
+        
+        initLayout();
+        initListeners();
+    }
+
+    private void initLayout() {
+        MigLayout migLayout = new MigLayout("wrap 1", "0[grow]0", "0[grow][]");
+        setLayout(migLayout);
+
+        add(scrollPane, "grow");
+        add(jStatusLabel, "split 2, align left, growx");
+        add(jLanguageLabel, "align right, growx");
+    }
+
+    private void initListeners() {
         fileTextPane.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent evt) {
@@ -102,9 +124,6 @@ public class SpellCheckTab extends JPanel implements FileTextPane.NoFileHandler 
                 spellCheck(false);
             }
         });
-
-        highlighter = fileTextPane.getHighlighter();
-
     }
 
     private void jFileTextPaneMouseClicked(MouseEvent evt) {
@@ -115,8 +134,21 @@ public class SpellCheckTab extends JPanel implements FileTextPane.NoFileHandler 
 
     public void setSelectedLanguage(Language selectedLanguage) {
         this.selectedLanguage = selectedLanguage;
+        setLanguageStatus(SwingUtil.languageToLowerCase(selectedLanguage));
     }
 
+    public void setLanguageStatus(String message) {
+        if (message == null || message.isEmpty()) {
+            return;
+        }
+        jLanguageLabel.setText(message);
+        jLanguageLabel.setIcon(IconManager.getMenuIcon(selectedLanguage.getIconName()));
+    }
+
+    private void setStatus(String message){
+        jStatusLabel.setText(message);
+    }
+    
     public static void setjFileChooser(JFileChooser jFileChooser) {
         if (jFileChooser == null)
             throw new IllegalArgumentException("jFileChooser is null");
@@ -176,7 +208,7 @@ public class SpellCheckTab extends JPanel implements FileTextPane.NoFileHandler 
             fileTextPane.setCaretPosition(cursorPosition);
         }
 
-        StatusManager.getInstance().setStatus(misspelledWord.getWord() + " corrected with " + correction);
+        setStatus(misspelledWord.getWord() + TRANSLATOR.translate("MessageCorrected(Content)") + correction);
 
         spellCheck(true);
 
@@ -190,7 +222,7 @@ public class SpellCheckTab extends JPanel implements FileTextPane.NoFileHandler 
                 spellCheckersMap.put(language, spellChecker);
             } catch (SpellCheckerException e) {
                 LOGGER.error(e.getMessage(), e);
-                showMessage(TRANSLATOR.translate("Message(Content)"), TRANSLATOR.translate("Message(Title)"));
+                showMessage(TRANSLATOR.translate("MessageSpellCheckerError(Content)"), TRANSLATOR.translate("MessageSpellCheckerError(Title)"));
             }
         }
 
@@ -339,10 +371,6 @@ public class SpellCheckTab extends JPanel implements FileTextPane.NoFileHandler 
     }
 
 
-    private Collection<MisspelledWord> getMisspelled() {
-        return Collections.unmodifiableCollection(misspelledMap.values());
-    }
-
     public void addUserMisspelled(String misspelled) {
         if (misspelled == null || misspelled.isEmpty()) {
             LOGGER.error("misspelled == null || misspelled.isEmpty()");
@@ -427,7 +455,7 @@ public class SpellCheckTab extends JPanel implements FileTextPane.NoFileHandler 
         try {
             fileTextPane.save();
         } catch (IOException e) {
-            showMessage("can't save", "Save");
+            showMessage(TRANSLATOR.translate("MessageSave(Error)"), TRANSLATOR.translate("MessageSave(Title)"));
         }
     }
 
@@ -435,17 +463,17 @@ public class SpellCheckTab extends JPanel implements FileTextPane.NoFileHandler 
         try {
             fileTextPane.saveAs();
         } catch (IOException e) {
-            showMessage("can't save", "Save");
+            showMessage(TRANSLATOR.translate("MessageSave(Error)"), TRANSLATOR.translate("MessageSave(Title)"));
         }
     }
 
-    public void open(File file) {
+/*    public void open(File file) {
         try {
             fileTextPane.open(file);
         } catch (IOException e) {
             showMessage("can't open", "Open");
         }
-    }
+    }*/
 
     public FileTextPane getFileTextPane() {
         return fileTextPane;
@@ -460,7 +488,7 @@ public class SpellCheckTab extends JPanel implements FileTextPane.NoFileHandler 
             return null;
     }
 
-    public String getFileName(){
+    public String getFileName() {
         return fileTextPane.getFileName();
     }
 

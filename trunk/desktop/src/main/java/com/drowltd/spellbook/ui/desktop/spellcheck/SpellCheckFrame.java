@@ -29,7 +29,7 @@ import java.util.List;
  * @author iivalchev
  * @since 0.2
  */
-public class SpellCheckFrame extends JFrame implements StatusManager.StatusObserver {
+public class SpellCheckFrame extends JFrame {
 
     private static final Translator TRANSLATOR = Translator.getTranslator("SpellCheckFrame");
     private static SpellCheckFrame INSTANCE;
@@ -41,8 +41,7 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
     private Language selectedLanguage = Language.ENGLISH;
     //components
     private JMenu jDictionaryMenu;
-    private JLabel jLanguageLabel;
-    private JLabel jStatusLabel;
+
     private JTabbedPane jTabbedPane;
     private JFileChooser jFileChooser;
 
@@ -58,22 +57,22 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
      * Creates new form SpellCheckFrame
      */
     private SpellCheckFrame(JFrame parent) throws SpellCheckerException {
-        initComponents0(parent);
+        initComponents0();
         init();
+        initLayout(parent);
         initLanguageMenu();
     }
 
-    private void initComponents0(JFrame parent) {
+    private void initComponents0() {
 
         jFileChooser = new JFileChooser();
         SpellCheckTab.setjFileChooser(jFileChooser);
 
         jTabbedPane = new JTabbedPane();
-        JComponent tab = createNewTab();
-        jTabbedPane.addTab("tab", tab);
+        SpellCheckTab tab = createNewTab();
+        jTabbedPane.addTab(tab.getFileName(), tab);
 
-        jStatusLabel = new JLabel();
-        jLanguageLabel = new JLabel();
+
         JMenuBar jMenuBar1 = new JMenuBar();
         JMenu jFileMenu = new JMenu();
         JMenuItem jExitMenuItem = new JMenuItem();
@@ -88,17 +87,18 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
 
         setTitle("SpellBook SpellChecker");
 
-        jLanguageLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-        jLanguageLabel.setText("l");
-        jLanguageLabel.addMouseListener(new MouseAdapter() {
+        jFileMenu.setText("File");
 
+        JMenuItem jNewJMenuItem = new JMenuItem("New");
+        jNewJMenuItem.addActionListener(new ActionListener() {
             @Override
-            public void mouseClicked(MouseEvent evt) {
-                jLanguageLabelMouseClicked(evt);
+            public void actionPerformed(ActionEvent e) {
+                SpellCheckTab tab1 = createNewTab();
+                jTabbedPane.addTab(tab1.getFileName(), tab1);
             }
         });
 
-        jFileMenu.setText("File");
+        jFileMenu.add(jNewJMenuItem);
 
         JMenuItem jOpenJMenuItem = new JMenuItem("Open");
         jOpenJMenuItem.addActionListener(new ActionListener() {
@@ -118,12 +118,12 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
         jSaveJMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ((SpellCheckTab)jTabbedPane.getSelectedComponent()).save();
+                ((SpellCheckTab) jTabbedPane.getSelectedComponent()).save();
             }
         });
         jFileMenu.add(jSaveJMenuItem);
 
-        JMenuItem jSaveAsJMenuItem = new JMenuItem("Save as");
+        JMenuItem jSaveAsJMenuItem = new JMenuItem("Save As");
         jSaveAsJMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -212,26 +212,21 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
         jMenuBar1.add(jDictionaryMenu);
 
         setJMenuBar(jMenuBar1);
+    }
 
-
-        MigLayout migLayout = new MigLayout("wrap 1", "0[grow]0", "0[grow][]");
+    private void initLayout(JFrame parent) {
+        MigLayout migLayout = new MigLayout("wrap 1", "0[grow]0", "0[grow]0");
         getContentPane().setLayout(migLayout);
 
         add(jTabbedPane, "grow");
-        add(jStatusLabel, "split 2, align left, growx");
-        add(jLanguageLabel, "align right, growx");
 
         setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
         setLocationRelativeTo(parent);
         pack();
-
     }
 
     private void jExitMenuItemActionPerformed(ActionEvent evt) {
         this.setVisible(false);
-    }
-
-    private void jLanguageLabelMouseClicked(MouseEvent evt) {
     }
 
     /**
@@ -242,49 +237,14 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
         setIconImage(IconManager.getImageIcon("spellcheck.png", IconManager.IconSize.SIZE16).getImage());
     }
 
-    private String languageToLowerCase(Language language) {
-        return language.toString().substring(0, 1) + language.toString().substring(1).toLowerCase();
-    }
-
 
     private void setSelectedLanguage(Language language) {
         assert language != null : "selectedLanguage is null";
 
         if (selectedLanguage != language) {
             selectedLanguage = language;
-//            loadSpellChecker();
-
-            try {
-                HunSpellChecker.init(selectedLanguage);
-            } catch (SpellCheckerException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }
-
-            setLanguageStatus(languageToLowerCase(language));
+            ((SpellCheckTab) jTabbedPane.getSelectedComponent()).setSelectedLanguage(language);
         }
-    }
-
-    public void setLanguageStatus(String message) {
-        if (message == null || message.isEmpty()) {
-            return;
-        }
-        jLanguageLabel.setText(message);
-
-        jLanguageLabel.setIcon(IconManager.getMenuIcon(selectedLanguage.getIconName()));
-
-
-    }
-
-
-    @Override
-    public void setStatus(final String message) {
-        EventQueue.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
-                jStatusLabel.setText(message);
-            }
-        });
     }
 
     private void initLanguageMenu() {
@@ -302,7 +262,7 @@ public class SpellCheckFrame extends JFrame implements StatusManager.StatusObser
 
             this.language = language;
             setIcon(IconManager.getMenuIcon(language.getIconName()));
-            setText(languageToLowerCase(language));
+            setText(SwingUtil.languageToLowerCase(language));
             addActionListener(this);
         }
 

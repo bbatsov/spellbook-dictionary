@@ -24,26 +24,10 @@ public class HunSpellChecker implements SpellChecker {
 
     private final Hunspell.Dictionary dictionary;
     private final Language language;
-    private static SpellChecker INSTANCE;
     private static Logger LOGGER = LoggerFactory.getLogger(HunSpellChecker.class);
     private static final String HUNSPELL_DIR = System.getProperty("user.home") + File.separator + ".spellbook" + File.separator + "hundict" + File.separator;
     private static final String HUNSPELL_SRC_DIR = "hundict";
     private static final int BUFFER_SIZE = 4096;
-
-    public static void init(Language language) throws SpellCheckerException {
-
-        if (INSTANCE == null || language != INSTANCE.getLanguage()) {
-            INSTANCE = new HunSpellChecker(language);
-        }
-    }
-
-    public static SpellChecker getInstance() {
-        if (INSTANCE == null) {
-            throw new IllegalStateException("no spellchecker initialized");
-        }
-
-        return INSTANCE;
-    }
 
 
     public HunSpellChecker(Language language) throws SpellCheckerException {

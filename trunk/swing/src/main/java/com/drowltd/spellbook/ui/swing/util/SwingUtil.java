@@ -1,5 +1,6 @@
 package com.drowltd.spellbook.ui.swing.util;
 
+import com.drowltd.spellbook.core.model.*;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.jidesoft.dialog.BannerPanel;
 import net.java.balloontip.BalloonTip;
@@ -82,5 +83,9 @@ public class SwingUtil {
         bannerPanel.setFont(new Font("Tahoma", Font.PLAIN, FONT_SIZE));
         bannerPanel.setBackground(Color.WHITE);
         return bannerPanel;
+    }
+
+    public static String languageToLowerCase(Language language) {
+        return language.toString().substring(0, 1) + language.toString().substring(1).toLowerCase();
     }
 }
