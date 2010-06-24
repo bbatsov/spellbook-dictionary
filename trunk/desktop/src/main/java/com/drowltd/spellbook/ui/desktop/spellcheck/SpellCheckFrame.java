@@ -61,8 +61,6 @@ public class SpellCheckFrame extends JFrame {
 
         jTabbedPane = new JTabbedPane();
         SpellCheckTab tab = createNewTab();
-        jTabbedPane.addTab(tab.getFileName(), tab);
-
 
         JMenuBar jMenuBar1 = new JMenuBar();
         JMenu jFileMenu = new JMenu();
@@ -107,7 +105,9 @@ public class SpellCheckFrame extends JFrame {
         jSaveJMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ((SpellCheckTab) jTabbedPane.getSelectedComponent()).save();
+                SpellCheckTab tab1 = (SpellCheckTab) jTabbedPane.getSelectedComponent();
+                if (tab1 != null)
+                    tab1.save();
             }
         });
         jFileMenu.add(jSaveJMenuItem);
@@ -117,8 +117,10 @@ public class SpellCheckFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SpellCheckTab tab1 = (SpellCheckTab) jTabbedPane.getSelectedComponent();
-                tab1.saveAs();
-                jTabbedPane.setTitleAt(jTabbedPane.getSelectedIndex(), tab1.getFileName());
+                if (tab1 != null) {
+                    tab1.saveAs();
+                    jTabbedPane.setTitleAt(jTabbedPane.getSelectedIndex(), tab1.getFileName());
+                }
             }
         });
         jFileMenu.add(jSaveAsJMenuItem);
@@ -237,7 +239,9 @@ public class SpellCheckFrame extends JFrame {
 
         if (selectedLanguage != language) {
             selectedLanguage = language;
-            ((SpellCheckTab) jTabbedPane.getSelectedComponent()).setSelectedLanguage(language);
+            SpellCheckTab tab = (SpellCheckTab) jTabbedPane.getSelectedComponent();
+            if (tab != null)
+                tab.setSelectedLanguage(language);
         }
     }
 
@@ -346,8 +350,26 @@ public class SpellCheckFrame extends JFrame {
 
             public void actionPerformed(ActionEvent e) {
                 int i = pane.indexOfTabComponent(CloseTabComponent.this);
-                //@TODO handle when file is not saved
                 if (i != -1) {
+                    SpellCheckTab tab = (SpellCheckTab) jTabbedPane.getComponentAt(i);
+                    if (!tab.isSaved()) {
+                        Object[] options = {TRANSLATOR.translate("SaveChanges(Yes)"),
+                                TRANSLATOR.translate("SaveChanges(No)"),
+                                TRANSLATOR.translate("SaveChanges(Cancel)")};
+                        int n = JOptionPane.showOptionDialog(SpellCheckFrame.this,
+                                TRANSLATOR.translate("SaveChanges(Content)"),
+                                TRANSLATOR.translate("SaveChanges(Title)"),
+                                JOptionPane.YES_NO_CANCEL_OPTION,
+                                JOptionPane.QUESTION_MESSAGE,
+                                null,
+                                options,
+                                options[2]);
+                        if (n == JOptionPane.YES_OPTION) {
+                            tab.save();
+                        } else if (n == JOptionPane.CANCEL_OPTION)
+                            return;
+                    }
+
                     pane.remove(i);
                 }
             }
