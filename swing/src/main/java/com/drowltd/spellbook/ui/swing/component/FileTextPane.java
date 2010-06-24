@@ -98,6 +98,10 @@ public class FileTextPane extends JTextPane {
         writeToFile(file0);
     }
 
+    public boolean isSaved(){
+        return !contentChanged;
+    }
+
     private void readFromFile(File file) throws IOException {
         if (file == null) {
             throw new IllegalArgumentException("file is null");
