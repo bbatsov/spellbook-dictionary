@@ -1,28 +1,19 @@
 package com.drowltd.spellbook.ui.desktop.spellcheck;
 
-import com.drowltd.spellbook.core.exception.SpellCheckerException;
+import com.drowltd.spellbook.core.exception.*;
 import com.drowltd.spellbook.core.i18n.*;
 import com.drowltd.spellbook.core.model.Dictionary;
-import com.drowltd.spellbook.core.model.Language;
-import com.drowltd.spellbook.core.service.DictionaryService;
-import com.drowltd.spellbook.core.spellcheck.HunSpellChecker;
-import com.drowltd.spellbook.ui.swing.component.*;
+import com.drowltd.spellbook.core.model.*;
+import com.drowltd.spellbook.core.service.*;
 import com.drowltd.spellbook.ui.swing.util.*;
-import com.jidesoft.swing.DefaultOverlayable;
-import net.miginfocom.swing.MigLayout;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.miginfocom.swing.*;
+import org.slf4j.*;
 
 import javax.swing.*;
+import javax.swing.plaf.basic.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.*;
-import java.util.*;
 import java.util.List;
 
 /**
@@ -94,7 +85,6 @@ public class SpellCheckFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SpellCheckTab tab1 = createNewTab();
-                jTabbedPane.addTab(tab1.getFileName(), tab1);
             }
         });
 
@@ -107,7 +97,6 @@ public class SpellCheckFrame extends JFrame {
                 int result = jFileChooser.showOpenDialog(SpellCheckFrame.this);
                 if (result == JFileChooser.APPROVE_OPTION) {
                     SpellCheckTab tab1 = createNewTab(jFileChooser.getSelectedFile());
-                    jTabbedPane.addTab(tab1.getFileName(), tab1);
                 }
             }
         });
@@ -214,6 +203,11 @@ public class SpellCheckFrame extends JFrame {
         setJMenuBar(jMenuBar1);
     }
 
+    private void addTab(SpellCheckTab tab) {
+        jTabbedPane.addTab(tab.getFileName(), tab);
+        jTabbedPane.setTabComponentAt(jTabbedPane.indexOfComponent(tab), new CloseTabComponent(jTabbedPane));
+    }
+
     private void initLayout(JFrame parent) {
         MigLayout migLayout = new MigLayout("wrap 1", "0[grow]0", "0[grow]0");
         getContentPane().setLayout(migLayout);
@@ -282,12 +276,124 @@ public class SpellCheckFrame extends JFrame {
                 JOptionPane.showMessageDialog(this, "cant open file", "Info", JOptionPane.INFORMATION_MESSAGE);
             }
         }
-
-        return tab != null ? tab : createNewTab();
+        if (tab != null) {
+            addTab(tab);
+            return tab;
+        } else {
+            return createNewTab();
+        }
     }
 
     private SpellCheckTab createNewTab() {
         SpellCheckTab tab = new SpellCheckTab();
+        addTab(tab);
         return tab;
+    }
+
+    public class CloseTabComponent extends JPanel {
+        private final JTabbedPane pane;
+
+        public CloseTabComponent(final JTabbedPane pane) {
+            //unset default FlowLayout' gaps
+            super(new FlowLayout(FlowLayout.LEFT, 0, 0));
+            if (pane == null) {
+                throw new NullPointerException("TabbedPane is null");
+            }
+            this.pane = pane;
+            setOpaque(false);
+
+            //make JLabel read titles from JTabbedPane
+            JLabel label = new JLabel() {
+                public String getText() {
+                    int i = pane.indexOfTabComponent(CloseTabComponent.this);
+                    if (i != -1) {
+                        return pane.getTitleAt(i);
+                    }
+                    return null;
+                }
+            };
+
+            add(label);
+            //add more space between the label and the button
+            label.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
+            //tab button
+            JButton button = new TabButton();
+            add(button);
+            //add more space to the top of the component
+            setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
+        }
+
+        private class TabButton extends JButton implements ActionListener {
+            public TabButton() {
+                int size = 17;
+                setPreferredSize(new Dimension(size, size));
+                setToolTipText("close this tab");
+                //Make the button looks the same for all Laf's
+                setUI(new BasicButtonUI());
+                //Make it transparent
+                setContentAreaFilled(false);
+                //No need to be focusable
+                setFocusable(false);
+                setBorder(BorderFactory.createEtchedBorder());
+                setBorderPainted(false);
+                //Making nice rollover effect
+                //we use the same listener for all buttons
+                addMouseListener(buttonMouseListener);
+                setRolloverEnabled(true);
+                //Close the proper tab by clicking the button
+                addActionListener(this);
+            }
+
+            public void actionPerformed(ActionEvent e) {
+                int i = pane.indexOfTabComponent(CloseTabComponent.this);
+                //@TODO handle when file is not saved
+                if (i != -1) {
+                    pane.remove(i);
+                }
+            }
+
+            //we don't want to update UI for this button
+
+            public void updateUI() {
+            }
+
+            //paint the cross
+
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g.create();
+                //shift the image for pressed buttons
+                if (getModel().isPressed()) {
+                    g2.translate(1, 1);
+                }
+                g2.setStroke(new BasicStroke(2));
+                g2.setColor(Color.BLACK);
+                if (getModel().isRollover()) {
+                    g2.setColor(Color.MAGENTA);
+                }
+                int delta = 6;
+                g2.drawLine(delta, delta, getWidth() - delta - 1, getHeight() - delta - 1);
+                g2.drawLine(getWidth() - delta - 1, delta, delta, getHeight() - delta - 1);
+                g2.dispose();
+            }
+        }
+
+        private final MouseListener buttonMouseListener = new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+                Component component = e.getComponent();
+                if (component instanceof AbstractButton) {
+                    AbstractButton button = (AbstractButton) component;
+                    button.setBorderPainted(true);
+                }
+            }
+
+            public void mouseExited(MouseEvent e) {
+                Component component = e.getComponent();
+                if (component instanceof AbstractButton) {
+                    AbstractButton button = (AbstractButton) component;
+                    button.setBorderPainted(false);
+                }
+            }
+        };
     }
 }
