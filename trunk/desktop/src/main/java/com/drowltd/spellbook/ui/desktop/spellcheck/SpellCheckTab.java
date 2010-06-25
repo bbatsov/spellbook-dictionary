@@ -73,7 +73,7 @@ public class SpellCheckTab extends JPanel implements FileTextPane.NoFileHandler 
 
         jLanguageLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         setSelectedLanguage(Language.ENGLISH);
-        
+
         initLayout();
         initListeners();
     }
@@ -145,10 +145,10 @@ public class SpellCheckTab extends JPanel implements FileTextPane.NoFileHandler 
         jLanguageLabel.setIcon(IconManager.getMenuIcon(selectedLanguage.getIconName()));
     }
 
-    private void setStatus(String message){
+    private void setStatus(String message) {
         jStatusLabel.setText(message);
     }
-    
+
     public static void setjFileChooser(JFileChooser jFileChooser) {
         if (jFileChooser == null)
             throw new IllegalArgumentException("jFileChooser is null");
@@ -467,8 +467,20 @@ public class SpellCheckTab extends JPanel implements FileTextPane.NoFileHandler 
         }
     }
 
-    public boolean isSaved(){
+    public boolean isSaved() {
         return fileTextPane.isSaved();
+    }
+
+    public void undo() {
+        if (undoManager.canUndo()) {
+            undoManager.undo();
+        }
+    }
+
+    public void redo() {
+        if (undoManager.canRedo()) {
+            undoManager.redo();
+        }
     }
 
 /*    public void open(File file) {

@@ -5,9 +5,9 @@ import com.drowltd.spellbook.core.i18n.*;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.*;
 import com.drowltd.spellbook.core.service.*;
-import com.drowltd.spellbook.ui.swing.util.*;
+import com.drowltd.spellbook.ui.swing.util.IconManager;
+import com.drowltd.spellbook.ui.swing.util.SwingUtil;
 import net.miginfocom.swing.*;
-import org.slf4j.*;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.*;
@@ -24,15 +24,13 @@ public class SpellCheckFrame extends JFrame {
 
     private static final Translator TRANSLATOR = Translator.getTranslator("SpellCheckFrame");
     private static SpellCheckFrame INSTANCE;
-    private static final Logger LOGGER = LoggerFactory.getLogger(SpellCheckFrame.class);
+//    private static final Logger LOGGER = LoggerFactory.getLogger(SpellCheckFrame.class);
     private static final int MIN_WIDTH = 540;
     private static final int MIN_HEIGHT = 550;
 
 
     private Language selectedLanguage = Language.ENGLISH;
-    //components
     private JMenu jDictionaryMenu;
-
     private JTabbedPane jTabbedPane;
     private JFileChooser jFileChooser;
 
@@ -44,9 +42,6 @@ public class SpellCheckFrame extends JFrame {
         return INSTANCE;
     }
 
-    /**
-     * Creates new form SpellCheckFrame
-     */
     private SpellCheckFrame(JFrame parent) throws SpellCheckerException {
         initComponents0();
         init();
@@ -60,7 +55,7 @@ public class SpellCheckFrame extends JFrame {
         SpellCheckTab.setjFileChooser(jFileChooser);
 
         jTabbedPane = new JTabbedPane();
-        SpellCheckTab tab = createNewTab();
+        createNewTab();
 
         JMenuBar jMenuBar1 = new JMenuBar();
         JMenu jFileMenu = new JMenu();
@@ -74,34 +69,37 @@ public class SpellCheckFrame extends JFrame {
         JMenuItem jPasteMenuItem = new JMenuItem();
         jDictionaryMenu = new JMenu();
 
-        setTitle("SpellBook SpellChecker");
+        setTitle(TRANSLATOR.translate("Frame(Title)"));
 
-        jFileMenu.setText("File");
+        jFileMenu.setText(TRANSLATOR.translate("FileMenu(Title)"));
 
-        JMenuItem jNewJMenuItem = new JMenuItem("New");
+        JMenuItem jNewJMenuItem = new JMenuItem(TRANSLATOR.translate("FileMenu(New)"));
+        jNewJMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_MASK));
         jNewJMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                SpellCheckTab tab1 = createNewTab();
+                createNewTab();
             }
         });
 
         jFileMenu.add(jNewJMenuItem);
 
-        JMenuItem jOpenJMenuItem = new JMenuItem("Open");
+        JMenuItem jOpenJMenuItem = new JMenuItem(TRANSLATOR.translate("FileMenu(Open)"));
+        jOpenJMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
         jOpenJMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int result = jFileChooser.showOpenDialog(SpellCheckFrame.this);
                 if (result == JFileChooser.APPROVE_OPTION) {
-                    SpellCheckTab tab1 = createNewTab(jFileChooser.getSelectedFile());
+                    createNewTab(jFileChooser.getSelectedFile());
                 }
             }
         });
 
         jFileMenu.add(jOpenJMenuItem);
 
-        JMenuItem jSaveJMenuItem = new JMenuItem("Save");
+        JMenuItem jSaveJMenuItem = new JMenuItem(TRANSLATOR.translate("FileMenu(Save)"));
+        jSaveJMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
         jSaveJMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -112,7 +110,7 @@ public class SpellCheckFrame extends JFrame {
         });
         jFileMenu.add(jSaveJMenuItem);
 
-        JMenuItem jSaveAsJMenuItem = new JMenuItem("Save As");
+        JMenuItem jSaveAsJMenuItem = new JMenuItem(TRANSLATOR.translate("FileMenu(SaveAs)"));
         jSaveAsJMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -138,34 +136,34 @@ public class SpellCheckFrame extends JFrame {
 
         jMenuBar1.add(jFileMenu);
 
-        jEditMenu.setText("Edit");
+        jEditMenu.setText(TRANSLATOR.translate("EditMenu(Title)"));
 
         jUndoMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_MASK));
         jUndoMenuItem.setIcon(IconManager.getMenuIcon("undo.png"));
-        jUndoMenuItem.setText("Undo");
+        jUndoMenuItem.setText(TRANSLATOR.translate("EditMenu(Undo)"));
         jUndoMenuItem.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent evt) {
-
+                ((SpellCheckTab) jTabbedPane.getSelectedComponent()).undo();
             }
         });
         jEditMenu.add(jUndoMenuItem);
 
         jRedoMenuItem.setIcon(IconManager.getMenuIcon("redo.png"));
-        jRedoMenuItem.setText("Redo");
+        jRedoMenuItem.setText(TRANSLATOR.translate("EditMenu(Redo)"));
         jRedoMenuItem.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent evt) {
-
+                ((SpellCheckTab) jTabbedPane.getSelectedComponent()).redo();
             }
         });
         jEditMenu.add(jRedoMenuItem);
         jEditMenu.add(jSeparator1);
 
         jCutMenuItem.setIcon(IconManager.getMenuIcon("cut.png"));
-        jCutMenuItem.setText("Cut");
+        jCutMenuItem.setText(TRANSLATOR.translate("EditMenu(Cut)"));
         jCutMenuItem.addActionListener(new ActionListener() {
 
             @Override
@@ -176,7 +174,7 @@ public class SpellCheckFrame extends JFrame {
         jEditMenu.add(jCutMenuItem);
 
         jCopyMenuItem.setIcon(IconManager.getMenuIcon("copy.png"));
-        jCopyMenuItem.setText("Copy");
+        jCopyMenuItem.setText(TRANSLATOR.translate("EditMenu(Copy)"));
         jCopyMenuItem.addActionListener(new ActionListener() {
 
             @Override
@@ -187,7 +185,7 @@ public class SpellCheckFrame extends JFrame {
         jEditMenu.add(jCopyMenuItem);
 
         jPasteMenuItem.setIcon(IconManager.getMenuIcon("paste.png"));
-        jPasteMenuItem.setText("Paste");
+        jPasteMenuItem.setText(TRANSLATOR.translate("EditMenu(Paste)"));
         jPasteMenuItem.addActionListener(new ActionListener() {
 
             @Override
@@ -199,7 +197,7 @@ public class SpellCheckFrame extends JFrame {
 
         jMenuBar1.add(jEditMenu);
 
-        jDictionaryMenu.setText("Languages");
+        jDictionaryMenu.setText(TRANSLATOR.translate("LanguageMenu(Title)"));
         jMenuBar1.add(jDictionaryMenu);
 
         setJMenuBar(jMenuBar1);
@@ -225,9 +223,6 @@ public class SpellCheckFrame extends JFrame {
         this.setVisible(false);
     }
 
-    /**
-     * Custom initializations.
-     */
     private void init() throws SpellCheckerException {
 
         setIconImage(IconManager.getImageIcon("spellcheck.png", IconManager.IconSize.SIZE16).getImage());
@@ -240,8 +235,10 @@ public class SpellCheckFrame extends JFrame {
         if (selectedLanguage != language) {
             selectedLanguage = language;
             SpellCheckTab tab = (SpellCheckTab) jTabbedPane.getSelectedComponent();
-            if (tab != null)
+            if (tab != null) {
                 tab.setSelectedLanguage(language);
+                tab.spellCheck(true);
+            }
         }
     }
 
@@ -277,7 +274,7 @@ public class SpellCheckFrame extends JFrame {
             try {
                 tab = new SpellCheckTab(file);
             } catch (IOException e) {
-                JOptionPane.showMessageDialog(this, "cant open file", "Info", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, TRANSLATOR.translate("Message(OpenFileError)"), "Info", JOptionPane.INFORMATION_MESSAGE);
             }
         }
         if (tab != null) {
