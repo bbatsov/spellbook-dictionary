@@ -101,6 +101,16 @@
                 <artifactId>pdfhelp</artifactId>
                 <version>4.22b16</version>
             </dependency>
+            <dependency>
+                <groupId>org.pushingpixels</groupId>
+                <artifactId>substance</artifactId>
+                <version>6.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.pushingpixels</groupId>
+                <artifactId>trident</artifactId>
+                <version>1.2.0</version>
+            </dependency>
 
             <!-- misc -->
             <dependency>
