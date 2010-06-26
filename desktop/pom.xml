@@ -67,6 +67,13 @@
             <groupId>net.java.balloontip</groupId>
             <artifactId>balloontip</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.pushingpixels</groupId>
+            <artifactId>substance</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.pushingpixels</groupId>
+            <artifactId>trident</artifactId>
+        </dependency>
     </dependencies>
 </project>
