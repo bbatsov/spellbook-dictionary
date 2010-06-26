@@ -460,13 +460,18 @@ public class SpellbookFrame extends JFrame {
                     final long freeMemory = runtime.freeMemory();
                     final long totalMemory = runtime.totalMemory();
 
-                    int usedMemInMb = (int) (totalMemory - freeMemory) / BYTES_IN_ONE_MEGABYTE;
-                    int totalMemInMb = (int) totalMemory / BYTES_IN_ONE_MEGABYTE;
+                    final int usedMemInMb = (int) (totalMemory - freeMemory) / BYTES_IN_ONE_MEGABYTE;
+                    final int totalMemInMb = (int) totalMemory / BYTES_IN_ONE_MEGABYTE;
+                    EventQueue.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            memoryProgressBar.setString(usedMemInMb + "M of " + totalMemInMb + "M");
+                            memoryProgressBar.setValue((int) (usedMemInMb * 100 / (double) totalMemInMb));
+                            memoryProgressBar.setToolTipText(String.format(TRANSLATOR.translate("MemoryUsage(ToolTip)"), totalMemInMb, usedMemInMb));
+                            memoryButton.setToolTipText(String.format(TRANSLATOR.translate("MemoryUsage(ToolTip)"), totalMemInMb, usedMemInMb));
+                        }
+                    });
 
-                    memoryProgressBar.setString(usedMemInMb + "M of " + totalMemInMb + "M");
-                    memoryProgressBar.setValue((int) (usedMemInMb * 100 / (double) totalMemInMb));
-                    memoryProgressBar.setToolTipText(String.format(TRANSLATOR.translate("MemoryUsage(ToolTip)"), totalMemInMb, usedMemInMb));
-                    memoryButton.setToolTipText(String.format(TRANSLATOR.translate("MemoryUsage(ToolTip)"), totalMemInMb, usedMemInMb));
                 }
             };
 
