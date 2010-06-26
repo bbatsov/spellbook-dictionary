@@ -75,6 +75,7 @@ public class SpellCheckFrame extends JFrame {
 
         JMenuItem jNewJMenuItem = new JMenuItem(TRANSLATOR.translate("FileMenu(New)"));
         jNewJMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_MASK));
+        jNewJMenuItem.setIcon(IconManager.getMenuIcon("new.png"));
         jNewJMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -86,6 +87,7 @@ public class SpellCheckFrame extends JFrame {
 
         JMenuItem jOpenJMenuItem = new JMenuItem(TRANSLATOR.translate("FileMenu(Open)"));
         jOpenJMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
+        jOpenJMenuItem.setIcon(IconManager.getMenuIcon("open.png"));
         jOpenJMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -100,17 +102,21 @@ public class SpellCheckFrame extends JFrame {
 
         JMenuItem jSaveJMenuItem = new JMenuItem(TRANSLATOR.translate("FileMenu(Save)"));
         jSaveJMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
+        jSaveJMenuItem.setIcon(IconManager.getMenuIcon("save.png"));
         jSaveJMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SpellCheckTab tab1 = (SpellCheckTab) jTabbedPane.getSelectedComponent();
-                if (tab1 != null)
+                if (tab1 != null) {
                     tab1.save();
+                    jTabbedPane.setTitleAt(jTabbedPane.getSelectedIndex(), tab1.getFileName());
+                }
             }
         });
         jFileMenu.add(jSaveJMenuItem);
 
         JMenuItem jSaveAsJMenuItem = new JMenuItem(TRANSLATOR.translate("FileMenu(SaveAs)"));
+        jSaveAsJMenuItem.setIcon(IconManager.getMenuIcon("save_as.png"));
         jSaveAsJMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -168,7 +174,7 @@ public class SpellCheckFrame extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent evt) {
-
+                ((SpellCheckTab) jTabbedPane.getSelectedComponent()).cut();
             }
         });
         jEditMenu.add(jCutMenuItem);
@@ -179,7 +185,7 @@ public class SpellCheckFrame extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent evt) {
-
+                ((SpellCheckTab) jTabbedPane.getSelectedComponent()).copy();
             }
         });
         jEditMenu.add(jCopyMenuItem);
@@ -190,7 +196,7 @@ public class SpellCheckFrame extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent evt) {
-
+                ((SpellCheckTab) jTabbedPane.getSelectedComponent()).paste();
             }
         });
         jEditMenu.add(jPasteMenuItem);
@@ -201,6 +207,12 @@ public class SpellCheckFrame extends JFrame {
         jMenuBar1.add(jDictionaryMenu);
 
         setJMenuBar(jMenuBar1);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                 checkTabSave(jTabbedPane, jTabbedPane.getSelectedIndex());
+            }
+        });
     }
 
     private void addTab(SpellCheckTab tab) {
@@ -348,26 +360,7 @@ public class SpellCheckFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 int i = pane.indexOfTabComponent(CloseTabComponent.this);
                 if (i != -1) {
-                    SpellCheckTab tab = (SpellCheckTab) jTabbedPane.getComponentAt(i);
-                    if (!tab.isSaved()) {
-                        Object[] options = {TRANSLATOR.translate("SaveChanges(Yes)"),
-                                TRANSLATOR.translate("SaveChanges(No)"),
-                                TRANSLATOR.translate("SaveChanges(Cancel)")};
-                        int n = JOptionPane.showOptionDialog(SpellCheckFrame.this,
-                                TRANSLATOR.translate("SaveChanges(Content)"),
-                                TRANSLATOR.translate("SaveChanges(Title)"),
-                                JOptionPane.YES_NO_CANCEL_OPTION,
-                                JOptionPane.QUESTION_MESSAGE,
-                                null,
-                                options,
-                                options[2]);
-                        if (n == JOptionPane.YES_OPTION) {
-                            tab.save();
-                        } else if (n == JOptionPane.CANCEL_OPTION)
-                            return;
-                    }
-
-                    pane.remove(i);
+                    checkTabSave(pane, i);
                 }
             }
 
@@ -414,5 +407,31 @@ public class SpellCheckFrame extends JFrame {
                 }
             }
         };
+    }
+
+    private void checkTabSave(JTabbedPane pane, int indexOfTab) {
+        SpellCheckTab tab = (SpellCheckTab) jTabbedPane.getComponentAt(indexOfTab);
+        if (!tab.isSaved()) {
+            int n = showSaveDialog();
+            if (n == JOptionPane.YES_OPTION) {
+                tab.save();
+            } else if (n == JOptionPane.CANCEL_OPTION)
+                return;
+        }
+        pane.remove(indexOfTab);
+    }
+
+    private int showSaveDialog() {
+        Object[] options = {TRANSLATOR.translate("SaveChanges(Yes)"),
+                TRANSLATOR.translate("SaveChanges(No)"),
+                TRANSLATOR.translate("SaveChanges(Cancel)")};
+        return JOptionPane.showOptionDialog(this,
+                TRANSLATOR.translate("SaveChanges(Content)"),
+                TRANSLATOR.translate("SaveChanges(Title)"),
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[2]);
     }
 }

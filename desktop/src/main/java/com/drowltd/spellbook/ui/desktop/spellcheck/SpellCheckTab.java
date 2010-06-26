@@ -483,6 +483,18 @@ public class SpellCheckTab extends JPanel implements FileTextPane.NoFileHandler 
         }
     }
 
+    public void cut(){
+        fileTextPane.cut();
+    }
+
+    public void copy(){
+        fileTextPane.copy();
+    }
+
+    public void paste(){
+        fileTextPane.paste();
+    }
+
 /*    public void open(File file) {
         try {
             fileTextPane.open(file);
