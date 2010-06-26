@@ -6,11 +6,10 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
- * User: bozhidar
- * Date: Jun 26, 2010
- * Time: 4:38:02 PM
- * To change this template use File | Settings | File Templates.
+ * A helper class to deal with look & feel management.
+ *
+ * @author Bozhidar Batsov
+ * @since 0.4
  */
 public class LafUtil {
     private final transient static String[] names = {
