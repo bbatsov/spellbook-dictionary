@@ -10,6 +10,7 @@ import com.drowltd.spellbook.ui.swing.component.BaseDialog;
 import com.drowltd.spellbook.ui.swing.component.DictionaryComboBox;
 import com.drowltd.spellbook.ui.swing.component.DifficultyComboBox;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
+import com.drowltd.spellbook.ui.swing.util.LafUtil;
 import com.jidesoft.dialog.ButtonPanel;
 import com.jidesoft.dialog.ButtonResources;
 import com.jidesoft.plaf.UIDefaultsLookup;
@@ -211,12 +212,12 @@ public class PreferencesDialog extends BaseDialog {
 
         checkJavaVersionCheckBox.setSelected(PM.getBoolean(Preference.CHECK_JAVA_VERSION, true));
 
-        // build the look and feel section
-        final LookAndFeelInfo[] lookAndFeelInfos = UIManager.getInstalledLookAndFeels();
+        final List<LookAndFeelInfo> lookAndFeelInfos = LafUtil.getAvailableLookAndFeels();
+
         List<String> lookAndFeelNames = new ArrayList<String>();
         lookAndFeelNames.add("System");
 
-        for (LookAndFeelInfo lookAndFeelInfo : lookAndFeelInfos) {
+        for (UIManager.LookAndFeelInfo lookAndFeelInfo : lookAndFeelInfos) {
             if (!lookAndFeelInfo.getName().equals("CDE/Motif")) {
                 lookAndFeelNames.add(lookAndFeelInfo.getName());
             }

@@ -6,6 +6,7 @@ import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.ui.swing.component.SelectDbDialog;
 import com.drowltd.spellbook.ui.swing.component.SpellbookDefaultExceptionHandler;
+import com.drowltd.spellbook.ui.swing.util.LafUtil;
 import com.drowltd.spellbook.util.ArchiveUtils;
 import com.jidesoft.dialog.StandardDialog;
 import net.miginfocom.swing.MigLayout;
@@ -28,6 +29,7 @@ import java.awt.SplashScreen;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 
 import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preference;
@@ -72,7 +74,7 @@ public class SpellbookApp {
         } else {
             Toolkit toolkit = Toolkit.getDefaultToolkit();
             bounds = new Rectangle(toolkit.getScreenSize().width / 2 - icon.getIconWidth() / 2,
-                    toolkit.getScreenSize().height / 2  - icon.getIconHeight() / 2,
+                    toolkit.getScreenSize().height / 2 - icon.getIconHeight() / 2,
                     icon.getIconWidth(), icon.getIconHeight());
         }
 
@@ -139,7 +141,7 @@ public class SpellbookApp {
                 // Set System L&F
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             } else {
-                LookAndFeelInfo[] lookAndFeelInfos = UIManager.getInstalledLookAndFeels();
+                List<LookAndFeelInfo> lookAndFeelInfos = LafUtil.getAvailableLookAndFeels();
 
                 for (LookAndFeelInfo lookAndFeelInfo : lookAndFeelInfos) {
                     if (lookAndFeelInfo.getName().equals(selectedLookAndFeel)) {
