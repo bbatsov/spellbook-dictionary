@@ -47,6 +47,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
@@ -1473,6 +1474,8 @@ public class SpellbookFrame extends JFrame {
         for (Dictionary dictionary : availableDictionaries) {
             dictionaryMenu.add(new DictionaryItem(dictionary));
         }
+
+        dictionaryMenu.add(new JSeparator());
 
         JMenuItem syncMenuItem = new JMenuItem(TRANSLATOR.translate("Sync(MenuItem)"), IconManager.getMenuIcon("replace2.png"));
 
