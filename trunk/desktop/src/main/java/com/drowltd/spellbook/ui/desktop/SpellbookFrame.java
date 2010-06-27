@@ -1559,7 +1559,6 @@ public class SpellbookFrame extends JFrame {
     private void showHelpContents() {
         HelpDialog helpDialog = new HelpDialog(this, false);
         helpDialog.showDialog();
-
     }
 
 

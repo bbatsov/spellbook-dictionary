@@ -134,30 +134,36 @@ public class SpellbookApp {
         Dictionary.TRANSLATOR.reset();
         TRANSLATOR.reset();
 
-        try {
-            String selectedLookAndFeel = pm.get(Preference.LOOK_AND_FEEL, "System");
+        EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String selectedLookAndFeel = pm.get(Preference.LOOK_AND_FEEL, "System");
 
-            if (selectedLookAndFeel.equals("System")) {
-                // Set System L&F
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            } else {
-                List<LookAndFeelInfo> lookAndFeelInfos = LafUtil.getAvailableLookAndFeels();
+                    if (selectedLookAndFeel.equals("System")) {
+                        // Set System L&F
+                        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                    } else {
+                        List<LookAndFeelInfo> lookAndFeelInfos = LafUtil.getAvailableLookAndFeels();
 
-                for (LookAndFeelInfo lookAndFeelInfo : lookAndFeelInfos) {
-                    if (lookAndFeelInfo.getName().equals(selectedLookAndFeel)) {
-                        UIManager.setLookAndFeel(lookAndFeelInfo.getClassName());
+                        for (LookAndFeelInfo lookAndFeelInfo : lookAndFeelInfos) {
+                            if (lookAndFeelInfo.getName().equals(selectedLookAndFeel)) {
+                                UIManager.setLookAndFeel(lookAndFeelInfo.getClassName());
+                            }
+                        }
                     }
+                } catch (UnsupportedLookAndFeelException e) {
+                    // handle exception
+                } catch (ClassNotFoundException e) {
+                    // handle exception
+                } catch (InstantiationException e) {
+                    // handle exception
+                } catch (IllegalAccessException e) {
+                    // handle exception
                 }
             }
-        } catch (UnsupportedLookAndFeelException e) {
-            // handle exception
-        } catch (ClassNotFoundException e) {
-            // handle exception
-        } catch (InstantiationException e) {
-            // handle exception
-        } catch (IllegalAccessException e) {
-            // handle exception
-        }
+        });
+
 
         // we determine whether another instance of spellbook is running by checking for the presence
         // of a lock file, which is created by the application upon startup and removed automatically
