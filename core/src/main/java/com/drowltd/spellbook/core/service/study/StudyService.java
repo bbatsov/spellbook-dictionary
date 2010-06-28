@@ -216,9 +216,9 @@ public class StudyService extends AbstractPersistenceService {
         String[] identificatorsForRowsWithPossibleTranslations = {
             "1.", "2.", "3.", "4.", "5.", "6.", "7.", "8.", "9.", "10.", "11.", "12.", "13.", "14.", "15.", "16.", "17.", "18.", "19.", "20.",
             "21.", "22.", "23.", "24.", "25.", "26.", "27.", "28.", "29.", "30.", "31.", "32.", "33.", "34.", "35.",
-            "n", "pl", "a", "adv", "v", "int", "sl.", "prep", "\u043E\u0431\u0438\u043A\u002E", "\u0438", "\u0437\u043E\u043E\u043B\u002E",
+            "n", "pl", "a", "adv", "v", "int", "sl.", "prep", "\u043E\u0431\u0438\u043A\u002E", "\u0438",
             "i.", "ii.", "iii.", "iv.", "v.", "vi.", "vii.", "viii.", "ix.", "x.", "xi.", "xii.", "xiii.", "xiv.", "xv.",
-            "\u0442\u0435\u0445\u002E", "\u043C\u0438\u043D\u002E"
+            "\u043B", "\u0433", "r", "\u0442\u0435\u0445\u002E"
         };
 
         for (String row : rows) {
@@ -232,13 +232,34 @@ public class StudyService extends AbstractPersistenceService {
                 }
                 for (String identificator : identificatorsForRowsWithPossibleTranslations) {
                     if (id1.equals(identificator) || id2.equals(identificator)) {
-                        rowsWithPossiblesTranslations.add(row);
-                        break;
+                        boolean isLatinWord = false;
+                        if (id1.equals("a")) {    //not all rows which begin with "a" are rows with possibles translations
+                            isLatinWord = checkingWhetherIsLatinWord(id2);
+                        }
+                        if (!isLatinWord) {
+                            rowsWithPossiblesTranslations.add(row);
+                            break;
+                        }
                     }
                 }
             }
         }
         return rowsWithPossiblesTranslations;
+    }
+
+    private boolean checkingWhetherIsLatinWord(String id2) {
+        boolean isLatinWord = false;
+        char[] alphabet = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
+            'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
+        };
+
+        for (char character : alphabet) {
+            if (id2.charAt(0) == character) {
+                isLatinWord = true;
+                break;
+            }
+        }
+        return isLatinWord;
     }
 
     private List<String> removingAllUnneededThings(List<String> rowsWithPossiblesTranslations) {
