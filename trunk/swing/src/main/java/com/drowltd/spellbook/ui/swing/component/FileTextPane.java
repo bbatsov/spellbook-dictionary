@@ -19,38 +19,28 @@ public class FileTextPane extends JTextPane {
     private NoFileHandler handler;
     private boolean contentChanged = false;
     private String fileName = TRANSLATOR.translate("UnsavedDocument");
+    private DocumentListener documentListener = new FileTextPaneDocumentListener();
 
     private final static Logger LOGGER = LoggerFactory.getLogger(FileTextPane.class);
-    private final static  Translator TRANSLATOR = Translator.getTranslator("FileTextPane");
+    private final static Translator TRANSLATOR = Translator.getTranslator("FileTextPane");
 
     public FileTextPane(File file) throws IOException {
-        this();
+        init();
         setFile(file);
         readFromFile(file);
     }
 
     public FileTextPane() {
         init();
+        attachDocumentListener();
+    }
+
+    private void attachDocumentListener() {
+        contentChanged = false;
+        getDocument().addDocumentListener(documentListener);
     }
 
     private void init() {
-        getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                contentChanged = true;
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                contentChanged = true;
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                contentChanged = true;
-            }
-        });
-
         setBackground(Color.WHITE);
     }
 
@@ -90,14 +80,14 @@ public class FileTextPane extends JTextPane {
         if (file0 == null)
             return;
 
-        if(!file0.createNewFile()){
-            
+        if (!file0.createNewFile()) {
+
         }
         setFile(file0);
         writeToFile(file0);
     }
 
-    public boolean isSaved(){
+    public boolean isSaved() {
         return !contentChanged;
     }
 
@@ -117,11 +107,11 @@ public class FileTextPane extends JTextPane {
         } finally {
             try {
                 reader.close();
+                attachDocumentListener();
             } catch (IOException e) {
                 LOGGER.error(e.getMessage(), e);
             }
         }
-
     }
 
     private void writeToFile(File file) throws IOException {
@@ -162,4 +152,22 @@ public class FileTextPane extends JTextPane {
     public static interface NoFileHandler {
         File handle();
     }
+
+    private class FileTextPaneDocumentListener implements DocumentListener {
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            contentChanged = true;
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            contentChanged = true;
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            contentChanged = true;
+        }
+    }
 }
+
