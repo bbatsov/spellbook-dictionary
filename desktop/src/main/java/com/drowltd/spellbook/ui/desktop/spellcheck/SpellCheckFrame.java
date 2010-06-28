@@ -210,7 +210,7 @@ public class SpellCheckFrame extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                 checkTabSave(jTabbedPane, jTabbedPane.getSelectedIndex());
+                checkTabsForSave();
             }
         });
     }
@@ -218,6 +218,7 @@ public class SpellCheckFrame extends JFrame {
     private void addTab(SpellCheckTab tab) {
         jTabbedPane.addTab(tab.getFileName(), tab);
         jTabbedPane.setTabComponentAt(jTabbedPane.indexOfComponent(tab), new CloseTabComponent(jTabbedPane));
+        jTabbedPane.setSelectedComponent(tab);
     }
 
     private void initLayout(JFrame parent) {
@@ -360,7 +361,7 @@ public class SpellCheckFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 int i = pane.indexOfTabComponent(CloseTabComponent.this);
                 if (i != -1) {
-                    checkTabSave(pane, i);
+                    checkTabForSave(i);
                 }
             }
 
@@ -409,24 +410,32 @@ public class SpellCheckFrame extends JFrame {
         };
     }
 
-    private void checkTabSave(JTabbedPane pane, int indexOfTab) {
+    private void checkTabsForSave() {
+        for (Component c : jTabbedPane.getComponents()) {
+            int index = jTabbedPane.indexOfComponent(c);
+            if (index != -1)
+                checkTabForSave(index);
+        }
+    }
+
+    private void checkTabForSave(int indexOfTab) {
         SpellCheckTab tab = (SpellCheckTab) jTabbedPane.getComponentAt(indexOfTab);
         if (!tab.isSaved()) {
-            int n = showSaveDialog();
+            int n = showSaveDialog(tab.getFileName());
             if (n == JOptionPane.YES_OPTION) {
                 tab.save();
             } else if (n == JOptionPane.CANCEL_OPTION)
                 return;
         }
-        pane.remove(indexOfTab);
+        jTabbedPane.remove(indexOfTab);
     }
 
-    private int showSaveDialog() {
+    private int showSaveDialog(String docName) {
         Object[] options = {TRANSLATOR.translate("SaveChanges(Yes)"),
                 TRANSLATOR.translate("SaveChanges(No)"),
                 TRANSLATOR.translate("SaveChanges(Cancel)")};
         return JOptionPane.showOptionDialog(this,
-                TRANSLATOR.translate("SaveChanges(Content)"),
+                TRANSLATOR.translate("SaveChanges(Content)", docName),
                 TRANSLATOR.translate("SaveChanges(Title)"),
                 JOptionPane.YES_NO_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
