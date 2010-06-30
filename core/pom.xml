@@ -13,31 +13,31 @@
 
     <name>Spellbook Dictionary Core</name>
     <description>The core logic shared between the various clients</description>
-    <!--<build>-->
-    <!--<plugins>-->
-    <!--<plugin>-->
-    <!--<groupId>org.liquibase</groupId>-->
-    <!--<artifactId>liquibase-plugin</artifactId>-->
-    <!--<version>1.9.5.0</version>-->
-    <!--<executions>-->
-    <!--<execution>-->
-    <!--<phase>process-resources</phase>-->
-    <!--<configuration>-->
-    <!--<changeLogFile>src/main/resources/db/spellbook.xml</changeLogFile>-->
-    <!--<driver>org.h2.Driver</driver>-->
-    <!--<url>jdbc:h2:${user.home}/.spellbook/db/spellbook</url>-->
-    <!--<username>spellbook</username>-->
-    <!--<password>spellbook</password>-->
-    <!--<promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>-->
-    <!--</configuration>-->
-    <!--<goals>-->
-    <!--<goal>update</goal>-->
-    <!--</goals>-->
-    <!--</execution>-->
-    <!--</executions>-->
-    <!--</plugin>-->
-    <!--</plugins>-->
-    <!--</build>-->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-plugin</artifactId>
+                <version>1.9.5.0</version>
+                <configuration>
+                    <changeLogFile>src/main/resources/db/spellbook.xml</changeLogFile>
+                    <driver>org.h2.Driver</driver>
+                    <url>jdbc:h2:${user.home}/.spellbook/db/spellbook</url>
+                    <username>spellbook</username>
+                    <password>spellbook</password>
+                    <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
+                </configuration>
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<phase>process-resources</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>update</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            </plugin>
+        </plugins>
+    </build>
     <dependencies>
         <dependency>
             <groupId>com.drowltd.spellbook</groupId>
