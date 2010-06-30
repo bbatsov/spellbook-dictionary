@@ -628,34 +628,19 @@ public class SpellbookFrame extends JFrame {
             throw new IllegalStateException("No word selected");
         }
 
-        final String originalWord = (String) wordsList.getSelectedValue();
-        addUpdateWordDialog.setWord(originalWord);
-        addUpdateWordDialog.setTranslation(dictionaryService.getTranslation(originalWord, selectedDictionary));
+        final String word = (String) wordsList.getSelectedValue();
+        addUpdateWordDialog.setWord(word);
+        addUpdateWordDialog.setTranslation(dictionaryService.getTranslation(word, selectedDictionary));
         addUpdateWordDialog.setLocationRelativeTo(this);
         addUpdateWordDialog.setVisible(true);
 
         if (addUpdateWordDialog.getDialogResult() == StandardDialog.RESULT_AFFIRMED) {
-            String newWord = addUpdateWordDialog.getWord();
             String newTranslation = addUpdateWordDialog.getTranslation();
 
-            if (!originalWord.equals(newWord)) {
-                words.remove(originalWord);
-                int insertionIndex = SearchUtils.findInsertionIndex(words, newWord);
-                System.out.println("insertion index is " + insertionIndex);
-                // this is a references to the cache as well
-                words.add(insertionIndex, newWord);
-                wordsList.setModel(new ListBackedListModel(words));
-            }
+            dictionaryService.updateWord(word, newTranslation, selectedDictionary);
 
-            dictionaryService.updateWord(originalWord, newWord, newTranslation, selectedDictionary);
-
-            // select the freshly updated word
-            wordsList.setSelectedValue(newWord, true);
-
-            // if only the translation was changed we need to update it manually
-            if (originalWord.equals(newWord)) {
-                wordTranslationTextPane.setText(SwingUtil.formatTranslation(newWord, newTranslation));
-            }
+            // the translation was changed - we need to update it manually
+            wordTranslationTextPane.setText(SwingUtil.formatTranslation(word, newTranslation));
         }
     }
 

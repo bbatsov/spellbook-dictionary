@@ -154,14 +154,13 @@ public class DictionaryService extends AbstractPersistenceService {
     }
 
     /**
-     * Updates a dictionary entry. Both the word itself and its translation can be updated.
+     * Updates a dictionary entry. Only its translation can be updated.
      *
-     * @param word        the word before the update(needed to find the entry to update)
-     * @param newWord     the possibly new word
+     * @param word        the word definition to update(needed to find the entry to update)
      * @param translation the new translation
      * @param d           the dictionary containing the word
      */
-    public void updateWord(String word, String newWord, String translation, Dictionary d) {
+    public void updateWord(String word, String translation, Dictionary d) {
         if (word == null || word.trim().isEmpty()) {
             LOGGER.error("word == null || word.isEmpty()");
             throw new IllegalArgumentException("word == null || word.isEmpty()");
@@ -183,7 +182,6 @@ public class DictionaryService extends AbstractPersistenceService {
         DictionaryEntry de = EM.createQuery("select de from DictionaryEntry de "
                 + "where de.dictionary = :dictionary and de.word = :word", DictionaryEntry.class).setParameter("dictionary", d).setParameter("word", word).getSingleResult();
 
-        de.setWord(newWord);
         de.setTranslation(translation);
 
         final EntityTransaction t = EM.getTransaction();
