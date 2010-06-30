@@ -12,12 +12,17 @@ package com.drowltd.spellbook.ui.desktop;
 
 import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.model.Dictionary;
+import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.ui.swing.component.BaseDialog;
 import com.drowltd.spellbook.ui.swing.validation.ButtonControllingDocumentListener;
 import com.jidesoft.dialog.BannerPanel;
 import com.jidesoft.dialog.ButtonPanel;
 import com.jidesoft.dialog.ButtonResources;
 import com.jidesoft.icons.JideIconsFactory;
+import com.jidesoft.swing.DefaultOverlayable;
+import com.jidesoft.swing.OverlayTextField;
+import com.jidesoft.swing.OverlayableIconsFactory;
+import com.jidesoft.swing.OverlayableUtils;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.AbstractAction;
@@ -31,6 +36,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Frame;
@@ -53,12 +60,15 @@ public class AddUpdateWordDialog extends BaseDialog {
     private JButton addButton;
     private JTextField newMeaningTextField;
     private JTextField wordTextField;
+    private JLabel wordTextFieldValidationLabel = new JLabel();
     private JTextPane translationPane;
     private Dictionary dictionary;
     private JButton okButton;
     private static final int FONT_SIZE = 11;
 
-    public AddUpdateWordDialog(Frame parent, boolean modal) {
+    private static final DictionaryService DICTIONARY_SERVICE = DictionaryService.getInstance();
+
+    public AddUpdateWordDialog(Frame parent, boolean modal, boolean add) {
         super(parent, modal);
 
         TRANSLATOR.reset();
@@ -82,11 +92,35 @@ public class AddUpdateWordDialog extends BaseDialog {
             }
         });
 
-        wordTextField = new JTextField();
+        wordTextField = new OverlayTextField();
 
         okButton = new JButton();
 
         wordTextField.getDocument().addDocumentListener(new ButtonControllingDocumentListener(wordTextField, okButton));
+
+        // on add we add some special notifications for existing words
+        if (add) {
+            wordTextField.getDocument().addDocumentListener(new DocumentListener() {
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    checkForWordExistence();
+                    //TODO check language as well
+                }
+
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    checkForWordExistence();
+                }
+
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    //To change body of implemented methods use File | Settings | File Templates.
+                }
+            });
+        } else {
+            // on update only the translations can be updated
+            wordTextField.setEditable(false);
+        }
 
         newMeaningTextField = new JTextField();
         translationPane = new JTextPane();
@@ -109,6 +143,16 @@ public class AddUpdateWordDialog extends BaseDialog {
 
     }
 
+    private void checkForWordExistence() {
+        if (DICTIONARY_SERVICE.containsWord(wordTextField.getText(), dictionary)) {
+            wordTextFieldValidationLabel.setIcon(OverlayableUtils.getPredefinedOverlayIcon(OverlayableIconsFactory.ERROR));
+            okButton.setEnabled(false);
+        } else {
+            wordTextFieldValidationLabel.setIcon(OverlayableUtils.getPredefinedOverlayIcon(OverlayableIconsFactory.CORRECT));
+            okButton.setEnabled(true);
+        }
+    }
+
     @Override
     public JComponent createBannerPanel() {
         BannerPanel bannerPanel = new BannerPanel(TRANSLATOR.translate("BannerTitle(Message)"),
@@ -129,7 +173,7 @@ public class AddUpdateWordDialog extends BaseDialog {
             panel.add(new JLabel(TRANSLATOR.translate("EditWord(TextFieldBorder)")), "span 2, left");
             setTitle(TRANSLATOR.translate("UpdateDialogTitle(Title)"));
         }
-        panel.add(wordTextField, "span 2, growx, top");
+        panel.add(new DefaultOverlayable(wordTextField, wordTextFieldValidationLabel, DefaultOverlayable.SOUTH_EAST), "span 2, growx, top");
         panel.add(new JLabel(TRANSLATOR.translate("AddMeaning(TextFieldBorder)")), "span 2, left");
         panel.add(newMeaningTextField, "growx, top");
         panel.add(addButton, "w 73::,gapright 2,top");
@@ -236,11 +280,5 @@ public class AddUpdateWordDialog extends BaseDialog {
 
     public String getTranslation() {
         return translationPane.getText();
-    }
-
-    public static void main(String[] args) {
-        AddUpdateWordDialog addUpdateWordDialog = new AddUpdateWordDialog(null, true);
-
-        addUpdateWordDialog.setVisible(true);
     }
 }

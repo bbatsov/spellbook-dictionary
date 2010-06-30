@@ -375,8 +375,9 @@ public class SpellbookFrame extends JFrame {
     }
 
     private void addWordDefinition() throws HeadlessException {
-        AddUpdateWordDialog addUpdateWordDialog = new AddUpdateWordDialog(this, true);
+        AddUpdateWordDialog addUpdateWordDialog = new AddUpdateWordDialog(this, true, true);
         addUpdateWordDialog.setWhetherAddWord(true);
+        addUpdateWordDialog.setDictionary(selectedDictionary);
         addUpdateWordDialog.setLocationRelativeTo(this);
         addUpdateWordDialog.setVisible(true);
 
@@ -620,7 +621,7 @@ public class SpellbookFrame extends JFrame {
     }
 
     private void updateWordDefinition() throws IllegalStateException {
-        AddUpdateWordDialog addUpdateWordDialog = new AddUpdateWordDialog(this, true);
+        AddUpdateWordDialog addUpdateWordDialog = new AddUpdateWordDialog(this, true, false);
         addUpdateWordDialog.setDictionary(selectedDictionary);
 
         if (wordsList.isSelectionEmpty()) {
