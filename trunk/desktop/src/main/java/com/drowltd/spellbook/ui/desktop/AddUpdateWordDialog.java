@@ -114,7 +114,6 @@ public class AddUpdateWordDialog extends BaseDialog {
 
                 @Override
                 public void changedUpdate(DocumentEvent e) {
-                    //To change body of implemented methods use File | Settings | File Templates.
                 }
             });
         } else {
@@ -146,9 +145,11 @@ public class AddUpdateWordDialog extends BaseDialog {
     private void checkForWordExistence() {
         if (DICTIONARY_SERVICE.containsWord(wordTextField.getText(), dictionary)) {
             wordTextFieldValidationLabel.setIcon(OverlayableUtils.getPredefinedOverlayIcon(OverlayableIconsFactory.ERROR));
+            wordTextFieldValidationLabel.setToolTipText(TRANSLATOR.translate("WordAlreadyExists(Message)"));
             okButton.setEnabled(false);
         } else {
             wordTextFieldValidationLabel.setIcon(OverlayableUtils.getPredefinedOverlayIcon(OverlayableIconsFactory.CORRECT));
+            wordTextFieldValidationLabel.setToolTipText(null);
             okButton.setEnabled(true);
         }
     }
@@ -167,17 +168,17 @@ public class AddUpdateWordDialog extends BaseDialog {
     public JComponent createContentPanel() {
         JPanel panel = new JPanel(new MigLayout("wrap 2", "[grow][]", "[][][][][][grow]"));
         if (whetherAddWord) {
-            panel.add(new JLabel(TRANSLATOR.translate("AddWord(TextFieldBorder)")), "span 2, left");
+            panel.add(new JLabel(TRANSLATOR.translate("AddWord(Label)")), "span 2, left");
             setTitle(TRANSLATOR.translate("AddDialogTitle(Title)"));
         } else {
-            panel.add(new JLabel(TRANSLATOR.translate("EditWord(TextFieldBorder)")), "span 2, left");
+            panel.add(new JLabel(TRANSLATOR.translate("EditWord(Label)")), "span 2, left");
             setTitle(TRANSLATOR.translate("UpdateDialogTitle(Title)"));
         }
         panel.add(new DefaultOverlayable(wordTextField, wordTextFieldValidationLabel, DefaultOverlayable.SOUTH_EAST), "span 2, growx, top");
-        panel.add(new JLabel(TRANSLATOR.translate("AddMeaning(TextFieldBorder)")), "span 2, left");
+        panel.add(new JLabel(TRANSLATOR.translate("AddMeaning(Label)")), "span 2, left");
         panel.add(newMeaningTextField, "growx, top");
         panel.add(addButton, "w 73::,gapright 2,top");
-        panel.add(new JLabel(TRANSLATOR.translate("EditMeaning(TextFieldBorde)")), "span 2, left");
+        panel.add(new JLabel(TRANSLATOR.translate("EditMeaning(Label)")), "span 2, left");
         panel.add(new JScrollPane(translationPane), "span 2,grow");
 
         return panel;
@@ -244,10 +245,6 @@ public class AddUpdateWordDialog extends BaseDialog {
 
     public void setDictionary(Dictionary dictionary) {
         this.dictionary = dictionary;
-    }
-
-    public Dictionary getDictionary() {
-        return dictionary;
     }
 
     public void setWord(String word) {
