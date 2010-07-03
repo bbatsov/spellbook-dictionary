@@ -1,6 +1,5 @@
 package com.drowltd.spellbook.ui.swing.component;
 
-import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.service.CodeHostingService;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.drowltd.spellbook.ui.swing.util.SwingUtil;
@@ -39,8 +38,6 @@ public class IssueDialog extends BaseDialog {
     private JLabel titleLabel;
     private JLabel contentLabel;
 
-    private static final Translator TRANSLATOR = Translator.getTranslator("IssueDialog");
-
     public IssueDialog() {
         super(null, true);
 
@@ -50,10 +47,10 @@ public class IssueDialog extends BaseDialog {
     private void initComponents0() {
         titleTextField = new JTextField();
         contentTextArea = new JTextArea();
-        submitButton = new JButton(TRANSLATOR.translate("Submit(Button)"));
-        cancelButton = new JButton(TRANSLATOR.translate("Cancel(Button)"));
-        titleLabel = new JLabel(TRANSLATOR.translate("IssueSummary(Title)"));
-        contentLabel = new JLabel(TRANSLATOR.translate("IssueDescription(Title)"));
+        submitButton = new JButton(getTranslator().translate("Submit(Button)"));
+        cancelButton = new JButton(getTranslator().translate("Cancel(Button)"));
+        titleLabel = new JLabel(getTranslator().translate("IssueSummary(Title)"));
+        contentLabel = new JLabel(getTranslator().translate("IssueDescription(Title)"));
 
         contentTextArea.setBorder(new LineBorder(Color.BLACK, BORDER_THICKNESS));
 
@@ -73,14 +70,14 @@ public class IssueDialog extends BaseDialog {
 
         setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
         setLocationRelativeTo(getParent());
-        setTitle(TRANSLATOR.translate("Banner(Title)"));
+        setTitle(getTranslator().translate("Banner(Title)"));
         setIconImage(IconManager.getMenuIcon("bug-mail.png").getImage());
     }
 
     @Override
     public JComponent createBannerPanel() {
-        return SwingUtil.createBannerPanel(TRANSLATOR.translate("Banner(Title)"),
-                TRANSLATOR.translate("Banner(Message)"),
+        return SwingUtil.createBannerPanel(getTranslator().translate("Banner(Title)"),
+                getTranslator().translate("Banner(Message)"),
                 JideIconsFactory.getImageIcon("/icons/48x48/bug-mail.png"));
     }
 
@@ -109,13 +106,13 @@ public class IssueDialog extends BaseDialog {
         String content = contentTextArea.getText();
 
         if (title.isEmpty()) {
-            showMessage(TRANSLATOR.translate("Message(Description)"));
+            showMessage(getTranslator().translate("Message(Description)"));
             titleTextField.requestFocus();
             return;
         }
 
         if (content.isEmpty()) {
-            showMessage(TRANSLATOR.translate("Message(Summary)"));
+            showMessage(getTranslator().translate("Message(Summary)"));
             contentTextArea.requestFocus();
             return;
         }
@@ -123,7 +120,7 @@ public class IssueDialog extends BaseDialog {
         try {
             CodeHostingService.getInstance().createIssue(title, content);
         } catch (Exception e) {
-            showMessage(TRANSLATOR.translate("Message(Error)"));
+            showMessage(getTranslator().translate("Message(Error)"));
         }
 
         this.dispose();
@@ -134,6 +131,6 @@ public class IssueDialog extends BaseDialog {
     }
 
     private void showMessage(String message) {
-        JOptionPane.showMessageDialog(this, message, TRANSLATOR.translate("Banner(Title)"), JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, message, getTranslator().translate("Banner(Title)"), JOptionPane.INFORMATION_MESSAGE);
     }
 }

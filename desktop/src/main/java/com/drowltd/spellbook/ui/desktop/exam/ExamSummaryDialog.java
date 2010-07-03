@@ -1,6 +1,5 @@
 package com.drowltd.spellbook.ui.desktop.exam;
 
-import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.model.ExamGrade;
 import com.drowltd.spellbook.core.model.ExamScoreEntry;
 import com.drowltd.spellbook.core.service.DictionaryService;
@@ -51,7 +50,6 @@ import java.util.List;
  */
 public class ExamSummaryDialog extends BaseDialog {
 
-    private static final Translator TRANSLATOR = Translator.getTranslator("ExamSummaryDialog");
     private ExamService examService = ExamService.getInstance();
     private DictionaryService dictionaryService = DictionaryService.getInstance();
 
@@ -74,7 +72,6 @@ public class ExamSummaryDialog extends BaseDialog {
 
     public ExamSummaryDialog(final Dialog owner, final ExamStats examStats) {
         super(null, true);
-        TRANSLATOR.reset();
 
         this.examStats = examStats;
         this.owner = owner;
@@ -87,7 +84,7 @@ public class ExamSummaryDialog extends BaseDialog {
         totalWords = new JLabel();
         score = new JLabel();
         nameTextField = new JTextField();
-        submitScoreButton = new JButton(TRANSLATOR.translate("SubmitScore(Button)"));
+        submitScoreButton = new JButton(getTranslator().translate("SubmitScore(Button)"));
         nameTextField.getDocument().addDocumentListener(new ButtonControllingDocumentListener(nameTextField, submitScoreButton));
 
         submitScoreButton.addActionListener(new ActionListener() {
@@ -100,12 +97,12 @@ public class ExamSummaryDialog extends BaseDialog {
                     scoreboardTableModel.fireTableRowsInserted(0, scoreboardTableModel.getRowCount());
                     submitted = true;
                 } else {
-                    JOptionPane.showMessageDialog(ExamSummaryDialog.this, TRANSLATOR.translate("ScoreAlreadySubmitted(Message)"));
+                    JOptionPane.showMessageDialog(ExamSummaryDialog.this, getTranslator().translate("ScoreAlreadySubmitted(Message)"));
                 }
             }
         });
 
-        setTitle(TRANSLATOR.translate("ExamSummaryDialog(Title)"));
+        setTitle(getTranslator().translate("ExamSummaryDialog(Title)"));
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setIconImage(IconManager.getImageIcon("teacher.png", IconManager.IconSize.SIZE16).getImage());
 
@@ -119,8 +116,8 @@ public class ExamSummaryDialog extends BaseDialog {
         ImageIcon tImageIcon = examStats.getScore() >= MIN_PASSING_SCORE ? IconManager.getImageIcon("bell2_green.png", IconManager.IconSize.SIZE48) :
                 IconManager.getImageIcon("bell2_red.png", IconManager.IconSize.SIZE48);
 
-        BannerPanel bannerPanel = new BannerPanel(examStats.getScore() >= MIN_PASSING_SCORE ? TRANSLATOR.translate("Success(Title)") : TRANSLATOR.translate("Failure(Title)"),
-                examStats.getScore() >= MIN_PASSING_SCORE ? TRANSLATOR.translate("Passed(Message)") : TRANSLATOR.translate("Failed(Message)"),
+        BannerPanel bannerPanel = new BannerPanel(examStats.getScore() >= MIN_PASSING_SCORE ? getTranslator().translate("Success(Title)") : getTranslator().translate("Failure(Title)"),
+                examStats.getScore() >= MIN_PASSING_SCORE ? getTranslator().translate("Passed(Message)") : getTranslator().translate("Failed(Message)"),
                 tImageIcon);
         bannerPanel.setFont(new Font("Tahoma", Font.PLAIN, 12));
         bannerPanel.setBackground(Color.WHITE);
@@ -155,21 +152,21 @@ public class ExamSummaryDialog extends BaseDialog {
     public JComponent createContentPanel() {
         JPanel panel = new JPanel(new MigLayout("wrap 2", "[][grow]"));
 
-        panel.add(new JLabel(TRANSLATOR.translate("Score(Label)")));
+        panel.add(new JLabel(getTranslator().translate("Score(Label)")));
         panel.add(score);
-        panel.add(new JLabel(TRANSLATOR.translate("Grade(Label)")));
+        panel.add(new JLabel(getTranslator().translate("Grade(Label)")));
         panel.add(grade);
-        panel.add(new JLabel(TRANSLATOR.translate("Total(Label)")));
+        panel.add(new JLabel(getTranslator().translate("Total(Label)")));
         panel.add(totalWords);
-        panel.add(new JLabel(TRANSLATOR.translate("NumberOfCorrect(Label)")));
+        panel.add(new JLabel(getTranslator().translate("NumberOfCorrect(Label)")));
         panel.add(correctWords);
-        panel.add(new JLabel(TRANSLATOR.translate("NumberOfIncorrect(Label)")));
+        panel.add(new JLabel(getTranslator().translate("NumberOfIncorrect(Label)")));
         panel.add(incorrectWords);
-        panel.add(new JLabel(TRANSLATOR.translate("TotalTime(Label)")));
+        panel.add(new JLabel(getTranslator().translate("TotalTime(Label)")));
         panel.add(totalTime);
-        panel.add(new JLabel(TRANSLATOR.translate("AvgTime(Label)")));
+        panel.add(new JLabel(getTranslator().translate("AvgTime(Label)")));
         panel.add(averageTime);
-        panel.add(new JLabel(TRANSLATOR.translate("EnterName(Label)")));
+        panel.add(new JLabel(getTranslator().translate("EnterName(Label)")));
         panel.add(nameTextField, "w 150, growx, split 2");
         panel.add(submitScoreButton);
 

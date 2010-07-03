@@ -1,6 +1,5 @@
 package com.drowltd.spellbook.ui.swing.component;
 
-import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.jidesoft.dialog.BannerPanel;
 import com.jidesoft.dialog.ButtonPanel;
@@ -13,8 +12,6 @@ import com.jidesoft.swing.OverlayTextField;
 import com.jidesoft.swing.OverlayableIconsFactory;
 import com.jidesoft.swing.OverlayableUtils;
 import net.miginfocom.swing.MigLayout;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -45,9 +42,6 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class SelectDbDialog extends BaseDialog implements PropertyChangeListener {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SelectDbDialog.class);
-    private static final Translator TRANSLATOR = Translator.getTranslator("SelectDbDialog");
-
     private JButton downloadButton;
     private JButton changeFolderButton;
     private JTextField downloadUrlTextField;
@@ -71,8 +65,8 @@ public class SelectDbDialog extends BaseDialog implements PropertyChangeListener
         localDbFolderTextField.setEditable(false);
         downloadUrlTextField = new JTextField(DB_URL);
         downloadUrlTextField.setEditable(false);
-        downloadButton = new JButton(TRANSLATOR.translate("Download(Button)"), IconManager.getImageIcon("data_down.png", IconManager.IconSize.SIZE24));
-        changeFolderButton = new JButton(TRANSLATOR.translate("ChangeFolder(Button)"), IconManager.getImageIcon("data_find.png", IconManager.IconSize.SIZE24));
+        downloadButton = new JButton(getTranslator().translate("Download(Button)"), IconManager.getImageIcon("data_down.png", IconManager.IconSize.SIZE24));
+        changeFolderButton = new JButton(getTranslator().translate("ChangeFolder(Button)"), IconManager.getImageIcon("data_find.png", IconManager.IconSize.SIZE24));
         progressMonitor = new ProgressMonitor(this, "Downloading url " + DB_URL, "Downloading", 0, 100);
 
         localDbFolder = System.getProperty("user.home");
@@ -88,8 +82,8 @@ public class SelectDbDialog extends BaseDialog implements PropertyChangeListener
                 File file = new File(getDbPath());
                 if (file.exists() &&
                         JOptionPane.showConfirmDialog(SelectDbDialog.this,
-                                TRANSLATOR.translate("Overwrite(Message)")) != JOptionPane.YES_OPTION) {
-                    LOGGER.info("don't overwrite existing file");
+                                getTranslator().translate("Overwrite(Message)")) != JOptionPane.YES_OPTION) {
+                    getLogger().info("don't overwrite existing file");
                 } else {
                     task = new Task();
                     task.addPropertyChangeListener(SelectDbDialog.this);
@@ -117,7 +111,7 @@ public class SelectDbDialog extends BaseDialog implements PropertyChangeListener
 
         pack();
         setLocationRelativeTo(null);
-        setTitle(TRANSLATOR.translate("SelectDb(Title)"));
+        setTitle(getTranslator().translate("SelectDb(Title)"));
     }
 
     private void validateLocalDbPath() {
@@ -129,13 +123,13 @@ public class SelectDbDialog extends BaseDialog implements PropertyChangeListener
         } else {
             okButton.getAction().setEnabled(false);
             localDbFolderValidationLabel.setIcon(OverlayableUtils.getPredefinedOverlayIcon(OverlayableIconsFactory.ERROR));
-            localDbFolderValidationLabel.setToolTipText(TRANSLATOR.translate("InvalidFolder(Label)", getFileName()));
+            localDbFolderValidationLabel.setToolTipText(getTranslator().translate("InvalidFolder(Label)", getFileName()));
         }
     }
 
     @Override
     public JComponent createBannerPanel() {
-        BannerPanel bannerPanel = new BannerPanel(TRANSLATOR.translate("MissingDb(Title)"), TRANSLATOR.translate("MissingDb(Message)", getFileName()),
+        BannerPanel bannerPanel = new BannerPanel(getTranslator().translate("MissingDb(Title)"), getTranslator().translate("MissingDb(Message)", getFileName()),
                 JideIconsFactory.getImageIcon("/icons/48x48/data_unknown.png"));
         bannerPanel.setFont(new Font("Tahoma", Font.PLAIN, FONT_SIZE));
         bannerPanel.setBackground(Color.WHITE);
@@ -154,10 +148,10 @@ public class SelectDbDialog extends BaseDialog implements PropertyChangeListener
         JPanel panel = new JPanel(layout);
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
 
-        panel.add(new JLabel(TRANSLATOR.translate("DownloadUrl(Label)")));
+        panel.add(new JLabel(getTranslator().translate("DownloadUrl(Label)")));
         panel.add(downloadUrlTextField, "span 2, growx");
         panel.add(downloadButton, "growx");
-        panel.add(new JLabel(TRANSLATOR.translate("DbFolder(Label)")));
+        panel.add(new JLabel(getTranslator().translate("DbFolder(Label)")));
         panel.add(new DefaultOverlayable(localDbFolderTextField, localDbFolderValidationLabel, DefaultOverlayable.SOUTH_EAST), "span 2, growx");
         panel.add(changeFolderButton, "growx");
 
@@ -238,7 +232,7 @@ public class SelectDbDialog extends BaseDialog implements PropertyChangeListener
                 int x;
                 int total = 0;
 
-                LOGGER.info("Downloading file " + DB_URL);
+                getLogger().info("Downloading file " + DB_URL);
 
                 while ((x = in.read(data, 0, BUFFER_SIZE)) >= 0) {
                     total += x;
@@ -290,17 +284,17 @@ public class SelectDbDialog extends BaseDialog implements PropertyChangeListener
                     if (file.exists()) {
                         // removing partially downloaded file
                         if (file.delete()) {
-                            LOGGER.info("partial download successfully deleted");
+                            getLogger().info("partial download successfully deleted");
                         } else {
-                            LOGGER.info("failed to delete partially downloaded file " + file.getAbsolutePath());
+                            getLogger().info("failed to delete partially downloaded file " + file.getAbsolutePath());
                         }
                     }
 
-                    LOGGER.info("Task canceled.\n");
+                    getLogger().info("Task canceled.\n");
                 } else {
                     okButton.getAction().setEnabled(true);
 
-                    LOGGER.info("Task completed.\n");
+                    getLogger().info("Task completed.\n");
                 }
 
                 downloadButton.setEnabled(true);

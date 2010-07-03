@@ -1,6 +1,5 @@
 package com.drowltd.spellbook.ui.desktop.exam;
 
-import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.Difficulty;
 import com.drowltd.spellbook.core.model.Language;
@@ -16,8 +15,6 @@ import com.drowltd.spellbook.ui.swing.component.DifficultyComboBox;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.jidesoft.dialog.ButtonPanel;
 import net.miginfocom.swing.MigLayout;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -47,10 +44,8 @@ import java.util.Set;
  * @since 0.2
  */
 public class ExamDialog extends BaseDialog {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ExamDialog.class);
     private ExamService examService = ExamService.getInstance();
     private final DictionaryService dictionaryService = DictionaryService.getInstance();
-    private static final Translator TRANSLATOR = Translator.getTranslator("ExamDialog");
     private static final PreferencesManager PM = PreferencesManager.getInstance();
 
     private int examWords;
@@ -86,7 +81,7 @@ public class ExamDialog extends BaseDialog {
 
         this.parent = parent;
 
-        TRANSLATOR.reset();
+        getTranslator().reset();
 
         fromLanguageComboBox = new JComboBox();
         toLanguageComboBox = new JComboBox();
@@ -105,7 +100,7 @@ public class ExamDialog extends BaseDialog {
         readExamPreferences();
 
         setIconImage(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE16).getImage());
-        setTitle(TRANSLATOR.translate("Exam(Title)"));
+        setTitle(getTranslator().translate("Exam(Title)"));
 
         initLanguages();
     }
@@ -128,8 +123,8 @@ public class ExamDialog extends BaseDialog {
         JPanel contentPanel = new JPanel(new MigLayout("wrap 5", "[grow][grow][grow][grow][grow]", "[grow][][][][grow][grow][grow][grow][][grow][grow][]"));
         contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        contentPanel.add(new JLabel(TRANSLATOR.translate("Languages(Label)")), "span, left");
-        contentPanel.add(new JLabel(TRANSLATOR.translate("From(Label)")), "left");
+        contentPanel.add(new JLabel(getTranslator().translate("Languages(Label)")), "span, left");
+        contentPanel.add(new JLabel(getTranslator().translate("From(Label)")), "left");
         contentPanel.add(fromLanguageComboBox, "growx");
 
         fromLanguageComboBox.addActionListener(new ActionListener() {
@@ -145,16 +140,16 @@ public class ExamDialog extends BaseDialog {
             }
         });
 
-        contentPanel.add(new JLabel(TRANSLATOR.translate("To(Label)")), "right");
+        contentPanel.add(new JLabel(getTranslator().translate("To(Label)")), "right");
         contentPanel.add(toLanguageComboBox, "right, growx");
         contentPanel.add(new JLabel(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE48)), "center");
 
-        contentPanel.add(new JLabel(TRANSLATOR.translate("Difficulty(Label)")), "left");
+        contentPanel.add(new JLabel(getTranslator().translate("Difficulty(Label)")), "left");
         contentPanel.add(difficultyComboBox, "growx");
 
         contentPanel.add(startButton, "growx");
         startButton.setIcon(IconManager.getMenuIcon("media_play_green.png"));
-        startButton.setText(TRANSLATOR.translate("Start(Button)"));
+        startButton.setText(getTranslator().translate("Start(Button)"));
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -164,7 +159,7 @@ public class ExamDialog extends BaseDialog {
 
         contentPanel.add(pauseButton, "growx");
         pauseButton.setIcon(IconManager.getMenuIcon("media_pause.png"));
-        pauseButton.setText(TRANSLATOR.translate("Pause(Button)"));
+        pauseButton.setText(getTranslator().translate("Pause(Button)"));
         pauseButton.setEnabled(false);
         pauseButton.addActionListener(new ActionListener() {
             @Override
@@ -175,22 +170,22 @@ public class ExamDialog extends BaseDialog {
 
         contentPanel.add(stopButton, "growx");
         stopButton.setIcon(IconManager.getMenuIcon("media_stop_red.png"));
-        stopButton.setText(TRANSLATOR.translate("Stop(Button)"));
+        stopButton.setText(getTranslator().translate("Stop(Button)"));
         stopButton.setEnabled(false);
         stopButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 stopExam();
-                pauseButton.setText(TRANSLATOR.translate("Pause(Button)"));
+                pauseButton.setText(getTranslator().translate("Pause(Button)"));
             }
         });
 
-        contentPanel.add(new JLabel(TRANSLATOR.translate("OverTranslateField(Label)")), "span, left");
+        contentPanel.add(new JLabel(getTranslator().translate("OverTranslateField(Label)")), "span, left");
 
         contentPanel.add(translateField, "span 5, left, growx");
         translateField.setEditable(false);
 
-        contentPanel.add(new JLabel(TRANSLATOR.translate("OverAnswerField(Label)")), "span, left");
+        contentPanel.add(new JLabel(getTranslator().translate("OverAnswerField(Label)")), "span, left");
 
         contentPanel.add(answerField, "span 5, left, growx");
         answerField.addActionListener(new ActionListener() {
@@ -204,7 +199,7 @@ public class ExamDialog extends BaseDialog {
         answerIconLabel.setIcon(IconManager.getImageIcon("bell2_grey.png", IconManager.IconSize.SIZE24));
         contentPanel.add(answerButton, "left, span, growx");
         answerButton.setIcon(IconManager.getMenuIcon("check2.png"));
-        answerButton.setText(TRANSLATOR.translate("Answer(Button)"));
+        answerButton.setText(getTranslator().translate("Answer(Button)"));
         answerButton.setEnabled(false);
         answerButton.addActionListener(new ActionListener() {
             @Override
@@ -220,13 +215,13 @@ public class ExamDialog extends BaseDialog {
         wordsProgressBar.setStringPainted(true);
 
         contentPanel.add(feedbackField, "span, left");
-        feedbackField.setText(TRANSLATOR.translate("Feedback(Field)"));
+        feedbackField.setText(getTranslator().translate("Feedback(Field)"));
 
         contentPanel.add(timerIconLabel, "");
         timerIconLabel.setIcon(IconManager.getImageIcon("stopwatch.png", IconManager.IconSize.SIZE48));
         contentPanel.add(timerProgressBar, "span, growx");
         timerProgressBar.setForeground(Color.GREEN);
-        timerProgressBar.setString(TRANSLATOR.translate("NotActive(Message)"));
+        timerProgressBar.setString(getTranslator().translate("NotActive(Message)"));
         timerProgressBar.setStringPainted(true);
 
         return contentPanel;
@@ -235,12 +230,12 @@ public class ExamDialog extends BaseDialog {
     private void pauseExam() {
         if (timerStatus == TimerStatus.STARTED) {
             swingTimer.stop();
-            pauseButton.setText(TRANSLATOR.translate("Continue(Button)"));
+            pauseButton.setText(getTranslator().translate("Continue(Button)"));
             answerButton.setEnabled(false);
             timerStatus = TimerStatus.PAUSED;
         } else if (timerStatus == TimerStatus.PAUSED) {
             swingTimer.start();
-            pauseButton.setText(TRANSLATOR.translate("Pause(Button)"));
+            pauseButton.setText(getTranslator().translate("Pause(Button)"));
             answerButton.setEnabled(true);
             timerStatus = TimerStatus.STARTED;
         }
@@ -259,9 +254,9 @@ public class ExamDialog extends BaseDialog {
         difficulty = (Difficulty) difficultyComboBox.getSelectedItem();
         assert difficulty != null;
 
-        LOGGER.info("Selected difficulty " + difficulty);
-        LOGGER.info("Timer is " + timerStatus);
-        LOGGER.info("Selected language is " + selectedLanguage);
+        getLogger().info("Selected difficulty " + difficulty);
+        getLogger().info("Timer is " + timerStatus);
+        getLogger().info("Selected language is " + selectedLanguage);
 
         examService.getDifficultyWords(selectedDictionary, selectedLanguage, difficulty);
 
@@ -288,7 +283,7 @@ public class ExamDialog extends BaseDialog {
         wordsProgressBar.setMaximum(examWords);
         wordsProgressBar.setString("0/" + examStats.getTotalWords());
         wordsProgressBar.setValue(1);
-        feedbackField.setText(TRANSLATOR.translate("ExamStarted(Label)"));
+        feedbackField.setText(getTranslator().translate("ExamStarted(Label)"));
         answerField.requestFocus();
     }
 
@@ -305,10 +300,10 @@ public class ExamDialog extends BaseDialog {
         }
 
         // clear state
-        timerProgressBar.setString(TRANSLATOR.translate("NotActive(Message)"));
+        timerProgressBar.setString(getTranslator().translate("NotActive(Message)"));
         wordsProgressBar.setValue(0);
         answerIconLabel.setIcon(IconManager.getImageIcon("bell2_grey.png", IconManager.IconSize.SIZE24));
-        feedbackField.setText(TRANSLATOR.translate("EndOfExam(Message)"));
+        feedbackField.setText(getTranslator().translate("EndOfExam(Message)"));
 
         enableComponents(true);
         translateField.setText(null);
@@ -352,12 +347,12 @@ public class ExamDialog extends BaseDialog {
 
         if (examService.isCorrect(answerField.getText())) {
             wordsProgressBar.setForeground(Color.GREEN);
-            feedbackField.setText(TRANSLATOR.translate("CorrectAnswer(String)"));
+            feedbackField.setText(getTranslator().translate("CorrectAnswer(String)"));
             answerIconLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconManager.IconSize.SIZE24));
             examStats.getCorrectWords().add(translateField.getText());
         } else {
             wordsProgressBar.setForeground(Color.RED);
-            feedbackField.setText(TRANSLATOR.translate("WrongAnswer(String)"));
+            feedbackField.setText(getTranslator().translate("WrongAnswer(String)"));
             answerIconLabel.setIcon(IconManager.getImageIcon("bell2_red.png", IconManager.IconSize.SIZE24));
             examStats.getIncorrectWords().add(translateField.getText());
         }
@@ -432,8 +427,8 @@ public class ExamDialog extends BaseDialog {
         JButton quitButton = new JButton();
         settingsButton = new JButton();
 
-        quitButton.setName(TRANSLATOR.translate("Quit(Button)"));
-        settingsButton.setName(TRANSLATOR.translate("Settings(Button)"));
+        quitButton.setName(getTranslator().translate("Quit(Button)"));
+        settingsButton.setName(getTranslator().translate("Settings(Button)"));
 
         buttonPanel.add(settingsButton, ButtonPanel.OTHER_BUTTON);
         buttonPanel.add(quitButton, ButtonPanel.CANCEL_BUTTON);

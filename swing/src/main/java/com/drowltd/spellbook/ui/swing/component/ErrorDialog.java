@@ -1,6 +1,5 @@
 package com.drowltd.spellbook.ui.swing.component;
 
-import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.jidesoft.dialog.ButtonPanel;
 import com.jidesoft.dialog.StandardDialogPane;
@@ -26,15 +25,13 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 public class ErrorDialog extends BaseDialog {
-    private static final Translator TRANSLATOR = Translator.getTranslator("ErrorDialog");
-
     private JComponent detailsPanel;
     private Throwable throwable;
 
     public ErrorDialog(Frame parent, Throwable throwable) throws HeadlessException {
         super(parent, true);
 
-        setTitle(TRANSLATOR.translate("ErrorDialog(Title)"));
+        setTitle(getTranslator().translate("ErrorDialog(Title)"));
         setIconImage(IconManager.getMenuIcon("bug_green.png").getImage());
 
         this.throwable = throwable;
@@ -44,7 +41,7 @@ public class ErrorDialog extends BaseDialog {
         JTextArea textArea = new JTextArea(getStackTraceAsString(throwable));
         textArea.setRows(10);
 
-        JLabel label = new JLabel(TRANSLATOR.translate("Details(Label)") + ": ");
+        JLabel label = new JLabel(getTranslator().translate("Details(Label)") + ": ");
 
         JPanel panel = new JPanel(new BorderLayout(6, 6));
         panel.add(new JScrollPane(textArea));
@@ -79,7 +76,7 @@ public class ErrorDialog extends BaseDialog {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(20, 40, 40, 40));
 
-        JLabel label = new JLabel(TRANSLATOR.translate("UnexpectedError(Label)") + ": " + (throwable.getLocalizedMessage() != null ?
+        JLabel label = new JLabel(getTranslator().translate("UnexpectedError(Label)") + ": " + (throwable.getLocalizedMessage() != null ?
                 throwable.getLocalizedMessage() : throwable.getClass().toString()));
         label.setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -99,7 +96,7 @@ public class ErrorDialog extends BaseDialog {
         buttonPanel.addButton(discardButton, ButtonPanel.CANCEL_BUTTON);
         buttonPanel.addButton(detailButton, ButtonPanel.OTHER_BUTTON);
 
-        submitButton.setAction(new AbstractAction(TRANSLATOR.translate("Submit(Button)")) {
+        submitButton.setAction(new AbstractAction(getTranslator().translate("Submit(Button)")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setDialogResult(RESULT_AFFIRMED);
@@ -107,7 +104,7 @@ public class ErrorDialog extends BaseDialog {
             }
         });
 
-        discardButton.setAction(new AbstractAction(TRANSLATOR.translate("Discard(Button)")) {
+        discardButton.setAction(new AbstractAction(getTranslator().translate("Discard(Button)")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setDialogResult(RESULT_CANCELLED);
@@ -115,16 +112,16 @@ public class ErrorDialog extends BaseDialog {
             }
         });
 
-        detailButton.setAction(new AbstractAction(TRANSLATOR.translate("Details(Label)") + " >>") {
+        detailButton.setAction(new AbstractAction(getTranslator().translate("Details(Label)") + " >>") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (detailsPanel.isVisible()) {
                     detailsPanel.setVisible(false);
-                    putValue(Action.NAME, TRANSLATOR.translate("Details(Label)") + " >>");
+                    putValue(Action.NAME, getTranslator().translate("Details(Label)") + " >>");
                     pack();
                 } else {
                     detailsPanel.setVisible(true);
-                    putValue(Action.NAME, TRANSLATOR.translate("Details(Label)") + " <<");
+                    putValue(Action.NAME, getTranslator().translate("Details(Label)") + " <<");
                     pack();
                 }
             }

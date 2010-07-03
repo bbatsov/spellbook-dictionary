@@ -1,6 +1,5 @@
 package com.drowltd.spellbook.ui.swing.component;
 
-import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
@@ -34,7 +33,6 @@ import java.util.Random;
  * @since 0.3
  */
 public class WordOfTheDayDialog extends BaseDialog {
-    private static final Translator TRANSLATOR = Translator.getTranslator("WordOfTheDayDialog");
     private static final DictionaryService DICTIONARY_SERVICE = DictionaryService.getInstance();
 
     private List<String> words;
@@ -49,7 +47,7 @@ public class WordOfTheDayDialog extends BaseDialog {
         this.words = words;
         this.dictionary = dictionary;
 
-        setTitle(TRANSLATOR.translate("Dialog(Title)"));
+        setTitle(getTranslator().translate("Dialog(Title)"));
 
         setMinimumSize(new Dimension(600, 300));
 
@@ -58,7 +56,7 @@ public class WordOfTheDayDialog extends BaseDialog {
 
     @Override
     public JComponent createBannerPanel() {
-        bannerPanel = new BannerPanel(TRANSLATOR.translate("Banner(Header)"),
+        bannerPanel = new BannerPanel(getTranslator().translate("Banner(Header)"),
                 "",
                 IconManager.getImageIcon("lightbulb_on.png", IconManager.IconSize.SIZE32));
         bannerPanel.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -87,7 +85,7 @@ public class WordOfTheDayDialog extends BaseDialog {
 
         JButton previousButton = new JButton();
 
-        previousButton.setAction(new AbstractAction(TRANSLATOR.translate("Previous(Button)")) {
+        previousButton.setAction(new AbstractAction(getTranslator().translate("Previous(Button)")) {
             @Override
             public void actionPerformed(ActionEvent e) {
 
@@ -95,7 +93,7 @@ public class WordOfTheDayDialog extends BaseDialog {
         });
 
         JButton nextButton = new JButton();
-        nextButton.setAction(new AbstractAction(TRANSLATOR.translate("Next(Button)")) {
+        nextButton.setAction(new AbstractAction(getTranslator().translate("Next(Button)")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 showNextWord();
@@ -103,7 +101,7 @@ public class WordOfTheDayDialog extends BaseDialog {
         });
 
         JButton closeButton = new JButton();
-        closeButton.setAction(new AbstractAction(TRANSLATOR.translate("Close(Button)")) {
+        closeButton.setAction(new AbstractAction(getTranslator().translate("Close(Button)")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setDialogResult(RESULT_CANCELLED);
@@ -126,7 +124,7 @@ public class WordOfTheDayDialog extends BaseDialog {
     private void showNextWord() {
         String word = words.get(new Random().nextInt(words.size()));
 
-        bannerPanel.setSubtitle(TRANSLATOR.translate("Banner(Message)", word));
+        bannerPanel.setSubtitle(getTranslator().translate("Banner(Message)", word));
 
         translationPane.setText(SwingUtil.formatTranslation(word, DICTIONARY_SERVICE.getTranslation(word, dictionary)));
         translationPane.setCaretPosition(0);
