@@ -1,6 +1,5 @@
 package com.drowltd.spellbook.ui.swing.component;
 
-import com.drowltd.spellbook.core.i18n.Translator;
 import com.idrsolutions.pdf.pdfhelp.PdfHelpPanel;
 
 import javax.swing.JComponent;
@@ -14,12 +13,10 @@ import java.awt.HeadlessException;
  * @since 0.4
  */
 public class HelpDialog extends BaseDialog {
-    private static final Translator TRANSLATOR = Translator.getTranslator("HelpDialog");
-
     public HelpDialog(Frame owner, boolean modal) throws HeadlessException {
         super(owner, modal);
 
-        setTitle(TRANSLATOR.translate("Dialog(Title)"));
+        setTitle(getTranslator().translate("Dialog(Title)"));
     }
 
     @Override

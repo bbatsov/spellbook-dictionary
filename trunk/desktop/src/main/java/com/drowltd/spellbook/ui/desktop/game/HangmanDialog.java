@@ -1,6 +1,5 @@
 package com.drowltd.spellbook.ui.desktop.game;
 
-import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.Difficulty;
 import com.drowltd.spellbook.core.model.Language;
@@ -15,8 +14,6 @@ import com.jidesoft.swing.OverlayTextField;
 import com.jidesoft.swing.OverlayableIconsFactory;
 import com.jidesoft.swing.OverlayableUtils;
 import net.miginfocom.swing.MigLayout;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -43,10 +40,8 @@ import java.util.Set;
  * @since 0.4
  */
 public class HangmanDialog extends BaseDialog {
-    private static final Logger LOGGER = LoggerFactory.getLogger(HangmanDialog.class);
     private ExamService examService = ExamService.getInstance();
     private final DictionaryService dictionaryService = DictionaryService.getInstance();
-    private static final Translator TRANSLATOR = Translator.getTranslator("HangmanDialog");
 
     private Set<Character> guessedChars = new HashSet<Character>();
     private int attempts = 0;
@@ -74,7 +69,7 @@ public class HangmanDialog extends BaseDialog {
     public HangmanDialog(Frame parent, boolean modal) {
         super(parent, modal);
 
-        TRANSLATOR.reset();
+        getTranslator().reset();
 
         fromLanguageComboBox = new JComboBox();
         toLanguageComboBox = new JComboBox();
@@ -90,7 +85,7 @@ public class HangmanDialog extends BaseDialog {
         feedbackField = new JLabel();
 
         setIconImage(IconManager.getImageIcon("brain.png", IconManager.IconSize.SIZE16).getImage());
-        setTitle(TRANSLATOR.translate("Hangman(Title)"));
+        setTitle(getTranslator().translate("Hangman(Title)"));
 
         initLanguages();
     }
@@ -100,8 +95,8 @@ public class HangmanDialog extends BaseDialog {
         JPanel contentPanel = new JPanel(new MigLayout("wrap 5", "[grow][grow][grow][grow][grow]", "[grow][][][][grow][grow][grow][grow][][grow][grow][][][]"));
         contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        contentPanel.add(new JLabel(TRANSLATOR.translate("Languages(Label)")), "span, left");
-        contentPanel.add(new JLabel(TRANSLATOR.translate("From(Label)")), "left");
+        contentPanel.add(new JLabel(getTranslator().translate("Languages(Label)")), "span, left");
+        contentPanel.add(new JLabel(getTranslator().translate("From(Label)")), "left");
         contentPanel.add(fromLanguageComboBox, "growx");
 
         fromLanguageComboBox.addActionListener(new ActionListener() {
@@ -117,16 +112,16 @@ public class HangmanDialog extends BaseDialog {
             }
         });
 
-        contentPanel.add(new JLabel(TRANSLATOR.translate("To(Label)")), "right");
+        contentPanel.add(new JLabel(getTranslator().translate("To(Label)")), "right");
         contentPanel.add(toLanguageComboBox, "right, growx");
         contentPanel.add(new JLabel(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE48)), "center");
 
-        contentPanel.add(new JLabel(TRANSLATOR.translate("Difficulty(Label)")), "left");
+        contentPanel.add(new JLabel(getTranslator().translate("Difficulty(Label)")), "left");
         contentPanel.add(difficultyComboBox, "growx");
 
         contentPanel.add(startButton, "growx");
         startButton.setIcon(IconManager.getMenuIcon("media_play_green.png"));
-        startButton.setText(TRANSLATOR.translate("Start(Button)"));
+        startButton.setText(getTranslator().translate("Start(Button)"));
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -136,7 +131,7 @@ public class HangmanDialog extends BaseDialog {
 
         contentPanel.add(stopButton, "growx, wrap");
         stopButton.setIcon(IconManager.getMenuIcon("media_stop_red.png"));
-        stopButton.setText(TRANSLATOR.translate("Stop(Button)"));
+        stopButton.setText(getTranslator().translate("Stop(Button)"));
         stopButton.setEnabled(false);
         stopButton.addActionListener(new ActionListener() {
             @Override
@@ -146,22 +141,22 @@ public class HangmanDialog extends BaseDialog {
         });
 
         remainingGuessesLabel = new JLabel();
-        remainingGuessesLabel.setText(TRANSLATOR.translate("RemainingGuesses(Label)", MAX_ATTEMPTS - attempts));
+        remainingGuessesLabel.setText(getTranslator().translate("RemainingGuesses(Label)", MAX_ATTEMPTS - attempts));
         contentPanel.add(remainingGuessesLabel, "span");
 
         contentPanel.add(hangmanDrawing, "center, span, width 150::, height 150::");
 
-        contentPanel.add(new JLabel(TRANSLATOR.translate("WordField(Label)")), "span, left");
+        contentPanel.add(new JLabel(getTranslator().translate("WordField(Label)")), "span, left");
 
         contentPanel.add(wordField, "span, left, growx");
         wordField.setEditable(false);
 
-        contentPanel.add(new JLabel(TRANSLATOR.translate("TranslationField(Label)")), "span, left");
+        contentPanel.add(new JLabel(getTranslator().translate("TranslationField(Label)")), "span, left");
 
         contentPanel.add(translationField, "span, left, growx");
         translationField.setEditable(false);
 
-        contentPanel.add(new JLabel(TRANSLATOR.translate("GuessField(Label)")), "span, left");
+        contentPanel.add(new JLabel(getTranslator().translate("GuessField(Label)")), "span, left");
 
         contentPanel.add(new DefaultOverlayable(guessField, guessFieldOverlayLabel, DefaultOverlayable.SOUTH_EAST), "span 5, left, growx");
         guessField.addActionListener(new ActionListener() {
@@ -200,7 +195,7 @@ public class HangmanDialog extends BaseDialog {
         guessIconLabel.setIcon(IconManager.getImageIcon("bell2_grey.png", IconManager.IconSize.SIZE24));
         contentPanel.add(guessButton, "left, span, growx");
         guessButton.setIcon(IconManager.getMenuIcon("check2.png"));
-        guessButton.setText(TRANSLATOR.translate("Guess(Button)"));
+        guessButton.setText(getTranslator().translate("Guess(Button)"));
         guessButton.setEnabled(false);
         guessButton.addActionListener(new ActionListener() {
             @Override
@@ -215,7 +210,7 @@ public class HangmanDialog extends BaseDialog {
         guessButton.setEnabled(false);
 
         contentPanel.add(feedbackField, "span, left");
-        feedbackField.setText(TRANSLATOR.translate("Feedback(Field)"));
+        feedbackField.setText(getTranslator().translate("Feedback(Field)"));
 
         return contentPanel;
     }
@@ -231,8 +226,8 @@ public class HangmanDialog extends BaseDialog {
         Difficulty difficulty = (Difficulty) difficultyComboBox.getSelectedItem();
         assert difficulty != null;
 
-        LOGGER.info("Selected difficulty " + difficulty);
-        LOGGER.info("Selected language is " + selectedLanguage);
+        getLogger().info("Selected difficulty " + difficulty);
+        getLogger().info("Selected language is " + selectedLanguage);
 
         examService.getDifficultyWords(selectedDictionary, selectedLanguage, difficulty);
 
@@ -248,13 +243,13 @@ public class HangmanDialog extends BaseDialog {
 
         enableComponents(false);
 
-        feedbackField.setText(TRANSLATOR.translate("GameStarted(Label)"));
+        feedbackField.setText(getTranslator().translate("GameStarted(Label)"));
         guessField.requestFocus();
     }
 
     private void stopGame() {
         guessIconLabel.setIcon(IconManager.getImageIcon("bell2_grey.png", IconManager.IconSize.SIZE24));
-        feedbackField.setText(TRANSLATOR.translate("EndOfGame(Message)"));
+        feedbackField.setText(getTranslator().translate("EndOfGame(Message)"));
 
         enableComponents(true);
         wordField.setText(null);
@@ -271,7 +266,7 @@ public class HangmanDialog extends BaseDialog {
         wordField.setText(maskedWord);
 
         if (!maskedWord.contains("_")) {
-            JOptionPane.showMessageDialog(this, TRANSLATOR.translate("Success(Message)"));
+            JOptionPane.showMessageDialog(this, getTranslator().translate("Success(Message)"));
             stopGame();
         }
     }
@@ -280,22 +275,22 @@ public class HangmanDialog extends BaseDialog {
         final String currentGuess = guessField.getText();
 
         if (currentWord.equals(currentGuess)) {
-            JOptionPane.showMessageDialog(this, TRANSLATOR.translate("Success(Message)"));
+            JOptionPane.showMessageDialog(this, getTranslator().translate("Success(Message)"));
             stopGame();
         } else {
             // we take only the first character
             guessedChars.add(currentGuess.charAt(0));
 
             if (currentWord.indexOf(currentGuess) != -1) {
-                feedbackField.setText(TRANSLATOR.translate("CorrectGuess(String)"));
+                feedbackField.setText(getTranslator().translate("CorrectGuess(String)"));
                 guessIconLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconManager.IconSize.SIZE24));
             } else {
-                feedbackField.setText(TRANSLATOR.translate("WrongGuess(String)"));
+                feedbackField.setText(getTranslator().translate("WrongGuess(String)"));
                 guessIconLabel.setIcon(IconManager.getImageIcon("bell2_red.png", IconManager.IconSize.SIZE24));
 
                 // the attempts count is increased only for wrong attempts
                 if (++attempts >= MAX_ATTEMPTS) {
-                    JOptionPane.showMessageDialog(this, TRANSLATOR.translate("Failure(Message)"));
+                    JOptionPane.showMessageDialog(this, getTranslator().translate("Failure(Message)"));
                     stopGame();
                 }
             }
@@ -304,7 +299,7 @@ public class HangmanDialog extends BaseDialog {
 
             hangmanDrawing.setStage(attempts);
             hangmanDrawing.repaint();
-            remainingGuessesLabel.setText(TRANSLATOR.translate("RemainingGuesses(Label)", MAX_ATTEMPTS - attempts));
+            remainingGuessesLabel.setText(getTranslator().translate("RemainingGuesses(Label)", MAX_ATTEMPTS - attempts));
 
             guessField.setText(null);
             guessField.requestFocusInWindow();
@@ -344,10 +339,10 @@ public class HangmanDialog extends BaseDialog {
 
         JButton quitButton = new JButton();
 
-        quitButton.setName(TRANSLATOR.translate("Quit(Button)"));
+        quitButton.setName(getTranslator().translate("Quit(Button)"));
         buttonPanel.add(quitButton, ButtonPanel.CANCEL_BUTTON);
 
-        quitButton.setAction(new AbstractAction(TRANSLATOR.translate("Quit(Button)")) {
+        quitButton.setAction(new AbstractAction(getTranslator().translate("Quit(Button)")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setDialogResult(RESULT_CANCELLED);

@@ -1,6 +1,5 @@
 package com.drowltd.spellbook.ui.desktop;
 
-import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.Difficulty;
 import com.drowltd.spellbook.core.model.Language;
@@ -60,7 +59,6 @@ import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preferen
  */
 public class PreferencesDialog extends BaseDialog {
 
-    private static final Translator TRANSLATOR = Translator.getTranslator("PreferencesDialog");
     private static final PreferencesManager PM = PreferencesManager.getInstance();
     private static final DictionaryService DICTIONARY_SERVICE = DictionaryService.getInstance();
 
@@ -93,7 +91,7 @@ public class PreferencesDialog extends BaseDialog {
     public PreferencesDialog(final Frame parent, boolean modal) {
         super(parent, modal);
 
-        TRANSLATOR.reset();
+        getTranslator().reset();
 
         initGuiComponents();
 
@@ -422,9 +420,9 @@ public class PreferencesDialog extends BaseDialog {
 
     private void initGuiComponents() {
         tabbedPane = new JTabbedPane();
-        tabbedPane.addTab(TRANSLATOR.translate("GeneralSettings(Title)"), IconManager.getMenuIcon("preferences.png"), createGeneralPreferencesPanel());
-        tabbedPane.addTab(TRANSLATOR.translate("FontTab(Label)"), IconManager.getMenuIcon("font.png"), createFontPreferencesPanel());
-        tabbedPane.addTab(TRANSLATOR.translate("Exam(Title)"), IconManager.getMenuIcon("blackboard.png"), createExamPreferencesPanel());
+        tabbedPane.addTab(getTranslator().translate("GeneralSettings(Title)"), IconManager.getMenuIcon("preferences.png"), createGeneralPreferencesPanel());
+        tabbedPane.addTab(getTranslator().translate("FontTab(Label)"), IconManager.getMenuIcon("font.png"), createFontPreferencesPanel());
+        tabbedPane.addTab(getTranslator().translate("Exam(Title)"), IconManager.getMenuIcon("blackboard.png"), createExamPreferencesPanel());
 
         pack();
     }
@@ -438,13 +436,13 @@ public class PreferencesDialog extends BaseDialog {
         wordCountField.setDocument(new NumberDocument());
         difficultyComboBox = new DifficultyComboBox();
 
-        examSettingsPanel.add(new JLabel(TRANSLATOR.translate("DefaultExamDifficulty(Label)")), "growx");
+        examSettingsPanel.add(new JLabel(getTranslator().translate("DefaultExamDifficulty(Label)")), "growx");
         examSettingsPanel.add(difficultyComboBox);
-        examSettingsPanel.add(new JLabel(TRANSLATOR.translate("ExamSize(Label)")), "growx");
+        examSettingsPanel.add(new JLabel(getTranslator().translate("ExamSize(Label)")), "growx");
         examSettingsPanel.add(wordCountField, "wrap, width 100");
         examSettingsPanel.add(timerCheckBox);
 
-        timerCheckBox.setText(TRANSLATOR.translate("TimeBasedExam(Label)"));
+        timerCheckBox.setText(getTranslator().translate("TimeBasedExam(Label)"));
         return examSettingsPanel;
     }
 
@@ -458,42 +456,42 @@ public class PreferencesDialog extends BaseDialog {
         currentStyleField = new JTextField();
         currentFontSizeField = new JTextField();
 
-        fontSettingsPanel.add(new JLabel(TRANSLATOR.translate("Font(Label)")), "span 2, growx");
-        fontSettingsPanel.add(new JLabel(TRANSLATOR.translate("Style(Label)")), "growx");
-        fontSettingsPanel.add(new JLabel(TRANSLATOR.translate("Size(Label)")), "growx");
+        fontSettingsPanel.add(new JLabel(getTranslator().translate("Font(Label)")), "span 2, growx");
+        fontSettingsPanel.add(new JLabel(getTranslator().translate("Style(Label)")), "growx");
+        fontSettingsPanel.add(new JLabel(getTranslator().translate("Size(Label)")), "growx");
         fontSettingsPanel.add(currentFontField, "span 2, growx");
         fontSettingsPanel.add(currentStyleField, "growx");
         fontSettingsPanel.add(currentFontSizeField, "growx");
         fontSettingsPanel.add(new JScrollPane(fontList), "span 2, grow");
         fontSettingsPanel.add(new JScrollPane(fontStyleList), "grow");
         fontSettingsPanel.add(new JScrollPane(fontSizeList), "grow");
-        fontSettingsPanel.add(new JLabel(TRANSLATOR.translate("Preview(Label)")), "span 4, gaptop 10, gapbottom 10");
+        fontSettingsPanel.add(new JLabel(getTranslator().translate("Preview(Label)")), "span 4, gaptop 10, gapbottom 10");
         fontSettingsPanel.add(previewText, "span 4, grow");
 
-        previewText.setText(TRANSLATOR.translate("PreviewText(Label)"));
+        previewText.setText(getTranslator().translate("PreviewText(Label)"));
 
         return fontSettingsPanel;
     }
 
     private JPanel createGeneralPreferencesPanel() {
         JPanel generalSettingsPanel = new JPanel(new MigLayout("wrap 2", "[grow][grow]", "[][][]20[]10[]10[]10[]10[]"));
-        minimizeToTrayCheckBox = new JCheckBox(TRANSLATOR.translate("MinimizeToTray(Label)"));
-        minimizeToTrayOnCloseCheckBox = new JCheckBox(TRANSLATOR.translate("CloseToTray(Label)"));
-        clipboardIntegrationCheckBox = new JCheckBox(TRANSLATOR.translate("ClipboardIntegration(Label)"));
-        trayPopupCheckBox = new JCheckBox(TRANSLATOR.translate("TrayPopup(Label)"));
-        showMemoryUsageCheckBox = new JCheckBox(TRANSLATOR.translate("ShowMemory(Label)"));
-        alwaysOnTopCheckBox = new JCheckBox(TRANSLATOR.translate("AlwaysOnTop(Label)"));
-        emptyLineCheckBox = new JCheckBox(TRANSLATOR.translate("EmptyLine(Label)"));
-        startMinimizedCheckBox = new JCheckBox(TRANSLATOR.translate("StartMinimized(CheckBox)"));
-        checkForUpdates = new JCheckBox(TRANSLATOR.translate("CheckForUpdates(CheckBox)"));
-        wordOfTheDay = new JCheckBox(TRANSLATOR.translate("ShowWordOfTheDay(CheckBox)"));
-        checkJavaVersionCheckBox = new JCheckBox(TRANSLATOR.translate("CheckJavaVersion(CheckBox)"));
+        minimizeToTrayCheckBox = new JCheckBox(getTranslator().translate("MinimizeToTray(Label)"));
+        minimizeToTrayOnCloseCheckBox = new JCheckBox(getTranslator().translate("CloseToTray(Label)"));
+        clipboardIntegrationCheckBox = new JCheckBox(getTranslator().translate("ClipboardIntegration(Label)"));
+        trayPopupCheckBox = new JCheckBox(getTranslator().translate("TrayPopup(Label)"));
+        showMemoryUsageCheckBox = new JCheckBox(getTranslator().translate("ShowMemory(Label)"));
+        alwaysOnTopCheckBox = new JCheckBox(getTranslator().translate("AlwaysOnTop(Label)"));
+        emptyLineCheckBox = new JCheckBox(getTranslator().translate("EmptyLine(Label)"));
+        startMinimizedCheckBox = new JCheckBox(getTranslator().translate("StartMinimized(CheckBox)"));
+        checkForUpdates = new JCheckBox(getTranslator().translate("CheckForUpdates(CheckBox)"));
+        wordOfTheDay = new JCheckBox(getTranslator().translate("ShowWordOfTheDay(CheckBox)"));
+        checkJavaVersionCheckBox = new JCheckBox(getTranslator().translate("CheckJavaVersion(CheckBox)"));
         languageComboBox = new JComboBox();
         lookAndFeelComboBox = new JComboBox();
         defaultDictionaryComboBox = new DictionaryComboBox(DICTIONARY_SERVICE.getDictionaries());
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle(TRANSLATOR.translate("Preferences(Title)"));
+        setTitle(getTranslator().translate("Preferences(Title)"));
 
         clipboardIntegrationCheckBox.addActionListener(new ActionListener() {
             @Override
@@ -509,11 +507,11 @@ public class PreferencesDialog extends BaseDialog {
 
         languageComboBox.setModel(new DefaultComboBoxModel(new Language[]{Language.ENGLISH, Language.BULGARIAN}));
 
-        generalSettingsPanel.add(new JLabel(TRANSLATOR.translate("Language(Label)")));
+        generalSettingsPanel.add(new JLabel(getTranslator().translate("Language(Label)")));
         generalSettingsPanel.add(languageComboBox, "growx");
-        generalSettingsPanel.add(new JLabel(TRANSLATOR.translate("DefaultDictionary(Label)")));
+        generalSettingsPanel.add(new JLabel(getTranslator().translate("DefaultDictionary(Label)")));
         generalSettingsPanel.add(defaultDictionaryComboBox, "growx");
-        generalSettingsPanel.add(new JLabel(TRANSLATOR.translate("LookAndFeel(Label)")));
+        generalSettingsPanel.add(new JLabel(getTranslator().translate("LookAndFeel(Label)")));
         generalSettingsPanel.add(lookAndFeelComboBox, "growx");
         generalSettingsPanel.add(minimizeToTrayCheckBox);
         generalSettingsPanel.add(minimizeToTrayOnCloseCheckBox);

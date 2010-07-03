@@ -1,7 +1,10 @@
 package com.drowltd.spellbook.ui.swing.component;
 
+import com.drowltd.spellbook.core.i18n.Translator;
 import com.jidesoft.dialog.ButtonPanel;
 import com.jidesoft.dialog.StandardDialog;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.JComponent;
 import java.awt.Frame;
@@ -40,5 +43,13 @@ public abstract class BaseDialog extends StandardDialog {
         setVisible(true);
 
         return getDialogResult();
+    }
+
+    public Translator getTranslator() {
+        return Translator.getTranslator(this.getClass().getSimpleName());
+    }
+
+    public Logger getLogger() {
+        return LoggerFactory.getLogger(this.getClass());
     }
 }

@@ -1,6 +1,5 @@
 package com.drowltd.spellbook.ui.desktop;
 
-import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.ui.swing.component.BaseDialog;
 import com.jidesoft.dialog.ButtonPanel;
 import net.miginfocom.swing.MigLayout;
@@ -13,7 +12,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-
 import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
@@ -25,8 +23,6 @@ import java.awt.event.ActionEvent;
  * @since 0.4
  */
 public class ImportDialog extends BaseDialog {
-    private static final Translator TRANSLATOR = Translator.getTranslator("ImportDialog");
-
     public ImportDialog(Frame owner, boolean modal) throws HeadlessException {
         super(owner, modal);
     }
@@ -35,29 +31,29 @@ public class ImportDialog extends BaseDialog {
     public JComponent createContentPanel() {
         JPanel mainPanel = new JPanel(new MigLayout("wrap 3", "[grow][grow][grow]", "[][][]"));
 
-        mainPanel.add(new JLabel(TRANSLATOR.translate("DictionaryFile(Label)")), "grow");
+        mainPanel.add(new JLabel(getTranslator().translate("DictionaryFile(Label)")), "grow");
 
         JTextField dictionaryFile = new JTextField();
 
         mainPanel.add(dictionaryFile, "growx");
 
-        JButton selectDictionaryFileButton = new JButton(TRANSLATOR.translate("SelectFile(Button)"));
+        JButton selectDictionaryFileButton = new JButton(getTranslator().translate("SelectFile(Button)"));
 
         mainPanel.add(selectDictionaryFileButton, "growx");
 
-        mainPanel.add(new JLabel(TRANSLATOR.translate("DictionaryName(Label)")), "growx");
+        mainPanel.add(new JLabel(getTranslator().translate("DictionaryName(Label)")), "growx");
 
         JTextField dictionaryName = new JTextField();
 
         mainPanel.add(dictionaryName, "span 2, growx");
 
-        mainPanel.add(new JLabel(TRANSLATOR.translate("DictionaryIcon(Label)")), "growx");
+        mainPanel.add(new JLabel(getTranslator().translate("DictionaryIcon(Label)")), "growx");
 
         JTextField dictionaryIcon = new JTextField();
 
         mainPanel.add(dictionaryIcon, "growx");
 
-        JButton selectIconButton = new JButton(TRANSLATOR.translate("SelectIcon(Button)"));
+        JButton selectIconButton = new JButton(getTranslator().translate("SelectIcon(Button)"));
 
         mainPanel.add(selectIconButton, "growx");
 
@@ -70,7 +66,7 @@ public class ImportDialog extends BaseDialog {
 
         JButton importButton = new JButton();
 
-        importButton.setAction(new AbstractAction(TRANSLATOR.translate("Import(Button)")) {
+        importButton.setAction(new AbstractAction(getTranslator().translate("Import(Button)")) {
             @Override
             public void actionPerformed(ActionEvent e) {
 
@@ -78,7 +74,7 @@ public class ImportDialog extends BaseDialog {
         });
 
         JButton closeButton = new JButton();
-        closeButton.setAction(new AbstractAction(TRANSLATOR.translate("Close(Button)")) {
+        closeButton.setAction(new AbstractAction(getTranslator().translate("Close(Button)")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setDialogResult(RESULT_CANCELLED);

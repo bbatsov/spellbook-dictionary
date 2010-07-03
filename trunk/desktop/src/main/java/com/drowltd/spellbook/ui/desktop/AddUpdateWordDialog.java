@@ -52,9 +52,8 @@ import java.util.ResourceBundle;
  * @author bozhidar
  */
 public class AddUpdateWordDialog extends BaseDialog {
-
-    private static final Translator TRANSLATOR = Translator.getTranslator("AddUpdateWordDialog");
     private static final Translator STANDARD_DIALOG_TRANSLATOR = Translator.getTranslator("StandardDialog");
+
     private List<String> translationRows = new ArrayList<String>();
     private boolean whetherAddWord = false;
     private JButton addButton;
@@ -67,13 +66,15 @@ public class AddUpdateWordDialog extends BaseDialog {
     private static final int FONT_SIZE = 11;
 
     private static final DictionaryService DICTIONARY_SERVICE = DictionaryService.getInstance();
+    private static final int DEFAULT_WIDTH = 500;
+    private static final int DEFAULT_HEIGHT = 500;
 
     public AddUpdateWordDialog(Frame parent, boolean modal, boolean add) {
         super(parent, modal);
 
-        TRANSLATOR.reset();
+        getTranslator().reset();
 
-        addButton = new JButton(TRANSLATOR.translate("Add(JButton)"));
+        addButton = new JButton(getTranslator().translate("Add(JButton)"));
 
         addButton.addActionListener(new ActionListener() {
 
@@ -138,14 +139,14 @@ public class AddUpdateWordDialog extends BaseDialog {
 
         setLocationRelativeTo(parent);
 
-        setSize(500, 500);
+        setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
     }
 
     private void checkForWordExistence() {
         if (DICTIONARY_SERVICE.containsWord(wordTextField.getText(), dictionary)) {
             wordTextFieldValidationLabel.setIcon(OverlayableUtils.getPredefinedOverlayIcon(OverlayableIconsFactory.ERROR));
-            wordTextFieldValidationLabel.setToolTipText(TRANSLATOR.translate("WordAlreadyExists(Message)"));
+            wordTextFieldValidationLabel.setToolTipText(getTranslator().translate("WordAlreadyExists(Message)"));
             okButton.setEnabled(false);
         } else {
             wordTextFieldValidationLabel.setIcon(OverlayableUtils.getPredefinedOverlayIcon(OverlayableIconsFactory.CORRECT));
@@ -156,8 +157,8 @@ public class AddUpdateWordDialog extends BaseDialog {
 
     @Override
     public JComponent createBannerPanel() {
-        BannerPanel bannerPanel = new BannerPanel(TRANSLATOR.translate("BannerTitle(Message)"),
-                TRANSLATOR.translate("Banner(Message)"),
+        BannerPanel bannerPanel = new BannerPanel(getTranslator().translate("BannerTitle(Message)"),
+                getTranslator().translate("Banner(Message)"),
                 JideIconsFactory.getImageIcon("/icons/48x48/pencil.png"));
         bannerPanel.setFont(new Font("Tahoma", Font.PLAIN, FONT_SIZE));
         bannerPanel.setBackground(Color.WHITE);
@@ -168,17 +169,17 @@ public class AddUpdateWordDialog extends BaseDialog {
     public JComponent createContentPanel() {
         JPanel panel = new JPanel(new MigLayout("wrap 2", "[grow][]", "[][][][][][grow]"));
         if (whetherAddWord) {
-            panel.add(new JLabel(TRANSLATOR.translate("AddWord(Label)")), "span 2, left");
-            setTitle(TRANSLATOR.translate("AddDialogTitle(Title)"));
+            panel.add(new JLabel(getTranslator().translate("AddWord(Label)")), "span 2, left");
+            setTitle(getTranslator().translate("AddDialogTitle(Title)"));
         } else {
-            panel.add(new JLabel(TRANSLATOR.translate("EditWord(Label)")), "span 2, left");
-            setTitle(TRANSLATOR.translate("UpdateDialogTitle(Title)"));
+            panel.add(new JLabel(getTranslator().translate("EditWord(Label)")), "span 2, left");
+            setTitle(getTranslator().translate("UpdateDialogTitle(Title)"));
         }
         panel.add(new DefaultOverlayable(wordTextField, wordTextFieldValidationLabel, DefaultOverlayable.SOUTH_EAST), "span 2, growx, top");
-        panel.add(new JLabel(TRANSLATOR.translate("AddMeaning(Label)")), "span 2, left");
+        panel.add(new JLabel(getTranslator().translate("AddMeaning(Label)")), "span 2, left");
         panel.add(newMeaningTextField, "growx, top");
         panel.add(addButton, "w 73::,gapright 2,top");
-        panel.add(new JLabel(TRANSLATOR.translate("EditMeaning(Label)")), "span 2, left");
+        panel.add(new JLabel(getTranslator().translate("EditMeaning(Label)")), "span 2, left");
         panel.add(new JScrollPane(translationPane), "span 2,grow");
 
         return panel;

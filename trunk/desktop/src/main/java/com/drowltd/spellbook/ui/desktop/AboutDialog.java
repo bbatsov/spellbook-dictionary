@@ -36,7 +36,6 @@ import java.net.URL;
  */
 public class AboutDialog extends BaseDialog {
     private static final Translator TEAM_TRANSLATOR = Translator.getTranslator("Team");
-    private static final Translator TRANSLATOR = Translator.getTranslator("AboutDialog");
     private JTextPane infoTextPane = new JTextPane();
     private JButton licenceButton = new JButton();
     private static final int DIALOG_WIDTH = 500;
@@ -47,7 +46,7 @@ public class AboutDialog extends BaseDialog {
         super(owner, modal);
 
         TEAM_TRANSLATOR.reset();
-        TRANSLATOR.reset();
+        getTranslator().reset();
 
         infoTextPane.addHyperlinkListener(new HyperlinkListener() {
             @Override
@@ -71,7 +70,7 @@ public class AboutDialog extends BaseDialog {
 
         infoTextPane.setContentType("text/html");
         infoTextPane.setEditable(false);
-        infoTextPane.setText(TRANSLATOR.translate("About(Message)"));
+        infoTextPane.setText(getTranslator().translate("About(Message)"));
 
         /** Checks whether desktop is supported and enable button that launch browser */
         if (Desktop.isDesktopSupported()) {
@@ -82,13 +81,13 @@ public class AboutDialog extends BaseDialog {
 
         setSize(DIALOG_WIDTH, DIALOG_HEIGHT);
         setResizable(false);
-        setTitle(TRANSLATOR.translate("About(Title)"));
+        setTitle(getTranslator().translate("About(Title)"));
     }
 
     @Override
     public JComponent createBannerPanel() {
         BannerPanel bannerPanel = new BannerPanel("Spellbook Dictionary 0.3",
-                TRANSLATOR.translate("Banner(Message)"),
+                getTranslator().translate("Banner(Message)"),
                 JideIconsFactory.getImageIcon("/images/spellbook-logo.png"));
         bannerPanel.setFont(new Font("Tahoma", Font.PLAIN, FONT_SIZE));
         bannerPanel.setBackground(Color.WHITE);
@@ -103,7 +102,7 @@ public class AboutDialog extends BaseDialog {
         JScrollPane jScrollPane = new JScrollPane(infoTextPane);
         panel.add(jScrollPane, "grow");
 
-        panel.add(new JLabel(TRANSLATOR.translate("Copyleft(Label)")), "center");
+        panel.add(new JLabel(getTranslator().translate("Copyleft(Label)")), "center");
 
         return panel;
     }
@@ -115,14 +114,14 @@ public class AboutDialog extends BaseDialog {
 
         JButton creditsButton = new JButton();
 
-        creditsButton.setAction(new AbstractAction(TRANSLATOR.translate("Credits(Button)")) {
+        creditsButton.setAction(new AbstractAction(getTranslator().translate("Credits(Button)")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 creditsButtonActionPerformed();
             }
         });
 
-        licenceButton.setAction(new AbstractAction(TRANSLATOR.translate("License(Button)")) {
+        licenceButton.setAction(new AbstractAction(getTranslator().translate("License(Button)")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 licenseButtonActionPerformed();
@@ -130,7 +129,7 @@ public class AboutDialog extends BaseDialog {
         });
 
         JButton closeButton = new JButton();
-        closeButton.setAction(new AbstractAction(TRANSLATOR.translate("Close(Button)")) {
+        closeButton.setAction(new AbstractAction(getTranslator().translate("Close(Button)")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setDialogResult(RESULT_CANCELLED);
