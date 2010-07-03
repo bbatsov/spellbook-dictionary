@@ -100,7 +100,6 @@ public class ExamDialog extends BaseDialog {
         readExamPreferences();
 
         setIconImage(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE16).getImage());
-        setTitle(getTranslator().translate("Exam(Title)"));
 
         initLanguages();
     }

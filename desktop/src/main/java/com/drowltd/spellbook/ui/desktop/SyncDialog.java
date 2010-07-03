@@ -31,7 +31,6 @@ public class SyncDialog extends BaseDialog {
     public SyncDialog(Frame owner, boolean modal) throws HeadlessException {
         super(owner, modal);
 
-        setTitle(getTranslator().translate("Dialog(Title)"));
         setIconImage(IconManager.getMenuIcon("replace2.png").getImage());
     }
 

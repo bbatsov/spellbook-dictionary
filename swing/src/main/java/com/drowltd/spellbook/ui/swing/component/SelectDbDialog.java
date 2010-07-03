@@ -111,7 +111,6 @@ public class SelectDbDialog extends BaseDialog implements PropertyChangeListener
 
         pack();
         setLocationRelativeTo(null);
-        setTitle(getTranslator().translate("SelectDb(Title)"));
     }
 
     private void validateLocalDbPath() {

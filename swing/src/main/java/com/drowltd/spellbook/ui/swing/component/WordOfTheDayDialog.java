@@ -47,8 +47,6 @@ public class WordOfTheDayDialog extends BaseDialog {
         this.words = words;
         this.dictionary = dictionary;
 
-        setTitle(getTranslator().translate("Dialog(Title)"));
-
         setMinimumSize(new Dimension(600, 300));
 
         setIconImage(IconManager.getImageIcon("lightbulb_on.png", IconManager.IconSize.SIZE16).getImage());

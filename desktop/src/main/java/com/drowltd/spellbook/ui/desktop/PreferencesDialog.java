@@ -32,7 +32,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
@@ -489,9 +488,6 @@ public class PreferencesDialog extends BaseDialog {
         languageComboBox = new JComboBox();
         lookAndFeelComboBox = new JComboBox();
         defaultDictionaryComboBox = new DictionaryComboBox(DICTIONARY_SERVICE.getDictionaries());
-
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle(getTranslator().translate("Preferences(Title)"));
 
         clipboardIntegrationCheckBox.addActionListener(new ActionListener() {
             @Override
