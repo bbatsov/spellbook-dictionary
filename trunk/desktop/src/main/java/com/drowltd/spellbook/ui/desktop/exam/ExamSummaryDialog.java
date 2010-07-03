@@ -31,7 +31,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -102,10 +101,7 @@ public class ExamSummaryDialog extends BaseDialog {
             }
         });
 
-        setTitle(getTranslator().translate("ExamSummaryDialog(Title)"));
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setIconImage(IconManager.getImageIcon("teacher.png", IconManager.IconSize.SIZE16).getImage());
-
 
         incorrectWordPanel = createIncorrectWordsPanel();
     }

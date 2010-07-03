@@ -85,7 +85,6 @@ public class HangmanDialog extends BaseDialog {
         feedbackField = new JLabel();
 
         setIconImage(IconManager.getImageIcon("brain.png", IconManager.IconSize.SIZE16).getImage());
-        setTitle(getTranslator().translate("Hangman(Title)"));
 
         initLanguages();
     }

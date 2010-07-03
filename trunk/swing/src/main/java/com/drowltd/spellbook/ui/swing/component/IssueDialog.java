@@ -70,7 +70,7 @@ public class IssueDialog extends BaseDialog {
 
         setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
         setLocationRelativeTo(getParent());
-        setTitle(getTranslator().translate("Banner(Title)"));
+
         setIconImage(IconManager.getMenuIcon("bug-mail.png").getImage());
     }
 

@@ -31,7 +31,6 @@ public class ErrorDialog extends BaseDialog {
     public ErrorDialog(Frame parent, Throwable throwable) throws HeadlessException {
         super(parent, true);
 
-        setTitle(getTranslator().translate("ErrorDialog(Title)"));
         setIconImage(IconManager.getMenuIcon("bug_green.png").getImage());
 
         this.throwable = throwable;

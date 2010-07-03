@@ -15,8 +15,6 @@ import java.awt.HeadlessException;
 public class HelpDialog extends BaseDialog {
     public HelpDialog(Frame owner, boolean modal) throws HeadlessException {
         super(owner, modal);
-
-        setTitle(getTranslator().translate("Dialog(Title)"));
     }
 
     @Override

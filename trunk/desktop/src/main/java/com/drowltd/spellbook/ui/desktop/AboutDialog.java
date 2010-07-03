@@ -81,7 +81,6 @@ public class AboutDialog extends BaseDialog {
 
         setSize(DIALOG_WIDTH, DIALOG_HEIGHT);
         setResizable(false);
-        setTitle(getTranslator().translate("About(Title)"));
     }
 
     @Override

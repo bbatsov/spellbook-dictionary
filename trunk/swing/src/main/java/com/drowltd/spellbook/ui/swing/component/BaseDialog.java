@@ -22,6 +22,9 @@ public abstract class BaseDialog extends StandardDialog {
     public BaseDialog(Frame owner, boolean modal) throws HeadlessException {
         super(owner, modal);
         this.parent = owner;
+
+        getTranslator().reset();
+        setTitle(getTranslator().translate("Dialog(Title)"));
     }
 
     @Override
