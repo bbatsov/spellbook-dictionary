@@ -70,18 +70,18 @@ public class StudyWordsDialog extends BaseDialog {
     private Integer correctAnswer;
     private Integer wrongAnswer;
     private Integer answerSeen;
-    private boolean isStopedLearn = true;
+    private boolean isStudyStopped = true;
     private HowToEnumerate howToEnumerate = HowToEnumerate.IN_ORDER_OF_INPUT;
     //components
     private JButton answerButton;
     private JTextField answerField;
     private JLabel answerSeenLabel;
-    private JLabel answerStatutLabel;
+    private JLabel answerStatusLabel;
     private JLabel countOfTheCorrectWordsLabel;
     private JLabel countOfTheWrongWordsLabel;
     private JComboBox dictionariesComboBox;
     private JLabel addWordsLabel;
-    private JLabel imoticonLabel;
+    private JLabel emoticonLabel;
     private JRadioButton inOrderOfInputRadioButton;
     private JRadioButton inReverseOrderOfInputRadioButton;
     private JPanel topPanel;
@@ -339,8 +339,8 @@ public class StudyWordsDialog extends BaseDialog {
         transcriptionLabel.setText(" ");
         studyPanel.add(transcriptionLabel, "span 2,growx,top");
 
-        imoticonLabel = new JLabel();
-        studyPanel.add(imoticonLabel, "w 53!,h 47!,gapleft 90,wrap");
+        emoticonLabel = new JLabel();
+        studyPanel.add(emoticonLabel, "w 53!,h 47!,gapleft 90,wrap");
 
         JLabel jLabel6 = new JLabel();
         jLabel6.setText(getTranslator().translate("OverAnswerField(Label)")); // NOI18N
@@ -357,8 +357,8 @@ public class StudyWordsDialog extends BaseDialog {
         });
         studyPanel.add(answerField, "span 2,w 246!");
 
-        answerStatutLabel = new JLabel();
-        studyPanel.add(answerStatutLabel, "span 2,gapleft 60,wrap");
+        answerStatusLabel = new JLabel();
+        studyPanel.add(answerStatusLabel, "span 2,gapleft 60,wrap");
 
         answerButton = new JButton();
         answerButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/check.png"))); // NOI18N
@@ -392,8 +392,8 @@ public class StudyWordsDialog extends BaseDialog {
     }
 
     private void wordsButtonActionPerformed(ActionEvent evt) {
-        WordsDialog wordsDialog = new WordsDialog((Frame) getParent(), true);
-        wordsDialog.showDialog();
+        StudySetsDialog studySetsDialog = new StudySetsDialog(this, true);
+        studySetsDialog.showDialog();
     }
 
     private void answerButtonActionPerformed(ActionEvent evt) {
@@ -423,10 +423,9 @@ public class StudyWordsDialog extends BaseDialog {
                 answer = wordsForLearning.get(wordIndex) + "\n\n" + translationForLearning.get(wordIndex);
             }
 
-            SeeAnswerDialog seeAnswerDialog = new SeeAnswerDialog((Frame) getParent(), true);
-            seeAnswerDialog.setAnswer(answer);
-            seeAnswerDialog.setLocationRelativeTo(this);
-            seeAnswerDialog.setVisible(true);
+            StudyAnswerDialog studyAnswerDialog = new StudyAnswerDialog(this, true);
+            studyAnswerDialog.setAnswer(answer);
+            studyAnswerDialog.showDialog();
         }
         if (selectedDictionary == SelectedDictionary.BG_EN) {
             if (howToEnumerate == HowToEnumerate.RANDOM) {
@@ -458,7 +457,7 @@ public class StudyWordsDialog extends BaseDialog {
     }
 
     private void answerFieldActionPerformed(ActionEvent evt) {
-        if (!isStopedLearn) {
+        if (!isStudyStopped) {
             if (selectedDictionary == SelectedDictionary.EN_BG) {
                 if (howToEnumerate == HowToEnumerate.RANDOM) {
                     getAnswer(shuffleWordsForLearning, shuffleTranslationForLearning);
@@ -480,7 +479,7 @@ public class StudyWordsDialog extends BaseDialog {
         if (repeatWordCheckBox.isSelected()) {
             repeatMisspelledWordsCheckBox.setSelected(false);
         }
-        if (!isStopedLearn) {
+        if (!isStudyStopped) {
             answerField.requestFocus();
         }
     }
@@ -489,7 +488,7 @@ public class StudyWordsDialog extends BaseDialog {
         if (repeatMisspelledWordsCheckBox.isSelected()) {
             repeatWordCheckBox.setSelected(false);
         }
-        if (!isStopedLearn) {
+        if (!isStudyStopped) {
             answerField.requestFocus();
         }
     }
@@ -557,7 +556,7 @@ public class StudyWordsDialog extends BaseDialog {
     }
 
     private void resetToZeroCounters() {
-        answerStatutLabel.setText(null);
+        answerStatusLabel.setText(null);
         countOfTheCorrectWordsLabel.setText("0");
         countOfTheWrongWordsLabel.setText("0");
         answerSeenLabel.setText("0");
@@ -697,19 +696,19 @@ public class StudyWordsDialog extends BaseDialog {
             }
         }
         if (isCorrectAnswer) {
-            answerStatutLabel.setText(getTranslator().translate("CorrectAnswer(Message)"));
+            answerStatusLabel.setText(getTranslator().translate("CorrectAnswer(Message)"));
             correctAnswer++;
             countOfTheCorrectWordsLabel.setText(correctAnswer.toString());
-            imoticonLabel.setIcon(IconManager.getImageIcon("laugh.gif", IconManager.IconSize.SIZE48));
+            emoticonLabel.setIcon(IconManager.getImageIcon("laugh.gif", IconManager.IconSize.SIZE48));
         } else {
             if (!wordTranslation.isEmpty()) {
-                answerStatutLabel.setText(getTranslator().translate("WrongAnswer(Message)"));
-                imoticonLabel.setIcon(IconManager.getImageIcon("shy.gif", IconManager.IconSize.SIZE48));
+                answerStatusLabel.setText(getTranslator().translate("WrongAnswer(Message)"));
+                emoticonLabel.setIcon(IconManager.getImageIcon("shy.gif", IconManager.IconSize.SIZE48));
                 answerField.setText(null);
                 wrongAnswer++;
             }
             if (wordTranslation.isEmpty()) {
-                answerStatutLabel.setText(null);
+                answerStatusLabel.setText(null);
             }
             countOfTheWrongWordsLabel.setText(wrongAnswer.toString());
             if (repeatMisspelledWordsCheckBox.isSelected() && !wordTranslation.isEmpty()) {
@@ -757,7 +756,7 @@ public class StudyWordsDialog extends BaseDialog {
 
     private void setComponentsEnable(boolean enable) {
 
-        isStopedLearn = enable;
+        isStudyStopped = enable;
         answerButton.setEnabled(!enable);
         seeAnswerButton.setEnabled(!enable);
         stopButton.setEnabled(!enable);
@@ -791,7 +790,7 @@ public class StudyWordsDialog extends BaseDialog {
             if (studySetEntry.isEmpty()) {
                 reportThatDatabaseIsEmpty();
             } else {
-                startButton.setEnabled(isStopedLearn);
+                startButton.setEnabled(isStudyStopped);
                 warningIconLabel.setIcon(null);
                 addWordsLabel.setText(null);
             }

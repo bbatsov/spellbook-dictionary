@@ -26,6 +26,7 @@ import javax.swing.SwingWorker;
 import javax.swing.border.BevelBorder;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -58,7 +59,7 @@ public class SelectDbDialog extends BaseDialog implements PropertyChangeListener
     private boolean downloaded = false;
 
     public SelectDbDialog() {
-        super(null, true);
+        super((Frame) null, true);
 
         localDbFolderValidationLabel = new JLabel();
         localDbFolderTextField = new OverlayTextField();
