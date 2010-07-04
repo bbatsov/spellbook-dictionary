@@ -10,7 +10,6 @@
  */
 package com.drowltd.spellbook.ui.desktop;
 
-import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.ui.swing.component.BaseDialog;
@@ -52,8 +51,6 @@ import java.util.ResourceBundle;
  * @author bozhidar
  */
 public class AddUpdateWordDialog extends BaseDialog {
-    private static final Translator STANDARD_DIALOG_TRANSLATOR = Translator.getTranslator("StandardDialog");
-
     private List<String> translationRows = new ArrayList<String>();
     private boolean whetherAddWord = false;
     private JButton addButton;
@@ -192,13 +189,12 @@ public class AddUpdateWordDialog extends BaseDialog {
         JButton helpButton = new JButton();
         okButton.setName(OK);
         cancelButton.setName(CANCEL);
-        cancelButton.setText("sasho");
         helpButton.setName(HELP);
         buttonPanel.addButton(okButton, ButtonPanel.AFFIRMATIVE_BUTTON);
         buttonPanel.addButton(cancelButton, ButtonPanel.CANCEL_BUTTON);
         buttonPanel.addButton(helpButton, ButtonPanel.HELP_BUTTON);
 
-        okButton.setAction(new AbstractAction(STANDARD_DIALOG_TRANSLATOR.translate("OK(JButton)")) {
+        okButton.setAction(new AbstractAction(getBaseTranslator().translate("OK(Button)")) {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -211,7 +207,7 @@ public class AddUpdateWordDialog extends BaseDialog {
                 }
             }
         });
-        cancelButton.setAction(new AbstractAction(STANDARD_DIALOG_TRANSLATOR.translate("Cancel(JButton)")) {
+        cancelButton.setAction(new AbstractAction(getBaseTranslator().translate("Cancel(Button)")) {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -221,7 +217,7 @@ public class AddUpdateWordDialog extends BaseDialog {
             }
         });
         final ResourceBundle resourceBundle = ButtonResources.getResourceBundle(Locale.getDefault());
-        helpButton.setAction(new AbstractAction(STANDARD_DIALOG_TRANSLATOR.translate("Help(JButton)")) {
+        helpButton.setAction(new AbstractAction(getBaseTranslator().translate("Help(Button)")) {
 
             @Override
             public void actionPerformed(ActionEvent e) {

@@ -54,6 +54,10 @@ public abstract class BaseDialog extends StandardDialog {
         return Translator.getTranslator(this.getClass().getSimpleName());
     }
 
+    public Translator getBaseTranslator() {
+        return Translator.getTranslator(BaseDialog.class.getSimpleName());
+    }
+
     public Logger getLogger() {
         return LoggerFactory.getLogger(this.getClass());
     }
