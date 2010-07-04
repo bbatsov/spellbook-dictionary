@@ -1122,6 +1122,18 @@ public class SpellbookFrame extends JFrame {
 
         helpMenu.add(checkForUpdates);
 
+        JMenuItem wordOfTheDay = new JMenuItem(TRANSLATOR.translate("WordOfTheDay(MenuItem)"), IconManager.getMenuIcon("lightbulb_on.png"));
+
+        wordOfTheDay.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                WordOfTheDayDialog wordOfTheDayDialog = new WordOfTheDayDialog(SpellbookFrame.this, words, selectedDictionary);
+                wordOfTheDayDialog.showDialog();
+            }
+        });
+
+        helpMenu.add(wordOfTheDay);
+
         aboutMenuItem.setIcon(IconManager.getMenuIcon("about.png"));
         aboutMenuItem.setMnemonic('a');
         aboutMenuItem.setText(TRANSLATOR.translate("HelpAbout(MenuItem)"));
