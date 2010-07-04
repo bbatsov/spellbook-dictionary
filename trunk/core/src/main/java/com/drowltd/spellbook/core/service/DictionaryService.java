@@ -335,4 +335,16 @@ public class DictionaryService extends AbstractPersistenceService {
     public Dictionary getComplement(Dictionary dictionary) {
         return EM.createNamedQuery("Dictionary.getDictionaryByLanguages", Dictionary.class).setParameter("fromLanguage", dictionary.getToLanguage()).setParameter("toLanguage", dictionary.getFromLanguage()).getSingleResult();
     }
+
+    public Dictionary createDictionary(Language from, Language to, String name, String icon) {
+        Dictionary dictionary = new Dictionary();
+        dictionary.setFromLanguage(from);
+        dictionary.setToLanguage(to);
+        dictionary.setName(name);
+        dictionary.setIconName(icon);
+
+        EM.persist(dictionary);
+
+        return dictionary;
+    }
 }
