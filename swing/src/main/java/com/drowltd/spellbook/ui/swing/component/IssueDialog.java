@@ -1,7 +1,6 @@
 package com.drowltd.spellbook.ui.swing.component;
 
 import com.drowltd.spellbook.core.service.CodeHostingService;
-import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.drowltd.spellbook.ui.swing.util.SwingUtil;
 import com.jidesoft.dialog.ButtonPanel;
 import com.jidesoft.icons.JideIconsFactory;
@@ -69,9 +68,6 @@ public class IssueDialog extends BaseDialog {
         });
 
         setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
-        setLocationRelativeTo(getParent());
-
-        setIconImage(IconManager.getMenuIcon("bug-mail.png").getImage());
     }
 
     @Override
@@ -123,11 +119,11 @@ public class IssueDialog extends BaseDialog {
             showMessage(getTranslator().translate("Message(Error)"));
         }
 
-        this.dispose();
+        setVisible(false);
     }
 
     private void cancelButtonActionPerformed() {
-        this.dispose();
+        setVisible(false);
     }
 
     private void showMessage(String message) {

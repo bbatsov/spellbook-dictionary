@@ -101,8 +101,6 @@ public class ExamSummaryDialog extends BaseDialog {
             }
         });
 
-        setIconImage(IconManager.getImageIcon("teacher.png", IconManager.IconSize.SIZE16).getImage());
-
         incorrectWordPanel = createIncorrectWordsPanel();
     }
 

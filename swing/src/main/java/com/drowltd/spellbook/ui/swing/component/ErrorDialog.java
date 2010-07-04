@@ -1,6 +1,5 @@
 package com.drowltd.spellbook.ui.swing.component;
 
-import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.jidesoft.dialog.ButtonPanel;
 import com.jidesoft.dialog.StandardDialogPane;
 import com.jidesoft.swing.JideBoxLayout;
@@ -30,8 +29,6 @@ public class ErrorDialog extends BaseDialog {
 
     public ErrorDialog(Frame parent, Throwable throwable) throws HeadlessException {
         super(parent, true);
-
-        setIconImage(IconManager.getMenuIcon("bug_green.png").getImage());
 
         this.throwable = throwable;
     }

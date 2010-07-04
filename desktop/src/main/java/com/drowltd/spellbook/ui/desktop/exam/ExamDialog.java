@@ -99,8 +99,6 @@ public class ExamDialog extends BaseDialog {
         feedbackField = new JLabel();
         readExamPreferences();
 
-        setIconImage(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE16).getImage());
-
         initLanguages();
     }
 
