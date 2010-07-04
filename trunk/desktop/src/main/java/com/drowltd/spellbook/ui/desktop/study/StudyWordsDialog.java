@@ -61,8 +61,8 @@ public class StudyWordsDialog extends BaseDialog {
     private SelectedDictionary selectedDictionary = SelectedDictionary.EN_BG;
     private List<String> wordsForLearning = new ArrayList<String>();
     private List<String> translationForLearning = new ArrayList<String>();
-    private List shuffleWordsForLearning = new ArrayList<String>();
-    private List shuffleTranslationForLearning = new ArrayList<String>();
+    private List<String> shuffleWordsForLearning = new ArrayList<String>();
+    private List<String> shuffleTranslationForLearning = new ArrayList<String>();
     private List<Dictionary> dictionaries = new ArrayList<Dictionary>();
     private List<StudySet> studySets = new ArrayList<StudySet>();
     private int wordIndex = 0;
@@ -546,8 +546,8 @@ public class StudyWordsDialog extends BaseDialog {
             showWordWhenStartTheStudy(wordsForLearning, translationForLearning);
         }
         if (randomRadioButton.isSelected()) {
-            shuffleWordsForLearning = new ArrayList();
-            shuffleTranslationForLearning = new ArrayList();
+            shuffleWordsForLearning = new ArrayList<String>();
+            shuffleTranslationForLearning = new ArrayList<String>();
             shuffle(wordsForLearning, translationForLearning);
             howToEnumerate = HowToEnumerate.RANDOM;
             wordIndex = 0;
@@ -584,17 +584,17 @@ public class StudyWordsDialog extends BaseDialog {
         }
     }
 
-    private void shuffle(List words, List translations) {
+    private void shuffle(List<String> words, List<String> translations) {
         if (words.size() > 0 && translations.size() > 0) {
 
-            List copyWords = new ArrayList();
-            List copyTranslations = new ArrayList();
+            List<String> copyWords = new ArrayList<String>();
+            List<String> copyTranslations = new ArrayList<String>();
 
-            for (Object object : words) {
-                copyWords.add(object);
+            for (String word : words) {
+                copyWords.add(word);
             }
-            for (Object object : translations) {
-                copyTranslations.add(object);
+            for (String translation : translations) {
+                copyTranslations.add(translation);
             }
 
             Random generator = new Random();
