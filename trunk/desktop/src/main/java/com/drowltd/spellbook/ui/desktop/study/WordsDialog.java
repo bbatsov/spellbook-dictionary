@@ -10,13 +10,13 @@
  */
 package com.drowltd.spellbook.ui.desktop.study;
 
-import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.StudySet;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.core.preferences.PreferencesManager.Preference;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.core.service.study.StudyService;
+import com.drowltd.spellbook.ui.swing.component.BaseDialog;
 import com.jidesoft.swing.AutoCompletion;
 import net.miginfocom.swing.MigLayout;
 
@@ -24,7 +24,7 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -32,7 +32,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.WindowConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.PopupMenuEvent;
@@ -40,17 +39,17 @@ import javax.swing.event.PopupMenuListener;
 import javax.swing.table.TableColumn;
 import java.awt.Frame;
 import java.awt.HeadlessException;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 
 /**
  * @author Sasho
  */
-public class WordsDialog extends JDialog {
+public class WordsDialog extends BaseDialog {
 
     private long countOFTheWords;
     private final DictionaryService dictionaryService;
@@ -60,10 +59,8 @@ public class WordsDialog extends JDialog {
     private List<Dictionary> dictionaries = new ArrayList<Dictionary>();
     private List<StudySet> studySets = new ArrayList<StudySet>();
     private final StudyService studyService;
-    private final Frame parent;
     private static final PreferencesManager PM = PreferencesManager.getInstance();
-    private static final Translator TRANSLATOR = Translator.getTranslator("WordsDialog");
-    //componets
+    //components
     private JTextField addStudySetField;
     private JButton addWordButton;
     private JComboBox dictionariesComboBox;
@@ -75,20 +72,50 @@ public class WordsDialog extends JDialog {
 
     public WordsDialog(Frame parent, boolean modal) {
         super(parent, modal);
-        TRANSLATOR.reset();
-        this.parent = parent;
 
         dictionaryService = DictionaryService.getInstance();
         dictionaries = dictionaryService.getDictionaries();
         words = dictionaryService.getWordsFromDictionary(dictionaries.get(0));
 
-        initComponents();
+        studyService = new StudyService();
+        studySets = studyService.getStudySets();
+
+        setResizable(false);
+    }
+
+    private void updateAddButtonState() {
+        addWordButton.setEnabled(words.contains(wordSearchField.getText()));
+
+        if (addWordButton.isEnabled()) {
+            Dictionary dictionary = null;
+            if (dictionariesComboBox.getSelectedItem().equals(getTranslator().translate("EnglishItem(ComboBox)"))) {
+                dictionary = dictionaries.get(0);
+            }
+            wordTranslationTextPane.setText(dictionaryService.getTranslation(wordSearchField.getText(),
+                    dictionary));
+            wordTranslationTextPane.setCaretPosition(0);
+        }
+    }
+
+    public JTable getTable() {
+        return wordsTable;
+    }
+
+    @Override
+    public JComponent createContentPanel() {
+        topPanel = new JPanel(new MigLayout("", "10[240]10[240]10", "10[]10[]0[]10"));
+
+        initLanguagesPanel();
+
+        initStudySetsPanel();
+
+        initAddWordPanel();
+
+        initWordsTablePanel();
 
         AutoCompletion autoCompletion = new AutoCompletion(wordSearchField, words);
         autoCompletion.setStrict(false);
 
-        studyService = new StudyService();
-        studySets = studyService.getStudySets();
         setStudySetsInComboBox();
         if (!studySets.isEmpty()) {
             int index = PM.getInt(Preference.STUDY_SETS, studySetsComboBox.getSelectedIndex());
@@ -121,84 +148,38 @@ public class WordsDialog extends JDialog {
             }
         });
 
+        setWordsInTable(false);
+
         // wordsForLearning = dictDb.getWordsForLearning();
         String name = (String) studySetsComboBox.getSelectedItem();
         translationsForStudy = studyService.getTranslationsForStudy(name);
         countOFTheWords = studyService.getCountOfTheWords(name);
+
+        return topPanel;
     }
 
-    private void updateAddButtonState() {
-        addWordButton.setEnabled(words.contains(wordSearchField.getText()));
-
-        if (addWordButton.isEnabled()) {
-            Dictionary dictionary = null;
-            if (dictionariesComboBox.getSelectedItem().equals(TRANSLATOR.translate("EnglishItem(ComboBox)"))) {
-                dictionary = dictionaries.get(0);
-            }
-            wordTranslationTextPane.setText(dictionaryService.getTranslation(wordSearchField.getText(),
-                    dictionary));
-            wordTranslationTextPane.setCaretPosition(0);
-        }
-    }
-
-    public JTextField getAddWordField() {
-        return wordSearchField;
-    }
-
-    public JTable getTable() {
-        return wordsTable;
-    }
-
-    /**
-     * This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
-    private void initComponents() {
-
-        topPanel = new JPanel(new MigLayout("", "10[240]10[240]10", "10[]10[]0[]10"));
-        setContentPane(topPanel);
-
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        ResourceBundle bundle = ResourceBundle.getBundle("i18n/WordsDialog"); // NOI18N
-        setTitle("Words");
-        setResizable(false);
-
-        initLanguagesPanel(bundle);
-
-        initStudySetsPanel(bundle);
-
-        initAddWordPanel(bundle);
-
-        initWordsTablePanel(bundle);
-
-        pack();
-    }
-
-    private void initLanguagesPanel(ResourceBundle bundle) {
+    private void initLanguagesPanel() {
         JPanel languagesPanel = new JPanel(new MigLayout("", "25[200]25", "[][]"));
         languagesPanel.setBorder(BorderFactory.createEtchedBorder());
 
         JLabel jLabel3 = new JLabel();
-        jLabel3.setText(bundle.getString("SelectLangueges(Label)")); // NOI18N
+        jLabel3.setText(getTranslator().translate("SelectLangueges(Label)")); // NOI18N
         languagesPanel.add(jLabel3, "wrap");
 
         dictionariesComboBox = new JComboBox();
         languagesPanel.add(dictionariesComboBox, "span,growx");
-        dictionariesComboBox.addItem(bundle.getString("EnglishItem(ComboBox)"));
+        dictionariesComboBox.addItem(getTranslator().translate("EnglishItem(ComboBox)"));
         dictionariesComboBox.setSelectedIndex(0);
 
         topPanel.add(languagesPanel, "growy");
     }
 
-    private void initStudySetsPanel(ResourceBundle bundle) {
+    private void initStudySetsPanel() {
         JPanel studySetsPanel = new JPanel(new MigLayout("", "25[100][100]25", "[][][][][]"));
         studySetsPanel.setBorder(BorderFactory.createEtchedBorder());
 
         JLabel jLabel6 = new JLabel();
-        jLabel6.setText(bundle.getString("StudySets(Label)")); // NOI18N
+        jLabel6.setText(getTranslator().translate("StudySets(Label)")); // NOI18N
         studySetsPanel.add(jLabel6, "wrap");
 
         studySetsComboBox = new JComboBox();
@@ -220,14 +201,14 @@ public class WordsDialog extends JDialog {
         studySetsPanel.add(studySetsComboBox, "span 2,growx,wrap");
 
         JLabel jLabel5 = new JLabel();
-        jLabel5.setText(bundle.getString("EnterName(Label)")); // NOI18N
+        jLabel5.setText(getTranslator().translate("EnterName(Label)")); // NOI18N
         studySetsPanel.add(jLabel5, "span 2,wrap");
 
         addStudySetField = new JTextField();
         studySetsPanel.add(addStudySetField, "span 2,growx,wrap");
 
         JButton addStudySetButton = new JButton();
-        addStudySetButton.setText(bundle.getString("AddStudySet(Button)")); // NOI18N
+        addStudySetButton.setText(getTranslator().translate("AddStudySet(Button)")); // NOI18N
         addStudySetButton.addActionListener(new ActionListener() {
 
             @Override
@@ -238,7 +219,7 @@ public class WordsDialog extends JDialog {
         studySetsPanel.add(addStudySetButton, "w 81!,sg,left");
 
         JButton deleteStudySetButton = new JButton();
-        deleteStudySetButton.setText(bundle.getString("DeleteStudySet(Button)")); // NOI18N
+        deleteStudySetButton.setText(getTranslator().translate("DeleteStudySet(Button)")); // NOI18N
         deleteStudySetButton.addActionListener(new ActionListener() {
 
             @Override
@@ -251,12 +232,12 @@ public class WordsDialog extends JDialog {
         topPanel.add(studySetsPanel, "growx,wrap");
     }
 
-    private void initAddWordPanel(ResourceBundle bundle) {
+    private void initAddWordPanel() {
         JPanel addWordPanel = new JPanel(new MigLayout("", "[400][]", "[][][154]"));
         addWordPanel.setBorder(BorderFactory.createEtchedBorder());
 
         JLabel jLabel1 = new JLabel();
-        jLabel1.setText(bundle.getString("EnterWord(Label)")); // NOI18N
+        jLabel1.setText(getTranslator().translate("EnterWord(Label)")); // NOI18N
         addWordPanel.add(jLabel1, "wrap");
 
         wordSearchField = new JTextField();
@@ -270,7 +251,7 @@ public class WordsDialog extends JDialog {
         addWordPanel.add(wordSearchField, "growx");
 
         addWordButton = new JButton();
-        addWordButton.setText(bundle.getString("Add(Button)")); // NOI18N
+        addWordButton.setText(getTranslator().translate("Add(Button)")); // NOI18N
         addWordButton.addActionListener(new ActionListener() {
 
             @Override
@@ -288,7 +269,7 @@ public class WordsDialog extends JDialog {
         addWordPanel.add(wordTranslationScrollPane, "grow");
 
         JButton clearButton = new JButton();
-        clearButton.setText(bundle.getString("Clear(Button)")); // NOI18N
+        clearButton.setText(getTranslator().translate("Clear(Button)")); // NOI18N
         clearButton.addActionListener(new ActionListener() {
 
             @Override
@@ -301,11 +282,11 @@ public class WordsDialog extends JDialog {
         topPanel.add(addWordPanel, "span 2,sg,wrap");
     }
 
-    private void initWordsTablePanel(ResourceBundle bundle) {
+    private void initWordsTablePanel() {
         JPanel wordsTablePanel = new JPanel(new MigLayout("", "0[500]0", "[][165][]"));
 
         JButton selectNothingButton = new JButton();
-        selectNothingButton.setText(bundle.getString("Nothing(Button)")); // NOI18N
+        selectNothingButton.setText(getTranslator().translate("Nothing(Button)")); // NOI18N
         selectNothingButton.addActionListener(new ActionListener() {
 
             @Override
@@ -316,7 +297,7 @@ public class WordsDialog extends JDialog {
         wordsTablePanel.add(selectNothingButton, "w 81!,right,split 2,sg");
 
         JButton selectAllButton = new JButton();
-        selectAllButton.setText(bundle.getString("All(Button)")); // NOI18N
+        selectAllButton.setText(getTranslator().translate("All(Button)")); // NOI18N
         selectAllButton.addActionListener(new ActionListener() {
 
             @Override
@@ -332,14 +313,14 @@ public class WordsDialog extends JDialog {
             @Override
             public String getToolTipText(MouseEvent e) {
                 String tip = null;
-                java.awt.Point p = e.getPoint();
+                Point p = e.getPoint();
                 int rowIndex = rowAtPoint(p);
                 int colIndex = columnAtPoint(p);
                 int realColumnIndex = convertColumnIndexToModel(colIndex);
 
                 if (realColumnIndex == 1 || realColumnIndex == 2) {
                     tip = (String) getValueAt(rowIndex, colIndex);
-                } 
+                }
                 return tip;
             }
         };
@@ -348,7 +329,7 @@ public class WordsDialog extends JDialog {
         wordsTablePanel.add(wordsScrollPane, "growx,wrap");
 
         JButton deleteWordButton = new JButton();
-        deleteWordButton.setText(bundle.getString("Delete(Button)"));
+        deleteWordButton.setText(getTranslator().translate("Delete(Button)"));
         deleteWordButton.addActionListener(new ActionListener() {
 
             @Override
@@ -366,7 +347,7 @@ public class WordsDialog extends JDialog {
         if (!studySets.isEmpty()) {
             addWord();
         } else {
-            JOptionPane.showMessageDialog(this, TRANSLATOR.translate("AddStudySetFirst(Message)"), null, JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, getTranslator().translate("AddStudySetFirst(Message)"), null, JOptionPane.WARNING_MESSAGE);
             clear();
             addStudySetField.requestFocus();
         }
@@ -410,7 +391,7 @@ public class WordsDialog extends JDialog {
         for (int i = 0; i < studySets.size(); i++) {
             if (studySets.get(i).getName().equals(name)) {
                 isAlreadyContainedStudySet = true;
-                JOptionPane.showMessageDialog(this, TRANSLATOR.translate("AlreadyContainedStudySet(Message)"), null, JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, getTranslator().translate("AlreadyContainedStudySet(Message)"), null, JOptionPane.ERROR_MESSAGE);
             }
         }
         if (name != null && !name.isEmpty() && !isAlreadyContainedStudySet) {
@@ -454,11 +435,11 @@ public class WordsDialog extends JDialog {
         if (words.contains(word)) {
             countOFTheWords = studyService.getCountOfTheWords(studySetName);
             if (wordsForStudy.contains(word)) {
-                JOptionPane.showMessageDialog(this, TRANSLATOR.translate("AlreadyContainedWord(Message)"), null, JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, getTranslator().translate("AlreadyContainedWord(Message)"), null, JOptionPane.ERROR_MESSAGE);
             } else {
                 countOFTheWords++;
                 Dictionary dictionary = null;
-                if (dictionariesComboBox.getSelectedItem().equals(TRANSLATOR.translate("EnglishItem(ComboBox)"))) {
+                if (dictionariesComboBox.getSelectedItem().equals(getTranslator().translate("EnglishItem(ComboBox)"))) {
                     dictionary = dictionaries.get(0);
                 }
                 studyService.addWord(word, dictionary, studySetName);
@@ -484,8 +465,8 @@ public class WordsDialog extends JDialog {
         translationsForStudy = studyService.getTranslationsForStudy(studySetName);
 
         model.setColumnIdentifiers(new String[]{"",
-                    TRANSLATOR.translate("Word(TableColumn)"), TRANSLATOR.translate("Translation(TableColumn)"),
-                    ""});
+                getTranslator().translate("Word(TableColumn)"), getTranslator().translate("Translation(TableColumn)"),
+                ""});
 
         countOFTheWords = studyService.getCountOfTheWords(studySetName);
 
