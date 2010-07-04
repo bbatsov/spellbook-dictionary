@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Description goes here...
+ * The word of the day dialog displays random words selected from the default dictionary.
  *
  * @author Bozhidar Batsov
  * @since 0.3
@@ -43,13 +43,17 @@ public class WordOfTheDayDialog extends BaseDialog {
     private JTextPane translationPane;
     private BannerPanel bannerPanel;
 
+    private static final int MINIMUM_WIDTH = 600;
+    private static final int MINIMUM_HEIGHT = 300;
+    private static final int BANNER_PANEL_FONT_SIZE = 12;
+
     public WordOfTheDayDialog(Frame owner, List<String> words, Dictionary dictionary) throws HeadlessException {
         super(owner, true);
 
         this.words = words;
         this.dictionary = dictionary;
 
-        setMinimumSize(new Dimension(600, 300));
+        setMinimumSize(new Dimension(MINIMUM_WIDTH, MINIMUM_HEIGHT));
     }
 
     @Override
@@ -57,7 +61,7 @@ public class WordOfTheDayDialog extends BaseDialog {
         bannerPanel = new BannerPanel(getTranslator().translate("Banner(Header)"),
                 "",
                 IconManager.getImageIcon("lightbulb_on.png", IconManager.IconSize.SIZE32));
-        bannerPanel.setFont(new Font("Tahoma", Font.PLAIN, 12));
+        bannerPanel.setFont(new Font("Tahoma", Font.PLAIN, BANNER_PANEL_FONT_SIZE));
         bannerPanel.setBackground(Color.WHITE);
         bannerPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
         return bannerPanel;
@@ -144,15 +148,16 @@ public class WordOfTheDayDialog extends BaseDialog {
             word = wordsShown.get(++currentIndex);
         }
 
-        bannerPanel.setSubtitle(getTranslator().translate("Banner(Message)", word));
-
-        translationPane.setText(SwingUtil.formatTranslation(word, DICTIONARY_SERVICE.getTranslation(word, dictionary)));
-        translationPane.setCaretPosition(0);
+        showWord(word);
     }
 
     private void showPreviousWord() {
         String word = wordsShown.get(--currentIndex);
 
+        showWord(word);
+    }
+
+    private void showWord(String word) {
         bannerPanel.setSubtitle(getTranslator().translate("Banner(Message)", word));
 
         translationPane.setText(SwingUtil.formatTranslation(word, DICTIONARY_SERVICE.getTranslation(word, dictionary)));
