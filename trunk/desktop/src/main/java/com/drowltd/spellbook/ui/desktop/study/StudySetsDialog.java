@@ -4,7 +4,7 @@
  */
 
 /*
- * WordsDialog.java
+ * StudySetsDialog.java
  *
  * Created on 2010-2-3, 10:21:38
  */
@@ -37,7 +37,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.table.TableColumn;
-import java.awt.Frame;
+import java.awt.Dialog;
 import java.awt.HeadlessException;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -49,7 +49,7 @@ import java.util.List;
 /**
  * @author Sasho
  */
-public class WordsDialog extends BaseDialog {
+public class StudySetsDialog extends BaseDialog {
 
     private long countOFTheWords;
     private final DictionaryService dictionaryService;
@@ -70,7 +70,7 @@ public class WordsDialog extends BaseDialog {
     private JTextPane wordTranslationTextPane;
     private JTable wordsTable;
 
-    public WordsDialog(Frame parent, boolean modal) {
+    public StudySetsDialog(Dialog parent, boolean modal) {
         super(parent, modal);
 
         dictionaryService = DictionaryService.getInstance();

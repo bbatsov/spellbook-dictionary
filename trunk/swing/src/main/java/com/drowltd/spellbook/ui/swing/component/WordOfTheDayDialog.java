@@ -20,6 +20,7 @@ import javax.swing.border.BevelBorder;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
@@ -41,8 +42,8 @@ public class WordOfTheDayDialog extends BaseDialog {
     private JTextPane translationPane;
     private BannerPanel bannerPanel;
 
-    public WordOfTheDayDialog(List<String> words, Dictionary dictionary) throws HeadlessException {
-        super(null, true);
+    public WordOfTheDayDialog(Frame owner, List<String> words, Dictionary dictionary) throws HeadlessException {
+        super(owner, true);
 
         this.words = words;
         this.dictionary = dictionary;

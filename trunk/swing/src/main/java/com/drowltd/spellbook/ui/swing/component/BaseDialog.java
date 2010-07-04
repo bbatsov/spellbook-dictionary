@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.JComponent;
+import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.HeadlessException;
 
@@ -21,6 +22,16 @@ public abstract class BaseDialog extends StandardDialog {
     public BaseDialog(Frame owner, boolean modal) throws HeadlessException {
         super(owner, modal);
 
+        init();
+    }
+
+    public BaseDialog(Dialog owner, boolean modal) throws HeadlessException {
+        super(owner, modal);
+
+        init();
+    }
+
+    private void init() {
         // reset translators on dialog creation
         getTranslator().reset();
 

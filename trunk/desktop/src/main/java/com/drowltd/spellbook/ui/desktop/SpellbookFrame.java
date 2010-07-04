@@ -240,7 +240,7 @@ public class SpellbookFrame extends JFrame {
 
     public void showWordOfTheDay() {
         if (PM.getBoolean(Preference.WORD_OF_THE_DAY, true)) {
-            WordOfTheDayDialog wordOfTheDayDialog = new WordOfTheDayDialog(words, selectedDictionary);
+            WordOfTheDayDialog wordOfTheDayDialog = new WordOfTheDayDialog(this, words, selectedDictionary);
             wordOfTheDayDialog.setLocationRelativeTo(this);
             wordOfTheDayDialog.setVisible(true);
         }

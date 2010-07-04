@@ -33,7 +33,6 @@ import java.awt.event.ActionListener;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.Set;
 
 /**
@@ -421,17 +420,13 @@ public class ExamDialog extends BaseDialog {
     public ButtonPanel createButtonPanel() {
         ButtonPanel buttonPanel = new ButtonPanel();
 
-        JButton quitButton = new JButton();
+        JButton closeButton = new JButton();
         settingsButton = new JButton();
 
-        quitButton.setName(getTranslator().translate("Quit(Button)"));
-        settingsButton.setName(getTranslator().translate("Settings(Button)"));
-
         buttonPanel.add(settingsButton, ButtonPanel.OTHER_BUTTON);
-        buttonPanel.add(quitButton, ButtonPanel.CANCEL_BUTTON);
-        ResourceBundle bundle = ResourceBundle.getBundle("i18n/ExamDialog");
+        buttonPanel.add(closeButton, ButtonPanel.CANCEL_BUTTON);
 
-        quitButton.setAction(new AbstractAction(bundle.getString("Quit(Button)")) {
+        closeButton.setAction(new AbstractAction(getBaseTranslator().translate("Close(Button)")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setDialogResult(RESULT_CANCELLED);
@@ -439,7 +434,7 @@ public class ExamDialog extends BaseDialog {
             }
         });
 
-        settingsButton.setAction(new AbstractAction(bundle.getString("Settings(Button)")) {
+        settingsButton.setAction(new AbstractAction(getBaseTranslator().translate("Settings(Button)")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 PreferencesDialog preferencesDialog = new PreferencesDialog(null, true);

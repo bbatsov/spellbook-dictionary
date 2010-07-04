@@ -16,6 +16,7 @@ import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -38,7 +39,7 @@ public class IssueDialog extends BaseDialog {
     private JLabel contentLabel;
 
     public IssueDialog() {
-        super(null, true);
+        super((Frame) null, true);
 
         initComponents0();
     }

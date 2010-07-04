@@ -70,7 +70,7 @@ public class ExamSummaryDialog extends BaseDialog {
     private boolean submitted = false;
 
     public ExamSummaryDialog(final Dialog owner, final ExamStats examStats) {
-        super(null, true);
+        super(owner, true);
 
         this.examStats = examStats;
         this.owner = owner;
