@@ -84,8 +84,6 @@ public class HangmanDialog extends BaseDialog {
         guessIconLabel = new JLabel();
         feedbackField = new JLabel();
 
-        setIconImage(IconManager.getImageIcon("brain.png", IconManager.IconSize.SIZE16).getImage());
-
         initLanguages();
     }
 

@@ -30,8 +30,6 @@ public class SyncDialog extends BaseDialog {
 
     public SyncDialog(Frame owner, boolean modal) throws HeadlessException {
         super(owner, modal);
-
-        setIconImage(IconManager.getMenuIcon("replace2.png").getImage());
     }
 
     @Override

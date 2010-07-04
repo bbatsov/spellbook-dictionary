@@ -1,6 +1,7 @@
 package com.drowltd.spellbook.ui.swing.component;
 
 import com.drowltd.spellbook.core.i18n.Translator;
+import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.jidesoft.dialog.ButtonPanel;
 import com.jidesoft.dialog.StandardDialog;
 import org.slf4j.Logger;
@@ -17,14 +18,15 @@ import java.awt.HeadlessException;
  * @since 0.4
  */
 public abstract class BaseDialog extends StandardDialog {
-    protected Frame parent;
-
     public BaseDialog(Frame owner, boolean modal) throws HeadlessException {
         super(owner, modal);
-        this.parent = owner;
 
+        // reset translators on dialog creation
         getTranslator().reset();
+
+        // init title and icon from resource bundle via translator
         setTitle(getTranslator().translate("Dialog(Title)"));
+        setIconImage(IconManager.getImageIcon(getTranslator().translate("Dialog(Icon)"), IconManager.IconSize.SIZE16).getImage());
     }
 
     @Override
@@ -41,7 +43,7 @@ public abstract class BaseDialog extends StandardDialog {
         pack();
 
         // this should be called after pack()!
-        setLocationRelativeTo(parent);
+        setLocationRelativeTo(getParent());
 
         setVisible(true);
 

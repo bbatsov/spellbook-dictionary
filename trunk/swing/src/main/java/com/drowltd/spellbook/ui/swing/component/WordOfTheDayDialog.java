@@ -48,8 +48,6 @@ public class WordOfTheDayDialog extends BaseDialog {
         this.dictionary = dictionary;
 
         setMinimumSize(new Dimension(600, 300));
-
-        setIconImage(IconManager.getImageIcon("lightbulb_on.png", IconManager.IconSize.SIZE16).getImage());
     }
 
     @Override
