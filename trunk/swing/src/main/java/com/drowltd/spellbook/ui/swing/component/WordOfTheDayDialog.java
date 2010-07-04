@@ -39,6 +39,7 @@ public class WordOfTheDayDialog extends BaseDialog {
     private List<String> words;
     private Dictionary dictionary;
     private List<String> wordsShown = new ArrayList<String>();
+    private int currentIndex;
     private JTextPane translationPane;
     private BannerPanel bannerPanel;
 
@@ -80,12 +81,19 @@ public class WordOfTheDayDialog extends BaseDialog {
     public ButtonPanel createButtonPanel() {
         ButtonPanel buttonPanel = new ButtonPanel(SwingConstants.RIGHT);
 
-        JButton previousButton = new JButton();
+        final JButton previousButton = new JButton();
 
         previousButton.setAction(new AbstractAction(getTranslator().translate("Previous(Button)")) {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (currentIndex > 0) {
+                    showPreviousWord();
+                }
 
+                // the index was changed in showPrevious word
+                if (currentIndex == 0) {
+                    previousButton.getAction().setEnabled(false);
+                }
             }
         });
 
@@ -94,6 +102,9 @@ public class WordOfTheDayDialog extends BaseDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 showNextWord();
+
+                // obviously at this point we can go back
+                previousButton.getAction().setEnabled(true);
             }
         });
 
@@ -113,13 +124,34 @@ public class WordOfTheDayDialog extends BaseDialog {
 
         setDefaultCancelAction(closeButton.getAction());
         setDefaultAction(previousButton.getAction());
-        getRootPane().setDefaultButton(previousButton);
+        getRootPane().setDefaultButton(nextButton);
+
+        previousButton.getAction().setEnabled(false);
+
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         return buttonPanel;
     }
 
     private void showNextWord() {
-        String word = words.get(new Random().nextInt(words.size()));
+        String word;
+
+        if (wordsShown.isEmpty() || (currentIndex == (wordsShown.size() - 1))) {
+            word = words.get(new Random().nextInt(words.size()));
+            wordsShown.add(word);
+            // index must be set to last word
+            currentIndex = wordsShown.size() - 1;
+        } else {
+            word = wordsShown.get(++currentIndex);
+        }
+
+        bannerPanel.setSubtitle(getTranslator().translate("Banner(Message)", word));
+
+        translationPane.setText(SwingUtil.formatTranslation(word, DICTIONARY_SERVICE.getTranslation(word, dictionary)));
+        translationPane.setCaretPosition(0);
+    }
+
+    private void showPreviousWord() {
+        String word = wordsShown.get(--currentIndex);
 
         bannerPanel.setSubtitle(getTranslator().translate("Banner(Message)", word));
 
