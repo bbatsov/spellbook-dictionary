@@ -22,11 +22,14 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+
 import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.EOFException;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -44,11 +47,12 @@ import java.util.Arrays;
  * @since 0.4
  */
 public class ImportDialog extends BaseDialog {
-    private static final DictionaryService DICTIONARY_SERVICE = DictionaryService.getInstance();
+    private static final String SPELLBOOK_DB_FILE = System.getProperty("user.home") + File.separator + ".spellbook/db/spellbook.h2.db";
+
     private LanguageComboBox fromComboBox;
     private LanguageComboBox toComboBox;
     private static final int BUFFER_SIZE = 20000;
-    private JButton importButton;
+    private JButton importButton = new JButton();
 
     public ImportDialog(Frame owner, boolean modal) throws HeadlessException {
         super(owner, modal);
@@ -100,7 +104,7 @@ public class ImportDialog extends BaseDialog {
 
         mainPanel.add(normalRadioButton);
 
-        JRadioButton specialRadioButton = new JRadioButton(getTranslator().translate("Special(RadioButton)"));
+        final JRadioButton specialRadioButton = new JRadioButton(getTranslator().translate("Special(RadioButton)"));
 
         buttonGroup.add(specialRadioButton);
 
@@ -124,15 +128,15 @@ public class ImportDialog extends BaseDialog {
 
         mainPanel.add(dictionaryNameTextField, "span 2, growx, width 200::");
 
-        mainPanel.add(new JLabel(getTranslator().translate("DictionaryIcon(Label)")), "growx");
+        mainPanel.add(new JLabel(getTranslator().translate("DictionarySmallIcon(Label)")), "growx");
 
         final JTextField dictionaryIconTextField = new JTextField();
 
-        dictionaryFileTextField.setEditable(false);
+        dictionaryIconTextField.setEditable(false);
 
         mainPanel.add(dictionaryIconTextField, "growx, width 200::");
 
-        JButton selectIconButton = new JButton(getTranslator().translate("SelectIcon(Button)"));
+        JButton selectIconButton = new JButton(getTranslator().translate("SelectSmallIcon(Button)"));
 
         selectIconButton.addActionListener(new ActionListener() {
             @Override
@@ -147,12 +151,35 @@ public class ImportDialog extends BaseDialog {
 
         mainPanel.add(selectIconButton, "growx");
 
-        importButton = new JButton();
+        mainPanel.add(new JLabel(getTranslator().translate("DictionaryBigIcon(Label)")), "growx");
+
+        final JTextField dictionaryBigIconTextField = new JTextField();
+
+        dictionaryBigIconTextField.setEditable(false);
+
+        mainPanel.add(dictionaryBigIconTextField, "growx, width 200::");
+
+        JButton selectBigIconButton = new JButton(getTranslator().translate("SelectBigIcon(Button)"));
+
+        selectBigIconButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+
+                if (fileChooser.showOpenDialog(ImportDialog.this) == JFileChooser.APPROVE_OPTION) {
+                    dictionaryBigIconTextField.setText(fileChooser.getSelectedFile().getAbsolutePath());
+                }
+            }
+        });
+
+        mainPanel.add(selectBigIconButton, "growx");
 
         importButton.setAction(new AbstractAction(getTranslator().translate("Import(Button)")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                importDictionary((Language) fromComboBox.getSelectedItem(), (Language) toComboBox.getSelectedItem(), dictionaryNameTextField.getText(), dictionaryIconTextField.getText(), dictionaryFileTextField.getText());
+                importDictionary((Language) fromComboBox.getSelectedItem(), (Language) toComboBox.getSelectedItem(),
+                        dictionaryNameTextField.getText(), specialRadioButton.isSelected(),
+                        dictionaryIconTextField.getText(), dictionaryBigIconTextField.getText(), dictionaryFileTextField.getText());
             }
         });
 
@@ -182,13 +209,35 @@ public class ImportDialog extends BaseDialog {
         return buttonPanel;
     }
 
-    private void importDictionary(Language from, Language to, String dictionaryName, String iconName, String fileName) {
-        Dictionary dictionary = DICTIONARY_SERVICE.createDictionary(from, to, dictionaryName, iconName);
+    private void importDictionary(Language from, Language to, String dictionaryName, boolean special, String smallIconPath, String bigIconPath, String fileName) {
+        getLogger().info("import started");
+
+        File smallIconFile = new File(smallIconPath);
+        byte[] smallIconFileByteArray = new byte[(int) smallIconFile.length()];
+
+        File bigIconFile = new File(bigIconPath);
+        byte[] bigIconFileByteArray = new byte[(int) bigIconFile.length()];
+
+        try {
+            FileInputStream fileInputStream = new FileInputStream(bigIconFile);
+            //convert bigIconFile into array of bytes
+            fileInputStream.read(bigIconFileByteArray);
+            fileInputStream.close();
+
+            fileInputStream = new FileInputStream(smallIconFile);
+            fileInputStream.read(smallIconFileByteArray);
+            fileInputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        DictionaryService.init(SPELLBOOK_DB_FILE);
+        Dictionary dictionary = DictionaryService.getInstance().createDictionary(from, to, dictionaryName, special, smallIconFileByteArray, bigIconFileByteArray);
 
         try {
             RandomAccessFile file = new RandomAccessFile(fileName, "r");
 
-            //first byte in the data file is '\0'
+            //first byte in the data smallIconFile is '\0'
             byte nullByte = file.readByte();
 
             while (true) {
@@ -224,9 +273,8 @@ public class ImportDialog extends BaseDialog {
                         }
                     }
 
-                    getLogger().info("Adding word " + lines[0] + "; translation - " + translation + "\n");
-                    DICTIONARY_SERVICE.addWord(lines[0], translation, dictionary);
-
+                    //getLogger().info("Adding word " + lines[0] + "; translation - " + translation + "\n");
+                    DictionaryService.getInstance().addWord(lines[0], translation, dictionary);
                 } catch (EOFException e) {
                     break;
                 }
@@ -239,6 +287,13 @@ public class ImportDialog extends BaseDialog {
             e.printStackTrace();
         }
 
-
+        getLogger().info("import finished");
     }
+
+    public static void main(String[] args) {
+        ImportDialog tImportDialog = new ImportDialog(null, true);
+        tImportDialog.showDialog();
+    }
+
+
 }

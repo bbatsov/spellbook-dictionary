@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -336,12 +337,14 @@ public class DictionaryService extends AbstractPersistenceService {
         return EM.createNamedQuery("Dictionary.getDictionaryByLanguages", Dictionary.class).setParameter("fromLanguage", dictionary.getToLanguage()).setParameter("toLanguage", dictionary.getFromLanguage()).getSingleResult();
     }
 
-    public Dictionary createDictionary(Language from, Language to, String name, String icon) {
+    public Dictionary createDictionary(Language from, Language to, String name, boolean special, byte[] smallIcon, byte[] bigIcon) {
         Dictionary dictionary = new Dictionary();
         dictionary.setFromLanguage(from);
         dictionary.setToLanguage(to);
         dictionary.setName(name);
-        dictionary.setIconName(icon);
+        dictionary.setSpecial(special);
+        dictionary.setIconSmall(smallIcon);
+        dictionary.setIconBig(bigIcon);
 
         EM.persist(dictionary);
 

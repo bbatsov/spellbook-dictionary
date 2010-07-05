@@ -6,7 +6,6 @@ import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.model.SupportedFileType;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.ui.swing.component.SelectDbDialog;
-import com.drowltd.spellbook.ui.swing.component.SpellbookDefaultExceptionHandler;
 import com.drowltd.spellbook.ui.swing.util.LafUtil;
 import com.drowltd.spellbook.util.ArchiveUtils;
 import com.jidesoft.dialog.StandardDialog;
@@ -22,8 +21,8 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JWindow;
 import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
+
 import java.awt.EventQueue;
 import java.awt.Rectangle;
 import java.awt.SplashScreen;
@@ -49,7 +48,7 @@ public class SpellbookApp {
     private static final Translator TRANSLATOR = Translator.getTranslator("SpellbookFrame");
 
     private static final String SPELLBOOK_USER_DIR = System.getProperty("user.home") + File.separator + ".spellbook";
-    private static final String SPELLBOOK_DB_PATH = SPELLBOOK_USER_DIR + File.separator + "db" + File.separator + "spellbook.data.db";
+    private static final String SPELLBOOK_DB_PATH = SPELLBOOK_USER_DIR + File.separator + "db" + File.separator + "spellbook.h2.db";
     private static SpellbookFrame tAppFrame;
     private static boolean dbPresent = false;
 
@@ -118,7 +117,7 @@ public class SpellbookApp {
         }
 
         // install the default exception handler
-        Thread.setDefaultUncaughtExceptionHandler(new SpellbookDefaultExceptionHandler());
+        //Thread.setDefaultUncaughtExceptionHandler(new SpellbookDefaultExceptionHandler());
 
         PreferencesManager.init(SpellbookApp.class);
 
@@ -146,9 +145,9 @@ public class SpellbookApp {
                         // Set System L&F
                         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                     } else {
-                        List<LookAndFeelInfo> lookAndFeelInfos = LafUtil.getAvailableLookAndFeels();
+                        List<UIManager.LookAndFeelInfo> lookAndFeelInfos = LafUtil.getAvailableLookAndFeels();
 
-                        for (LookAndFeelInfo lookAndFeelInfo : lookAndFeelInfos) {
+                        for (UIManager.LookAndFeelInfo lookAndFeelInfo : lookAndFeelInfos) {
                             if (lookAndFeelInfo.getName().equals(selectedLookAndFeel)) {
                                 UIManager.setLookAndFeel(lookAndFeelInfo.getClassName());
                             }

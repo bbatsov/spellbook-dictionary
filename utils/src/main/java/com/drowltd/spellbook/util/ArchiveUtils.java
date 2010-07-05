@@ -21,7 +21,7 @@ import java.io.IOException;
  */
 public class ArchiveUtils {
     private static final String ARCHIVED_DB_NAME = "spellbook-db.tar";
-    private static final String DB_FILE_NAME = "spellbook.data.db";
+    private static final String DB_FILE_NAME = "spellbook.h2.db";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ArchiveUtils.class);
 

@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
@@ -62,6 +63,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.text.DefaultEditorKit;
+
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -148,7 +150,7 @@ public class SpellbookFrame extends JFrame {
     private JPanel statusBar;
     private JLabel dictionaryInfoLabel;
     private JProgressBar memoryProgressBar;
-    private static final String SPELLBOOK_DB_FILE = System.getProperty("user.home") + File.separator + ".spellbook/db/spellbook.data.db";
+    private static final String SPELLBOOK_DB_FILE = System.getProperty("user.home") + File.separator + ".spellbook/db/spellbook.h2.db";
 
     public SpellbookFrame(boolean dbPresent) {
         setMinimumSize(new Dimension(MIN_FRAME_WIDTH, MIN_FRAME_HEIGHT));
@@ -651,10 +653,10 @@ public class SpellbookFrame extends JFrame {
 
     private void updateDictionaryButton(Dictionary dictionary) {
         dictionaryButton.setToolTipText(TRANSLATOR.translate("DictSize(Label)", selectedDictionary, words.size()));
-        dictionaryButton.setIcon(IconManager.getImageIcon(dictionary.getIconName(), IconManager.IconSize.SIZE24));
+        dictionaryButton.setIcon(new ImageIcon(dictionary.getIconBig()));
 
         dictionaryInfoLabel.setText(TRANSLATOR.translate("DictSize(Label)", selectedDictionary, words.size()));
-        dictionaryInfoLabel.setIcon(IconManager.getMenuIcon(dictionary.getIconName()));
+        dictionaryInfoLabel.setIcon(new ImageIcon(dictionary.getIconSmall()));
     }
 
     public void setSelectedFont(Font font) {
@@ -1256,7 +1258,7 @@ public class SpellbookFrame extends JFrame {
         });
         mainToolBar.add(clearButton);
 
-        dictionaryButton.setIcon(IconManager.getImageIcon(selectedDictionary.getIconName(), IconSize.SIZE24));
+        dictionaryButton.setIcon(new ImageIcon(selectedDictionary.getIconBig()));
         dictionaryButton.setFocusable(false);
         dictionaryButton.addActionListener(new ActionListener() {
             @Override
@@ -1404,7 +1406,7 @@ public class SpellbookFrame extends JFrame {
 
     private void initStatusBar() {
         statusBar = new JPanel(new MigLayout("wrap 2", "[grow][]"));
-        dictionaryInfoLabel = new JLabel(IconManager.getMenuIcon(selectedDictionary.getIconName()));
+        dictionaryInfoLabel = new JLabel(new ImageIcon(selectedDictionary.getIconBig()));
         dictionaryInfoLabel.setText(TRANSLATOR.translate("DictSize(Label)", selectedDictionary, words.size()));
         statusBar.add(dictionaryInfoLabel);
 
@@ -1573,7 +1575,7 @@ public class SpellbookFrame extends JFrame {
             }
 
             dictionaryName = dictionary.getName();
-            setIcon(IconManager.getMenuIcon(dictionary.getIconName()));
+            setIcon(new ImageIcon(dictionary.getIconSmall()));
             setText(dictionary.toString());
             addActionListener(this);
         }

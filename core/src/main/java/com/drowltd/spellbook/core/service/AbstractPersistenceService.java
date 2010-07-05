@@ -4,12 +4,14 @@
  */
 package com.drowltd.spellbook.core.service;
 
-import java.util.HashMap;
-import java.util.Map;
-import javax.persistence.EntityManager;
-import javax.persistence.Persistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Persistence;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -33,9 +35,9 @@ public class AbstractPersistenceService {
     }
 
     private static void initEntityManager(String dbFile) {
-        LOGGER.info("dictionary database: " + dbFile.replace(".data.db", ""));
+        LOGGER.info("dictionary database: " + dbFile.replace(".h2.db", ""));
 
-        String url = "jdbc:h2:" + dbFile.replace(".data.db", "");
+        String url = "jdbc:h2:" + dbFile.replace(".h2.db", "");
 
         // we need to override the db url from persistence.xml
         if (dbFile != null) {

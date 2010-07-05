@@ -26,7 +26,13 @@
             <column name="to_language" type="int">
                 <constraints nullable="false"/>
             </column>
-            <column name="icon_name" type="varchar(255)">
+            <column name="icon_small" type="varbinary">
+                <constraints nullable="false"/>
+            </column>
+            <column name="icon_big" type="varbinary">
+                <constraints nullable="false"/>
+            </column>
+            <column name="special" type="boolean">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -47,28 +53,10 @@
             <column name="word_translation" type="varchar">
                 <constraints nullable="false"/>
             </column>
-            <column name="added_by_user" type="boolean">
+            <column name="updated_by_user" type="boolean">
                 <constraints nullable="false"/>
             </column>
             <column name="dictionary_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <createTable tableName="LANGUAGES">
-            <column name="id" type="bigint">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="modified" type="datetime">
-                <constraints nullable="true"/>
-            </column>
-            <column name="created" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="name" type="varchar(50)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="alphabet" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -89,140 +77,21 @@
             <column name="rank" type="int">
                 <constraints nullable="false"/>
             </column>
-            <column name="word_language" type="bit">
+            <column name="word_language" type="int">
                 <constraints nullable="false"/>
             </column>
         </createTable>
-    </changeSet>
-    <changeSet id="2" author="bozhidar">
+
         <createIndex tableName="DICTIONARY_ENTRIES" indexName="idx_de_word">
             <column name="word"/>
         </createIndex>
         <createIndex tableName="RANK_ENTRIES" indexName="idx_re_word">
             <column name="word"/>
         </createIndex>
-    </changeSet>
-    <changeSet id="3" author="bozhidar">
-        <dropColumn tableName="DICTIONARY_ENTRIES" columnName="added_by_user"/>
-    </changeSet>
-    <changeSet id="4" author="bozhidar">
-        <addColumn tableName="DICTIONARY_ENTRIES">
-            <column name="added_by_user" type="boolean" defaultValue="false">
-                <constraints nullable="false"/>
-            </column>
-        </addColumn>
-    </changeSet>
-    <changeSet id="5" author="bozhidar">
-        <dropTable tableName="LANGUAGES"/>
-        <modifyColumn tableName="RANK_ENTRIES">
-            <column name="word_language" type="int">
-                <constraints nullable="false"/>
-            </column>
-        </modifyColumn>
-    </changeSet>
-    <changeSet id="6" author="sasho">
-        <createTable tableName="STUDY_SETS">
-            <column name="id" type="bigint">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="modified" type="datetime">
-                <constraints nullable="true"/>
-            </column>
-            <column name="created" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="name" type="varchar(50)">
-                <constraints nullable="false" unique="true"/>
-            </column>
-        </createTable>
+        <createIndex tableName="DICTIONARY_ENTRIES" indexName="idx_de_updated_by_user">
+            <column name="updated_by_user"/>
+        </createIndex>
 
-        <createTable tableName="STUDY_ENTRIES">
-            <column name="id" type="bigint">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="modified" type="datetime">
-                <constraints nullable="true"/>
-            </column>
-            <column name="created" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="dictionary_entry_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-    </changeSet>
-    <changeSet id="7" author="sasho">
-        <addColumn tableName="STUDY_ENTRIES">
-            <column name="STUDY_SET_ID" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-        </addColumn>
-    </changeSet>
-    <changeSet id="8" author="iivalchev">
-        <createTable tableName="LAST_UPDATE">
-            <column name="id" type="bigint">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="modified" type="datetime">
-                <constraints nullable="true"/>
-            </column>
-            <column name="created" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-    </changeSet>
-    <changeSet id="9" author="georgi">
-        <createTable tableName="SCOREBOARD">
-            <column name="id" type="bigint">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="username" type="varchar(50)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="exam_words" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="wrong_word" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="difficulty" type="varchar(10)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="modified" type="datetime">
-                <constraints nullable="true"/>
-            </column>
-            <column name="created" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-    </changeSet>
-    <changeSet id="10" author="iivalchev">
-        <createTable tableName="UNCOMMITTED_ENTRIES">
-            <column name="id" type="bigint">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="modified" type="datetime">
-                <constraints nullable="true"/>
-            </column>
-            <column name="created" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="committed" type="boolean">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-        <createTable tableName="UNCOMMITTED_DICTIONARY_ENTRIES">
-            <column name="uncommitted_id" type="bigint">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="dictionary_entry_id" type="bigint">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-        </createTable>
-    </changeSet>
-    <changeSet id="11" author="bozhidar">
-        <dropTable tableName="SCOREBOARD"/>
         <createTable tableName="EXAM_SCORE_ENTRIES">
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
@@ -252,8 +121,7 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-    </changeSet>
-    <changeSet id="12" author="bozhidar">
+
         <createTable tableName="SYNC_STATS">
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
@@ -271,17 +139,38 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-    </changeSet>
-    <changeSet id="13" author="iivalchev">
-        <dropTable tableName="LAST_UPDATE"/>
-        <dropTable tableName="UNCOMMITTED_ENTRIES"/>
-        <dropTable tableName="UNCOMMITTED_DICTIONARY_ENTRIES"/>
-    </changeSet>
-    <changeSet id="14" author="bozhidar">
-        <renameColumn tableName="DICTIONARY_ENTRIES" oldColumnName="added_by_user" newColumnName="updated_by_user"/>
-        <createIndex tableName="DICTIONARY_ENTRIES" indexName="idx_de_updated_by_user">
-            <column name="updated_by_user"/>
-        </createIndex>
-    </changeSet>
 
+        <createTable tableName="STUDY_SETS">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="modified" type="datetime">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="STUDY_ENTRIES">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="modified" type="datetime">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="dictionary_entry_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STUDY_SET_ID" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>
