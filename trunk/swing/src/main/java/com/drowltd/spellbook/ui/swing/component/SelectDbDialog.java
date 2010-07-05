@@ -24,6 +24,7 @@ import javax.swing.JTextField;
 import javax.swing.ProgressMonitor;
 import javax.swing.SwingWorker;
 import javax.swing.border.BevelBorder;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Frame;
@@ -52,7 +53,7 @@ public class SelectDbDialog extends BaseDialog implements PropertyChangeListener
     private String localDbFolder;
     private JButton okButton = new JButton();
 
-    private static final String DB_URL = "http://spellbook-dictionary.googlecode.com/files/spellbook-db-0.3.tar.bz2";
+    private static final String DB_URL = "http://spellbook-dictionary.googlecode.com/files/spellbook-db-0.4.tar.bz2";
     private static final String DOWNLOAD_DIR = System.getProperty("java.io.tmpdir");
     private static final int FONT_SIZE = 14;
     private JLabel localDbFolderValidationLabel;

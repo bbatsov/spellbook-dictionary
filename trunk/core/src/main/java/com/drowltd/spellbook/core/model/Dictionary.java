@@ -1,17 +1,20 @@
 package com.drowltd.spellbook.core.model;
 
 import com.drowltd.spellbook.core.i18n.Translator;
-import java.util.HashSet;
-import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -43,9 +46,17 @@ public class Dictionary extends AbstractEntity {
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "to_language")
     private Language toLanguage;
-    
-    @Column(name = "icon_name", nullable = false)
-    private String iconName;
+
+    @Column(nullable = false)
+    private boolean special;
+
+    @Lob
+    @Column(name = "icon_small", nullable = false, columnDefinition = "varbinary")
+    private byte[] iconSmall;
+
+    @Lob
+    @Column(name = "icon_big", nullable = false, columnDefinition = "varbinary")
+    private byte[] iconBig;
 
     public String getName() {
         return name;
@@ -71,12 +82,28 @@ public class Dictionary extends AbstractEntity {
         this.toLanguage = toLanguage;
     }
 
-    public String getIconName() {
-        return iconName;
+    public boolean isSpecial() {
+        return special;
     }
 
-    public void setIconName(String iconName) {
-        this.iconName = iconName;
+    public void setSpecial(final boolean pSpecial) {
+        special = pSpecial;
+    }
+
+    public byte[] getIconSmall() {
+        return iconSmall;
+    }
+
+    public void setIconSmall(final byte[] pIconSmall) {
+        iconSmall = pIconSmall;
+    }
+
+    public byte[] getIconBig() {
+        return iconBig;
+    }
+
+    public void setIconBig(final byte[] pIconBig) {
+        iconBig = pIconBig;
     }
 
     public Set<DictionaryEntry> getDictionaryEntries() {
@@ -99,17 +126,7 @@ public class Dictionary extends AbstractEntity {
 
         Dictionary other = (Dictionary) o;
 
-        if (name.equals(other.name)) {
-            return false;
-        }
-        if (fromLanguage != other.fromLanguage) {
-            return false;
-        }
-        if (toLanguage != other.toLanguage) {
-            return false;
-        }
-
-        return true;
+        return !name.equals(other.name);
     }
 
     @Override
