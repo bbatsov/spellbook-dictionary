@@ -2,13 +2,17 @@ package com.drowltd.spellbook.ui.desktop;
 
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.Language;
+import com.drowltd.spellbook.core.model.SupportedFileType;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.ui.swing.component.BaseDialog;
+import com.drowltd.spellbook.ui.swing.component.LanguageComboBox;
 import com.jidesoft.dialog.ButtonPanel;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -41,10 +45,10 @@ import java.util.Arrays;
  */
 public class ImportDialog extends BaseDialog {
     private static final DictionaryService DICTIONARY_SERVICE = DictionaryService.getInstance();
-    private JTextField dictionaryFileTextField;
-    private JComboBox fileFormatComboBox;
-    private JTextField dictionaryNameTextField;
-    private JTextField dictionaryIconTextField;
+    private LanguageComboBox fromComboBox;
+    private LanguageComboBox toComboBox;
+    private static final int BUFFER_SIZE = 20000;
+    private JButton importButton;
 
     public ImportDialog(Frame owner, boolean modal) throws HeadlessException {
         super(owner, modal);
@@ -56,7 +60,7 @@ public class ImportDialog extends BaseDialog {
 
         mainPanel.add(new JLabel(getTranslator().translate("DictionaryFile(Label)")), "grow");
 
-        dictionaryFileTextField = new JTextField();
+        final JTextField dictionaryFileTextField = new JTextField();
         dictionaryFileTextField.setEditable(false);
 
         mainPanel.add(dictionaryFileTextField, "growx, width 200::");
@@ -80,34 +84,77 @@ public class ImportDialog extends BaseDialog {
 
         JComboBox fileFormatComboBox = new JComboBox();
 
-        this.fileFormatComboBox = fileFormatComboBox;
-        mainPanel.add(this.fileFormatComboBox, "span2, growx");
+        fileFormatComboBox.setModel(new DefaultComboBoxModel(SupportedFileType.values()));
+
+        mainPanel.add(fileFormatComboBox, "span2, growx");
 
         mainPanel.add(new JLabel(getTranslator().translate("DictionaryType(Label)")), "growx");
 
-        JRadioButton normalRadionButton = new JRadioButton("Normal");
+        ButtonGroup buttonGroup = new ButtonGroup();
 
-        mainPanel.add(normalRadionButton);
+        JRadioButton normalRadioButton = new JRadioButton(getTranslator().translate("Normal(RadioButton)"));
 
-        JRadioButton specialRadioButton = new JRadioButton("Special");
+        normalRadioButton.setSelected(true);
+
+        buttonGroup.add(normalRadioButton);
+
+        mainPanel.add(normalRadioButton);
+
+        JRadioButton specialRadioButton = new JRadioButton(getTranslator().translate("Special(RadioButton)"));
+
+        buttonGroup.add(specialRadioButton);
 
         mainPanel.add(specialRadioButton);
 
+        mainPanel.add(new JLabel(getTranslator().translate("DictionaryFromLang(Label)")), "grow");
+
+        fromComboBox = new LanguageComboBox();
+
+        mainPanel.add(fromComboBox, "span 2, growx");
+
+        mainPanel.add(new JLabel(getTranslator().translate("DictionaryToLang(Label)")));
+
+        toComboBox = new LanguageComboBox();
+
+        mainPanel.add(toComboBox, "span2, growx");
+
         mainPanel.add(new JLabel(getTranslator().translate("DictionaryName(Label)")), "growx");
 
-        dictionaryNameTextField = new JTextField();
+        final JTextField dictionaryNameTextField = new JTextField();
 
         mainPanel.add(dictionaryNameTextField, "span 2, growx, width 200::");
 
         mainPanel.add(new JLabel(getTranslator().translate("DictionaryIcon(Label)")), "growx");
 
-        dictionaryIconTextField = new JTextField();
+        final JTextField dictionaryIconTextField = new JTextField();
+
+        dictionaryFileTextField.setEditable(false);
 
         mainPanel.add(dictionaryIconTextField, "growx, width 200::");
 
         JButton selectIconButton = new JButton(getTranslator().translate("SelectIcon(Button)"));
 
+        selectIconButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+
+                if (fileChooser.showOpenDialog(ImportDialog.this) == JFileChooser.APPROVE_OPTION) {
+                    dictionaryIconTextField.setText(fileChooser.getSelectedFile().getAbsolutePath());
+                }
+            }
+        });
+
         mainPanel.add(selectIconButton, "growx");
+
+        importButton = new JButton();
+
+        importButton.setAction(new AbstractAction(getTranslator().translate("Import(Button)")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                importDictionary((Language) fromComboBox.getSelectedItem(), (Language) toComboBox.getSelectedItem(), dictionaryNameTextField.getText(), dictionaryIconTextField.getText(), dictionaryFileTextField.getText());
+            }
+        });
 
         return mainPanel;
     }
@@ -115,15 +162,6 @@ public class ImportDialog extends BaseDialog {
     @Override
     public ButtonPanel createButtonPanel() {
         ButtonPanel buttonPanel = new ButtonPanel(SwingConstants.RIGHT);
-
-        JButton importButton = new JButton();
-
-        importButton.setAction(new AbstractAction(getTranslator().translate("Import(Button)")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                importDictionary(Language.ENGLISH, Language.ENGLISH, "Computer terminology", "laptop.png", dictionaryFileTextField.getText());
-            }
-        });
 
         JButton closeButton = new JButton();
         closeButton.setAction(new AbstractAction(getBaseTranslator().translate("Close(Button)")) {
@@ -155,7 +193,7 @@ public class ImportDialog extends BaseDialog {
 
             while (true) {
                 try {
-                    byte[] record = new byte[20000];
+                    byte[] record = new byte[BUFFER_SIZE];
 
                     int i = 0;
 

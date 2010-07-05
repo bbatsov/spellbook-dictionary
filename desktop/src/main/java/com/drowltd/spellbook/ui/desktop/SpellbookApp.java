@@ -3,6 +3,7 @@ package com.drowltd.spellbook.ui.desktop;
 import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.Language;
+import com.drowltd.spellbook.core.model.SupportedFileType;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.ui.swing.component.SelectDbDialog;
 import com.drowltd.spellbook.ui.swing.component.SpellbookDefaultExceptionHandler;
@@ -132,6 +133,7 @@ public class SpellbookApp {
 
         Language.TRANSLATOR.reset();
         Dictionary.TRANSLATOR.reset();
+        SupportedFileType.TRANSLATOR.reset();
         TRANSLATOR.reset();
 
         EventQueue.invokeLater(new Runnable() {
