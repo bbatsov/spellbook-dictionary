@@ -1,6 +1,7 @@
 package com.drowltd.spellbook.ui.desktop;
 
 import com.drowltd.spellbook.core.model.Dictionary;
+import com.drowltd.spellbook.core.model.DictionaryEntry;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.model.SupportedFileType;
 import com.drowltd.spellbook.core.service.DictionaryService;
@@ -38,7 +39,9 @@ import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Import dictionary dialog.
@@ -234,6 +237,8 @@ public class ImportDialog extends BaseDialog {
         DictionaryService.init(SPELLBOOK_DB_FILE);
         Dictionary dictionary = DictionaryService.getInstance().createDictionary(from, to, dictionaryName, special, smallIconFileByteArray, bigIconFileByteArray);
 
+        List<DictionaryEntry> tDictionaryEntries = new ArrayList<DictionaryEntry>();
+
         try {
             RandomAccessFile file = new RandomAccessFile(fileName, "r");
 
@@ -274,7 +279,13 @@ public class ImportDialog extends BaseDialog {
                     }
 
                     //getLogger().info("Adding word " + lines[0] + "; translation - " + translation + "\n");
-                    DictionaryService.getInstance().addWord(lines[0], translation, dictionary);
+
+                    DictionaryEntry tDictionaryEntry = new DictionaryEntry();
+                    tDictionaryEntry.setWord(lines[0]);
+                    tDictionaryEntry.setTranslation(translation);
+                    tDictionaryEntry.setDictionary(dictionary);
+
+                    tDictionaryEntries.add(tDictionaryEntry);
                 } catch (EOFException e) {
                     break;
                 }
@@ -286,6 +297,8 @@ public class ImportDialog extends BaseDialog {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        DictionaryService.getInstance().addWords(tDictionaryEntries);
 
         getLogger().info("import finished");
     }

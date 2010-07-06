@@ -346,8 +346,27 @@ public class DictionaryService extends AbstractPersistenceService {
         dictionary.setIconSmall(smallIcon);
         dictionary.setIconBig(bigIcon);
 
+        EntityTransaction t = EM.getTransaction();
+        t.begin();
         EM.persist(dictionary);
+        t.commit();
+
+        LOGGER.info("Created dictionary " + name + "with id " + dictionary.getId());
 
         return dictionary;
     }
+
+    public void addWords(List<DictionaryEntry> dictionaryEntries) {
+        EntityTransaction t = EM.getTransaction();
+        t.begin();
+
+        for (DictionaryEntry tDictionaryEntry : dictionaryEntries) {
+            EM.persist(tDictionaryEntry);
+        }
+
+        t.commit();
+
+    }
+
+
 }

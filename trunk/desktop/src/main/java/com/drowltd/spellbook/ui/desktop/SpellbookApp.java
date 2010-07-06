@@ -6,6 +6,7 @@ import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.model.SupportedFileType;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.ui.swing.component.SelectDbDialog;
+import com.drowltd.spellbook.ui.swing.component.SpellbookDefaultExceptionHandler;
 import com.drowltd.spellbook.ui.swing.util.LafUtil;
 import com.drowltd.spellbook.util.ArchiveUtils;
 import com.jidesoft.dialog.StandardDialog;
@@ -117,7 +118,7 @@ public class SpellbookApp {
         }
 
         // install the default exception handler
-        //Thread.setDefaultUncaughtExceptionHandler(new SpellbookDefaultExceptionHandler());
+        Thread.setDefaultUncaughtExceptionHandler(new SpellbookDefaultExceptionHandler());
 
         PreferencesManager.init(SpellbookApp.class);
 
@@ -135,36 +136,30 @@ public class SpellbookApp {
         SupportedFileType.TRANSLATOR.reset();
         TRANSLATOR.reset();
 
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    String selectedLookAndFeel = pm.get(Preference.LOOK_AND_FEEL, "System");
+        try {
+            String selectedLookAndFeel = pm.get(Preference.LOOK_AND_FEEL, "System");
 
-                    if (selectedLookAndFeel.equals("System")) {
-                        // Set System L&F
-                        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                    } else {
-                        List<UIManager.LookAndFeelInfo> lookAndFeelInfos = LafUtil.getAvailableLookAndFeels();
+            if (selectedLookAndFeel.equals("System")) {
+                // Set System L&F
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } else {
+                List<UIManager.LookAndFeelInfo> lookAndFeelInfos = LafUtil.getAvailableLookAndFeels();
 
-                        for (UIManager.LookAndFeelInfo lookAndFeelInfo : lookAndFeelInfos) {
-                            if (lookAndFeelInfo.getName().equals(selectedLookAndFeel)) {
-                                UIManager.setLookAndFeel(lookAndFeelInfo.getClassName());
-                            }
-                        }
+                for (UIManager.LookAndFeelInfo lookAndFeelInfo : lookAndFeelInfos) {
+                    if (lookAndFeelInfo.getName().equals(selectedLookAndFeel)) {
+                        UIManager.setLookAndFeel(lookAndFeelInfo.getClassName());
                     }
-                } catch (UnsupportedLookAndFeelException e) {
-                    // handle exception
-                } catch (ClassNotFoundException e) {
-                    // handle exception
-                } catch (InstantiationException e) {
-                    // handle exception
-                } catch (IllegalAccessException e) {
-                    // handle exception
                 }
             }
-        });
-
+        } catch (UnsupportedLookAndFeelException e) {
+            // handle exception
+        } catch (ClassNotFoundException e) {
+            // handle exception
+        } catch (InstantiationException e) {
+            // handle exception
+        } catch (IllegalAccessException e) {
+            // handle exception
+        }
 
         // we determine whether another instance of spellbook is running by checking for the presence
         // of a lock file, which is created by the application upon startup and removed automatically
