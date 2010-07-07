@@ -63,6 +63,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.text.DefaultEditorKit;
+
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -100,7 +101,7 @@ import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preferen
  * @since 0.1
  */
 public class SpellbookFrame extends JFrame {
-    private static final Version VERSION = new Version("0.4.0");
+    public static final Version VERSION = new Version("0.4.0");
     private static final String VERSION_FILE_URL = "http://spellbook-dictionary.googlecode.com/svn/trunk/app/spellbook-version.txt";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellbookFrame.class);

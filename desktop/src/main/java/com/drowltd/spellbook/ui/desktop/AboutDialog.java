@@ -81,7 +81,7 @@ public class AboutDialog extends BaseDialog {
 
     @Override
     public JComponent createBannerPanel() {
-        BannerPanel bannerPanel = new BannerPanel("Spellbook Dictionary 0.3",
+        BannerPanel bannerPanel = new BannerPanel("Spellbook Dictionary " + SpellbookFrame.VERSION,
                 getTranslator().translate("Banner(Message)"),
                 JideIconsFactory.getImageIcon("/images/spellbook-logo.png"));
         bannerPanel.setFont(new Font("Tahoma", Font.PLAIN, FONT_SIZE));
