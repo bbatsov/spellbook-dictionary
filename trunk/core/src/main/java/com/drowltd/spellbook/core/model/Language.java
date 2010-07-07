@@ -4,7 +4,8 @@ import com.drowltd.spellbook.core.i18n.Translator;
 
 public enum Language {
     BULGARIAN("Bulgarian", "абвгдежзийклмнопрстуфхцчшщъьюя", "flag_bulgaria.png","bg_BG"),
-    ENGLISH("English", "abcdefghijklmnopqrstuvwxyz", "flag_great_britain.png","en_US");
+    ENGLISH("English", "abcdefghijklmnopqrstuvwxyz", "flag_great_britain.png","en_US"),
+    GERMAN("German", "abcdefghijklmnopqrstuvwxyz", "flag_great_britain.png","en_US");
 
     public static final Translator TRANSLATOR = Translator.getTranslator("Model");
 
