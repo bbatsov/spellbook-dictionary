@@ -1,6 +1,5 @@
 package com.drowltd.spellbook.ui.desktop;
 
-import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.ui.swing.component.BaseDialog;
 import com.jidesoft.dialog.BannerPanel;
 import com.jidesoft.dialog.ButtonPanel;
@@ -19,6 +18,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Font;
@@ -35,7 +35,6 @@ import java.net.URL;
  * @since 0.3
  */
 public class AboutDialog extends BaseDialog {
-    private static final Translator TEAM_TRANSLATOR = Translator.getTranslator("Team");
     private JTextPane infoTextPane = new JTextPane();
     private JButton licenceButton = new JButton();
     private static final int DIALOG_WIDTH = 500;
@@ -44,9 +43,6 @@ public class AboutDialog extends BaseDialog {
 
     public AboutDialog(Frame owner, boolean modal) throws HeadlessException {
         super(owner, modal);
-
-        TEAM_TRANSLATOR.reset();
-        getTranslator().reset();
 
         infoTextPane.addHyperlinkListener(new HyperlinkListener() {
             @Override
@@ -166,19 +162,17 @@ public class AboutDialog extends BaseDialog {
                 + "\n\t <a href=\"mailto:bozhidar@drowltd.com?subject=Spellbook\">%s</a> <br /><br/>"
                 + "\n\t <b>%s</b> <br />"
                 + "\n\t <a href=\"mailto:iivalchev@gmail.com?subject=Spellbook\">%s</a> <br />"
-                + "\n\t <a \nhref=\"mailto:frankeys89@gmail.com?subject=Spellbook\">%s</a> <br />"
-                + "\n\t <a href=\"mailto:mireflame@gmail.com?subject=Spellbook\">%s</a> <br />"
-                + "\n\t <a \nhref=\"mailto:george.angelow@gmail.com?subject=Spellbook\">%s</a> <br />"
+                + "\n\t <a \nhref=\"mailto:ivan.hantov@gmail.com?subject=Spellbook\">%s</a> <br />"
+                + "\n\t <a href=\"mailto:vasilsakarov@gmail.com?subject=Spellbook\">%s</a> <br />"
                 + "\n\t <a href=\"mailto:AlexanderNikolovNikolov@gmail.com?subject=Spellbook\">%s</a> <br />"
                 + "\n\t   \n\t</p>\n\t\n  </body>\n</html>\n",
-                TEAM_TRANSLATOR.translate("ProjectLead"),
-                TEAM_TRANSLATOR.translate("BozhidarBatsov"),
-                TEAM_TRANSLATOR.translate("Team"),
-                TEAM_TRANSLATOR.translate("IvanValchev"),
-                TEAM_TRANSLATOR.translate("IvanSpasov"),
-                TEAM_TRANSLATOR.translate("MiroslavaStancheva"),
-                TEAM_TRANSLATOR.translate("GeorgiAngelov"),
-                TEAM_TRANSLATOR.translate("AlexanderNikolov"));
+                getTranslator().translate("ProjectLead(Label)"),
+                getTranslator().translate("BozhidarBatsov(TeamMember)"),
+                getTranslator().translate("Team(Label)"),
+                getTranslator().translate("IvanValchev(TeamMember)"),
+                getTranslator().translate("IvanHantov(TeamMember)"),
+                getTranslator().translate("VasilSakarov(TeamMember)"),
+                getTranslator().translate("AlexanderNikolov(TeamMember)"));
 
         infoTextPane.setText(team);
         infoTextPane.setCaretPosition(0);
