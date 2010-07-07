@@ -111,31 +111,39 @@ public class Dictionary extends AbstractEntity {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o == null) {
-            return false;
-        }
-
-        if (o == this) {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-
-        if (o.getClass() != this.getClass()) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
-        Dictionary other = (Dictionary) o;
+        final Dictionary that = (Dictionary) o;
 
-        return !name.equals(other.name);
+        if (special != that.special) {
+            return false;
+        }
+        if (fromLanguage != that.fromLanguage) {
+            return false;
+        }
+        if (!name.equals(that.name)) {
+            return false;
+        }
+        if (toLanguage != that.toLanguage) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 73 * hash + (this.name != null ? this.name.hashCode() : 0);
-        hash = 73 * hash + (this.fromLanguage != null ? this.fromLanguage.hashCode() : 0);
-        hash = 73 * hash + (this.toLanguage != null ? this.toLanguage.hashCode() : 0);
-        return hash;
+        int tresult = name.hashCode();
+        tresult = 31 * tresult + fromLanguage.hashCode();
+        tresult = 31 * tresult + toLanguage.hashCode();
+        tresult = 31 * tresult + (special ? 1 : 0);
+        return tresult;
     }
 
     @Override
