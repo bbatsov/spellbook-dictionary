@@ -23,7 +23,6 @@ import javax.swing.JProgressBar;
 import javax.swing.JWindow;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-
 import java.awt.EventQueue;
 import java.awt.Rectangle;
 import java.awt.SplashScreen;
@@ -97,7 +96,7 @@ public class SpellbookApp {
         splashWindow.setVisible(true);
     }
 
-    private static void closeSplashWindow() {
+    public static void closeSplashWindow() {
         progressBar.setValue(progressBar.getMaximum());
         progressBar.setString(TRANSLATOR.translate("Done(Message)"));
         splashWindow.setVisible(false);
@@ -189,6 +188,7 @@ public class SpellbookApp {
 
         // check the presence of the dictionary database
         if (!verifyDbPresence()) {
+            splashWindow.setVisible(false);
             JOptionPane.showMessageDialog(null, TRANSLATOR.translate("NoDbSelected(Message)"),
                     TRANSLATOR.translate("Error(Title)"), JOptionPane.ERROR_MESSAGE);
             System.exit(-1);
@@ -239,11 +239,17 @@ public class SpellbookApp {
         File file = new File(SPELLBOOK_DB_PATH);
 
         if (!file.exists() || file.isDirectory()) {
-            final File archiveFile = new File(SPELLBOOK_USER_DIR + File.separator + "spellbook-db-0.3.tar.bz2");
+            final File archiveFile = new File(SPELLBOOK_USER_DIR + File.separator + "spellbook-db-0.4.tar.bz2");
 
             final SelectDbDialog selectDbDialog = new SelectDbDialog();
 
+            if (!archiveFile.exists()) {
+                // hide the splash temporarily
+                splashWindow.setVisible(false);
+            }
+
             if (archiveFile.exists() || (selectDbDialog.showDialog() == StandardDialog.RESULT_AFFIRMED)) {
+                splashWindow.setVisible(true);
                 increaseProgress(TRANSLATOR.translate("ExtractingDb(Message)"));
                 ArchiveUtils.extractDbFromArchive(archiveFile.exists() ? archiveFile.getAbsolutePath() : selectDbDialog.getDbPath());
                 increaseProgress(TRANSLATOR.translate("LoadingDb(Message)"));

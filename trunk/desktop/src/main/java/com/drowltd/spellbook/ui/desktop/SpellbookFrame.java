@@ -63,7 +63,6 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.text.DefaultEditorKit;
-
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -188,6 +187,7 @@ public class SpellbookFrame extends JFrame {
         File dbFile = new File(SPELLBOOK_DB_FILE);
 
         if (!dbFile.exists()) {
+            SpellbookApp.closeSplashWindow();
             JOptionPane.showMessageDialog(this, TRANSLATOR.translate("MissingDb(Message)", SPELLBOOK_DB_FILE), TRANSLATOR.translate("Error(Title)"), JOptionPane.ERROR_MESSAGE);
             System.exit(0);
         }
@@ -198,6 +198,7 @@ public class SpellbookFrame extends JFrame {
 
         // if there are no dictionaries - something is wrong with the database
         if (dictionaryService.getDictionaries().size() == 0) {
+            SpellbookApp.closeSplashWindow();
             JOptionPane.showMessageDialog(null, TRANSLATOR.translate("NoDictionaries(Message)"), TRANSLATOR.translate("Error(Title)"), JOptionPane.WARNING_MESSAGE);
 
             System.exit(0);
