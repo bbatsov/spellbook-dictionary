@@ -1,20 +1,46 @@
 package com.drowltd.spellbook.ui.desktop.spellcheck;
 
-import com.drowltd.spellbook.core.exception.*;
-import com.drowltd.spellbook.core.i18n.*;
-import com.drowltd.spellbook.core.model.Dictionary;
-import com.drowltd.spellbook.core.model.*;
-import com.drowltd.spellbook.core.service.*;
+import com.drowltd.spellbook.core.exception.SpellCheckerException;
+import com.drowltd.spellbook.core.i18n.Translator;
+import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.drowltd.spellbook.ui.swing.util.SwingUtil;
-import net.miginfocom.swing.*;
+import net.miginfocom.swing.MigLayout;
 
-import javax.swing.*;
-import javax.swing.plaf.basic.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.util.List;
+import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JTabbedPane;
+import javax.swing.KeyStroke;
+import javax.swing.plaf.basic.BasicButtonUI;
+
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * @author iivalchev
@@ -256,9 +282,8 @@ public class SpellCheckFrame extends JFrame {
     }
 
     private void initLanguageMenu() {
-        List<Dictionary> dictionaries = DictionaryService.getInstance().getDictionaries();
-        for (Dictionary d : dictionaries) {
-            jDictionaryMenu.add(new LanguageItem(d.getFromLanguage()));
+        for (Language l : Language.values()) {
+            jDictionaryMenu.add(new LanguageItem(l));
         }
     }
 

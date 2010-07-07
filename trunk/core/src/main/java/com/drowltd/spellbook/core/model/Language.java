@@ -5,7 +5,12 @@ import com.drowltd.spellbook.core.i18n.Translator;
 public enum Language {
     BULGARIAN("Bulgarian", "абвгдежзийклмнопрстуфхцчшщъьюя", "flag_bulgaria.png","bg_BG"),
     ENGLISH("English", "abcdefghijklmnopqrstuvwxyz", "flag_great_britain.png","en_US"),
-    GERMAN("German", "abcdefghijklmnopqrstuvwxyz", "flag_great_britain.png","en_US");
+    GERMAN("German", "abcdefghijklmnopqrstuvwxyz", "flag_germany.png","de_DE"),
+    FRENCH("French", "abcdefghijklmnopqrstuvwxyz", "flag_france.png","fr_FR"),
+    ITALIAN("Italian", "abcdefghijklmnopqrstuvwxyz", "flag_italy.png","it_IT"),
+    SPANISH("Spanish", "abcdefghijklmnopqrstuvwxyz", "flag_spain.png","es_ES"),
+    PORTUGUESE("Portuguese", "abcdefghijklmnopqrstuvwxyz", "flag_portugal.png","pt_PT"),
+    RUSSIAN("Russian", "abcdefghijklmnopqrstuvwxyz", "flag_russia.png","ru_RU");
 
     public static final Translator TRANSLATOR = Translator.getTranslator("Model");
 
