@@ -84,10 +84,14 @@ public class ArchiveUtils {
                 LOGGER.info("Extracting entry: " + entryName);
                 FileOutputStream fileOutputStream;
                 File newFile = new File(entryName);
+
+                // create folders that don't exist
                 if (tarEntry.isDirectory()) {
                     if (!newFile.mkdirs()) {
+                        // FIX this is a bad idea is the folder already exists
                         break;
                     }
+
                     tarEntry = tarInputStream.getNextEntry();
                     continue;
                 }
@@ -100,10 +104,10 @@ public class ArchiveUtils {
 
                 fileOutputStream.close();
                 tarEntry = tarInputStream.getNextEntry();
-
             }
             tarInputStream.close();
         } catch (Exception e) {
+            e.printStackTrace();
         }
 
         currentPath += "db" + File.separator + DB_FILE_NAME;

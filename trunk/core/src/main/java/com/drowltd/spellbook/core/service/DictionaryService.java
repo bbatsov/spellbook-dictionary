@@ -362,6 +362,16 @@ public class DictionaryService extends AbstractPersistenceService {
 
         for (DictionaryEntry tDictionaryEntry : dictionaryEntries) {
             EM.persist(tDictionaryEntry);
+
+            // only normal dictionaries contribute to the rank
+            if (!tDictionaryEntry.getDictionary().isSpecial()) {
+                RankEntry re = new RankEntry();
+                re.setLanguage(tDictionaryEntry.getDictionary().getFromLanguage());
+                re.setWord(tDictionaryEntry.getWord());
+                re.setRank(1);
+
+                EM.persist(re);
+            }
         }
 
         t.commit();
