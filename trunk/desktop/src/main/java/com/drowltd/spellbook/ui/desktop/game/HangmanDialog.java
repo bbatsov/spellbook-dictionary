@@ -26,6 +26,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -56,7 +58,7 @@ public class HangmanDialog extends BaseDialog {
     private JButton startButton;
     private JButton stopButton;
     private JButton guessButton;
-    private JTextField wordField;
+    private JLabel wordField;
     private JTextField translationField;
     private JTextField guessField;
     private JLabel guessFieldOverlayLabel;
@@ -75,7 +77,7 @@ public class HangmanDialog extends BaseDialog {
         toLanguageComboBox = new JComboBox();
         difficultyComboBox = new DifficultyComboBox();
         startButton = new JButton();
-        wordField = new JTextField();
+        wordField = new JLabel();
         translationField = new JTextField();
         guessField = new OverlayTextField();
         guessFieldOverlayLabel = new JLabel();
@@ -143,10 +145,10 @@ public class HangmanDialog extends BaseDialog {
 
         contentPanel.add(hangmanDrawing, "center, span, width 150::, height 150::");
 
-        contentPanel.add(new JLabel(getTranslator().translate("WordField(Label)")), "span, left");
+        contentPanel.add(new JLabel(getTranslator().translate("WordField(Label)")), "span, center");
 
-        contentPanel.add(wordField, "span, left, growx");
-        wordField.setEditable(false);
+        contentPanel.add(wordField, "span, center");
+        wordField.setFont(new Font("Tahoma", Font.BOLD, 16));
 
         contentPanel.add(new JLabel(getTranslator().translate("TranslationField(Label)")), "span, left");
 
@@ -279,10 +281,10 @@ public class HangmanDialog extends BaseDialog {
             guessedChars.add(currentGuess.charAt(0));
 
             if (currentWord.indexOf(currentGuess) != -1) {
-                feedbackField.setText(getTranslator().translate("CorrectGuess(String)"));
+                feedbackField.setText(getTranslator().translate("CorrectGuess(Label)"));
                 guessIconLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconManager.IconSize.SIZE24));
             } else {
-                feedbackField.setText(getTranslator().translate("WrongGuess(String)"));
+                feedbackField.setText(getTranslator().translate("WrongGuess(Label)"));
                 guessIconLabel.setIcon(IconManager.getImageIcon("bell2_red.png", IconManager.IconSize.SIZE24));
 
                 // the attempts count is increased only for wrong attempts
