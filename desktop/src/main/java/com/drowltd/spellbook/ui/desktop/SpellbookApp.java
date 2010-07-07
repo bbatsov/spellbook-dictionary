@@ -23,6 +23,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JWindow;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+
 import java.awt.EventQueue;
 import java.awt.Rectangle;
 import java.awt.SplashScreen;
@@ -160,27 +161,27 @@ public class SpellbookApp {
             // handle exception
         }
 
-        // we determine whether another instance of spellbook is running by checking for the presence
-        // of a lock file, which is created by the application upon startup and removed automatically
-        // upon exit
-        File lockFile = new File(SPELLBOOK_USER_DIR + File.separator + "spellbook.lock");
-
-        if (lockFile.exists()) {
-            JOptionPane.showMessageDialog(null, TRANSLATOR.translate("AlreadyRunning(Message)"),
-                    TRANSLATOR.translate("Warning(Title)"), JOptionPane.WARNING_MESSAGE);
-            System.exit(0);
-        } else {
-            try {
-                lockFile.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        lockFile.deleteOnExit();
-
-        // don't show splash on restart
+        // don't show splash on restart and don't create/check lock
         if (startup) {
+            // we determine whether another instance of spellbook is running by checking for the presence
+            // of a lock file, which is created by the application upon startup and removed automatically
+            // upon exit
+            File lockFile = new File(SPELLBOOK_USER_DIR + File.separator + "spellbook.lock");
+
+            if (lockFile.exists()) {
+                JOptionPane.showMessageDialog(null, TRANSLATOR.translate("AlreadyRunning(Message)"),
+                        TRANSLATOR.translate("Warning(Title)"), JOptionPane.WARNING_MESSAGE);
+                System.exit(0);
+            } else {
+                try {
+                    lockFile.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            lockFile.deleteOnExit();
+
             createSplashWindow();
         }
 

@@ -17,6 +17,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
+
 import java.awt.Font;
 import java.util.logging.Level;
 
@@ -98,6 +99,7 @@ public class PreferencesExtractor {
     }
 
     private static void extractGeneralPreferences(final SpellbookFrame spellbookFrame, final PreferencesDialog preferencesDialog) {
+        LOGGER.info("Default dictionary is " + preferencesDialog.getDefaultDictionary());
         PM.put(Preference.DEFAULT_DICTIONARY, preferencesDialog.getDefaultDictionary());
 
         final boolean minimizeToTrayEnabled = preferencesDialog.isMinimizeToTrayEnabled();
