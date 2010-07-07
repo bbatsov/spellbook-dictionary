@@ -1,27 +1,65 @@
 package com.drowltd.spellbook.ui.desktop.spellcheck;
 
-import com.drowltd.spellbook.core.exception.*;
-import com.drowltd.spellbook.core.i18n.*;
-import com.drowltd.spellbook.core.model.*;
-import com.drowltd.spellbook.core.service.*;
-import com.drowltd.spellbook.core.spellcheck.*;
-import com.drowltd.spellbook.ui.swing.component.*;
-import com.drowltd.spellbook.ui.swing.util.*;
-import net.miginfocom.swing.*;
-import org.slf4j.*;
+import com.drowltd.spellbook.core.exception.SpellCheckerException;
+import com.drowltd.spellbook.core.i18n.Translator;
+import com.drowltd.spellbook.core.model.Language;
+import com.drowltd.spellbook.core.service.DictionaryService;
+import com.drowltd.spellbook.core.spellcheck.HunSpellChecker;
+import com.drowltd.spellbook.core.spellcheck.SpellChecker;
+import com.drowltd.spellbook.ui.swing.component.FileTextPane;
+import com.drowltd.spellbook.ui.swing.util.IconManager;
+import com.drowltd.spellbook.ui.swing.util.SwingUtil;
+import net.miginfocom.swing.MigLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.accessibility.*;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.text.*;
-import javax.swing.undo.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.util.*;
+import javax.accessibility.AccessibleEditableText;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JViewport;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Highlighter;
+import javax.swing.text.JTextComponent;
+import javax.swing.text.LayeredHighlighter;
+import javax.swing.text.Position;
+import javax.swing.text.View;
+import javax.swing.undo.UndoManager;
+
+import java.awt.Color;
+import java.awt.EventQueue;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.*;
-import java.util.regex.*;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class SpellCheckTab extends JPanel implements FileTextPane.NoFileHandler {
@@ -208,7 +246,7 @@ public class SpellCheckTab extends JPanel implements FileTextPane.NoFileHandler 
             fileTextPane.setCaretPosition(cursorPosition);
         }
 
-        setStatus(misspelledWord.getWord() + TRANSLATOR.translate("MessageCorrected(Content)") + correction);
+        setStatus(misspelledWord.getWord() + " " + TRANSLATOR.translate("MessageCorrected(Content)") + " " + correction);
 
         spellCheck(true);
 
