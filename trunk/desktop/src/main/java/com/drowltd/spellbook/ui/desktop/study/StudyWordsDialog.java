@@ -36,6 +36,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
+
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -147,7 +148,7 @@ public class StudyWordsDialog extends BaseDialog {
         initHowToEnumeratePanel();
 
         repeatWordCheckBox = new JCheckBox();
-        repeatWordCheckBox.setText(getTranslator().translate("RepeatWords(CheckBox)")); // NOI18N
+        repeatWordCheckBox.setText(getTranslator().translate("RepeatWords(CheckBox)"));
         repeatWordCheckBox.addActionListener(new ActionListener() {
 
             @Override
@@ -158,7 +159,7 @@ public class StudyWordsDialog extends BaseDialog {
         topPanel.add(repeatWordCheckBox);
 
         repeatMisspelledWordsCheckBox = new JCheckBox();
-        repeatMisspelledWordsCheckBox.setText(getTranslator().translate("RepeatMisspelledWords(CheckBox)")); // NOI18N
+        repeatMisspelledWordsCheckBox.setText(getTranslator().translate("RepeatMisspelledWords(CheckBox)"));
         repeatMisspelledWordsCheckBox.addActionListener(new ActionListener() {
 
             @Override
@@ -204,14 +205,14 @@ public class StudyWordsDialog extends BaseDialog {
         wordsPanel.setMaximumSize(new Dimension(240, 179)); //224
 
         JLabel jLabel1 = new JLabel();
-        jLabel1.setText(getTranslator().translate("Languages(Label)")); // NOI18N
+        jLabel1.setText(getTranslator().translate("Languages(Label)")); 
         wordsPanel.add(jLabel1, "left,wrap");
 
         dictionariesComboBox = new DictionaryComboBox(dictionaries);
         wordsPanel.add(dictionariesComboBox, "span,growx,wrap");
 
         JLabel jLabel3 = new JLabel();
-        jLabel3.setText(getTranslator().translate("StudySet(Label)")); // NOI18N
+        jLabel3.setText(getTranslator().translate("StudySet(Label)")); 
         wordsPanel.add(jLabel3, "wrap");
 
         studySetsComboBox = new JComboBox();
@@ -233,8 +234,8 @@ public class StudyWordsDialog extends BaseDialog {
         wordsPanel.add(studySetsComboBox, "span,growx,wrap");
 
         wordsButton = new JButton();
-        wordsButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/dictionary.png"))); // NOI18N
-        wordsButton.setText(getTranslator().translate("Words(Button)")); // NOI18N
+        wordsButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/dictionary.png")));
+        wordsButton.setText(getTranslator().translate("Words(Button)"));
         wordsButton.addActionListener(new ActionListener() {
 
             @Override
@@ -245,14 +246,14 @@ public class StudyWordsDialog extends BaseDialog {
         wordsPanel.add(wordsButton, "center,w 105!,wrap");
 
         warningIconLabel = new JLabel();
-        warningIconLabel.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/warning.png"))); // NOI18N
+        warningIconLabel.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/warning.png"))); 
         wordsPanel.add(warningIconLabel, "split 2,left,w 25!,h 22!");
 
         addWordsLabel = new JLabel();
-        addWordsLabel.setText(getTranslator().translate("AddWordsLabel(Message)")); // NOI18N
+        addWordsLabel.setText(getTranslator().translate("AddWordsLabel(Message)")); 
         wordsPanel.add(addWordsLabel, "wrap");
 
-        topPanel.add(wordsPanel, "w 240!,h 183!,sg");
+        topPanel.add(wordsPanel, "w 300!,h 183!,sg");
     }
 
     private void initHowToEnumeratePanel() {
@@ -260,19 +261,19 @@ public class StudyWordsDialog extends BaseDialog {
         howToEnumeratePanel.setBorder(BorderFactory.createEtchedBorder());
 
         JLabel jLabel5 = new JLabel();
-        jLabel5.setText(getTranslator().translate("Enumerate(Label)")); // NOI18N
+        jLabel5.setText(getTranslator().translate("Enumerate(Label)")); 
         howToEnumeratePanel.add(jLabel5);
 
         inOrderOfInputRadioButton = new JRadioButton();
-        inOrderOfInputRadioButton.setText(getTranslator().translate("InOrderOfInput(Label)")); // NOI18N
+        inOrderOfInputRadioButton.setText(getTranslator().translate("InOrderOfInput(Label)")); 
         howToEnumeratePanel.add(inOrderOfInputRadioButton);
 
         inReverseOrderOfInputRadioButton = new JRadioButton();
-        inReverseOrderOfInputRadioButton.setText(getTranslator().translate("InReverseOrderOfInput(Label)")); // NOI18N
+        inReverseOrderOfInputRadioButton.setText(getTranslator().translate("InReverseOrderOfInput(Label)")); 
         howToEnumeratePanel.add(inReverseOrderOfInputRadioButton);
 
         randomRadioButton = new JRadioButton();
-        randomRadioButton.setText(getTranslator().translate("Random(Label)")); // NOI18N
+        randomRadioButton.setText(getTranslator().translate("Random(Label)")); 
         howToEnumeratePanel.add(randomRadioButton);
 
         topPanel.add(howToEnumeratePanel, "sg,wrap");
@@ -283,8 +284,8 @@ public class StudyWordsDialog extends BaseDialog {
         studyPanel.setBorder(BorderFactory.createEtchedBorder());
 
         startButton = new JButton();
-        startButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/media_play_green.png"))); // NOI18N
-        startButton.setText(getTranslator().translate("Start(Button)")); // NOI18N
+        startButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/media_play_green.png"))); 
+        startButton.setText(getTranslator().translate("Start(Button)")); 
         startButton.addActionListener(new ActionListener() {
 
             @Override
@@ -295,8 +296,8 @@ public class StudyWordsDialog extends BaseDialog {
         studyPanel.add(startButton, "w 118!,sg");
 
         stopButton = new JButton();
-        stopButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/media_stop_red.png"))); // NOI18N
-        stopButton.setText(getTranslator().translate("Stop(Button)")); // NOI18N
+        stopButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/media_stop_red.png"))); 
+        stopButton.setText(getTranslator().translate("Stop(Button)")); 
         stopButton.addActionListener(new ActionListener() {
 
             @Override
@@ -307,18 +308,18 @@ public class StudyWordsDialog extends BaseDialog {
         studyPanel.add(stopButton, "sg");
 
         JLabel jLabel7 = new JLabel();
-        jLabel7.setText(getTranslator().translate("Correct(Label)")); // NOI18N
+        jLabel7.setText(getTranslator().translate("Correct(Label)")); 
         studyPanel.add(jLabel7, "gapleft 80,right");
 
         countOfTheCorrectWordsLabel = new JLabel();
         studyPanel.add(countOfTheCorrectWordsLabel, "left,wrap");
 
         JLabel jLabel4 = new JLabel();
-        jLabel4.setText(getTranslator().translate("OverTranslateField(Label)")); // NOI18N
+        jLabel4.setText(getTranslator().translate("OverTranslateField(Label)")); 
         studyPanel.add(jLabel4, "span 2,left");
 
         JLabel jLabel8 = new JLabel();
-        jLabel8.setText(getTranslator().translate("Wrong(Label)")); // NOI18N
+        jLabel8.setText(getTranslator().translate("Wrong(Label)")); 
         studyPanel.add(jLabel8, "gapleft 80,right");
 
         countOfTheWrongWordsLabel = new JLabel();
@@ -329,7 +330,7 @@ public class StudyWordsDialog extends BaseDialog {
         studyPanel.add(translateField, "span 2,w 246!");
 
         JLabel jLabel9 = new JLabel();
-        jLabel9.setText(getTranslator().translate("AnswerSeen(Label)")); // NOI18N
+        jLabel9.setText(getTranslator().translate("AnswerSeen(Label)")); 
         studyPanel.add(jLabel9, "right");
 
         answerSeenLabel = new JLabel();
@@ -343,7 +344,7 @@ public class StudyWordsDialog extends BaseDialog {
         studyPanel.add(emoticonLabel, "w 53!,h 47!,gapleft 90,wrap");
 
         JLabel jLabel6 = new JLabel();
-        jLabel6.setText(getTranslator().translate("OverAnswerField(Label)")); // NOI18N
+        jLabel6.setText(getTranslator().translate("OverAnswerField(Label)")); 
         studyPanel.add(jLabel6, "span 2,wrap");
 
         answerField = new JTextField();
@@ -361,8 +362,8 @@ public class StudyWordsDialog extends BaseDialog {
         studyPanel.add(answerStatusLabel, "span 2,gapleft 60,wrap");
 
         answerButton = new JButton();
-        answerButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/check.png"))); // NOI18N
-        answerButton.setText(getTranslator().translate("Answer(Button)")); // NOI18N
+        answerButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/check.png"))); 
+        answerButton.setText(getTranslator().translate("Answer(Button)")); 
         answerButton.addActionListener(new ActionListener() {
 
             @Override
@@ -373,8 +374,8 @@ public class StudyWordsDialog extends BaseDialog {
         studyPanel.add(answerButton, "sg");
 
         seeAnswerButton = new JButton();
-        //seeAnswerButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/lightbulb_on.png"))); // NOI18N
-        seeAnswerButton.setText(getTranslator().translate("SeeAnswer(Button)")); // NOI18N
+        //seeAnswerButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/lightbulb_on.png"))); 
+        seeAnswerButton.setText(getTranslator().translate("SeeAnswer(Button)")); 
         seeAnswerButton.addActionListener(new ActionListener() {
 
             @Override
