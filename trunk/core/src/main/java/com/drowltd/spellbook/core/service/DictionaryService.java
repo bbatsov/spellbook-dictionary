@@ -334,7 +334,18 @@ public class DictionaryService extends AbstractPersistenceService {
      * @return the dictionary's complement
      */
     public Dictionary getComplement(Dictionary dictionary) {
-        return EM.createNamedQuery("Dictionary.getDictionaryByLanguages", Dictionary.class).setParameter("fromLanguage", dictionary.getToLanguage()).setParameter("toLanguage", dictionary.getFromLanguage()).getSingleResult();
+        List<Dictionary> candidates = EM.createNamedQuery("Dictionary.getDictionaryByLanguages", Dictionary.class).setParameter("fromLanguage", dictionary.getToLanguage()).setParameter("toLanguage", dictionary.getFromLanguage()).getResultList();
+
+        for (Dictionary tCandidate : candidates) {
+            String[] langs = tCandidate.getName().split("-");
+
+            if (langs.length == 2 && (langs[0].equalsIgnoreCase(dictionary.getToLanguage().getName())) &&
+                    langs[1].equalsIgnoreCase(dictionary.getFromLanguage().getName())) {
+                return tCandidate;
+            }
+        }
+
+        return null;
     }
 
     public Dictionary createDictionary(Language from, Language to, String name, boolean special, byte[] smallIcon, byte[] bigIcon) {
