@@ -7,16 +7,19 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import javax.persistence.EntityTransaction;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
 import java.io.BufferedInputStream;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SynchronizeService extends AbstractPersistenceService {
-    private static final String UPDATE_URL = "http://78.128.18.63:7777/update/1276242306.xml";
+    private static final String UPDATE_URL = "http://spellbook.drowltd.com/update/";
 
     private static SynchronizeService instance;
     private static final DictionaryService DICTIONARY_SERVICE = DictionaryService.getInstance();
@@ -29,11 +32,11 @@ public class SynchronizeService extends AbstractPersistenceService {
         return instance;
     }
 
-    public List<DictionaryEntry> retrieveUpdatedEntries() {
-        List<DictionaryEntry> updatedEntries = new ArrayList<DictionaryEntry>();
+    public Map<DictionaryEntry, DictionaryEntry.State> retrieveUpdatedEntries() {
+        Map<DictionaryEntry, DictionaryEntry.State> updatedEntries = new HashMap<DictionaryEntry, DictionaryEntry.State>();
 
         try {
-            URL updateUrl = new URL(UPDATE_URL);
+            URL updateUrl = new URL(UPDATE_URL + (getLastSyncDate().getTime() / 1000) + ".xml");
 
             BufferedInputStream in = new BufferedInputStream(updateUrl.openStream());
 
@@ -42,7 +45,7 @@ public class SynchronizeService extends AbstractPersistenceService {
             Document doc = db.parse(in);
             doc.getDocumentElement().normalize();
             System.out.println("Root element " + doc.getDocumentElement().getNodeName());
-            NodeList nodeLst = doc.getElementsByTagName("suggestion");
+            NodeList nodeLst = doc.getElementsByTagName("new-word");
             System.out.println("Information of all suggestions");
 
             for (int s = 0; s < nodeLst.getLength(); s++) {
@@ -53,24 +56,37 @@ public class SynchronizeService extends AbstractPersistenceService {
                     DictionaryEntry dictionaryEntry = new DictionaryEntry();
 
                     Element firstElement = (Element) firstNode;
-                    NodeList dictionaryNodeList = firstElement.getElementsByTagName("dictionary-name");
+                    NodeList dictionaryNodeList = firstElement.getElementsByTagName("dictionary");
                     Element dictionaryElement = (Element) dictionaryNodeList.item(0);
                     NodeList dictionary = dictionaryElement.getChildNodes();
-                    System.out.println("Dictionary : " + ((Node) dictionary.item(0)).getNodeValue());
+                    final String dictionaryName = ((Node) dictionary.item(0)).getNodeValue();
+                    System.out.println("Dictionary : " + dictionaryName);
+                    dictionaryEntry.setDictionary(DICTIONARY_SERVICE.getDictionary(dictionaryName));
 
                     NodeList wordNodeList = firstElement.getElementsByTagName("word");
                     Element wordElement = (Element) wordNodeList.item(0);
                     NodeList word = wordElement.getChildNodes();
 
-                    System.out.println("Word : " + ((Node) word.item(0)).getNodeValue());
+                    final String wordValue = ((Node) word.item(0)).getNodeValue();
+                    System.out.println("Word : " + wordValue);
+                    dictionaryEntry.setWord(wordValue);
 
                     NodeList translationNodeList = firstElement.getElementsByTagName("translation");
                     Element translationElement = (Element) translationNodeList.item(0);
                     NodeList translation = translationElement.getChildNodes();
 
-                    System.out.println("Translation : " + ((Node) word.item(0)).getNodeValue());
+                    final String translationValue = ((Node) translation.item(0)).getNodeValue();
+                    System.out.println("Translation : " + translationValue);
+                    dictionaryEntry.setTranslation(translationValue);
 
-                    updatedEntries.add(dictionaryEntry);
+                    NodeList stateNodeList = firstElement.getElementsByTagName("state");
+                    Element stateElement = (Element) stateNodeList.item(0);
+                    NodeList state = stateElement.getChildNodes();
+
+                    final String stateValue = ((Node) state.item(0)).getNodeValue();
+                    System.out.println("State : " + stateValue);
+
+                    updatedEntries.put(dictionaryEntry, DictionaryEntry.State.valueOf(stateValue.toUpperCase()));
                 }
 
             }
@@ -82,12 +98,28 @@ public class SynchronizeService extends AbstractPersistenceService {
     }
 
     public void pullUpdates() {
-        //TODO
+        Map<DictionaryEntry, DictionaryEntry.State> updateEntries = retrieveUpdatedEntries();
+
+        for (Map.Entry<DictionaryEntry, DictionaryEntry.State> tDictionaryEntryStateEntry : updateEntries.entrySet()) {
+            DictionaryEntry de = tDictionaryEntryStateEntry.getKey();
+            DictionaryEntry.State state = tDictionaryEntryStateEntry.getValue();
+
+            if (state == DictionaryEntry.State.NEW) {
+                DICTIONARY_SERVICE.addWord(de.getWord(), de.getTranslation(), de.getDictionary());
+            } else if (state == DictionaryEntry.State.UPDATED) {
+                DICTIONARY_SERVICE.updateWord(de.getWord(), de.getTranslation(), de.getDictionary());
+            }
+        }
+
+        EntityTransaction et = EM.getTransaction();
+        et.begin();
+
         SyncStats syncStats = new SyncStats();
-        syncStats.setPulledEntries(0);
+        syncStats.setPulledEntries(updateEntries.values().size());
         syncStats.setPushedEntries(0);
 
         EM.persist(syncStats);
+        et.commit();
     }
 
     public void pushUpdates() {
@@ -97,6 +129,8 @@ public class SynchronizeService extends AbstractPersistenceService {
     public static void main(String[] args) {
         SynchronizeService synchronizeService = getInstance();
         synchronizeService.retrieveUpdatedEntries();
+
+
     }
 
     public List<DictionaryEntry> getLocalChanges() {
@@ -108,12 +142,14 @@ public class SynchronizeService extends AbstractPersistenceService {
     }
 
     public Date getLastSyncDate() {
-        List<SyncStats> syncStats = EM.createQuery("select ss from SyncStats ss order by ss.created asc").getResultList();
+        List<SyncStats> syncStats = EM.createQuery("select ss from SyncStats ss order by ss.created desc").getResultList();
+
+        System.out.println("Sync stats size " + syncStats.size());
 
         if (syncStats.isEmpty()) {
             return null;
         } else {
-            return syncStats.get(syncStats.size() - 1).getCreated();
+            return syncStats.get(0).getCreated();
         }
     }
 
