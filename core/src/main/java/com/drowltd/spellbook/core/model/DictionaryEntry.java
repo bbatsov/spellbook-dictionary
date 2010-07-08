@@ -75,31 +75,44 @@ public class DictionaryEntry extends AbstractEntity {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+
+        final DictionaryEntry that = (DictionaryEntry) o;
+
+        if (!dictionary.equals(that.dictionary)) {
             return false;
         }
-        final DictionaryEntry other = (DictionaryEntry) obj;
-        if ((this.word == null) ? (other.word != null) : !this.word.equals(other.word)) {
+
+        if (!translation.equals(that.translation)) {
             return false;
         }
-        if ((this.translation == null) ? (other.translation != null) : !this.translation.equals(other.translation)) {
+        if (!word.equals(that.word)) {
             return false;
         }
+
         return true;
     }
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        return hash;
+        int tresult = dictionary.hashCode();
+        tresult = 31 * tresult + word.hashCode();
+        tresult = 31 * tresult + translation.hashCode();
+        return tresult;
     }
 
     @Override
     public String toString() {
         return getWord();
+    }
+
+    public static enum State {
+        NEW, UPDATED, DELETED
     }
 }
