@@ -75,7 +75,7 @@ public class StudySetsDialog extends BaseDialog {
 
         dictionaryService = DictionaryService.getInstance();
         dictionaries = dictionaryService.getDictionaries();
-        words = dictionaryService.getWordsFromDictionary(dictionaries.get(0));
+        words = dictionaryService.getWordsFromDictionary(dictionaries.get(2));
 
         studyService = new StudyService();
         studySets = studyService.getStudySets();
@@ -89,7 +89,7 @@ public class StudySetsDialog extends BaseDialog {
         if (addWordButton.isEnabled()) {
             Dictionary dictionary = null;
             if (dictionariesComboBox.getSelectedItem().equals(getTranslator().translate("EnglishItem(ComboBox)"))) {
-                dictionary = dictionaries.get(0);
+                dictionary = dictionaries.get(2);
             }
             wordTranslationTextPane.setText(dictionaryService.getTranslation(wordSearchField.getText(),
                     dictionary));
@@ -440,7 +440,7 @@ public class StudySetsDialog extends BaseDialog {
                 countOFTheWords++;
                 Dictionary dictionary = null;
                 if (dictionariesComboBox.getSelectedItem().equals(getTranslator().translate("EnglishItem(ComboBox)"))) {
-                    dictionary = dictionaries.get(0);
+                    dictionary = dictionaries.get(2);
                 }
                 studyService.addWord(word, dictionary, studySetName);
                 boolean selectAllWords = false;
