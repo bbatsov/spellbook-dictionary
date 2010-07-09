@@ -18,7 +18,6 @@ import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
-
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Font;
@@ -123,15 +122,7 @@ public class AboutDialog extends BaseDialog {
             }
         });
 
-        JButton closeButton = new JButton();
-        closeButton.setAction(new AbstractAction(getTranslator().translate("Close(Button)")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setDialogResult(RESULT_CANCELLED);
-                setVisible(false);
-                dispose();
-            }
-        });
+        JButton closeButton = createCloseButton();
 
         buttonPanel.addButton(creditsButton);
         buttonPanel.addButton(licenceButton);

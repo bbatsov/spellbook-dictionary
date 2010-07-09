@@ -16,7 +16,6 @@ import com.drowltd.spellbook.ui.swing.component.BaseDialog;
 import com.drowltd.spellbook.ui.swing.validation.ButtonControllingDocumentListener;
 import com.jidesoft.dialog.BannerPanel;
 import com.jidesoft.dialog.ButtonPanel;
-import com.jidesoft.dialog.ButtonResources;
 import com.jidesoft.icons.JideIconsFactory;
 import com.jidesoft.swing.DefaultOverlayable;
 import com.jidesoft.swing.OverlayTextField;
@@ -44,8 +43,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 /**
  * @author bozhidar
@@ -92,7 +89,7 @@ public class AddUpdateWordDialog extends BaseDialog {
 
         wordTextField = new OverlayTextField();
 
-        okButton = new JButton();
+        okButton = createOkButton();
 
         wordTextField.getDocument().addDocumentListener(new ButtonControllingDocumentListener(wordTextField, okButton));
 
@@ -185,53 +182,21 @@ public class AddUpdateWordDialog extends BaseDialog {
     @Override
     public ButtonPanel createButtonPanel() {
         ButtonPanel buttonPanel = new ButtonPanel();
-        JButton cancelButton = new JButton();
-        JButton helpButton = new JButton();
-        okButton.setName(OK);
-        cancelButton.setName(CANCEL);
-        helpButton.setName(HELP);
+        JButton cancelButton = createCancelButton();
+        JButton helpButton = createHelpButton();
+
         buttonPanel.addButton(okButton, ButtonPanel.AFFIRMATIVE_BUTTON);
         buttonPanel.addButton(cancelButton, ButtonPanel.CANCEL_BUTTON);
         buttonPanel.addButton(helpButton, ButtonPanel.HELP_BUTTON);
 
-        okButton.setAction(new AbstractAction(getBaseTranslator().translate("OK(Button)")) {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (translationPane.getText().isEmpty()) {
-                    newMeaningTextField.requestFocus();
-                } else {
-                    setDialogResult(RESULT_AFFIRMED);
-                    setVisible(false);
-                    dispose();
-                }
-            }
-        });
-        cancelButton.setAction(new AbstractAction(getBaseTranslator().translate("Cancel(Button)")) {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setDialogResult(RESULT_CANCELLED);
-                setVisible(false);
-                dispose();
-            }
-        });
-        final ResourceBundle resourceBundle = ButtonResources.getResourceBundle(Locale.getDefault());
-        helpButton.setAction(new AbstractAction(getBaseTranslator().translate("Help(Button)")) {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // do something
-            }
-        });
-        helpButton.setMnemonic(resourceBundle.getString("Button.help.mnemonic").charAt(0));
-
         setDefaultCancelAction(cancelButton.getAction());
         setDefaultAction(okButton.getAction());
         getRootPane().setDefaultButton(okButton);
+
         if (wordTextField.getText().isEmpty()) {
             okButton.setEnabled(false);
         }
+
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         return buttonPanel;
     }

@@ -3,9 +3,7 @@ package com.drowltd.spellbook.ui.swing.component;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.jidesoft.dialog.BannerPanel;
 import com.jidesoft.dialog.ButtonPanel;
-import com.jidesoft.dialog.ButtonResources;
 import com.jidesoft.icons.JideIconsFactory;
-import com.jidesoft.plaf.UIDefaultsLookup;
 import com.jidesoft.swing.DefaultOverlayable;
 import com.jidesoft.swing.FolderChooser;
 import com.jidesoft.swing.OverlayTextField;
@@ -13,7 +11,6 @@ import com.jidesoft.swing.OverlayableIconsFactory;
 import com.jidesoft.swing.OverlayableUtils;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -24,7 +21,6 @@ import javax.swing.JTextField;
 import javax.swing.ProgressMonitor;
 import javax.swing.SwingWorker;
 import javax.swing.border.BevelBorder;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Frame;
@@ -40,8 +36,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 public class SelectDbDialog extends BaseDialog implements PropertyChangeListener {
     private JButton downloadButton;
@@ -51,7 +45,7 @@ public class SelectDbDialog extends BaseDialog implements PropertyChangeListener
     private ProgressMonitor progressMonitor;
     private Task task;
     private String localDbFolder;
-    private JButton okButton = new JButton();
+    private JButton okButton = createOkButton();
 
     private static final String DB_URL = "http://spellbook-dictionary.googlecode.com/files/spellbook-db-0.4.tar.bz2";
     private static final String DOWNLOAD_DIR = System.getProperty("java.io.tmpdir");
@@ -162,40 +156,12 @@ public class SelectDbDialog extends BaseDialog implements PropertyChangeListener
     @Override
     public ButtonPanel createButtonPanel() {
         ButtonPanel buttonPanel = new ButtonPanel();
-        JButton cancelButton = new JButton();
-        JButton helpButton = new JButton();
-        okButton.setName(OK);
-        cancelButton.setName(CANCEL);
-        helpButton.setName(HELP);
+        JButton cancelButton = createCancelButton();
+        JButton helpButton = createHelpButton();
+
         buttonPanel.addButton(okButton, ButtonPanel.AFFIRMATIVE_BUTTON);
         buttonPanel.addButton(cancelButton, ButtonPanel.CANCEL_BUTTON);
         buttonPanel.addButton(helpButton, ButtonPanel.HELP_BUTTON);
-
-        okButton.setAction(new AbstractAction(UIDefaultsLookup.getString("OptionPane.okButtonText")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setDialogResult(RESULT_AFFIRMED);
-                setVisible(false);
-            }
-        });
-
-        cancelButton.setAction(new AbstractAction(UIDefaultsLookup.getString("OptionPane.cancelButtonText")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setDialogResult(RESULT_CANCELLED);
-                setVisible(false);
-            }
-        });
-
-        final ResourceBundle resourceBundle = ButtonResources.getResourceBundle(Locale.getDefault());
-        helpButton.setAction(new AbstractAction(resourceBundle.getString("Button.help")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // do something
-            }
-        });
-
-        helpButton.setMnemonic(resourceBundle.getString("Button.help.mnemonic").charAt(0));
 
         setDefaultCancelAction(cancelButton.getAction());
         setDefaultAction(okButton.getAction());
@@ -207,6 +173,7 @@ public class SelectDbDialog extends BaseDialog implements PropertyChangeListener
         return buttonPanel;
     }
 
+    @Override
     public int showDialog() {
         pack();
 

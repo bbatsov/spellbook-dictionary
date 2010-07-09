@@ -112,15 +112,7 @@ public class WordOfTheDayDialog extends BaseDialog {
             }
         });
 
-        JButton closeButton = new JButton();
-        closeButton.setAction(new AbstractAction(getTranslator().translate("Close(Button)")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setDialogResult(RESULT_CANCELLED);
-                setVisible(false);
-                dispose();
-            }
-        });
+        JButton closeButton = createCloseButton();
 
         buttonPanel.addButton(previousButton);
         buttonPanel.addButton(nextButton);

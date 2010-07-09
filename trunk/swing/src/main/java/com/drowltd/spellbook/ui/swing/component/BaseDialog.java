@@ -7,10 +7,13 @@ import com.jidesoft.dialog.StandardDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.AbstractAction;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.HeadlessException;
+import java.awt.event.ActionEvent;
 
 /**
  * Base dialog class in Spellbook.
@@ -71,5 +74,60 @@ public abstract class BaseDialog extends StandardDialog {
 
     public Logger getLogger() {
         return LoggerFactory.getLogger(this.getClass());
+    }
+
+    protected JButton createOkButton() {
+        JButton okButton = new JButton();
+
+        okButton.setAction(new AbstractAction(getBaseTranslator().translate("OK(Button)")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setDialogResult(RESULT_AFFIRMED);
+                setVisible(false);
+            }
+        });
+
+        return okButton;
+    }
+
+    protected JButton createCancelButton() {
+        JButton closeButton = new JButton();
+
+        closeButton.setAction(new AbstractAction(getBaseTranslator().translate("Cancel(Button)")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setDialogResult(RESULT_CANCELLED);
+                setVisible(false);
+            }
+        });
+
+        return closeButton;
+    }
+
+    protected JButton createCloseButton() {
+        JButton closeButton = new JButton();
+
+        closeButton.setAction(new AbstractAction(getBaseTranslator().translate("Close(Button)")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setDialogResult(RESULT_CANCELLED);
+                setVisible(false);
+            }
+        });
+
+        return closeButton;
+    }
+
+    protected JButton createHelpButton() {
+        JButton helpButton = new JButton();
+
+        helpButton.setAction(new AbstractAction(getBaseTranslator().translate("Help(Button)")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // do something
+            }
+        });
+
+        return helpButton;
     }
 }
