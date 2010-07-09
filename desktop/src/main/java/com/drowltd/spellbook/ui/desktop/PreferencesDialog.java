@@ -11,11 +11,8 @@ import com.drowltd.spellbook.ui.swing.component.DifficultyComboBox;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.drowltd.spellbook.ui.swing.util.LafUtil;
 import com.jidesoft.dialog.ButtonPanel;
-import com.jidesoft.dialog.ButtonResources;
-import com.jidesoft.plaf.UIDefaultsLookup;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -43,8 +40,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -116,40 +111,13 @@ public class PreferencesDialog extends BaseDialog {
     @Override
     public ButtonPanel createButtonPanel() {
         ButtonPanel buttonPanel = new ButtonPanel();
-        JButton okButton = new JButton();
-        JButton cancelButton = new JButton();
-        JButton helpButton = new JButton();
-        okButton.setName(OK);
-        cancelButton.setName(CANCEL);
-        helpButton.setName(HELP);
+        JButton okButton = createOkButton();
+        JButton cancelButton = createCancelButton();
+        JButton helpButton = createHelpButton();
+
         buttonPanel.addButton(okButton, ButtonPanel.AFFIRMATIVE_BUTTON);
         buttonPanel.addButton(cancelButton, ButtonPanel.CANCEL_BUTTON);
         buttonPanel.addButton(helpButton, ButtonPanel.HELP_BUTTON);
-
-        okButton.setAction(new AbstractAction(UIDefaultsLookup.getString("OptionPane.okButtonText")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setDialogResult(RESULT_AFFIRMED);
-                setVisible(false);
-                dispose();
-            }
-        });
-        cancelButton.setAction(new AbstractAction(UIDefaultsLookup.getString("OptionPane.cancelButtonText")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setDialogResult(RESULT_CANCELLED);
-                setVisible(false);
-                dispose();
-            }
-        });
-        final ResourceBundle resourceBundle = ButtonResources.getResourceBundle(Locale.getDefault());
-        helpButton.setAction(new AbstractAction(resourceBundle.getString("Button.help")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // do something
-            }
-        });
-        helpButton.setMnemonic(resourceBundle.getString("Button.help.mnemonic").charAt(0));
 
         setDefaultCancelAction(cancelButton.getAction());
         setDefaultAction(okButton.getAction());

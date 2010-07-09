@@ -170,23 +170,14 @@ public class ExamSummaryDialog extends BaseDialog {
     @Override
     public ButtonPanel createButtonPanel() {
         ButtonPanel buttonPanel = new ButtonPanel();
-        JButton closeButton = new JButton();
+        JButton closeButton = createCloseButton();
         JButton incorrectWordsButton = new JButton();
         JButton scoreboardButton = new JButton();
         incorrectWordsButton.setMnemonic('D');
-        closeButton.setName(OK);
+
         buttonPanel.addButton(closeButton, ButtonPanel.AFFIRMATIVE_BUTTON);
         buttonPanel.addButton(incorrectWordsButton, ButtonPanel.OTHER_BUTTON);
         buttonPanel.addButton(scoreboardButton, ButtonPanel.OTHER_BUTTON);
-
-        closeButton.setAction(new AbstractAction("Close") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setDialogResult(RESULT_AFFIRMED);
-                setVisible(false);
-                dispose();
-            }
-        });
 
         incorrectWordsButton.setAction(new AbstractAction("View incorrect >>") {
             @Override

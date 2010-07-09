@@ -37,9 +37,6 @@ import java.util.Set;
 
 /**
  * @author Bozhidar Batsov
- * @author Ivan Spasov
- * @author Georgi Angelov
- * @author Miroslava Stancheva
  * @since 0.2
  */
 public class ExamDialog extends BaseDialog {
@@ -79,8 +76,6 @@ public class ExamDialog extends BaseDialog {
         super(parent, modal);
 
         this.parent = parent;
-
-        getTranslator().reset();
 
         fromLanguageComboBox = new JComboBox();
         toLanguageComboBox = new JComboBox();
@@ -242,13 +237,10 @@ public class ExamDialog extends BaseDialog {
 
         selectedDictionary = dictionaryService.getDictionary((Language) fromLanguageComboBox.getSelectedItem(),
                 (Language) toLanguageComboBox.getSelectedItem());
-        assert selectedDictionary != null;
 
         Language selectedLanguage = (Language) fromLanguageComboBox.getSelectedItem();
-        assert selectedLanguage != null;
 
         difficulty = (Difficulty) difficultyComboBox.getSelectedItem();
-        assert difficulty != null;
 
         getLogger().info("Selected difficulty " + difficulty);
         getLogger().info("Timer is " + timerStatus);
@@ -420,30 +412,21 @@ public class ExamDialog extends BaseDialog {
     public ButtonPanel createButtonPanel() {
         ButtonPanel buttonPanel = new ButtonPanel();
 
-        JButton closeButton = new JButton();
         settingsButton = new JButton();
 
         buttonPanel.add(settingsButton, ButtonPanel.OTHER_BUTTON);
-        buttonPanel.add(closeButton, ButtonPanel.CANCEL_BUTTON);
-
-        closeButton.setAction(new AbstractAction(getBaseTranslator().translate("Close(Button)")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setDialogResult(RESULT_CANCELLED);
-                setVisible(false);
-            }
-        });
+        buttonPanel.add(createCloseButton(), ButtonPanel.CANCEL_BUTTON);
 
         settingsButton.setAction(new AbstractAction(getBaseTranslator().translate("Settings(Button)")) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 PreferencesDialog preferencesDialog = new PreferencesDialog(null, true);
                 preferencesDialog.getTabbedPane().setSelectedIndex(2);
-
                 preferencesDialog.setLocationRelativeTo(null);
-                PreferencesExtractor.extract((SpellbookFrame) parent, preferencesDialog);
-                //Reload config
 
+                PreferencesExtractor.extract((SpellbookFrame) parent, preferencesDialog);
+
+                //Reload config
                 readExamPreferences();
             }
         });

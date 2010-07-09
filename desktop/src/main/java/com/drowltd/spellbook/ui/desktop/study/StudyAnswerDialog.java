@@ -14,7 +14,6 @@ import com.drowltd.spellbook.ui.swing.component.BaseDialog;
 import com.jidesoft.dialog.ButtonPanel;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -22,7 +21,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import java.awt.Dialog;
-import java.awt.event.ActionEvent;
 
 /**
  * @author Sasho
@@ -55,19 +53,9 @@ public class StudyAnswerDialog extends BaseDialog {
     public ButtonPanel createButtonPanel() {
         ButtonPanel buttonPanel = new ButtonPanel();
 
-        JButton closeButton = new JButton();
-
-        closeButton.setName("Close");
+        JButton closeButton = createCloseButton();
 
         buttonPanel.add(closeButton, ButtonPanel.CANCEL_BUTTON);
-
-        closeButton.setAction(new AbstractAction(getBaseTranslator().translate("Close(Button)")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setDialogResult(RESULT_CANCELLED);
-                setVisible(false);
-            }
-        });
 
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 

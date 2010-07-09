@@ -6,7 +6,6 @@ import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.jidesoft.dialog.ButtonPanel;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -84,14 +83,7 @@ public class SyncDialog extends BaseDialog {
     public ButtonPanel createButtonPanel() {
         ButtonPanel buttonPanel = new ButtonPanel(SwingConstants.RIGHT);
 
-        JButton closeButton = new JButton();
-        closeButton.setAction(new AbstractAction(getTranslator().translate("Close(Button)")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setDialogResult(RESULT_CANCELLED);
-                setVisible(false);
-            }
-        });
+        JButton closeButton = createCloseButton();
 
         buttonPanel.addButton(closeButton);
 

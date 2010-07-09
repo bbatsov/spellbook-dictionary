@@ -23,7 +23,6 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-
 import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
@@ -193,14 +192,7 @@ public class ImportDialog extends BaseDialog {
     public ButtonPanel createButtonPanel() {
         ButtonPanel buttonPanel = new ButtonPanel(SwingConstants.RIGHT);
 
-        JButton closeButton = new JButton();
-        closeButton.setAction(new AbstractAction(getBaseTranslator().translate("Close(Button)")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setDialogResult(RESULT_CANCELLED);
-                setVisible(false);
-            }
-        });
+        JButton closeButton = createCloseButton();
 
         buttonPanel.addButton(importButton);
         buttonPanel.addButton(closeButton);
