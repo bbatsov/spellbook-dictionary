@@ -11,7 +11,6 @@ import org.junit.Test;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
-
 import java.lang.reflect.Field;
 
 import static org.junit.Assert.assertEquals;
@@ -40,8 +39,8 @@ public class DictionaryServiceTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         //DictionaryService.init("mem:db1.data.db");
-        DictionaryService.init("/opt/spellbook/db/spellbook(copy).h2.db");
-        dictionaryService = DictionaryService.getInstance();
+        DictionaryServiceImpl.init("/opt/spellbook/db/spellbook(copy).h2.db");
+        dictionaryService = DictionaryServiceImpl.getInstance();
 
         Field field = AbstractPersistenceService.class.getDeclaredField("EM");
         field.setAccessible(true);

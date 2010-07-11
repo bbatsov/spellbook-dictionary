@@ -15,6 +15,7 @@ import com.drowltd.spellbook.core.model.StudySet;
 import com.drowltd.spellbook.core.model.StudySetEntry;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.core.service.DictionaryService;
+import com.drowltd.spellbook.core.service.DictionaryServiceImpl;
 import com.drowltd.spellbook.core.service.study.StudyService;
 import com.drowltd.spellbook.ui.swing.component.BaseDialog;
 import com.drowltd.spellbook.ui.swing.component.DictionaryComboBox;
@@ -107,7 +108,7 @@ public class StudyWordsDialog extends BaseDialog {
 
     public StudyWordsDialog(Frame parent, boolean modal) {
         super(parent, modal);
-        dictionaryService = DictionaryService.getInstance();
+        dictionaryService = DictionaryServiceImpl.getInstance();
         dictionaries = dictionaryService.getDictionaries();
 
         studyService = new StudyService();

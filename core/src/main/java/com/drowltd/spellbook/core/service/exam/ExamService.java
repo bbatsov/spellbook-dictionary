@@ -10,6 +10,7 @@ import com.drowltd.spellbook.core.model.ExamScoreEntry;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.service.AbstractPersistenceService;
 import com.drowltd.spellbook.core.service.DictionaryService;
+import com.drowltd.spellbook.core.service.DictionaryServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +41,7 @@ public class ExamService extends AbstractPersistenceService {
     private ExamService() {
         super(null);
 
-        dictionaryService = DictionaryService.getInstance();
+        dictionaryService = DictionaryServiceImpl.getInstance();
     }
 
     public static ExamService getInstance() {

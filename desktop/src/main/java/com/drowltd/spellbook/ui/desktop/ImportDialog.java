@@ -4,7 +4,7 @@ import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.DictionaryEntry;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.model.SupportedFileType;
-import com.drowltd.spellbook.core.service.DictionaryService;
+import com.drowltd.spellbook.core.service.DictionaryServiceImpl;
 import com.drowltd.spellbook.ui.swing.component.BaseDialog;
 import com.drowltd.spellbook.ui.swing.component.LanguageComboBox;
 import com.jidesoft.dialog.ButtonPanel;
@@ -25,8 +25,18 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import java.awt.Frame;
 import java.awt.HeadlessException;
-import java.awt.event.*;
-import java.io.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.io.BufferedReader;
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
@@ -54,7 +64,7 @@ public class ImportDialog extends BaseDialog {
 
     public ImportDialog(Frame owner, boolean modal) throws HeadlessException {
         super(owner, modal);
-        DictionaryService.init(SPELLBOOK_DB_FILE);
+        DictionaryServiceImpl.init(SPELLBOOK_DB_FILE);
     }
 
     @Override
@@ -229,7 +239,7 @@ public class ImportDialog extends BaseDialog {
         }
 
 
-        Dictionary dictionary = DictionaryService.getInstance().createDictionary(from, to, dictionaryName, special, smallIconFileByteArray, bigIconFileByteArray);
+        Dictionary dictionary = DictionaryServiceImpl.getInstance().createDictionary(from, to, dictionaryName, special, smallIconFileByteArray, bigIconFileByteArray);
         return dictionary;
     }
 
@@ -326,7 +336,7 @@ public class ImportDialog extends BaseDialog {
                 e.printStackTrace();
             }
 
-            DictionaryService.getInstance().addWords(tDictionaryEntries);
+            DictionaryServiceImpl.getInstance().addWords(tDictionaryEntries);
 
             getLogger().info("import finished");
         }
@@ -373,7 +383,7 @@ public class ImportDialog extends BaseDialog {
                     }
 
                     if (shouldExit) {
-                        DictionaryService.getInstance().addWords(tDictionaryEntries);
+                        DictionaryServiceImpl.getInstance().addWords(tDictionaryEntries);
                         return;
                     }
                 }

@@ -2,6 +2,7 @@ package com.drowltd.spellbook.ui.swing.component;
 
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.service.DictionaryService;
+import com.drowltd.spellbook.core.service.DictionaryServiceImpl;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
 import com.drowltd.spellbook.ui.swing.util.SwingUtil;
 import com.jidesoft.dialog.BannerPanel;
@@ -34,7 +35,7 @@ import java.util.Random;
  * @since 0.3
  */
 public class WordOfTheDayDialog extends BaseDialog {
-    private static final DictionaryService DICTIONARY_SERVICE = DictionaryService.getInstance();
+    private static final DictionaryService DICTIONARY_SERVICE = DictionaryServiceImpl.getInstance();
 
     private List<String> words;
     private Dictionary dictionary;

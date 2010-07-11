@@ -3,7 +3,7 @@ package com.drowltd.spellbook.ui.desktop.spellcheck;
 import com.drowltd.spellbook.core.exception.SpellCheckerException;
 import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.model.Language;
-import com.drowltd.spellbook.core.service.DictionaryService;
+import com.drowltd.spellbook.core.service.DictionaryServiceImpl;
 import com.drowltd.spellbook.core.spellcheck.HunSpellChecker;
 import com.drowltd.spellbook.core.spellcheck.SpellChecker;
 import com.drowltd.spellbook.ui.swing.component.FileTextPane;
@@ -31,7 +31,6 @@ import javax.swing.text.LayeredHighlighter;
 import javax.swing.text.Position;
 import javax.swing.text.View;
 import javax.swing.undo.UndoManager;
-
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.FontMetrics;
@@ -416,7 +415,7 @@ public class SpellCheckTab extends JPanel implements FileTextPane.NoFileHandler 
         }
         userMisspelledSet.add(misspelled);
 
-        DictionaryService.getInstance().addRankEntry(misspelled, selectedLanguage);
+        DictionaryServiceImpl.getInstance().addRankEntry(misspelled, selectedLanguage);
         spellCheck(false);
     }
 
@@ -521,15 +520,15 @@ public class SpellCheckTab extends JPanel implements FileTextPane.NoFileHandler 
         }
     }
 
-    public void cut(){
+    public void cut() {
         fileTextPane.cut();
     }
 
-    public void copy(){
+    public void copy() {
         fileTextPane.copy();
     }
 
-    public void paste(){
+    public void paste() {
         fileTextPane.paste();
     }
 

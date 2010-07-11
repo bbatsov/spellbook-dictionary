@@ -6,6 +6,7 @@ import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.core.preferences.PreferencesManager.Preference;
 import com.drowltd.spellbook.core.service.DictionaryService;
+import com.drowltd.spellbook.core.service.DictionaryServiceImpl;
 import com.drowltd.spellbook.core.service.exam.ExamService;
 import com.drowltd.spellbook.ui.desktop.PreferencesDialog;
 import com.drowltd.spellbook.ui.desktop.PreferencesExtractor;
@@ -41,7 +42,7 @@ import java.util.Set;
  */
 public class ExamDialog extends BaseDialog {
     private ExamService examService = ExamService.getInstance();
-    private final DictionaryService dictionaryService = DictionaryService.getInstance();
+    private final DictionaryService dictionaryService = DictionaryServiceImpl.getInstance();
     private static final PreferencesManager PM = PreferencesManager.getInstance();
 
     private int examWords;
