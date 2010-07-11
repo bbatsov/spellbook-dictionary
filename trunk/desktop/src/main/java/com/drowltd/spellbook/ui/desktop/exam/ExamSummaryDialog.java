@@ -3,6 +3,7 @@ package com.drowltd.spellbook.ui.desktop.exam;
 import com.drowltd.spellbook.core.model.ExamGrade;
 import com.drowltd.spellbook.core.model.ExamScoreEntry;
 import com.drowltd.spellbook.core.service.DictionaryService;
+import com.drowltd.spellbook.core.service.DictionaryServiceImpl;
 import com.drowltd.spellbook.core.service.exam.ExamService;
 import com.drowltd.spellbook.ui.swing.component.BaseDialog;
 import com.drowltd.spellbook.ui.swing.model.ListBackedListModel;
@@ -50,7 +51,7 @@ import java.util.List;
 public class ExamSummaryDialog extends BaseDialog {
 
     private ExamService examService = ExamService.getInstance();
-    private DictionaryService dictionaryService = DictionaryService.getInstance();
+    private DictionaryService dictionaryService = DictionaryServiceImpl.getInstance();
 
     private JLabel incorrectWords;
     private JLabel correctWords;

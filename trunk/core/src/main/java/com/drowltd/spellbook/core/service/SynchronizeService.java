@@ -10,7 +10,6 @@ import org.w3c.dom.NodeList;
 import javax.persistence.EntityTransaction;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-
 import java.io.BufferedInputStream;
 import java.net.URL;
 import java.util.Date;
@@ -22,7 +21,7 @@ public class SynchronizeService extends AbstractPersistenceService {
     private static final String UPDATE_URL = "http://spellbook.drowltd.com/update/";
 
     private static SynchronizeService instance;
-    private static final DictionaryService DICTIONARY_SERVICE = DictionaryService.getInstance();
+    private static final DictionaryService DICTIONARY_SERVICE = DictionaryServiceImpl.getInstance();
 
     public static SynchronizeService getInstance() {
         if (instance == null) {

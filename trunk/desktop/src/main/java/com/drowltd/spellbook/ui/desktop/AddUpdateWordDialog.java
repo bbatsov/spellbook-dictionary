@@ -12,6 +12,7 @@ package com.drowltd.spellbook.ui.desktop;
 
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.service.DictionaryService;
+import com.drowltd.spellbook.core.service.DictionaryServiceImpl;
 import com.drowltd.spellbook.ui.swing.component.BaseDialog;
 import com.drowltd.spellbook.ui.swing.validation.ButtonControllingDocumentListener;
 import com.jidesoft.dialog.BannerPanel;
@@ -59,7 +60,7 @@ public class AddUpdateWordDialog extends BaseDialog {
     private JButton okButton;
     private static final int FONT_SIZE = 11;
 
-    private static final DictionaryService DICTIONARY_SERVICE = DictionaryService.getInstance();
+    private static final DictionaryService DICTIONARY_SERVICE = DictionaryServiceImpl.getInstance();
     private static final int DEFAULT_WIDTH = 500;
     private static final int DEFAULT_HEIGHT = 500;
 

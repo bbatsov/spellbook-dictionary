@@ -4,6 +4,7 @@ import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.Difficulty;
 import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.service.DictionaryService;
+import com.drowltd.spellbook.core.service.DictionaryServiceImpl;
 import com.drowltd.spellbook.core.service.exam.ExamService;
 import com.drowltd.spellbook.ui.swing.component.BaseDialog;
 import com.drowltd.spellbook.ui.swing.component.DifficultyComboBox;
@@ -26,7 +27,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -43,7 +43,7 @@ import java.util.Set;
  */
 public class HangmanDialog extends BaseDialog {
     private ExamService examService = ExamService.getInstance();
-    private final DictionaryService dictionaryService = DictionaryService.getInstance();
+    private final DictionaryService dictionaryService = DictionaryServiceImpl.getInstance();
 
     private Set<Character> guessedChars = new HashSet<Character>();
     private int attempts = 0;
