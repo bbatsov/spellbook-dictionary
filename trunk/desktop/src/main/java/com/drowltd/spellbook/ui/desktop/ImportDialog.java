@@ -25,14 +25,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import java.awt.Frame;
 import java.awt.HeadlessException;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.EOFException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.awt.event.*;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
@@ -55,9 +49,12 @@ public class ImportDialog extends BaseDialog {
     private LanguageComboBox toComboBox;
     private static final int BUFFER_SIZE = 20000;
     private JButton importButton = new JButton();
+    private DictionaryImporter importer = new BgOfficeImporter();
+    private SupportedFileType selectedFileType = SupportedFileType.BGOFFICE;
 
     public ImportDialog(Frame owner, boolean modal) throws HeadlessException {
         super(owner, modal);
+        DictionaryService.init(SPELLBOOK_DB_FILE);
     }
 
     @Override
@@ -91,6 +88,13 @@ public class ImportDialog extends BaseDialog {
         JComboBox fileFormatComboBox = new JComboBox();
 
         fileFormatComboBox.setModel(new DefaultComboBoxModel(SupportedFileType.values()));
+
+        fileFormatComboBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                attachImporter((SupportedFileType) e.getItem());
+            }
+        });
 
         mainPanel.add(fileFormatComboBox, "span2, growx");
 
@@ -179,7 +183,7 @@ public class ImportDialog extends BaseDialog {
         importButton.setAction(new AbstractAction(getTranslator().translate("Import(Button)")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                importDictionary((Language) fromComboBox.getSelectedItem(), (Language) toComboBox.getSelectedItem(),
+                importer.importDictionary((Language) fromComboBox.getSelectedItem(), (Language) toComboBox.getSelectedItem(),
                         dictionaryNameTextField.getText(), specialRadioButton.isSelected(),
                         dictionaryIconTextField.getText(), dictionaryBigIconTextField.getText(), dictionaryFileTextField.getText());
             }
@@ -204,9 +208,7 @@ public class ImportDialog extends BaseDialog {
         return buttonPanel;
     }
 
-    private void importDictionary(Language from, Language to, String dictionaryName, boolean special, String smallIconPath, String bigIconPath, String fileName) {
-        getLogger().info("import started");
-
+    private Dictionary createDictionary(Language from, Language to, String dictionaryName, boolean special, String smallIconPath, String bigIconPath) {
         File smallIconFile = new File(smallIconPath);
         byte[] smallIconFileByteArray = new byte[(int) smallIconFile.length()];
 
@@ -226,73 +228,24 @@ public class ImportDialog extends BaseDialog {
             e.printStackTrace();
         }
 
-        DictionaryService.init(SPELLBOOK_DB_FILE);
+
         Dictionary dictionary = DictionaryService.getInstance().createDictionary(from, to, dictionaryName, special, smallIconFileByteArray, bigIconFileByteArray);
+        return dictionary;
+    }
 
-        List<DictionaryEntry> tDictionaryEntries = new ArrayList<DictionaryEntry>();
+    private void attachImporter(SupportedFileType type) {
+        assert type != null : "type != null";
 
-        try {
-            RandomAccessFile file = new RandomAccessFile(fileName, "r");
+        if (selectedFileType == type) return;
 
-            //first byte in the data smallIconFile is '\0'
-            byte nullByte = file.readByte();
-
-            while (true) {
-                try {
-                    byte[] record = new byte[BUFFER_SIZE];
-
-                    int i = 0;
-
-                    while (true) {
-                        byte byteRead = file.readByte();
-
-                        if (byteRead == nullByte) {
-                            break;
-                        }
-
-                        record[i++] = byteRead;
-                    }
-
-                    byte[] copy = Arrays.copyOf(record, i);
-
-                    Charset charset = Charset.forName("CP1251");
-                    CharsetDecoder decoder = charset.newDecoder();
-
-                    CharBuffer charBuffer = decoder.decode(ByteBuffer.wrap(copy));
-
-                    String[] lines = charBuffer.toString().split("\n");
-
-                    String translation = "";
-
-                    if (lines.length > 1) {
-                        for (int j = 1; j < lines.length; j++) {
-                            translation += lines[j] + "\n";
-                        }
-                    }
-
-                    //getLogger().info("Adding word " + lines[0] + "; translation - " + translation + "\n");
-
-                    DictionaryEntry tDictionaryEntry = new DictionaryEntry();
-                    tDictionaryEntry.setWord(lines[0]);
-                    tDictionaryEntry.setTranslation(translation);
-                    tDictionaryEntry.setDictionary(dictionary);
-
-                    tDictionaryEntries.add(tDictionaryEntry);
-                } catch (EOFException e) {
-                    break;
-                }
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (CharacterCodingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        switch (type) {
+            case BGOFFICE:
+                importer = new BgOfficeImporter();
+                break;
+            case BABYLON:
+                importer = new BabylonTxtImporter();
+                break;
         }
-
-        DictionaryService.getInstance().addWords(tDictionaryEntries);
-
-        getLogger().info("import finished");
     }
 
     public static void main(String[] args) {
@@ -300,5 +253,141 @@ public class ImportDialog extends BaseDialog {
         tImportDialog.showDialog();
     }
 
+    public interface DictionaryImporter {
+        void importDictionary(Language from, Language to, String dictionaryName, boolean special, String smallIconPath, String bigIconPath, String fileName);
+    }
 
+    private class BgOfficeImporter implements DictionaryImporter {
+
+        @Override
+        public void importDictionary(Language from, Language to, String dictionaryName, boolean special, String smallIconPath, String bigIconPath, String fileName) {
+            getLogger().info("import started");
+
+            Dictionary dictionary = createDictionary(from, to, dictionaryName, special, smallIconPath, bigIconPath);
+
+            List<DictionaryEntry> tDictionaryEntries = new ArrayList<DictionaryEntry>();
+
+            try {
+                RandomAccessFile file = new RandomAccessFile(fileName, "r");
+
+                //first byte in the data smallIconFile is '\0'
+                byte nullByte = file.readByte();
+
+                while (true) {
+                    try {
+                        byte[] record = new byte[BUFFER_SIZE];
+
+                        int i = 0;
+
+                        while (true) {
+                            byte byteRead = file.readByte();
+
+                            if (byteRead == nullByte) {
+                                break;
+                            }
+
+                            record[i++] = byteRead;
+                        }
+
+                        byte[] copy = Arrays.copyOf(record, i);
+
+                        Charset charset = Charset.forName("CP1251");
+                        CharsetDecoder decoder = charset.newDecoder();
+
+                        CharBuffer charBuffer = decoder.decode(ByteBuffer.wrap(copy));
+
+                        String[] lines = charBuffer.toString().split("\n");
+
+                        String translation = "";
+
+                        if (lines.length > 1) {
+                            for (int j = 1; j < lines.length; j++) {
+                                translation += lines[j] + "\n";
+                            }
+                        }
+
+                        //getLogger().info("Adding word " + lines[0] + "; translation - " + translation + "\n");
+
+                        DictionaryEntry tDictionaryEntry = new DictionaryEntry();
+                        tDictionaryEntry.setWord(lines[0]);
+                        tDictionaryEntry.setTranslation(translation);
+                        tDictionaryEntry.setDictionary(dictionary);
+
+                        tDictionaryEntries.add(tDictionaryEntry);
+                    } catch (EOFException e) {
+                        break;
+                    }
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (CharacterCodingException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            DictionaryService.getInstance().addWords(tDictionaryEntries);
+
+            getLogger().info("import finished");
+        }
+    }
+
+    private class BabylonTxtImporter implements DictionaryImporter {
+
+        @Override
+        public void importDictionary(Language from, Language to, String dictionaryName, boolean special, String smallIconPath, String bigIconPath, String fileName) {
+            getLogger().info("import started");
+
+            Dictionary dictionary = createDictionary(from, to, dictionaryName, special, smallIconPath, bigIconPath);
+            BufferedReader in = null;
+            try {
+                in = new BufferedReader(new FileReader(fileName));
+                List<DictionaryEntry> tDictionaryEntries = new ArrayList<DictionaryEntry>();
+                String line;
+                boolean shouldExit = false;
+                int count = 0;
+                while (true) {
+                    //Word
+                    if ((line = in.readLine()) == null || line.isEmpty()) shouldExit = true;
+                    String word = line;
+                    //Translation
+                    if ((line = in.readLine()) == null || line.isEmpty()) shouldExit = true;
+                    String oneLineTranslation = line;
+                    //Empty line
+                    if ((line = in.readLine()) == null) shouldExit = true;
+
+
+                    if (word != null && oneLineTranslation != null) {
+                        String translation = "";
+                        for (String tLine : oneLineTranslation.split("[;]+")) {
+                            translation += tLine + "\n";
+                        }
+
+                        DictionaryEntry tDictionaryEntry = new DictionaryEntry();
+                        tDictionaryEntry.setWord(word);
+                        tDictionaryEntry.setTranslation(translation);
+                        tDictionaryEntry.setDictionary(dictionary);
+                        tDictionaryEntry.setUpdatedByUser(false);
+
+                        tDictionaryEntries.add(tDictionaryEntry);
+                    }
+
+                    if (shouldExit) {
+                        DictionaryService.getInstance().addWords(tDictionaryEntries);
+                        return;
+                    }
+                }
+            } catch (IOException e) {
+                getLogger().error(e.getMessage(), e);
+            } finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+                        getLogger().error(e.getMessage(), e);
+                    }
+                }
+            }
+        }
+    }
 }
