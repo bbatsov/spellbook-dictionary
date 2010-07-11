@@ -8,6 +8,7 @@ import com.drowltd.spellbook.core.model.Version;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.core.service.DictionaryServiceImpl;
+import com.drowltd.spellbook.core.service.Lookup;
 import com.drowltd.spellbook.ui.desktop.exam.ExamDialog;
 import com.drowltd.spellbook.ui.desktop.game.HangmanDialog;
 import com.drowltd.spellbook.ui.desktop.spellcheck.HeapSizeException;
@@ -194,8 +195,9 @@ public class SpellbookFrame extends JFrame {
         }
 
         DictionaryServiceImpl.init(SPELLBOOK_DB_FILE);
+        Lookup.init();
 
-        dictionaryService = DictionaryServiceImpl.getInstance();
+        dictionaryService = Lookup.lookup(DictionaryService.class);
 
         // if there are no dictionaries - something is wrong with the database
         if (dictionaryService.getDictionaries().size() == 0) {

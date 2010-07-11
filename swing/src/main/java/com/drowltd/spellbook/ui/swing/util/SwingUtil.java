@@ -1,15 +1,11 @@
 package com.drowltd.spellbook.ui.swing.util;
 
-import com.drowltd.spellbook.core.model.*;
+import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
-import com.jidesoft.dialog.BannerPanel;
 import net.java.balloontip.BalloonTip;
 import net.java.balloontip.utils.TimingUtils;
 
-import javax.swing.ImageIcon;
 import javax.swing.JComponent;
-import java.awt.Color;
-import java.awt.Font;
 
 /**
  * Utility class for recurring Swing related tasks.
@@ -76,13 +72,6 @@ public class SwingUtil {
         }
 
         return result.toString();
-    }
-
-    public static BannerPanel createBannerPanel(String title, String message, ImageIcon icon) {
-        BannerPanel bannerPanel = new BannerPanel(title, message, icon);
-        bannerPanel.setFont(new Font("Tahoma", Font.PLAIN, FONT_SIZE));
-        bannerPanel.setBackground(Color.WHITE);
-        return bannerPanel;
     }
 
     public static String languageToLowerCase(Language language) {

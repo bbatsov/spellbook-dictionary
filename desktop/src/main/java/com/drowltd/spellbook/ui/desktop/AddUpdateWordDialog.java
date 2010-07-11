@@ -15,9 +15,7 @@ import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.core.service.DictionaryServiceImpl;
 import com.drowltd.spellbook.ui.swing.component.BaseDialog;
 import com.drowltd.spellbook.ui.swing.validation.ButtonControllingDocumentListener;
-import com.jidesoft.dialog.BannerPanel;
 import com.jidesoft.dialog.ButtonPanel;
-import com.jidesoft.icons.JideIconsFactory;
 import com.jidesoft.swing.DefaultOverlayable;
 import com.jidesoft.swing.OverlayTextField;
 import com.jidesoft.swing.OverlayableIconsFactory;
@@ -37,8 +35,6 @@ import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -148,16 +144,6 @@ public class AddUpdateWordDialog extends BaseDialog {
             wordTextFieldValidationLabel.setToolTipText(null);
             okButton.setEnabled(true);
         }
-    }
-
-    @Override
-    public JComponent createBannerPanel() {
-        BannerPanel bannerPanel = new BannerPanel(getTranslator().translate("BannerTitle(Message)"),
-                getTranslator().translate("Banner(Message)"),
-                JideIconsFactory.getImageIcon("/icons/48x48/pencil.png"));
-        bannerPanel.setFont(new Font("Tahoma", Font.PLAIN, FONT_SIZE));
-        bannerPanel.setBackground(Color.WHITE);
-        return bannerPanel;
     }
 
     @Override
