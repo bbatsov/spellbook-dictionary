@@ -2,15 +2,21 @@ package com.drowltd.spellbook.ui.swing.component;
 
 import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
+import com.jidesoft.dialog.BannerPanel;
 import com.jidesoft.dialog.ButtonPanel;
 import com.jidesoft.dialog.StandardDialog;
+import com.jidesoft.icons.JideIconsFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.border.BevelBorder;
+import java.awt.Color;
 import java.awt.Dialog;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.awt.Image;
@@ -23,6 +29,8 @@ import java.awt.event.ActionEvent;
  * @since 0.4
  */
 public abstract class BaseDialog extends StandardDialog {
+    private static final int FONT_SIZE = 11;
+
     public BaseDialog(Frame owner, boolean modal) throws HeadlessException {
         super(owner, modal);
 
@@ -52,7 +60,18 @@ public abstract class BaseDialog extends StandardDialog {
 
     @Override
     public JComponent createBannerPanel() {
-        return null;
+        if (!getTranslator().translate("Banner(Title)").equals("Banner(Title)")) {
+            BannerPanel bannerPanel = new BannerPanel(getTranslator().translate("Banner(Title)"),
+                    getTranslator().translate("Banner(Subtitle)"),
+                    JideIconsFactory.getImageIcon(getTranslator().translate("Banner(Icon)")));
+
+            bannerPanel.setFont(new Font("Tahoma", Font.PLAIN, FONT_SIZE));
+            bannerPanel.setBackground(Color.WHITE);
+            bannerPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+            return bannerPanel;
+        } else {
+            return null;
+        }
     }
 
     @Override

@@ -11,6 +11,7 @@ import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.service.AbstractPersistenceService;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.core.service.DictionaryServiceImpl;
+import com.drowltd.spellbook.core.service.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,10 +28,11 @@ import java.util.regex.Pattern;
  * @since 0.2
  */
 public class ExamService extends AbstractPersistenceService {
-
     private DictionaryService dictionaryService;
+
     private List<String> words;
     private List<String> answers;
+
     private int examWordIndex;
     private Random random = new Random();
     private String translation;
@@ -229,6 +231,7 @@ public class ExamService extends AbstractPersistenceService {
         }
     }
 
+    @Transactional
     public void addScoreboardResult(ExamScoreEntry examScoreEntry) {
         EntityTransaction t = EM.getTransaction();
         t.begin();

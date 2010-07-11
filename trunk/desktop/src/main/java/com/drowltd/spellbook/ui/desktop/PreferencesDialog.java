@@ -100,11 +100,6 @@ public class PreferencesDialog extends BaseDialog {
     }
 
     @Override
-    public JComponent createBannerPanel() {
-        return null;
-    }
-
-    @Override
     public JComponent createContentPanel() {
         return tabbedPane;
     }

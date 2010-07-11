@@ -1,9 +1,7 @@
 package com.drowltd.spellbook.ui.swing.component;
 
 import com.drowltd.spellbook.core.service.CodeHostingService;
-import com.drowltd.spellbook.ui.swing.util.SwingUtil;
 import com.jidesoft.dialog.ButtonPanel;
-import com.jidesoft.icons.JideIconsFactory;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JButton;
@@ -69,13 +67,6 @@ public class IssueDialog extends BaseDialog {
         });
 
         setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
-    }
-
-    @Override
-    public JComponent createBannerPanel() {
-        return SwingUtil.createBannerPanel(getTranslator().translate("Banner(Title)"),
-                getTranslator().translate("Banner(Message)"),
-                JideIconsFactory.getImageIcon("/icons/48x48/bug-mail.png"));
     }
 
     @Override

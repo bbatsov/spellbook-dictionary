@@ -1,9 +1,7 @@
 package com.drowltd.spellbook.ui.desktop;
 
 import com.drowltd.spellbook.ui.swing.component.BaseDialog;
-import com.jidesoft.dialog.BannerPanel;
 import com.jidesoft.dialog.ButtonPanel;
-import com.jidesoft.icons.JideIconsFactory;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.AbstractAction;
@@ -15,12 +13,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
-import javax.swing.border.BevelBorder;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
-import java.awt.Color;
 import java.awt.Desktop;
-import java.awt.Font;
 import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
@@ -38,7 +33,6 @@ public class AboutDialog extends BaseDialog {
     private JButton licenceButton = new JButton();
     private static final int DIALOG_WIDTH = 500;
     private static final int DIALOG_HEIGHT = 450;
-    private static final int FONT_SIZE = 11;
 
     public AboutDialog(Frame owner, boolean modal) throws HeadlessException {
         super(owner, modal);
@@ -76,17 +70,6 @@ public class AboutDialog extends BaseDialog {
 
         setSize(DIALOG_WIDTH, DIALOG_HEIGHT);
         setResizable(false);
-    }
-
-    @Override
-    public JComponent createBannerPanel() {
-        BannerPanel bannerPanel = new BannerPanel("Spellbook Dictionary " + SpellbookFrame.VERSION,
-                getTranslator().translate("Banner(Message)"),
-                JideIconsFactory.getImageIcon("/images/spellbook-logo.png"));
-        bannerPanel.setFont(new Font("Tahoma", Font.PLAIN, FONT_SIZE));
-        bannerPanel.setBackground(Color.WHITE);
-        bannerPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-        return bannerPanel;
     }
 
     @Override
