@@ -13,6 +13,7 @@ import javax.swing.JComponent;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.HeadlessException;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 
 /**
@@ -40,7 +41,13 @@ public abstract class BaseDialog extends StandardDialog {
 
         // init title and icon from resource bundle via translator
         setTitle(getTranslator().translate("Dialog(Title)"));
-        setIconImage(IconManager.getImageIcon(getTranslator().translate("Dialog(Icon)"), IconManager.IconSize.SIZE16).getImage());
+        final Image image = IconManager.getImageIcon(getTranslator().translate("Dialog(Icon)"), IconManager.IconSize.SIZE16).getImage();
+
+        if (image != null) {
+            setIconImage(image);
+        } else {
+            setIconImage(IconManager.getMenuIcon("dictionary.png").getImage());
+        }
     }
 
     @Override
