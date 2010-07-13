@@ -1,6 +1,6 @@
 package com.drowltd.spellbook.ui.swing.util;
 
-import javax.swing.*;
+import javax.swing.ImageIcon;
 
 /**
  * User: bozhidar
@@ -27,6 +27,10 @@ public class IconManager {
         }
 
         iconPath += filename;
+
+        if (IconManager.class.getResource(iconPath) == null) {
+            return null;
+        }
 
         return new ImageIcon(IconManager.class.getResource(iconPath));
     }
