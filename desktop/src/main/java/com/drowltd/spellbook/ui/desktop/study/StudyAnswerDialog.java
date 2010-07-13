@@ -26,7 +26,7 @@ import java.awt.Dialog;
  * @author Sasho
  */
 public class StudyAnswerDialog extends BaseDialog {
-    private JTextPane answerTextPane;
+    private JTextPane answerTextPane = new JTextPane();
 
     public StudyAnswerDialog(Dialog parent, boolean modal) {
         super(parent, modal);
@@ -37,10 +37,8 @@ public class StudyAnswerDialog extends BaseDialog {
     @Override
     public JComponent createContentPanel() {
         JPanel topPanel = new JPanel(new MigLayout("wrap 1", "[550]", "[250][30]"));
-        setContentPane(topPanel);
 
         JScrollPane seeAnswerScrollPane = new JScrollPane();
-        answerTextPane = new JTextPane();
         answerTextPane.setEditable(false);
         seeAnswerScrollPane.add(answerTextPane);
         seeAnswerScrollPane.setViewportView(answerTextPane);
