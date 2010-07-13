@@ -35,8 +35,8 @@
             <artifactId>miglayout</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.pdfhelp</groupId>
-            <artifactId>pdfhelp</artifactId>
+            <groupId>javax.help</groupId>
+            <artifactId>javahelp</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

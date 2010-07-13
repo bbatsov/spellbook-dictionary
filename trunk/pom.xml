@@ -97,24 +97,14 @@
                 <version>3.7.1</version>
             </dependency>
             <dependency>
-                <groupId>org.pdfhelp</groupId>
-                <artifactId>pdfhelp</artifactId>
-                <version>4.22b16</version>
-            </dependency>
-            <dependency>
-                <groupId>org.pushingpixels</groupId>
-                <artifactId>substance</artifactId>
-                <version>6.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.pushingpixels</groupId>
-                <artifactId>trident</artifactId>
-                <version>1.2.0</version>
-            </dependency>
-            <dependency>
                 <groupId>com.jgoodies</groupId>
                 <artifactId>looks</artifactId>
                 <version>2.2.2</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.help</groupId>
+                <artifactId>javahelp</artifactId>
+                <version>2.0.02</version>
             </dependency>
 
             <!-- misc -->
