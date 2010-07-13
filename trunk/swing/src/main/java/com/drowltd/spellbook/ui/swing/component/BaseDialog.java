@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.border.BevelBorder;
@@ -19,7 +20,6 @@ import java.awt.Dialog;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.HeadlessException;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 
 /**
@@ -49,10 +49,10 @@ public abstract class BaseDialog extends StandardDialog {
 
         // init title and icon from resource bundle via translator
         setTitle(getTranslator().translate("Dialog(Title)"));
-        final Image image = IconManager.getImageIcon(getTranslator().translate("Dialog(Icon)"), IconManager.IconSize.SIZE16).getImage();
+        final ImageIcon imageIcon = IconManager.getImageIcon(getTranslator().translate("Dialog(Icon)"), IconManager.IconSize.SIZE16);
 
-        if (image != null) {
-            setIconImage(image);
+        if (imageIcon != null) {
+            setIconImage(imageIcon.getImage());
         } else {
             setIconImage(IconManager.getMenuIcon("dictionary.png").getImage());
         }
