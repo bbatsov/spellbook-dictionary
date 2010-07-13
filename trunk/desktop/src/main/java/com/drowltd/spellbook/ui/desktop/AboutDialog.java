@@ -32,7 +32,7 @@ public class AboutDialog extends BaseDialog {
     private JTextPane infoTextPane = new JTextPane();
     private JButton licenceButton = new JButton();
     private static final int DIALOG_WIDTH = 500;
-    private static final int DIALOG_HEIGHT = 450;
+    private static final int DIALOG_HEIGHT = 500;
 
     public AboutDialog(Frame owner, boolean modal) throws HeadlessException {
         super(owner, modal);
