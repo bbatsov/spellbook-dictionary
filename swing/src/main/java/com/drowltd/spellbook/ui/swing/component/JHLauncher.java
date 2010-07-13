@@ -28,6 +28,7 @@ import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.JViewport;
 import javax.swing.UIManager;
+import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.TreeSelectionEvent;
@@ -49,7 +50,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -887,28 +887,16 @@ public class JHLauncher {
             setTitle(title);
         }
         if (frame == null) {
-            WindowListener closer = new WindowAdapter() {
-                @Override
-                public void windowClosing(WindowEvent e) {
-                    System.exit(0);
-                }
-
-                @Override
-                public void windowClosed(WindowEvent e) {
-                    System.exit(0);
-                }
-            };
-
             frame = new JFrame(getTitle());
             frame.setSize(WIDTH, HEIGHT);
             frame.setForeground(Color.black);
             frame.setBackground(Color.lightGray);
-            frame.addWindowListener(closer);
             frame.getContentPane().add(jh);    // the JH panel
             if (bar == null) {
                 bar = createMenuBar();
             }
             frame.setJMenuBar(bar);
+            frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         } else {
             frame.setTitle(getTitle());
         }

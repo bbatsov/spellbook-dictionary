@@ -62,7 +62,7 @@ public class AbstractPersistenceService {
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             if (method.getAnnotation(Transactional.class) != null) {
-                System.out.println("begin transaction");
+                LOGGER.debug("BEGIN TRANSACTION");
                 EM.getTransaction().begin();
             }
 
@@ -80,10 +80,10 @@ public class AbstractPersistenceService {
                 sb.append(" -> ");
                 sb.append(ret);
             }
-            System.out.println(sb);
+            LOGGER.debug(sb.toString());
 
             if (method.getAnnotation(Transactional.class) != null) {
-                System.out.println("commit transaction");
+                LOGGER.debug("COMMIT TRANSACTION");
                 EM.getTransaction().commit();
             }
             return ret;
