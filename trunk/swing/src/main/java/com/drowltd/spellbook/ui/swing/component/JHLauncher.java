@@ -59,7 +59,6 @@ import java.net.URLClassLoader;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.MissingResourceException;
-import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
@@ -175,14 +174,14 @@ public class JHLauncher {
                                 if (path.startsWith("//")) {
                                     path = path.substring(1);
                                 }
-                                page.setText(new String("file:" + path));
+                                page.setText("file:" + path);
                             }
                         }
                     }
                 });
 
             }
-            opDialog.show();
+            opDialog.setVisible(true);
         }
 
         private void initOpenPageComponents() {
@@ -504,15 +503,15 @@ public class JHLauncher {
         JMenuItem mi;
 
         // File Menu
-        JMenu file = (JMenu) menuBar.add(new JMenu("File"));
+        JMenu file = menuBar.add(new JMenu("File"));
         file.setMnemonic('F');
 
-        mi = (JMenuItem) file.add(new JMenuItem("Open page"));
+        mi = file.add(new JMenuItem("Open page"));
         ActionListener openPageListener = new OpenPageListener();
         mi.addActionListener(openPageListener);
 
         if (setHS) {
-            mi = (JMenuItem) file.add(new JMenuItem("Set HelpSet"));
+            mi = file.add(new JMenuItem("Set HelpSet"));
             mi.setMnemonic('s');
             mi.addActionListener(new ActionListener() {
                 @Override
@@ -604,16 +603,11 @@ public class JHLauncher {
         try {
             file = new File(JHLauncher.class.getResource("/docs/jhug/jhug.hs").toURI());
         } catch (URISyntaxException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
         handleHSFile(file);
         URL urls[] = parseURLs(hsPath);
-        // This is a 1.2 only feature.
-        try {
-            loader = URLClassLoader.newInstance(urls, loader);
-        } catch (NoClassDefFoundError err) {
-        } catch (NoSuchMethodError err) {
-        }
+        loader = URLClassLoader.newInstance(urls, loader);
 
 
         if (hsSpec != null) {
@@ -678,7 +672,7 @@ public class JHLauncher {
     private void showSD() {
         if (selectionDialog != null) {
             selectionDialog.pack();
-            selectionDialog.show();
+            selectionDialog.setVisible(true);
         }
     }
 
@@ -796,22 +790,7 @@ public class JHLauncher {
             path = cpath + File.separator + path;
         }
 
-        hsPath = new String("file:" + path);
-    }
-
-    private String breakPath(String s) {
-        StringBuffer back = null;
-        StringTokenizer tok = new StringTokenizer(s, File.pathSeparator);
-        while (tok.hasMoreTokens()) {
-            String t = tok.nextToken();
-            if (back == null) {
-                back = new StringBuffer();
-            } else {
-                back.append("\n");
-            }
-            back.append(t);
-        }
-        return back.toString();
+        hsPath = "file:" + path;
     }
 
     private class CancelAction implements ActionListener {
@@ -830,7 +809,7 @@ public class JHLauncher {
             ClassLoader cl;
             HelpSet hs = null;
             String path = helpSetURL.getText();
-            String name = (String) helpSetName.getText();
+            String name = helpSetName.getText();
 
             URL x[] = parseURLs(path);
             cl = new URLClassLoader(x);
@@ -858,7 +837,7 @@ public class JHLauncher {
             }
             createFrame(hs.getTitle(), null);
             launch();
-            selectionDialog.hide();
+            selectionDialog.setVisible(false);
         }
     }
 
@@ -874,11 +853,11 @@ public class JHLauncher {
 
     protected JFrame createFrame(String title, JMenuBar bar) {
         if (jh == null) return null;
-        if (title == null || title.equals("")) {
+        if (title == null || title.isEmpty()) {
             TextHelpModel m = jh.getModel();
             HelpSet hs = m.getHelpSet();
             String hsTitle = hs.getTitle();
-            if (hsTitle == null || hsTitle.equals("")) {
+            if (hsTitle == null || hsTitle.isEmpty()) {
                 setTitle("Unnamed HelpSet"); // maybe based on HS?
             } else {
                 setTitle(hsTitle);
