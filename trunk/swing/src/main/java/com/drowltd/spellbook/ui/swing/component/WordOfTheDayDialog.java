@@ -1,6 +1,7 @@
 package com.drowltd.spellbook.ui.swing.component;
 
 import com.drowltd.spellbook.core.model.Dictionary;
+import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.core.service.DictionaryServiceImpl;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
@@ -12,6 +13,7 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -24,6 +26,7 @@ import java.awt.Font;
 import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -60,8 +63,8 @@ public class WordOfTheDayDialog extends BaseDialog {
     @Override
     public JComponent createBannerPanel() {
         bannerPanel = new BannerPanel(getTranslator().translate("Banner(Header)"),
-                "",
-                IconManager.getImageIcon("lightbulb_on.png", IconManager.IconSize.SIZE32));
+                                      "",
+                                      IconManager.getImageIcon("lightbulb_on.png", IconManager.IconSize.SIZE32));
         bannerPanel.setFont(new Font("Tahoma", Font.PLAIN, BANNER_PANEL_FONT_SIZE));
         bannerPanel.setBackground(Color.WHITE);
         bannerPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
@@ -76,6 +79,23 @@ public class WordOfTheDayDialog extends BaseDialog {
         translationPane.setContentType("text/html");
 
         panel.add(new JScrollPane(translationPane), "grow");
+        
+        final JCheckBox showOnStartupCheckBox = new JCheckBox();
+        showOnStartupCheckBox.setText(getTranslator().translate("ShowOnStartup(CheckBox)"));
+        showOnStartupCheckBox.setSelected(PreferencesManager.getInstance().getBoolean(PreferencesManager.Preference.WORD_OF_THE_DAY, true));
+
+        showOnStartupCheckBox.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (showOnStartupCheckBox.isSelected()) {
+                        PreferencesManager.getInstance().putBoolean(PreferencesManager.Preference.WORD_OF_THE_DAY, true);
+                    } else {
+                        PreferencesManager.getInstance().putBoolean(PreferencesManager.Preference.WORD_OF_THE_DAY, false);
+                    }
+                }
+            });
+        
+        panel.add(showOnStartupCheckBox, "align left");
 
         showNextWord();
 
@@ -89,29 +109,29 @@ public class WordOfTheDayDialog extends BaseDialog {
         final JButton previousButton = new JButton();
 
         previousButton.setAction(new AbstractAction(getTranslator().translate("Previous(Button)")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (currentIndex > 0) {
-                    showPreviousWord();
-                }
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (currentIndex > 0) {
+                        showPreviousWord();
+                    }
 
-                // the index was changed in showPrevious word
-                if (currentIndex == 0) {
-                    previousButton.getAction().setEnabled(false);
+                    // the index was changed in showPrevious word
+                    if (currentIndex == 0) {
+                        previousButton.getAction().setEnabled(false);
+                    }
                 }
-            }
-        });
+            });
 
         JButton nextButton = new JButton();
         nextButton.setAction(new AbstractAction(getTranslator().translate("Next(Button)")) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                showNextWord();
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    showNextWord();
 
-                // obviously at this point we can go back
-                previousButton.getAction().setEnabled(true);
-            }
-        });
+                    // obviously at this point we can go back
+                    previousButton.getAction().setEnabled(true);
+                }
+            });
 
         JButton closeButton = createCloseButton();
 
