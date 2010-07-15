@@ -5,8 +5,8 @@
 
 package com.drowltd.spellbook.core.model;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -22,7 +22,7 @@ import javax.persistence.Table;
 public class StudySet extends AbstractEntity  {
 
     @OneToMany(mappedBy = "studySet")
-    private Set<StudySetEntry> studySetEntries = new HashSet<StudySetEntry>();
+    private List<StudySetEntry> studySetEntries = new ArrayList<StudySetEntry>();
 
     @Column(nullable = false)
     private String name;
@@ -39,7 +39,7 @@ public class StudySet extends AbstractEntity  {
         this.name = name;
     }
 
-     public Set<StudySetEntry> getStudySetEntries() {
+     public List<StudySetEntry> getStudySetEntries() {
         return studySetEntries;
     }
 
