@@ -16,6 +16,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.border.BevelBorder;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Font;
 import java.awt.Frame;
@@ -84,6 +85,17 @@ public abstract class BaseDialog extends StandardDialog {
 
         // this should be called after pack()!
         setLocationRelativeTo(getParent());
+
+        setVisible(true);
+
+        return getDialogResult();
+    }
+
+    public int showDialog(Component comp) {
+        pack();
+
+        // this should be called after pack()!
+        setLocationRelativeTo(comp);
 
         setVisible(true);
 
