@@ -82,7 +82,8 @@ public class WordOfTheDayDialog extends BaseDialog {
         
         final JCheckBox showOnStartupCheckBox = new JCheckBox();
         showOnStartupCheckBox.setText(getTranslator().translate("ShowOnStartup(CheckBox)"));
-        showOnStartupCheckBox.setSelected(PreferencesManager.getInstance().getBoolean(PreferencesManager.Preference.WORD_OF_THE_DAY, true));
+        showOnStartupCheckBox.setSelected(PreferencesManager.getInstance()
+                                          .getBoolean(PreferencesManager.Preference.WORD_OF_THE_DAY, true));
 
         showOnStartupCheckBox.addActionListener(new ActionListener() {
                 @Override
