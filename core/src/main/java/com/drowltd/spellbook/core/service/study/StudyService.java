@@ -135,8 +135,8 @@ public class StudyService extends AbstractPersistenceService {
      * @param word         word to delete
      * @param studySetName
      */
-    public void deleteWord(String word, String studySetName) {
-        long wordID = (Long) EM.createQuery("select id from DictionaryEntry where word = :word").setParameter("word", word.replaceAll("'", "''")).getSingleResult();
+    public void deleteWord(String word, String studySetName, Dictionary dictionary) {
+        long wordID = (Long) EM.createQuery("select id from DictionaryEntry where word = :word and dictionary = :dictionary").setParameter("word", word.replaceAll("'", "''")).setParameter("dictionary", dictionary).getSingleResult();
         long studySetID = (Long) EM.createQuery("select id from StudySet where name = :name").setParameter("name", studySetName).getSingleResult();
 
         EntityTransaction t = EM.getTransaction();
@@ -216,9 +216,9 @@ public class StudyService extends AbstractPersistenceService {
         String[] identificatorsForRowsWithPossibleTranslations = {
             "1.", "2.", "3.", "4.", "5.", "6.", "7.", "8.", "9.", "10.", "11.", "12.", "13.", "14.", "15.", "16.", "17.", "18.", "19.", "20.",
             "21.", "22.", "23.", "24.", "25.", "26.", "27.", "28.", "29.", "30.", "31.", "32.", "33.", "34.", "35.",
-            "n", "pl", "a", "adv", "v", "int", "sl.", "prep", "\u043E\u0431\u0438\u043A\u002E", "\u0438",
+            "n", "pl", "a", "adv", "v", "int", "sl.", "prep","adj", "\u043E\u0431\u0438\u043A\u002E", "\u0438",
             "i.", "ii.", "iii.", "iv.", "v.", "vi.", "vii.", "viii.", "ix.", "x.", "xi.", "xii.", "xiii.", "xiv.", "xv.",
-            "\u043B", "\u0433", "r", "\u0442\u0435\u0445\u002E"
+            "\u043B", "\u0433", "r", "\u0442\u0435\u0445\u002E","cj"
         };
 
         for (String row : rows) {

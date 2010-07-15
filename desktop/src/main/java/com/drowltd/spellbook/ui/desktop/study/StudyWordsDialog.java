@@ -47,7 +47,6 @@ import java.awt.event.WindowFocusListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preference;
 
@@ -98,11 +97,13 @@ public class StudyWordsDialog extends BaseDialog {
     private JLabel warningIconLabel;
     private JButton wordsButton;
 
-    private enum SelectedDictionary {
+    private enum SelectedDictionary { //!
+
         EN_BG, BG_EN
     }
 
     private enum HowToEnumerate {
+
         IN_ORDER_OF_INPUT, IN_REVERSE_ORDER_OF_INPUT, RANDOM
     }
 
@@ -143,7 +144,7 @@ public class StudyWordsDialog extends BaseDialog {
     public JComponent createContentPanel() {
         topPanel = new JPanel(new MigLayout("", "10[]10[]10", "10[179][][]10"));
 
-        initWordsPanel();
+        initStudySetsPanel();
 
         initHowToEnumeratePanel();
 
@@ -171,8 +172,6 @@ public class StudyWordsDialog extends BaseDialog {
 
         initStudyPanel();
 
-        setStudySetsInComboBox();
-
         ButtonGroup enumerateGroup = new ButtonGroup();
         enumerateGroup.add(inReverseOrderOfInputRadioButton);
         enumerateGroup.add(inOrderOfInputRadioButton);
@@ -199,17 +198,10 @@ public class StudyWordsDialog extends BaseDialog {
         return topPanel;
     }
 
-    private void initWordsPanel() {
+    private void initStudySetsPanel() {
         JPanel wordsPanel = new JPanel(new MigLayout("", "20[200]20", "[][][][][]0[21]"));
         wordsPanel.setBorder(BorderFactory.createEtchedBorder());
         wordsPanel.setMaximumSize(new Dimension(240, 179)); //224
-
-        JLabel jLabel1 = new JLabel();
-        jLabel1.setText(getTranslator().translate("Languages(Label)"));
-        wordsPanel.add(jLabel1, "left,wrap");
-
-        dictionariesComboBox = new DictionaryComboBox(dictionaries);
-        wordsPanel.add(dictionariesComboBox, "span,growx,wrap");
 
         JLabel jLabel3 = new JLabel();
         jLabel3.setText(getTranslator().translate("StudySet(Label)"));
@@ -232,6 +224,15 @@ public class StudyWordsDialog extends BaseDialog {
             }
         });
         wordsPanel.add(studySetsComboBox, "span,growx,wrap");
+        setStudySetsInComboBox();
+
+        JLabel jLabel1 = new JLabel();
+        jLabel1.setText(getTranslator().translate("Languages(Label)"));
+        wordsPanel.add(jLabel1, "left,wrap");
+
+        List<Dictionary> possibleDictionaries = findPossibleDictionariesForComboBox();
+        dictionariesComboBox = new DictionaryComboBox(possibleDictionaries);
+        wordsPanel.add(dictionariesComboBox, "span,growx,wrap");
 
         wordsButton = new JButton();
         wordsButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/dictionary.png")));
@@ -254,6 +255,29 @@ public class StudyWordsDialog extends BaseDialog {
         wordsPanel.add(addWordsLabel, "wrap");
 
         topPanel.add(wordsPanel, "w 300!,h 183!,sg");
+    }
+
+    private List<Dictionary> findPossibleDictionariesForComboBox() {
+        StudySet selectedStudySet = new StudySet();
+        if (studySetsComboBox.getItemAt(0) != null) {
+            selectedStudySet = studyService.getStudySet((String) studySetsComboBox.getSelectedItem());
+        }
+        List<Dictionary> possibleDictionaries = new ArrayList<Dictionary>();
+        if (!selectedStudySet.getStudySetEntries().isEmpty()) {
+            String languageForStudy = (String) selectedStudySet.getStudySetEntries().get(0).getDictionaryEntry().getDictionary().getFromLanguage().getName();
+            for (Dictionary dict : dictionaries) {
+                if (!dict.isSpecial() && dict.getName().contains(languageForStudy)) {
+                    possibleDictionaries.add(dict);
+                }
+            }
+        } else {
+            for (Dictionary dict : dictionaries) {
+                if (!dict.isSpecial()) {
+                    possibleDictionaries.add(dict);
+                }
+            }
+        }
+        return possibleDictionaries;
     }
 
     private void initHowToEnumeratePanel() {
@@ -434,7 +458,7 @@ public class StudyWordsDialog extends BaseDialog {
             } else {
                 answer = wordsForLearning.get(wordIndex);
             }
-            JOptionPane.showMessageDialog(this, answer, getTranslator().translate("SeeAnswerPaneTittle(Title)"), JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, answer, getTranslator().translate("SeeAnswerDialog(Title)"), JOptionPane.INFORMATION_MESSAGE);
         }
         answerSeen++;
         answerSeenLabel.setText(answerSeen.toString());
@@ -497,6 +521,11 @@ public class StudyWordsDialog extends BaseDialog {
     private void studySetsComboBoxPopupMenuWillBecomeInvisible(PopupMenuEvent evt) {
         checkingTheDatabase();
         PM.putInt(Preference.STUDY_SETS, studySetsComboBox.getSelectedIndex());
+        dictionariesComboBox.removeAllItems();
+        List<Dictionary> possibleDictionaries = findPossibleDictionariesForComboBox();
+        for (Dictionary dict : possibleDictionaries) {
+            dictionariesComboBox.addItem(dict);
+        }
     }
 
     private void formWindowGainedFocus(WindowEvent evt) {
@@ -518,10 +547,10 @@ public class StudyWordsDialog extends BaseDialog {
 
     private void startStudy() {
         if (dictionariesComboBox.getSelectedIndex() == 0) {
-            selectedDictionary = SelectedDictionary.EN_BG;
-        }
-        if (dictionariesComboBox.getSelectedIndex() == 1) {
             selectedDictionary = SelectedDictionary.BG_EN;
+        }
+        if (dictionariesComboBox.getSelectedIndex() == 1) { //!
+            selectedDictionary = SelectedDictionary.EN_BG;
         }
 
         String studySetName = (String) studySetsComboBox.getSelectedItem();
@@ -787,7 +816,7 @@ public class StudyWordsDialog extends BaseDialog {
                 studySetName = (String) studySetsComboBox.getSelectedItem();
             }
             StudySet studySet = studyService.getStudySet(studySetName);
-            Set<StudySetEntry> studySetEntry = studySet.getStudySetEntries();
+            List<StudySetEntry> studySetEntry = studySet.getStudySetEntries();
             if (studySetEntry.isEmpty()) {
                 reportThatDatabaseIsEmpty();
             } else {
