@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.List;
 
 /**
+ * A simple Java bean containing the information for an exam.
+ *
  * @author Bozhidar Batsov
  * @since 0.3
  */

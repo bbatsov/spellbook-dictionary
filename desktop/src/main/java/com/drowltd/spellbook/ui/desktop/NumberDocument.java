@@ -8,7 +8,8 @@ import javax.swing.text.PlainDocument;
  * Simple number filter for swing components, such as
  * text fields.
  *
- * @author bozhidar
+ * @author Bozhidar Batsov
+ * @since 0.1
  */
 public class NumberDocument extends PlainDocument {
     public static final String ALPHA = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
