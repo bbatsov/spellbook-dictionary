@@ -63,6 +63,8 @@ import java.util.Vector;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
+import com.drowltd.spellbook.core.SpellbookConstants;
+
 /**
  * Help contents dialog
  *
@@ -524,7 +526,7 @@ public class JHLauncher {
             });
         }
 
-        mi = (JMenuItem) file.add(new JMenuItem("Exit"));
+        mi = file.add(new JMenuItem("Exit"));
         mi.setMnemonic('x');
         mi.addActionListener(new ActionListener() {
             @Override
@@ -535,10 +537,10 @@ public class JHLauncher {
 
 
         // Option Menu
-        JMenu options = (JMenu) menuBar.add(new JMenu("Options"));
+        JMenu options = menuBar.add(new JMenu("Options"));
         options.setMnemonic('O');
 
-        mi = (JMenuItem) options.add(new JMenuItem("Set Font..."));
+        mi = options.add(new JMenuItem("Set Font..."));
         ActionListener setFontListener = new SetFontListener();
         mi.addActionListener(setFontListener);
 
@@ -598,13 +600,9 @@ public class JHLauncher {
         URL hsURL = null;
         String hsSpec = null;
 
-        // Name of HelpSet.  Look for it in the classpath
-        File file = null;
-        try {
-            file = new File(JHLauncher.class.getResource("/docs/jhug/jhug.hs").toURI());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
+        // Name of HelpSet.  Look for it in Spellbook's home
+        File file = new File(SpellbookConstants.SPELLBOOK_HOME + "/docs/jhug/jhug.hs");
+
         handleHSFile(file);
         URL urls[] = parseURLs(hsPath);
         loader = URLClassLoader.newInstance(urls, loader);
