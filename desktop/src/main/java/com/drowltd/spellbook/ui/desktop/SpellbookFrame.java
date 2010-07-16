@@ -1,5 +1,6 @@
 package com.drowltd.spellbook.ui.desktop;
 
+import com.drowltd.spellbook.core.SpellbookConstants;
 import com.drowltd.spellbook.core.exception.SpellCheckerException;
 import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.model.Dictionary;
@@ -151,8 +152,7 @@ public class SpellbookFrame extends JFrame {
     private JPanel statusBar;
     private JLabel dictionaryInfoLabel;
     private JProgressBar memoryProgressBar;
-    private static final String SPELLBOOK_DB_FILE = System.getProperty("user.home") + File.separator + ".spellbook/db/spellbook.h2.db";
-
+ 
     public SpellbookFrame(boolean dbPresent) {
         setMinimumSize(new Dimension(MIN_FRAME_WIDTH, MIN_FRAME_HEIGHT));
 
@@ -186,15 +186,15 @@ public class SpellbookFrame extends JFrame {
     public void init() {
         TRANSLATOR.reset();
 
-        File dbFile = new File(SPELLBOOK_DB_FILE);
+        File dbFile = new File(SpellbookConstants.SPELLBOOK_DB_PATH);
 
         if (!dbFile.exists()) {
             SpellbookApp.closeSplashWindow();
-            JOptionPane.showMessageDialog(this, TRANSLATOR.translate("MissingDb(Message)", SPELLBOOK_DB_FILE), TRANSLATOR.translate("Error(Title)"), JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, TRANSLATOR.translate("MissingDb(Message)", SpellbookConstants.SPELLBOOK_DB_PATH), TRANSLATOR.translate("Error(Title)"), JOptionPane.ERROR_MESSAGE);
             System.exit(0);
         }
 
-        DictionaryServiceImpl.init(SPELLBOOK_DB_FILE);
+        DictionaryServiceImpl.init(SpellbookConstants.SPELLBOOK_DB_PATH);
         Lookup.init();
 
         dictionaryService = Lookup.lookup(DictionaryService.class);

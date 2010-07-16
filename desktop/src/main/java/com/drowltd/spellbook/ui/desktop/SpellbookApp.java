@@ -1,5 +1,6 @@
 package com.drowltd.spellbook.ui.desktop;
 
+import com.drowltd.spellbook.core.SpellbookConstants;
 import com.drowltd.spellbook.core.i18n.Translator;
 import com.drowltd.spellbook.core.model.Dictionary;
 import com.drowltd.spellbook.core.model.Language;
@@ -48,8 +49,6 @@ public class SpellbookApp {
 
     private static final Translator TRANSLATOR = Translator.getTranslator("SpellbookFrame");
 
-    private static final String SPELLBOOK_USER_DIR = System.getProperty("user.home") + File.separator + ".spellbook";
-    private static final String SPELLBOOK_DB_PATH = SPELLBOOK_USER_DIR + File.separator + "db" + File.separator + "spellbook.h2.db";
     private static SpellbookFrame tAppFrame;
     private static boolean dbPresent = false;
 
@@ -110,10 +109,10 @@ public class SpellbookApp {
 
     public static void init() {
         // check for spellbook home dir presence and create if necessary
-        final File userDir = new File(SPELLBOOK_USER_DIR);
+        final File userDir = new File(SpellbookConstants.SPELLBOOK_HOME);
         if (!userDir.exists()) {
             if (userDir.mkdir()) {
-                LOGGER.info("Successfully create user dir: " + SPELLBOOK_USER_DIR);
+                LOGGER.info("Successfully create user dir: " + SpellbookConstants.SPELLBOOK_HOME);
             }
         }
 
@@ -166,7 +165,7 @@ public class SpellbookApp {
             // we determine whether another instance of spellbook is running by checking for the presence
             // of a lock file, which is created by the application upon startup and removed automatically
             // upon exit
-            File lockFile = new File(SPELLBOOK_USER_DIR + File.separator + "spellbook.lock");
+            File lockFile = new File(SpellbookConstants.SPELLBOOK_HOME + File.separator + "spellbook.lock");
 
             if (lockFile.exists()) {
                 JOptionPane.showMessageDialog(null, TRANSLATOR.translate("AlreadyRunning(Message)"),
@@ -237,10 +236,10 @@ public class SpellbookApp {
     }
 
     private static boolean verifyDbPresence() {
-        File file = new File(SPELLBOOK_DB_PATH);
+        File file = new File(SpellbookConstants.SPELLBOOK_DB_PATH);
 
         if (!file.exists() || file.isDirectory()) {
-            final File archiveFile = new File(SPELLBOOK_USER_DIR + File.separator + "spellbook-db-0.4.tar.bz2");
+            final File archiveFile = new File(SpellbookConstants.SPELLBOOK_HOME + File.separator + "spellbook-db-0.4.tar.bz2");
 
             final SelectDbDialog selectDbDialog = new SelectDbDialog();
 
