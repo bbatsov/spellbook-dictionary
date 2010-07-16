@@ -1,13 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
- * AddWordToDb.java
- *
- * Created on Jan 8, 2010, 7:54:01 PM
- */
 package com.drowltd.spellbook.ui.desktop;
 
 import com.drowltd.spellbook.core.model.Dictionary;
@@ -42,7 +32,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author bozhidar
+ * A dialog used to update existing words or add new ones.
+ *
+ * @author Bozhidar Batsov
+ * @since 0.3
  */
 public class AddUpdateWordDialog extends BaseDialog {
     private List<String> translationRows = new ArrayList<String>();

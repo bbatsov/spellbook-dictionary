@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.drowltd.spellbook.ui.desktop;
 
 import com.drowltd.spellbook.core.i18n.Translator;

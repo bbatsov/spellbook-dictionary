@@ -45,8 +45,10 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 /**
+ * A dialog showing exam summary after an exam completion.
+ *
  * @author Bozhidar Batsov
- * @author miroslava
+ * @since 0.3
  */
 public class ExamSummaryDialog extends BaseDialog {
 

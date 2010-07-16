@@ -14,6 +14,12 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Implements the integration layer with the host operating system clipboard.
+ *
+ * @author Bozhidar Batsov
+ * @since 0.1
+ */
 public final class ClipboardIntegration implements ClipboardOwner {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClipboardIntegration.class);
 
