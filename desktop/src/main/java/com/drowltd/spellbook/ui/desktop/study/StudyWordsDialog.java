@@ -254,7 +254,7 @@ public class StudyWordsDialog extends BaseDialog {
         addWordsLabel.setText(getTranslator().translate("AddWordsLabel(Message)"));
         wordsPanel.add(addWordsLabel, "wrap");
 
-        topPanel.add(wordsPanel, "w 300!,h 183!,sg");
+        topPanel.add(wordsPanel, "w 240!,h 183!,sg");
     }
 
     private List<Dictionary> findPossibleDictionariesForComboBox() {
