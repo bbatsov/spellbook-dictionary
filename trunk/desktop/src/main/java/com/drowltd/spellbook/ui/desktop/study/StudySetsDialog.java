@@ -11,6 +11,7 @@
 package com.drowltd.spellbook.ui.desktop.study;
 
 import com.drowltd.spellbook.core.model.Dictionary;
+import com.drowltd.spellbook.core.model.Language;
 import com.drowltd.spellbook.core.model.StudySet;
 import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.core.preferences.PreferencesManager.Preference;
@@ -93,11 +94,14 @@ public class StudySetsDialog extends BaseDialog {
 
         if (addWordButton.isEnabled()) {
             Dictionary dictionary = null;
-            if (dictionariesComboBox.getSelectedItem().equals(getTranslator().translate("EnglishItem(ComboBox)"))) {
-                dictionary = dictionaries.get(2);//!
+            Language lang = (Language) dictionariesComboBox.getSelectedItem();
+            for (Dictionary dict : dictionaries) {
+                if (!dict.isSpecial() && dict.getFromLanguage().getName().equals(lang.getName())) {
+                    dictionary = dict;
+                }
             }
             wordTranslationTextPane.setText(dictionaryService.getTranslation(wordSearchField.getText(),
-                    dictionary)); //!
+                    dictionary));
             wordTranslationTextPane.setCaretPosition(0);
         }
     }
@@ -176,7 +180,7 @@ public class StudySetsDialog extends BaseDialog {
 
         for (Dictionary dict : dictionaries) {
             if (!dict.isSpecial() && !dict.getFromLanguage().getName().equals("Bulgarian")) {
-                dictionariesComboBox.addItem(dict.getFromLanguage().getName());
+                dictionariesComboBox.addItem(dict.getFromLanguage());
             }
         }
         dictionariesComboBox.setSelectedIndex(0);
@@ -497,8 +501,11 @@ public class StudySetsDialog extends BaseDialog {
             } else {
                 countOFTheWords++;
                 Dictionary dictionary = null;
-                if (dictionariesComboBox.getSelectedItem().equals(getTranslator().translate("EnglishItem(ComboBox)"))) {
-                    dictionary = dictionaries.get(2);//!
+                Language lang = (Language) dictionariesComboBox.getSelectedItem();
+                for (Dictionary dict : dictionaries) {
+                    if (!dict.isSpecial() && dict.getFromLanguage().getName().equals(lang.getName())) {
+                        dictionary = dict;
+                    }
                 }
                 studyService.addWord(word, dictionary, studySetName);
                 boolean selectAllWords = false;
