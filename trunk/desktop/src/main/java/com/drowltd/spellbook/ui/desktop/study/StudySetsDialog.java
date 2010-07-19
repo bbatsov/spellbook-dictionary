@@ -428,8 +428,7 @@ public class StudySetsDialog extends BaseDialog {
             selectLanguageDialog.showDialog(studySetsPanel);
             boolean isSelectedDictionary = selectLanguageDialog.getDictionaryIsSelected();
             if (isSelectedDictionary) {
-                selectedDictionary = selectLanguageDialog.getSelectedDictionary();
-                studyService.addStudySet(name);
+                studyService.addStudySet(name, selectLanguageDialog.getSelectedDictionary());
                 addStudySetField.setText(null);
                 setStudySetsInComboBox();
                 studySetsComboBox.setSelectedItem(name);
@@ -447,7 +446,6 @@ public class StudySetsDialog extends BaseDialog {
         String studySetName = (String) studySetsComboBox.getSelectedItem();
         studyService.deleteStudySet(studySetName);
         setStudySetsInComboBox();
-        setSelectedDictionary();
         boolean selectAllWords = false;
         setWordsInTable(selectAllWords);
         studySets = studyService.getStudySets();
@@ -469,25 +467,8 @@ public class StudySetsDialog extends BaseDialog {
         StudySet selectedStudySet = new StudySet();
         if (studySetsComboBox.getItemAt(0) != null) {
             selectedStudySet = studyService.getStudySet((String) studySetsComboBox.getSelectedItem());
+            selectedDictionary = selectedStudySet.getDictionary();
         }
-        if (selectedStudySet.getStudySetEntries().isEmpty()) {
-            wordSearchField.setFocusable(false);
-            SelectLanguageDialog selectLanguageDialog = new SelectLanguageDialog(this, true);
-            selectLanguageDialog.showDialog(studySetsPanel);
-            boolean isSelectedDictionary = selectLanguageDialog.getDictionaryIsSelected();
-            if (isSelectedDictionary) {
-                selectedDictionary = selectLanguageDialog.getSelectedDictionary();
-                wordSearchField.setFocusable(true);
-                wordSearchField.requestFocus();
-            } else {
-                wordSearchField.setFocusable(true);
-                studySetsPanel.requestFocus();
-                selectedDictionary = null;
-            }
-        } else {
-            selectedDictionary = selectedStudySet.getStudySetEntries().get(0).getDictionaryEntry().getDictionary();
-        }
-
     }
 
     private void addWord() throws HeadlessException {

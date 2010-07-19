@@ -149,12 +149,14 @@ public class StudyService extends AbstractPersistenceService {
      * Adds a new study set
      *
      * @param name study set's name
+     * @param dictionary study set's dictionary
      * @see StudySet
      */
-    public void addStudySet(String name) {
+    public void addStudySet(String name, Dictionary dictionary) {
 
         StudySet ss = new StudySet();
         ss.setName(name);
+        ss.setDictionary(dictionary);
 
         EntityTransaction t = EM.getTransaction();
         t.begin();
@@ -216,9 +218,9 @@ public class StudyService extends AbstractPersistenceService {
         String[] identificatorsForRowsWithPossibleTranslations = {
             "1.", "2.", "3.", "4.", "5.", "6.", "7.", "8.", "9.", "10.", "11.", "12.", "13.", "14.", "15.", "16.", "17.", "18.", "19.", "20.",
             "21.", "22.", "23.", "24.", "25.", "26.", "27.", "28.", "29.", "30.", "31.", "32.", "33.", "34.", "35.",
-            "n", "pl", "a", "adv", "v", "int", "sl.", "prep","adj", "обик.", "и",
+            "n", "pl", "a", "adv", "v", "int", "sl.", "prep", "adj", "обик.", "и",
             "i.", "ii.", "iii.", "iv.", "v.", "vi.", "vii.", "viii.", "ix.", "x.", "xi.", "xii.", "xiii.", "xiv.", "xv.",
-            "л", "г", "r","cj"
+            "л", "г", "r", "cj"
         };
 
         for (String row : rows) {
