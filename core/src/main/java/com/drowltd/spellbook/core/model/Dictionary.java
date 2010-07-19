@@ -36,6 +36,9 @@ public class Dictionary extends AbstractEntity {
     @OneToMany(mappedBy = "dictionary", fetch = FetchType.LAZY)
     private Set<DictionaryEntry> dictionaryEntries = new HashSet<DictionaryEntry>();
 
+    @OneToMany(mappedBy = "dictionary", fetch = FetchType.LAZY)
+    private Set<StudySet> studySets = new HashSet<StudySet>();
+
     @Column(nullable = false)
     private String name;
 
