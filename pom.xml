@@ -12,7 +12,7 @@
 
     <modules>
         <module>core</module>
-        <module>desktop</module>
+        <module>ui</module>
         <module>swing</module>
         <module>utils</module>
     </modules>
