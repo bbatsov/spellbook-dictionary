@@ -35,6 +35,7 @@ public class PreferencesExtractor {
         if (preferencesDialog.showDialog() == BaseDialog.RESULT_AFFIRMED) {
             extractFontPreferences(spellbookFrame, preferencesDialog);
             extractExamPreferences(preferencesDialog);
+            extractStudyWordsPreferences(preferencesDialog);
             // general settings should be last since they may require restart to take effect
             extractGeneralPreferences(spellbookFrame, preferencesDialog);
         } else {
@@ -44,9 +45,9 @@ public class PreferencesExtractor {
 
             String selectedLookAndFeel = PM.get(Preference.LOOK_AND_FEEL, "System");
 
-            if (currentLookAndFeel.equalsIgnoreCase(selectedLookAndFeel) ||
-                    (selectedLookAndFeel.equals("System") &&
-                            currentLookAndFeelClassName.equals(UIManager.getSystemLookAndFeelClassName()))) {
+            if (currentLookAndFeel.equalsIgnoreCase(selectedLookAndFeel)
+                    || (selectedLookAndFeel.equals("System")
+                    && currentLookAndFeelClassName.equals(UIManager.getSystemLookAndFeelClassName()))) {
                 LOGGER.info("Look and feel is the same, no need to reset");
                 return;
             }
@@ -92,6 +93,15 @@ public class PreferencesExtractor {
         PM.put(Preference.EXAM_DIFFICULTY, preferencesDialog.getExamDifficulty().name());
         PM.putInt(Preference.EXAM_WORDS, preferencesDialog.getExamWords());
         PM.putBoolean(Preference.EXAM_TIMER, preferencesDialog.isExamTimerEnabled());
+    }
+
+    private static void extractStudyWordsPreferences(final PreferencesDialog preferencesDialog) {
+        //study prefs
+        PM.putBoolean(Preference.REPEAT_MISSPELLED_WORDS, preferencesDialog.isRepeatMisspelledWordsEnabled());
+        PM.putBoolean(Preference.REPEAT_WORDS, preferencesDialog.isRepeatWordEnabled());
+        PM.putBoolean(Preference.LEARNING_IN_ORDER, preferencesDialog.isOrderOfInputRadioButtonEnabled());
+        PM.putBoolean(Preference.LEARNING_IN_REVERSE_ORDER, preferencesDialog.isReverseOrderOfInputEnabled());
+        PM.putBoolean(Preference.LEARNING_RANDOM, preferencesDialog.isRandomEnabled());
     }
 
     private static void extractGeneralPreferences(final SpellbookFrame spellbookFrame, final PreferencesDialog preferencesDialog) {

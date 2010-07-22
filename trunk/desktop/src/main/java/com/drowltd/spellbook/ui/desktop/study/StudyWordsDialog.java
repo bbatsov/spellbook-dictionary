@@ -17,9 +17,13 @@ import com.drowltd.spellbook.core.preferences.PreferencesManager;
 import com.drowltd.spellbook.core.service.DictionaryService;
 import com.drowltd.spellbook.core.service.DictionaryServiceImpl;
 import com.drowltd.spellbook.core.service.study.StudyService;
+import com.drowltd.spellbook.ui.desktop.PreferencesDialog;
+import com.drowltd.spellbook.ui.desktop.PreferencesExtractor;
+import com.drowltd.spellbook.ui.desktop.SpellbookFrame;
 import com.drowltd.spellbook.ui.swing.component.BaseDialog;
 import com.drowltd.spellbook.ui.swing.component.DictionaryComboBox;
 import com.drowltd.spellbook.ui.swing.util.IconManager;
+import com.jidesoft.dialog.ButtonPanel;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -47,6 +51,7 @@ import java.awt.event.WindowFocusListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import javax.swing.AbstractAction;
 
 import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preference;
 
@@ -72,6 +77,7 @@ public class StudyWordsDialog extends BaseDialog {
     private Integer answerSeen;
     private boolean isStudyStopped = true;
     private HowToEnumerate howToEnumerate = HowToEnumerate.IN_ORDER_OF_INPUT;
+    private Frame parent;
     //components
     private JButton answerButton;
     private JTextField answerField;
@@ -96,6 +102,7 @@ public class StudyWordsDialog extends BaseDialog {
     private JTextField translateField;
     private JLabel warningIconLabel;
     private JButton wordsButton;
+    private JButton settingsButton;
 
     private enum SelectedDictionary { //!
 
@@ -109,6 +116,9 @@ public class StudyWordsDialog extends BaseDialog {
 
     public StudyWordsDialog(Frame parent, boolean modal) {
         super(parent, modal);
+
+        this.parent = parent;
+
         dictionaryService = DictionaryServiceImpl.getInstance();
         dictionaries = dictionaryService.getDictionaries();
 
@@ -129,13 +139,6 @@ public class StudyWordsDialog extends BaseDialog {
 
             @Override
             public void windowLostFocus(WindowEvent evt) {
-            }
-        });
-        addWindowListener(new WindowAdapter() {
-
-            @Override
-            public void windowClosed(WindowEvent evt) {
-                formWindowClosed(evt);
             }
         });
     }
@@ -188,12 +191,7 @@ public class StudyWordsDialog extends BaseDialog {
         dictionariesComboBox.setSelectedIndex(index);
 
         checkingTheDatabase();
-
-        inOrderOfInputRadioButton.setSelected(PM.getBoolean(Preference.LEARNING_IN_ORDER, true));
-        inReverseOrderOfInputRadioButton.setSelected(PM.getBoolean(Preference.LEARNING_IN_REVERSE_ORDER, false));
-        randomRadioButton.setSelected(PM.getBoolean(Preference.LEARNING_RANDOM, false));
-        repeatMisspelledWordsCheckBox.setSelected(PM.getBoolean(Preference.REPEAT_MISSPELLED_WORDS, true));
-        repeatWordCheckBox.setSelected(PM.getBoolean(Preference.REPEAT_WORDS, false));
+        setDefaultPreferences();
 
         return topPanel;
     }
@@ -470,15 +468,6 @@ public class StudyWordsDialog extends BaseDialog {
         setComponentsEnable(true);
         //answerField.setText(null);
 
-    }
-
-    private void formWindowClosed(WindowEvent evt) {
-        PM.putInt(Preference.DICTIONARIES, dictionariesComboBox.getSelectedIndex());
-        PM.putBoolean(Preference.LEARNING_IN_ORDER, inOrderOfInputRadioButton.isSelected());
-        PM.putBoolean(Preference.LEARNING_IN_REVERSE_ORDER, inReverseOrderOfInputRadioButton.isSelected());
-        PM.putBoolean(Preference.LEARNING_RANDOM, randomRadioButton.isSelected());
-        PM.putBoolean(Preference.REPEAT_MISSPELLED_WORDS, repeatMisspelledWordsCheckBox.isSelected());
-        PM.putBoolean(Preference.REPEAT_WORDS, repeatWordCheckBox.isSelected());
     }
 
     private void answerFieldActionPerformed(ActionEvent evt) {
@@ -842,5 +831,42 @@ public class StudyWordsDialog extends BaseDialog {
         studySetsComboBox.setModel(new DefaultComboBoxModel(namesOfStudySets.toArray()));
         //int index = PM.getInt(Preference.STUDY_SETS, studySetsComboBox.getSelectedIndex());
         //studySetsComboBox.setSelectedIndex(index);
+    }
+
+    @Override
+    public ButtonPanel createButtonPanel() {
+        ButtonPanel buttonPanel = new ButtonPanel();
+
+        settingsButton = new JButton();
+
+        buttonPanel.add(settingsButton, ButtonPanel.OTHER_BUTTON);
+        buttonPanel.add(createCloseButton(), ButtonPanel.CANCEL_BUTTON);
+
+        settingsButton.setAction(new AbstractAction(getBaseTranslator().translate("Settings(Button)")) {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PreferencesDialog preferencesDialog = new PreferencesDialog(null, true);
+                preferencesDialog.getTabbedPane().setSelectedIndex(3);
+                preferencesDialog.setLocationRelativeTo(null);
+
+                PreferencesExtractor.extract((SpellbookFrame) parent, preferencesDialog);
+
+                //Reload config
+                setDefaultPreferences();
+            }
+        });
+
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        return buttonPanel;
+    }
+
+    private void setDefaultPreferences() {
+        inOrderOfInputRadioButton.setSelected(PM.getBoolean(Preference.LEARNING_IN_ORDER, true));
+        inReverseOrderOfInputRadioButton.setSelected(PM.getBoolean(Preference.LEARNING_IN_REVERSE_ORDER, false));
+        randomRadioButton.setSelected(PM.getBoolean(Preference.LEARNING_RANDOM, false));
+        repeatMisspelledWordsCheckBox.setSelected(PM.getBoolean(Preference.REPEAT_MISSPELLED_WORDS, true));
+        repeatWordCheckBox.setSelected(PM.getBoolean(Preference.REPEAT_WORDS, false));
     }
 }
