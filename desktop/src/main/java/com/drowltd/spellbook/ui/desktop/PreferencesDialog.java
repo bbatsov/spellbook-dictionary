@@ -43,6 +43,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ButtonGroup;
+import javax.swing.JRadioButton;
 
 import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preference;
 
@@ -56,7 +58,6 @@ public class PreferencesDialog extends BaseDialog {
 
     private static final PreferencesManager PM = PreferencesManager.getInstance();
     private static final DictionaryService DICTIONARY_SERVICE = DictionaryServiceImpl.getInstance();
-
     private JCheckBox alwaysOnTopCheckBox;
     private JCheckBox startMinimizedCheckBox;
     private JCheckBox clipboardIntegrationCheckBox;
@@ -82,6 +83,11 @@ public class PreferencesDialog extends BaseDialog {
     private JTextField wordCountField;
     private DifficultyComboBox difficultyComboBox;
     private JCheckBox checkJavaVersionCheckBox;
+    private JCheckBox repeatMisspelledWordsCheckBox;
+    private JCheckBox repeatWordCheckBox;
+    private JRadioButton inOrderOfInputRadioButton;
+    private JRadioButton inReverseOrderOfInputRadioButton;
+    private JRadioButton randomRadioButton;
 
     public PreferencesDialog(final Frame parent, boolean modal) {
         super(parent, modal);
@@ -95,6 +101,8 @@ public class PreferencesDialog extends BaseDialog {
         initFontTab();
 
         initExamTab();
+
+        initStudyWordsTab();
 
         setResizable(false);
     }
@@ -271,8 +279,8 @@ public class PreferencesDialog extends BaseDialog {
 
         return new Font(fontName,
                 (fontStyleList.isSelectedIndex(2) ? Font.ITALIC : Font.PLAIN)
-                        | (fontStyleList.isSelectedIndex(1) ? Font.BOLD : Font.PLAIN)
-                        | (fontStyleList.isSelectedIndex(0) ? Font.PLAIN : Font.PLAIN),
+                | (fontStyleList.isSelectedIndex(1) ? Font.BOLD : Font.PLAIN)
+                | (fontStyleList.isSelectedIndex(0) ? Font.PLAIN : Font.PLAIN),
                 sizeInt);
     }
 
@@ -313,6 +321,35 @@ public class PreferencesDialog extends BaseDialog {
 
     public Difficulty getExamDifficulty() {
         return (Difficulty) difficultyComboBox.getSelectedItem();
+    }
+
+    private void initStudyWordsTab() {
+        repeatMisspelledWordsCheckBox.setSelected(PM.getBoolean(Preference.REPEAT_MISSPELLED_WORDS, true));
+        repeatWordCheckBox.setSelected(PM.getBoolean(Preference.REPEAT_WORDS, false));
+
+        inOrderOfInputRadioButton.setSelected(PM.getBoolean(Preference.LEARNING_IN_ORDER, true));
+        inReverseOrderOfInputRadioButton.setSelected(PM.getBoolean(Preference.LEARNING_IN_REVERSE_ORDER, false));
+        randomRadioButton.setSelected(PM.getBoolean(Preference.LEARNING_RANDOM, false));
+    }
+
+    public boolean isRepeatMisspelledWordsEnabled(){
+        return repeatMisspelledWordsCheckBox.isSelected();
+    }
+
+    public boolean isRepeatWordEnabled(){
+        return repeatWordCheckBox.isSelected();
+    }
+
+    public boolean isOrderOfInputRadioButtonEnabled(){
+        return inOrderOfInputRadioButton.isSelected();
+    }
+
+    public boolean isReverseOrderOfInputEnabled(){
+        return inReverseOrderOfInputRadioButton.isSelected();
+    }
+
+    public boolean isRandomEnabled(){
+        return randomRadioButton.isSelected();
     }
 
     public Language getSelectedLanguage() {
@@ -386,8 +423,67 @@ public class PreferencesDialog extends BaseDialog {
         tabbedPane.addTab(getTranslator().translate("GeneralSettings(Title)"), IconManager.getMenuIcon("preferences.png"), createGeneralPreferencesPanel());
         tabbedPane.addTab(getTranslator().translate("FontTab(Label)"), IconManager.getMenuIcon("font.png"), createFontPreferencesPanel());
         tabbedPane.addTab(getTranslator().translate("Exam(Title)"), IconManager.getMenuIcon("blackboard.png"), createExamPreferencesPanel());
-
+        tabbedPane.addTab(getTranslator().translate("Study(Title)"), IconManager.getMenuIcon("teacher.png"), createStudyWordsPreferencesPanel());
         pack();
+    }
+
+    private JPanel createStudyWordsPreferencesPanel() {
+        JPanel studySettingsPanel = new JPanel(new MigLayout("wrap 1", "10[grow]"));
+
+        repeatMisspelledWordsCheckBox = new JCheckBox();
+        repeatMisspelledWordsCheckBox.setText(getTranslator().translate("repeatMisspelledWords(CheckBox)"));
+        repeatMisspelledWordsCheckBox.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                repeatMisspelledWordsCheckBoxActionPerformed(evt);
+            }
+        });
+        studySettingsPanel.add(repeatMisspelledWordsCheckBox);
+
+        repeatWordCheckBox = new JCheckBox();
+        repeatWordCheckBox.setText(getTranslator().translate("repeatWord(CheckBox)"));
+        repeatWordCheckBox.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                repeatWordCheckBoxActionPerformed(evt);
+            }
+        });
+        studySettingsPanel.add(repeatWordCheckBox,"wrap 15px");
+
+        studySettingsPanel.add(new JLabel(getTranslator().translate("Enumerate(Label)")));
+
+        inOrderOfInputRadioButton = new JRadioButton();
+        inOrderOfInputRadioButton.setText(getTranslator().translate("inOrderOfInput(RadioButton)"));
+        studySettingsPanel.add(inOrderOfInputRadioButton);
+
+        inReverseOrderOfInputRadioButton = new JRadioButton();
+        inReverseOrderOfInputRadioButton.setText(getTranslator().translate("inReverseOrderOfInput(RadioButton)"));
+        studySettingsPanel.add(inReverseOrderOfInputRadioButton);
+
+        randomRadioButton = new JRadioButton();
+        randomRadioButton.setText(getTranslator().translate("random(RadioButton)"));
+        studySettingsPanel.add(randomRadioButton);
+
+        ButtonGroup enumerateGroup = new ButtonGroup();
+        enumerateGroup.add(inOrderOfInputRadioButton);
+        enumerateGroup.add(inReverseOrderOfInputRadioButton);
+        enumerateGroup.add(randomRadioButton);
+
+        return studySettingsPanel;
+    }
+
+    private void repeatWordCheckBoxActionPerformed(ActionEvent evt) {
+        if (repeatWordCheckBox.isSelected()) {
+            repeatMisspelledWordsCheckBox.setSelected(false);
+        }
+    }
+
+    private void repeatMisspelledWordsCheckBoxActionPerformed(ActionEvent evt) {
+        if (repeatMisspelledWordsCheckBox.isSelected()) {
+            repeatWordCheckBox.setSelected(false);
+        }
     }
 
     private JPanel createExamPreferencesPanel() {
@@ -454,6 +550,7 @@ public class PreferencesDialog extends BaseDialog {
         defaultDictionaryComboBox = new DictionaryComboBox(DICTIONARY_SERVICE.getDictionaries());
 
         clipboardIntegrationCheckBox.addActionListener(new ActionListener() {
+
             @Override
             public void actionPerformed(ActionEvent evt) {
                 if (clipboardIntegrationCheckBox.isSelected()) {
