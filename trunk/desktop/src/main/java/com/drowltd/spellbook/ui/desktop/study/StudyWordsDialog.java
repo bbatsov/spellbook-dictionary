@@ -425,16 +425,16 @@ public class StudyWordsDialog extends BaseDialog {
 
         if (selectedDictionary == SelectedDictionary.EN_BG) {
             if (howToEnumerate == HowToEnumerate.RANDOM) {
-                getAnswer(shuffleWordsForLearning, shuffleTranslationForLearning);
+                getAnswer(shuffleWordsForLearning, shuffleTranslationForLearning, selectedDictionary);
             } else {
-                getAnswer(wordsForLearning, translationForLearning);
+                getAnswer(wordsForLearning, translationForLearning, selectedDictionary);
             }
         }
         if (selectedDictionary == SelectedDictionary.BG_EN) {
             if (howToEnumerate == HowToEnumerate.RANDOM) {
-                getAnswer(shuffleTranslationForLearning, shuffleWordsForLearning);
+                getAnswer(shuffleTranslationForLearning, shuffleWordsForLearning, selectedDictionary);
             } else {
-                getAnswer(translationForLearning, wordsForLearning);
+                getAnswer(translationForLearning, wordsForLearning, selectedDictionary);
             }
         }
     }
@@ -485,16 +485,16 @@ public class StudyWordsDialog extends BaseDialog {
         if (!isStudyStopped) {
             if (selectedDictionary == SelectedDictionary.EN_BG) {
                 if (howToEnumerate == HowToEnumerate.RANDOM) {
-                    getAnswer(shuffleWordsForLearning, shuffleTranslationForLearning);
+                    getAnswer(shuffleWordsForLearning, shuffleTranslationForLearning, selectedDictionary);
                 } else {
-                    getAnswer(wordsForLearning, translationForLearning);
+                    getAnswer(wordsForLearning, translationForLearning, selectedDictionary);
                 }
             }
             if (selectedDictionary == SelectedDictionary.BG_EN) {
                 if (howToEnumerate == HowToEnumerate.RANDOM) {
-                    getAnswer(shuffleTranslationForLearning, shuffleWordsForLearning);
+                    getAnswer(shuffleTranslationForLearning, shuffleWordsForLearning, selectedDictionary);
                 } else {
-                    getAnswer(translationForLearning, wordsForLearning);
+                    getAnswer(translationForLearning, wordsForLearning, selectedDictionary);
                 }
             }
         }
@@ -637,7 +637,7 @@ public class StudyWordsDialog extends BaseDialog {
         }
     }
 
-    private void getAnswer(List<String> words, List<String> translations) {
+    private void getAnswer(List<String> words, List<String> translations, SelectedDictionary dictionary) {
         String wordTranslation = answerField.getText();
         wordTranslation = wordTranslation.toLowerCase();
 
@@ -649,13 +649,16 @@ public class StudyWordsDialog extends BaseDialog {
             answerField.requestFocus();
         }
 
-        List<String> possibleAnswers;
-        String translation = translations.get(wordIndex);
-        possibleAnswers = studyService.getPossiblesTranslations(translation);
-        studyService.possibleAnswers(translation);
-        List<String> anotherPossibleAnswers;
-        anotherPossibleAnswers = studyService.getAnothersPossiblesAnswers();
-
+        List<String> possibleAnswers = new ArrayList<String>();
+        List<String> anotherPossibleAnswers = new ArrayList<String>();
+        if (dictionary == SelectedDictionary.BG_EN) {
+            possibleAnswers.add(translations.get(wordIndex));
+        } else {
+            String translation = translations.get(wordIndex);
+            possibleAnswers = studyService.getPossiblesTranslations(translation);
+            studyService.possibleAnswers(translation);
+            anotherPossibleAnswers = studyService.getAnothersPossiblesAnswers();
+        }
         if (repeatWordCheckBox.isSelected() && !wordTranslation.isEmpty()) {
             repeatWordIndex();
         }
