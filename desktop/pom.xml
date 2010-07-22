@@ -32,7 +32,7 @@
         </repository>
         <repository>
             <id>spellbook-repo</id>
-            <url>http://spellbook-dictionary.googlecode.com/svn/trunk/spellbook-maven-repository</url>
+            <url>http://spellbook-dictionary.googlecode.com/svn/trunk/desktop/spellbook-maven-repository</url>
         </repository>
     </repositories>
 
