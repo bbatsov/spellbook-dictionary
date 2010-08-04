@@ -213,7 +213,13 @@ public class SpellbookApp {
                         }
 
                         if (pm.getBoolean(Preference.CHECK_FOR_UPDATES, true)) {
-                            tAppFrame.checkForUpdates(true);
+                            // check for the new version is a separate thread to avoid startup delay
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    tAppFrame.checkForUpdates(true);
+                                }
+                            }).start();
                         }
 
                         tAppFrame.showWordOfTheDay();
