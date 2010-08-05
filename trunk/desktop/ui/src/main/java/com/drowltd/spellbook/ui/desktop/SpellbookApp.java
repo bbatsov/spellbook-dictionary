@@ -37,8 +37,8 @@ import java.util.Locale;
 import static com.drowltd.spellbook.core.preferences.PreferencesManager.Preference;
 
 /**
- * The entry point in Spellbook. Here the preferences manager get initialized, some
- * important settings are take into account(such as the initial look and feel and language)
+ * The entry point in Spellbook. Here the preferences manager gets initialized, some
+ * important settings are taken into account(such as the initial look and feel and language)
  * and the application's main frame is created and displayed.
  *
  * @author Bozhidar Batsov
@@ -173,7 +173,11 @@ public class SpellbookApp {
                 System.exit(0);
             } else {
                 try {
-                    lockFile.createNewFile();
+                    boolean ok = lockFile.createNewFile();
+
+                    if (!ok) {
+                        throw new IllegalStateException("spellbook.lock file already exists!");
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
