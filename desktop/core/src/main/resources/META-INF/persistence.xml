@@ -4,13 +4,13 @@
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
     <persistence-unit name="Spellbook" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
-        <class>bg.drowltd.spellbook.core.model.Dictionary</class>
-        <class>bg.drowltd.spellbook.core.model.DictionaryEntry</class>
-        <class>bg.drowltd.spellbook.core.model.RankEntry</class>
-        <class>bg.drowltd.spellbook.core.model.ExamScoreEntry</class>
-        <class>bg.drowltd.spellbook.core.model.StudySet</class>
-        <class>bg.drowltd.spellbook.core.model.StudySetEntry</class>
-        <class>bg.drowltd.spellbook.core.model.SyncStats</class>
+        <class>bg.drow.spellbook.core.model.Dictionary</class>
+        <class>bg.drow.spellbook.core.model.DictionaryEntry</class>
+        <class>bg.drow.spellbook.core.model.RankEntry</class>
+        <class>bg.drow.spellbook.core.model.ExamScoreEntry</class>
+        <class>bg.drow.spellbook.core.model.StudySet</class>
+        <class>bg.drow.spellbook.core.model.StudySetEntry</class>
+        <class>bg.drow.spellbook.core.model.SyncStats</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="hibernate.connection.username" value="spellbook"/>
