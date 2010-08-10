@@ -101,7 +101,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class SpellbookFrame extends JFrame {
     public static final Version VERSION = new Version("0.4.0");
-    private static final String VERSION_FILE_URL = "http://spellbook-dictionary.googlecode.com/svn/trunk/app/spellbook-version.txt";
+    private static final String VERSION_FILE_URL = "http://spellbook-dictionary.googlecode.com/svn/trunk/desktop/app/spellbook-version.txt";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellbookFrame.class);
     private static final Translator TRANSLATOR = Translator.getTranslator("SpellbookFrame");

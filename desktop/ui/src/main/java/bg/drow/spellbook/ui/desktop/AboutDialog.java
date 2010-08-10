@@ -79,6 +79,12 @@ public class AboutDialog extends BaseDialog {
         JScrollPane jScrollPane = new JScrollPane(infoTextPane);
         panel.add(jScrollPane, "grow");
 
+        panel.add(new JLabel("Java Version: " + System.getProperty("java.version")));
+
+        panel.add(new JLabel("JVM: " + System.getProperty("java.vm.name")));
+
+        panel.add(new JLabel("Vendor: " + System.getProperty("java.vendor")));
+
         panel.add(new JLabel(getTranslator().translate("Copyleft(Label)")), "center");
 
         return panel;
