@@ -3,12 +3,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>spellbook</artifactId>
-        <groupId>com.drowltd.spellbook</groupId>
+        <groupId>bg.drow.spellbook</groupId>
         <version>0.4.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.drowltd.spellbook.ui</groupId>
+    <groupId>bg.drow.spellbook.ui</groupId>
     <artifactId>spellbook-ui</artifactId>
 
     <name>Spellbook Dictionary UI</name>
@@ -21,7 +21,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>bg.drowltd.spellbook.ui.desktop.SpellbookApp</mainClass>
+                            <mainClass>bg.drow.spellbook.ui.desktop.SpellbookApp</mainClass>
                         </manifest>
                         <manifestEntries>
                             <SplashScreen-Image>images/spellbook-splash.png</SplashScreen-Image>
@@ -44,7 +44,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>bg.drowltd.spellbook.ui.desktop.SpellbookApp</mainClass>
+                    <mainClass>bg.drow.spellbook.ui.desktop.SpellbookApp</mainClass>
                 </configuration>
             </plugin>
         </plugins>
@@ -59,15 +59,15 @@
     <dependencies>
         <!-- internal -->
         <dependency>
-            <groupId>com.drowltd.spellbook</groupId>
+            <groupId>bg.drow.spellbook</groupId>
             <artifactId>spellbook-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.drowltd.spellbook</groupId>
+            <groupId>bg.drow.spellbook</groupId>
             <artifactId>spellbook-swing</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.drowltd.spellbook</groupId>
+            <groupId>bg.drow.spellbook</groupId>
             <artifactId>spellbook-utils</artifactId>
         </dependency>
 
