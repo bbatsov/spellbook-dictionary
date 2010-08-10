@@ -1,0 +1,37 @@
+<h2> Manage Users </h2>
+
+<table class="resulttable">
+  <tr>
+    <th>Username</th>
+    <th>Email</th>
+    <th>Logins</th>
+    <th>Last Request</th>
+    <th>Current login</th>
+    <th>Last login</th>
+    <th>Current login ip</th>
+    <th>Last login ip</th>
+    <th>Current login ip</th>
+    <th>Registered at</th>
+    <th>Admin</th>
+    <th>Edit</th>
+  </tr>
+
+<% @users.each do |user| %>
+  <tr>
+    <td> <%= user.login %> </td>
+    <td> <%= user.email %> </td>
+    <td> <%= user.login_count %> </td>
+    <td> <%= user.failed_login_count %> </td>
+    <td> <%= user.last_request_at.ctime %> </td>
+    <td> <%= user.current_login_at.ctime %> </td>
+    <td> <%= user.last_login_at.ctime if user.last_login_at %> </td>
+    <td> <%= user.current_login_ip %> </td>
+    <td> <%= user.last_login_ip if user.last_login_ip %> </td>
+    <td> <%= user.created_at.ctime %> </td>
+    <td> <%= user.is_admin %> </td>
+    <td>
+      <%= link_to "Edit", edit_admin_user_path(user) %>
+    </td>
+  </tr>
+<% end %>
+</table>

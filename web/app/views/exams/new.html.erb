@@ -1,0 +1,25 @@
+<h2>Start exam</h2>
+
+<% form_for(@exam) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= select(:exam, :dictionary_id, @dictionaries.map {|d| [d.name,d.id]}) %>    
+  </p>
+  
+  <p>
+    <%= select(:exam, :size, {"10" => "10", "20" => "20", "30" => "30"}) %>
+  </p>
+
+  <p>
+    <%= select(:exam, :difficulty_id, @difficulties.map {|d| [d.name,d.id]}) %>
+  </p>
+ 
+  <p>
+    <%= f.submit 'Start', :class => "button" %>
+  </p>
+<% end %>
+<br/><br/><br/>
+<small>
+<%= link_to "#{current_user.login}'s exams", exams_path %>
+</small>

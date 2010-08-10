@@ -1,0 +1,28 @@
+<h2>Suggest new translation</h2>
+
+<div id="new_translation">
+<% form_for(@suggestion) do |f| %>
+  <%= f.error_messages %>
+
+  <% @suggestion.translation = @word.translation %>
+  <% @suggestion.word_name = @word.word %>
+
+  <%= f.hidden_field :word_id, :value => @word.id %>
+
+  <%= f.text_field :word_name, :style => 'display:none' %>
+  
+  <h1 class="suggest">
+    <%= @word.word %>
+  </h1><br/>
+
+  <p>
+    <%= f.text_area :translation %>
+  </p>
+
+  <p>
+    <%= f.submit 'Suggest', :class => "button" %>
+  </p>
+  
+<% end %>
+
+</div>

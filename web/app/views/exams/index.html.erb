@@ -1,0 +1,32 @@
+<h2> <%= "#{current_user.login}'s exams" %> </h2>
+
+<table class="resulttable">
+  <tr>
+    <th>Date</th>
+    <th>Type</th>
+    <th>Size</th>
+    <th>Difficulty</th>
+    <th>Score</th>
+    <th>Actions</th>
+  </tr>
+
+<% @exams.each do |exam| %>
+  <tr>
+    <td> <%= exam.created_at.ctime %> </td>
+    <td> <%= exam.dictionary.name %> </td>
+    <td> <%= exam.size %> </td>
+    <td> <%= exam.difficulty.name %> </td>
+    <td> <%= exam.score %> </td>
+    <td>
+      <%= link_to "Show", exam_path(exam) %>
+    </td>
+  </tr>
+<% end %>
+</table>
+
+<br/><br/><br/>
+<small>
+<%= link_to 'Start new exam', new_exam_path %>
+|
+<%= link_to 'Dictionaries', dictionaries_path %>
+</small>

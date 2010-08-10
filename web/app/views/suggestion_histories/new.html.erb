@@ -1,0 +1,23 @@
+<h1>New suggestion_history</h1>
+
+<% form_for(@suggestion_history) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :suggestion_id %><br />
+    <%= f.text_field :suggestion_id %>
+  </p>
+  <p>
+    <%= f.label :state_id %><br />
+    <%= f.text_field :state_id %>
+  </p>
+  <p>
+    <%= f.label :user_id %><br />
+    <%= f.text_field :user_id %>
+  </p>
+  <p>
+    <%= f.submit 'Create' %>
+  </p>
+<% end %>
+
+<%= link_to 'Back', suggestion_histories_path %>

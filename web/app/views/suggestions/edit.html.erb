@@ -1,0 +1,17 @@
+<h2>Editing suggestion</h2>
+
+<div id="edit_suggestion">
+  <% form_for(@suggestion) do |f| %>
+    <%= f.error_messages %>
+
+      <h1 class="suggest">
+        <%= @suggestion.word_name %>
+      </h1><br/>
+    <p>
+      <%= f.text_area :translation %>
+    </p>
+    <p>
+      <%= f.submit 'Suggest', :class => "button" %>
+    </p>
+  <% end %>
+</div>

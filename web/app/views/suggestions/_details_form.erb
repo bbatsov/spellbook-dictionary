@@ -1,0 +1,13 @@
+<% @suggestion_history = SuggestionHistory.find_by_id(@decision_comment[0].suggestion_history_id) %>
+<% @user = User.find_by_id(@suggestion_history.user_id) %>
+
+<% decision = @suggestion_history.state_id == SuggestionState.approved_id ? "Approved" : "Rejected" %>
+
+<div id="review_form">
+  <small>
+  <h1> <%= "#{decision} by: #{@user.login}. Comment:" %>  </h1>
+  
+  <%= @decision_comment[0].comment %>
+  
+  </small>
+</div>

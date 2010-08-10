@@ -1,0 +1,9 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  exam_id: 1
+  exam_state_id: 1
+
+two:
+  exam_id: 1
+  exam_state_id: 1

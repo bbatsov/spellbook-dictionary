@@ -1,0 +1,16 @@
+<h2> Spellbook's Dictionaries </h2>
+
+<% for dict in @dictionaries %>
+
+    <%= link_to "#{dict.name}", :action => "show", :id => dict %>
+    <br/><br/>
+
+<% end %>
+
+<br/><br/><br/>
+<h2> With spellbook you can also: </h2>
+
+<%= link_to "Take an exam", new_exam_path %>
+<%= " and " %>
+<%= link_to "study words", new_study_session_path %>
+<br />

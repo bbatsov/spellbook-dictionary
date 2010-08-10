@@ -1,0 +1,3 @@
+<% state = @suggestion.state_id == SuggestionState.approved_id ? "approved" : "rejected" %>
+
+<h1><%= "The suggestion for the word #{@suggestion.word_name} was succesffully #{state}" %></h1>

@@ -1,0 +1,25 @@
+  <table class ="resulttable" id="results_table"
+       summary="Results">
+  <tr>
+    <th scope="col" abbr="Word" class="nobg">Word</th>
+    <th scope="col" abbr="Word" class="nobg">Translation</th>
+  </tr>
+
+  <tr>
+    <td class = alt">
+      <%= link_to "#{@suggestion.word_name}", edit_suggestion_path(@suggestion) %>
+    </td>
+
+    <td class = "alt">
+      <%= format_translation(@suggestion.translation) %>
+    </td>
+  </tr>
+</table>
+
+<small>
+<%= link_to 'Dictionaries list', dictionaries_path %>
+|
+<%= link_to 'Suggest a new word', new_suggestion_path %>
+|
+<%= link_to 'Edit this suggestion', edit_suggestion_path(@suggestion) %>
+</small>

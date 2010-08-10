@@ -1,0 +1,5 @@
+page.replace_html "#{@suggestion.id}_d2", :partial => 'approved', :object => @suggestion
+page.replace_html "#{@suggestion.id}_d1", ""
+page.replace_html "#{@suggestion.id}_d3", ""
+page.replace_html "#{@suggestion.id}_d4", ""
+

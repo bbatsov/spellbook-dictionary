@@ -1,0 +1,29 @@
+<h2> New word suggestions </h2>
+<table class="resulttable">
+  <tr>
+    <th>Suggested Word</th>
+    <th>Suggested Translation</th>
+    <th>Author</th>
+    <th>Actions</th>
+  </tr>
+
+<% @suggestions.each do |suggestion| %>
+  <tr>
+    <td id="<%= suggestion.id %>_d1"><%=h suggestion.word_name %></td>
+    <td id="<%= suggestion.id %>_d2"><%= format_translation(suggestion.translation) %></td>
+    <td id="<%= suggestion.id %>_d3">
+      <% history = SuggestionHistory.find_all_by_state_id_and_suggestion_id(SuggestionState.created_id, suggestion.id)  %>
+      <% user = User.find_by_id(history[0].user_id) %>
+      <%=h user.login %>
+    </td>
+    
+    <td id="<%= suggestion.id %>_d4">
+      <div id="<%= suggestion.id %>_div">
+
+        <%= link_to_remote "Review", { :url => { :action => "review", :id => suggestion.id }, :method => :get } %>
+
+      </div>
+    </td>    
+  </tr>
+<% end %>
+</table>

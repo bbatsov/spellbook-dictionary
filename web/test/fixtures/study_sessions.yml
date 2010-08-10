@@ -1,0 +1,13 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  user_id: 1
+  study_set_id: 1
+  correct: 1
+  seen: 1
+
+two:
+  user_id: 1
+  study_set_id: 1
+  correct: 1
+  seen: 1

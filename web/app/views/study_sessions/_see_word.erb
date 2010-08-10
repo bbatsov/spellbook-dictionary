@@ -1,0 +1,15 @@
+<div id="answer_div">
+  <% if @service.seen? %>
+    <table class="resulttable">
+    <tr>
+      <th>Word</th>
+      <th>Translation</th>
+    </tr>
+
+    <tr>
+      <td> <%= @service.seen_entry.study_word.word.word %> </td>
+      <td> <%= @service.seen_entry.study_word.word.translation %> </td>
+    </tr>
+  </table>
+  <% end %>
+</div>

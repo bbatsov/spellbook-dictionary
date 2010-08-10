@@ -1,0 +1,18 @@
+<h2><%= @dictionary.name + " dictionary"  %></h2>
+
+<div id="auto_complete_holder">
+
+  <%= text_field_with_auto_complete :dictionary, :searched, { :class => "cleardefault", :value => "type a word to search", :onfocus => "clearText(this)", :onblur => "clearText(this)",  :onkeyup => remote_function(:url => { :action => "search", :id => @dictionary.id }, :method => :get, :with => "'dictionary[searched]=' + $F('dictionary_searched')", :condition => 'event.keyCode == 13')}, { :url => formatted_dictionary_words_path(@dictionary, :js), :method => :get, :with => "'search=' + element.value" } %>
+  <%= button_to_remote "Search", {:url => { :action => "search", :id => @dictionary.id }, :method => :get, :with => "'dictionary[searched]=' + $F('dictionary_searched')"}, :class  => "button" %>
+  
+</div>
+
+<div id="results">
+
+</div>
+
+<small>
+  <%= link_to 'Dictionaries list', dictionaries_path %>  
+  |
+  <%= link_to 'Suggest a new word', new_suggestion_path %>
+</small>

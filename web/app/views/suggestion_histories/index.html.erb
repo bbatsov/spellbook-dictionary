@@ -1,0 +1,24 @@
+<h1>Listing suggestion_histories</h1>
+
+<table>
+  <tr>
+    <th>Suggestion</th>
+    <th>State</th>
+    <th>User</th>
+  </tr>
+
+<% @suggestion_histories.each do |suggestion_history| %>
+  <tr>
+    <td><%=h suggestion_history.suggestion_id %></td>
+    <td><%=h suggestion_history.state_id %></td>
+    <td><%=h suggestion_history.user_id %></td>
+    <td><%= link_to 'Show', suggestion_history %></td>
+    <td><%= link_to 'Edit', edit_suggestion_history_path(suggestion_history) %></td>
+    <td><%= link_to 'Destroy', suggestion_history, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New suggestion_history', new_suggestion_history_path %>

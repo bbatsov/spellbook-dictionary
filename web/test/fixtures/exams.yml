@@ -1,0 +1,15 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  user_id: 1
+  dictionary_id: 1
+  size: 1
+  difficulty_id: 1
+  exam_state_id: 1
+
+two:
+  user_id: 1
+  dictionary_id: 1
+  size: 1
+  difficulty_id: 1
+  exam_state_id: 1
