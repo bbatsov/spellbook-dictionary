@@ -1,0 +1,17 @@
+<% form_for(@study_set) do |f| %>
+  <%= f.error_messages %>
+  
+  <p>
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </p>
+
+  <p>
+    <%= select(:study_set, :dictionary_id, @dictionaries.map {|d| [d.name,d.id]}) %>
+  </p>
+
+  <p>
+    <%= f.submit 'Save', :class => "button" %>
+  </p>
+  
+<% end %>

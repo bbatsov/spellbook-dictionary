@@ -1,0 +1,26 @@
+<h2>Study words</h2>
+<%= link_to "Manage word sets", study_sets_path %>
+<br/><br/>
+<% form_for(@study_session) do |f| %>
+  <%= f.error_messages %>
+
+  <% if @set.empty? %>
+    <%= "You don't have any study sets." %><br/>
+    <%= link_to "Create study set", new_study_set_path %><br/><br/>
+  <% else %>
+    <p>
+      <%= label :study_set_id, "Choose a word set to study" %><br/>
+      <%= select(:study_session, :study_set_id, @set.map {|d| [d.name,d.id]}) %>
+    </p>
+    <p>
+    <%= f.submit 'Study', :class => "button" %>
+    </p>
+  <% end %>
+<% end %>
+
+<br/><br/><br/>
+<small>
+<%= link_to "#{current_user.login}' studies", study_sessions_path %>
+|
+<%= link_to 'Dictionaries', dictionaries_path %>
+</small>

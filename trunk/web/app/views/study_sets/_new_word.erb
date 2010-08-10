@@ -1,0 +1,7 @@
+<tr id="<%= @study_word.id %>_r">
+    <td> <%=h @study_word.word.word %></td>
+    <td> <%= format_translation(@study_word.word.translation) %></td>
+    <td>
+      <%= link_to_remote "Remove", { :url => { :action => "remove_word", :id => @study_word.id }, :confirm => 'Are you sure?', :method => :get } %>
+    </td>
+</tr>

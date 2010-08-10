@@ -1,0 +1,15 @@
+<h2> <%= "Edit #{@user.login}'s details" %> </h2>
+
+<% form_for @user, :url => admin_user_path do |f| %>
+  <%= f.error_messages %>
+
+<%= render :partial => "form", :object => f %>
+
+<br/>
+<%= f.submit "Update", :class => "button" %>
+  <% end %>
+
+<br/>
+<%= link_to "Manage Users", admin_users_path %>
+
+

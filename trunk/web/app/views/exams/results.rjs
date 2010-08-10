@@ -1,0 +1,1 @@
+page.replace 'exam_contents', :partial => 'results', :object => @service

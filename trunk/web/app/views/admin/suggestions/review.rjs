@@ -1,0 +1,1 @@
+page.replace_html "#{@suggestion.id}_div", :partial => 'review_form', :object => @suggestion

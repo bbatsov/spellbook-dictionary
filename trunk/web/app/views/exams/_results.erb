@@ -1,0 +1,32 @@
+<h2> Exam summary </h2>
+
+<h1> <%= "Score: #{@service.exam.score}" %> </h1>
+
+<table class="resulttable">
+  <tr>
+    <th>Word</th>
+    <th>Translation</th>
+    <th>Answered</th>
+    <th>Correct</th>
+  </tr>
+
+<% @service.exam_words.each do |exam_word| %>
+  <tr>
+    <td> <%= exam_word.word.word %> </td>
+    <td> <%= format_translation(exam_word.word.translation) %> </td>
+    <td> <%= exam_word.answered %> </td>
+    <td>
+      <% image_name = exam_word.correct ? "check.png" : "delete_on.png" %>
+      <%= image_tag image_name, :alt => "play" %>
+    </td>
+  </tr>
+<% end %>
+</table>
+
+<small>
+<%= link_to 'Start new exam', new_exam_path %>
+|
+<%= link_to "#{current_user.login}'s exams", exams_path %>
+|
+<%= link_to 'Dictionaries', dictionaries_path %>
+</small>

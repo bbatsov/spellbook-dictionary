@@ -1,0 +1,42 @@
+<div id="study_contents">
+<h2> Studying words </h2>
+
+<div id="study_div" class="study_div">
+
+  <%= label_tag "Word:" %>
+  <br/>  <br/>
+  <h1 id="word">
+    <label class="translate_word"">
+    <%= @service.current_entry.study_word.word.word %>
+    </label>
+  </h1>
+    
+  <br/><br/>
+    <%= label_tag "Translation:" %>
+
+  <br/>
+
+
+    <%= text_field_tag "answer", '', :onkeyup => remote_function(:url => { :action => "answer", :id => @study_session.id }, :method => :get,
+                               :with => "$('answer').serialize()",
+                               :condition => 'event.keyCode == 13')%>
+
+  <div id="image_div" style="display: inline">
+    <%= image_tag "play.gif", :alt => "play" %>
+  </div>
+
+  <%= button_to_remote "Answer", {:url => { :action => "answer", :id => @study_session.id }, :method => :get, :with => "'answer=' + $F('answer')" }, :class  => "button" %>
+  <%= button_to_remote "See", {:url => { :action => "see", :id => @study_session.id }, :method => :get, :with => "'answer=' + $F('answer')" }, :class  => "button" %>
+  <br/>
+ <!-- button_to_remote "Pause", {:url => { :action => "change_state", :id => @exam.id, :finished => "0" }, :method => :get }, :class  => "image_button" %>
+    button_to_remote "Finish", {:url => { :action => "change_state", :id => @exam.id, :finished => "1" }, :method => :get}, :class  => "image_button" -->
+</div>
+
+<div id="answer_div">
+</div>
+</div>
+
+<br/><br/><br/>
+<small>
+<%= link_to "#{current_user.login}'s study sessions", study_sessions_path %>
+</small>

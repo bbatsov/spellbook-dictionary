@@ -1,0 +1,18 @@
+<p>
+  <b>Suggestion:</b>
+  <%=h @suggestion_history.suggestion_id %>
+</p>
+
+<p>
+  <b>State:</b>
+  <%=h @suggestion_history.state_id %>
+</p>
+
+<p>
+  <b>User:</b>
+  <%=h @suggestion_history.user_id %>
+</p>
+
+
+<%= link_to 'Edit', edit_suggestion_history_path(@suggestion_history) %> |
+<%= link_to 'Back', suggestion_histories_path %>

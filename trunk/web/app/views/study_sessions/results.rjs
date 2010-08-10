@@ -1,0 +1,1 @@
+page.replace 'study_contents', :partial => 'results', :object => @service

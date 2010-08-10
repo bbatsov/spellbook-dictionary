@@ -1,0 +1,5 @@
+page.replace_html 'image_div', :partial => 'image', :object => @correct
+page.replace_html 'word', :partial => 'word', :object => @service
+page.replace_html 'answer_div', :partial => "see_word", :object => @service
+page[:answer].value = ""
+page[:answer].focus

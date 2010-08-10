@@ -1,0 +1,28 @@
+<h2> <%= "#{current_user.login}'s exams" %> </h2>
+
+<table class="resulttable">
+  <tr>
+    <th>Date</th>
+    <th>Word set</th>
+    <th>Score</th>    
+    <th>Actions</th>
+  </tr>
+
+<% @study_sessions.each do |session| %>
+  <tr>
+    <td> <%= session.created_at.ctime %> </td>
+    <td> <%= session.study_set.name %> </td>
+    <td> <%= session.correct %> </td>    
+    <td>
+      <%= link_to "Show", study_session_path(session) %>
+    </td>
+  </tr>
+<% end %>
+</table>
+
+<br/><br/><br/>
+<small>
+<%= link_to 'Start studying', new_study_session_path %>
+|
+<%= link_to 'Dictionaries', dictionaries_path %>
+</small>

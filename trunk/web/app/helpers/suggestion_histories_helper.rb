@@ -1,0 +1,2 @@
+module SuggestionHistoriesHelper
+end

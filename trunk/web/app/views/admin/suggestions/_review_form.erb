@@ -1,0 +1,10 @@
+<div id="review_form">
+  <h1> Write comment for <%= @suggestion.word_name %> </h1>
+
+  <%= text_area_tag "comment_#{@suggestion.id}"%>
+  <br/>
+  <%= link_to_remote "Approve", { :url => { :action => "decide", :id => @suggestion.id, :approved => 1 }, :method => :get, :with => "$('comment_#{@suggestion.id}').serialize()" } %>
+  or
+  <%= link_to_remote "Reject", { :url => { :action => "decide", :id => @suggestion.id, :approved => 0 }, :method => :get, :with => "$('comment_#{@suggestion.id}').serialize()" } %>
+
+</div>

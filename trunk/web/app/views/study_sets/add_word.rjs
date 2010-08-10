@@ -1,0 +1,5 @@
+if @word
+  page.insert_html :bottom, "study_words_table", :partial => 'new_word', :object => [@word, @study_word]
+else
+  page.alert("The entered word could not be found")
+end

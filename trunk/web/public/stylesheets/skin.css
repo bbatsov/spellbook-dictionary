@@ -1,0 +1,184 @@
+/* Main layout */
+html,
+body {
+   margin:0;
+   padding:0;
+   height:100%;
+}
+
+body {
+  text-align: center;
+  background-color: #dfe4ee;
+}
+#header-wrap {
+  /* background: #069; */
+  background: #069 url('/images/header_background.png');
+  float: left;
+  width: 100%;
+  margin-bottom: 20px;
+}
+#header, #wrap {
+  margin: 0 auto;
+  text-align: left;
+  width: 744px;
+}
+
+#header {
+  position:relative;
+  height: 80px;
+}
+
+#body {
+    padding-bottom: 100px;
+    padding-top: 100px;
+}
+
+#container {
+   min-height:100%;
+   position:relative;
+}
+
+#footer {
+  /*background: #069 url('/images/header_background.png');*/
+  /*clear: both;*/
+  width: 100%;
+  font-size: 0.8em;
+  text-align: right;
+  color: #999;
+  padding: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  position: absolute;
+  padding-top: 2px;
+  bottom: 0px;
+  right: 0px;
+}
+
+#header h1 {
+  float: left;
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+#footer-nav {
+  border-top: 1px solid #ccc;
+  padding-top: 24px;
+}
+
+/* Welcome message */
+p.welcome {
+  position: absolute;
+  right: 0;
+  text-align: right;
+  top: 12px;
+}
+
+p.welcome span, .powered_by a {
+  font-size: 116%
+}
+
+.new_user_session, .new_user, .edit_user, .new_study_session {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 20px;
+  width: 300px;
+  border: 1px solid #069;
+}
+
+.new_exam {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 20px;
+  width: 200px;
+  border: 1px solid #069;
+}
+
+.new_user_session label, .new_user label, .edit_user label{
+  display: block;
+}
+
+table.resulttable
+{
+    width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+table.resulttable th {
+	font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica,
+	sans-serif;
+	color: #6D929B;
+	border-right: 1px solid #C1DAD7;
+	border-bottom: 1px solid #C1DAD7;
+	border-top: 1px solid #C1DAD7;
+	letter-spacing: 2px;
+	text-transform: uppercase;
+	text-align: left;
+	padding: 6px 6px 6px 12px;
+	background: #CAE8EA url(images/bg_header.jpg) no-repeat;
+}
+
+table.resulttable th.nobg {
+	border-top: 0;
+	border-left: 0;
+	border-right: 1px solid #C1DAD7;
+	background: none;
+}
+
+table.resulttable td {
+	border-right: 1px solid #C1DAD7;
+	border-bottom: 1px solid #C1DAD7;
+	background: #fff;
+	padding: 6px 6px 6px 12px;
+	color: #6D929B;
+        text-align: left;
+        vertical-align:top;
+}
+
+table.resulttable td.alt {
+	background: #F5FAFA;
+	color: black;
+        text-align: left;
+        vertical-align:top;
+}
+
+table.resulttable th.spec {
+	border-left: 1px solid #C1DAD7;
+	border-top: 0;
+	background: #fff url(images/bullet1.gif) no-repeat;
+	font: bold 10px "Trebuchet MS", Verdana, Arial, Helvetica,
+	sans-serif;
+}
+
+table.resulttable th.specalt {
+	border-left: 1px solid #C1DAD7;
+	border-top: 0;
+	background: #f5fafa url(images/bullet2.gif) no-repeat;
+	font: bold 10px "Trebuchet MS", Verdana, Arial, Helvetica,
+	sans-serif;
+	color: #B4AA9D;
+}
+
+.translate_word {
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 18px;
+  color: #069;
+  text-align: center;
+  border: 1px solid #069;
+  background-color:white;
+  padding: 6px;
+  margin: 3px;
+}
+
+form.login {
+    background-color: #DDDDDD;
+    color: #000000;
+    border: 1px solid #777777;
+    font-family: Verdana;
+    font-size: 10px;
+    text-align: right;
+    width: 440px;
+    margin: 2px;
+}

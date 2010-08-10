@@ -1,0 +1,33 @@
+<h2> <%= "#{@study_set.name}" %> </h2>
+
+<p>
+<%= text_field_with_auto_complete :study_set, :searched, { :class => "cleardefault", :value => "type a word to search", :onfocus => "clearText(this)", :onblur => "clearText(this)" }, { :url => formatted_words_path(:js), :method => :get, :with => "'search=' + element.value" } %>
+<%= link_to_remote "Add", { :url => { :action => "add_word", :id => @study_set.id, :dictionary_id => @study_set.dictionary_id }, :method => :get, :with => "$('study_set_searched').serialize()" } %>
+</p>
+
+<br/><br/><br/>
+
+
+<h1> <%= "#{@study_set.name}'s words" %> </h1>
+<table id="study_words_table" class="resulttable">
+  <tr>
+    <th>Word</th>
+    <th>Translation</th>
+    <th>Actions</th>
+  </tr>
+
+  <% @study_set.study_words.each do |study_word| %>
+  <tr id="<%= study_word.id %>_r">
+    <td> <%=h study_word.word.word %></td>
+    <td> <%= format_translation(study_word.word.translation) %></td>
+    <td>            
+      <%= link_to_remote "Remove", { :url => { :action => "remove_word", :id => study_word.id }, :confirm => 'Are you sure?', :method => :get } %>
+    </td>
+  </tr>
+<% end %>
+</table>
+
+<small>
+<%= link_to 'Back', study_sets_path %> |
+<%= link_to 'Study words', new_study_session_path %>
+</small>

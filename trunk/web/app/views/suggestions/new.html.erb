@@ -1,0 +1,33 @@
+<h2>Suggest new word</h2>
+  
+<div id="new_suggestion">
+<% form_for(@suggestion) do |f| %>
+  <%= f.error_messages %>
+
+  <% if (@suggested) %>
+    <% @suggestion.word_name = @suggested %>
+  <% end %>
+
+  <% if @dictionary %>
+  <p>
+    <%= @dictionary.name  %>
+    <%= f.hidden_field :dictionary_id, :value => @dictionary.id %>
+  </p>
+  <% else %>
+    <%= select(:suggestion, :dictionary_id, @dictionaries.map {|d| [d.name,d.id]}) %>
+  <% end %>
+
+  <p>
+    <%= text_field_with_auto_complete :suggestion, :word_name, {  }, { :url => formatted_words_path(:js), :method => :get, :with => "'search=' + element.value" } %>
+  </p>
+
+  <p>    
+    <%= f.text_area :translation %>
+  </p>
+
+  <p>
+    <%= f.submit 'Suggest', :class => "button" %>
+  </p>
+  
+<% end %>
+</div>

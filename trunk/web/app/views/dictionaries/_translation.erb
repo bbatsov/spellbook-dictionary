@@ -1,0 +1,31 @@
+<%  if @similars.empty? %>
+
+  <h1> Nothing was found. Do you want to  <%= link_to "suggest #{@searched_word}?", new_suggestion_path(:searched => @searched_word, :dictionary => @dictionary_id) %> </h1>
+  <br/>
+  
+<%else%>
+  <table class ="resulttable" id="results_table"
+         summary="Results">
+    <tr>
+      <th scope="col" abbr="Word" class="nobg">Word</th>
+      <th scope="col" abbr="Word" class="nobg">Translation</th>
+    </tr>
+  <% for word in @similars %>    
+    <tr>
+      <% is_match = (@exact_match[0] && word.word == @exact_match[0].word) %>
+
+      <td <%="class = \"alt\"" if is_match%>>
+        <% if current_user %>
+          <%= link_to "#{word.word}", new_word_suggestion_path(word) %>
+        <% else %>
+          <%= word.word %>
+        <% end %>
+      </td>
+
+      <td <%="class = \"alt\"" if is_match%>>
+        <%= format_translation word.translation %>
+      </td>
+    </tr>
+  <% end %>
+  </table>
+<% end %>

@@ -1,0 +1,24 @@
+<h2> <%= "#{current_user.login}'s study sets" %> </h2>
+
+<table class="resulttable">
+  <tr>
+    <th>Name</th>
+    <th>Actions</th>
+  </tr>
+
+<% @study_sets.each do |study_set| %>
+  <tr>
+    <td><%=h study_set.name %></td>        
+    <td>
+      <%= link_to 'Show', study_set %>            
+    </td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<small>
+<%= link_to 'New set', new_study_set_path %> |
+<%= link_to 'Study words', new_study_session_path %>
+</small>

@@ -1,0 +1,17 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  word: MyText
+  translation: MyText
+  approved: false
+  created_by: 1
+  approved_by: 1
+  approving_time: 2010-06-09 21:13:33
+
+two:
+  word: MyText
+  translation: MyText
+  approved: false
+  created_by: 1
+  approved_by: 1
+  approving_time: 2010-06-09 21:13:33

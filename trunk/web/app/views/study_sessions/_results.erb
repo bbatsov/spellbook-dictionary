@@ -1,0 +1,39 @@
+<h2> Study session summary </h2>
+
+<%= "You know #{@service.study_session.correct}% of the words"  %>
+<table class="resulttable">
+  <tr>
+    <th>Word</th>
+    <th>Translation</th>
+    <th>Answered</th>
+    <th>Status</th>
+  </tr>
+
+<% @service.study_entries.each do |study_entry| %>
+  <tr>
+    <td> <%= study_entry.study_word.word.word %> </td>
+    <td> <%= format_translation(study_entry.study_word.word.translation) %> </td>
+    <td> <%= study_entry.answered %> </td>
+    <td>
+      <% if study_entry.study_entry_state_id == StudyEntryState.correct_id %>
+        <% image_name = "check.png" %>
+      <% elsif study_entry.study_entry_state_id == StudyEntryState.wrong_id %>
+        <% image_name = "delete_on.png" %>
+      <% else %>
+        <% image_name = "question.gif" %>
+      <% end %>
+
+      <%= image_tag image_name, :alt => "play" %>
+      <%=h study_entry.study_entry_state.name %>
+    </td>
+  </tr>
+<% end %>
+</table>
+
+<small>
+<%= link_to 'Study words', new_study_session_path %>
+|
+<%= link_to "#{current_user.login}'s studyings", study_sessions_path %>
+|
+<%= link_to 'Dictionaries', dictionaries_path %>
+</small>

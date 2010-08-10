@@ -1,0 +1,13 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  word: MyText
+  translation: MyText
+  dictionary: MyText
+  state: MyText
+
+two:
+  word: MyText
+  translation: MyText
+  dictionary: MyText
+  state: MyText
