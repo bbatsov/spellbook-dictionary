@@ -326,7 +326,7 @@ public class DictionaryServiceImpl extends AbstractPersistenceService implements
      */
     @Override
     public boolean isComplemented(Dictionary dictionary) {
-        return !EM.createNamedQuery("Dictionary.getDictionaryByLanguages").setParameter("fromLanguage", dictionary.getToLanguage()).setParameter("toLanguage", dictionary.getFromLanguage()).getResultList().isEmpty();
+        return getComplement(dictionary) != null;
     }
 
     /**
