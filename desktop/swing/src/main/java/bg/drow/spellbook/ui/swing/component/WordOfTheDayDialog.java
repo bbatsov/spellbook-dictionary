@@ -73,7 +73,7 @@ public class WordOfTheDayDialog extends BaseDialog {
 
     @Override
     public JComponent createContentPanel() {
-        JPanel panel = new JPanel(new MigLayout("wrap 1", "[grow]", "[grow]"));
+        JPanel panel = new JPanel(new MigLayout("wrap 1", "[grow]", "[grow][]"));
 
         translationPane = new JTextPane();
         translationPane.setContentType("text/html");
