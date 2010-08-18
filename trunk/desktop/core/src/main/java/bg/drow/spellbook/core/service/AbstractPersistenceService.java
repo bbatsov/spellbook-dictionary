@@ -27,7 +27,7 @@ public class AbstractPersistenceService {
         if (EM == null) {
             initEntityManager(dbFile);
         } else {
-            LOGGER.info("Entity manager is already initalized");
+            LOGGER.info("Entity manager is already initialized");
         }
     }
 
