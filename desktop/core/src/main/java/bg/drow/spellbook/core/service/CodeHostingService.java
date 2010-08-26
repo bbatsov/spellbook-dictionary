@@ -31,10 +31,9 @@ public class CodeHostingService {
     private static final String project = "spellbook-dictionary";
     private static final String defaultOwner = "iivalchev";
 
-    private static CodeHostingService INSTANCE;
+    private static final CodeHostingService INSTANCE = new CodeHostingService();
 
     public static CodeHostingService getInstance() throws MalformedURLException, AuthenticationException {
-        if (INSTANCE == null) INSTANCE = new CodeHostingService();
         return INSTANCE;
     }
 

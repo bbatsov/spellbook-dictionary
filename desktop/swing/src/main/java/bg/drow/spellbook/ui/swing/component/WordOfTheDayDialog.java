@@ -38,8 +38,6 @@ import java.util.Random;
  * @since 0.3
  */
 public class WordOfTheDayDialog extends BaseDialog {
-    private static final DictionaryService DICTIONARY_SERVICE = DictionaryServiceImpl.getInstance();
-
     private List<String> words;
     private Dictionary dictionary;
     private List<String> wordsShown = new ArrayList<String>();
@@ -174,7 +172,7 @@ public class WordOfTheDayDialog extends BaseDialog {
     private void showWord(String word) {
         bannerPanel.setSubtitle(getTranslator().translate("Banner(Message)", word));
 
-        translationPane.setText(SwingUtil.formatTranslation(word, DICTIONARY_SERVICE.getTranslation(word, dictionary)));
+        translationPane.setText(SwingUtil.formatTranslation(word, DictionaryServiceImpl.getInstance().getTranslation(word, dictionary)));
         translationPane.setCaretPosition(0);
     }
 }
