@@ -1,7 +1,6 @@
 package bg.drow.spellbook.ui.desktop;
 
 import bg.drow.spellbook.core.SpellbookConstants;
-import bg.drow.spellbook.core.exception.SpellCheckerException;
 import bg.drow.spellbook.core.i18n.Translator;
 import bg.drow.spellbook.core.model.Dictionary;
 import bg.drow.spellbook.core.model.Language;
@@ -12,8 +11,6 @@ import bg.drow.spellbook.core.service.DictionaryServiceImpl;
 import bg.drow.spellbook.core.service.Lookup;
 import bg.drow.spellbook.ui.desktop.exam.ExamDialog;
 import bg.drow.spellbook.ui.desktop.game.HangmanDialog;
-import bg.drow.spellbook.ui.desktop.spellcheck.HeapSizeException;
-import bg.drow.spellbook.ui.desktop.spellcheck.SpellCheckFrame;
 import bg.drow.spellbook.ui.swing.component.IssueDialog;
 import bg.drow.spellbook.ui.swing.component.JHLauncher;
 import bg.drow.spellbook.ui.swing.model.ListBackedListModel;
@@ -191,7 +188,7 @@ public class SpellbookFrame extends JFrame {
             System.exit(0);
         }
 
-        DictionaryServiceImpl.init(SpellbookConstants.SPELLBOOK_DB_PATH);
+        DictionaryServiceImpl.init();
         Lookup.init();
 
         dictionaryService = Lookup.lookup(DictionaryService.class);
@@ -1051,17 +1048,6 @@ public class SpellbookFrame extends JFrame {
         });
         toolMenu.add(examMenuItem);
 
-        spellcheckMenuItem.setIcon(IconManager.getMenuIcon("spellcheck.png"));
-        spellcheckMenuItem.setMnemonic('s');
-        spellcheckMenuItem.setText(TRANSLATOR.translate("SpellCheck(MenuItem)"));
-        spellcheckMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                showSpellChecker();
-            }
-        });
-        toolMenu.add(spellcheckMenuItem);
-
         spellbookMenuBar.add(toolMenu);
 
         JMenu gamesMenu = new JMenu(TRANSLATOR.translate("Games(Menu)"));
@@ -1177,18 +1163,6 @@ public class SpellbookFrame extends JFrame {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
-
-    private void showSpellChecker() {
-        try {
-            SpellCheckFrame.getInstance(this).setVisible(true);
-        } catch (HeapSizeException e) {
-            JOptionPane.showMessageDialog(this, TRANSLATOR.translate("HeapLimit(Message)"),
-                    TRANSLATOR.translate("HeapLimit(Title)"), JOptionPane.ERROR_MESSAGE);
-        } catch (SpellCheckerException e) {
-            JOptionPane.showMessageDialog(this, TRANSLATOR.translate("SpellCheckerException(Message)"),
-                    TRANSLATOR.translate("SpellCheckerException(Title)"), JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -1364,16 +1338,6 @@ public class SpellbookFrame extends JFrame {
         });
         mainToolBar.add(examButton);
 
-        spellcheckButton.setIcon(IconManager.getImageIcon("spellcheck.png", IconManager.IconSize.SIZE24));
-        spellcheckButton.setToolTipText(TRANSLATOR.translate("SpellCheck(MenuItem)"));
-        spellcheckButton.setFocusable(false);
-        spellcheckButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                showSpellChecker();
-            }
-        });
-        mainToolBar.add(spellcheckButton);
         mainToolBar.add(lastToolbarSeparator);
 
         memoryButton.setIcon(IconManager.getImageIcon("memory.png", IconManager.IconSize.SIZE24));

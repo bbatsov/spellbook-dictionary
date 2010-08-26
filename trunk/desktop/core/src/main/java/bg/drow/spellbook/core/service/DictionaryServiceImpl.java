@@ -20,28 +20,23 @@ import java.util.Map;
  * @author bozhidar
  */
 public class DictionaryServiceImpl extends AbstractPersistenceService implements DictionaryService {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(DictionaryServiceImpl.class);
+
     private static DictionaryService instance;
     private static Map<String, List<String>> dictionaryWordsCache = new HashMap<String, List<String>>();
 
-    /**
-     * Builds a service object.
-     *
-     * @param dictDbFile the path to the H2 database file
-     */
-    private DictionaryServiceImpl(String dictDbFile) {
-        super(dictDbFile);
+    public DictionaryServiceImpl() {
+        super();
     }
-
+    
     /**
      * Bootstraps the dictionary service. The method can be executed only once.
      *
      * @param dictDbFile the dictionary database file
      */
-    public static void init(String dictDbFile) {
+    public static void init() {
         if (instance == null) {
-            instance = new DictionaryServiceImpl(dictDbFile);
+            instance = new DictionaryServiceImpl();
 
             TransactionInvocationHandler<DictionaryService> handler = new TransactionInvocationHandler<DictionaryService>(instance);
             instance = (DictionaryService) Proxy.newProxyInstance(instance.getClass().getClassLoader(), new Class[]{DictionaryService.class}, handler);

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package bg.drow.spellbook.core.service.exam;
 
 import bg.drow.spellbook.core.service.DictionaryService;
@@ -38,20 +34,16 @@ public class ExamService extends AbstractPersistenceService {
     private String translation;
     private Logger LOGGER = LoggerFactory.getLogger(ExamService.class);
 
-    private static ExamService instance;
+    private static final ExamService INSTANCE = new ExamService();
 
     private ExamService() {
-        super(null);
+        super();
 
         dictionaryService = DictionaryServiceImpl.getInstance();
     }
 
     public static ExamService getInstance() {
-        if (instance == null) {
-            instance = new ExamService();
-        }
-
-        return instance;
+        return INSTANCE;
     }
 
     /**

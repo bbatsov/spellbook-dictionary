@@ -55,10 +55,12 @@ public class SpellbookApp {
     private static boolean startup = true;
 
     public static void main(final String[] args) {
+        //the application main method just delegates execution to the init() method
         init();
     }
 
     private static void createSplashWindow() {
+        //get the JVM splash, if any
         final SplashScreen splashScreen = SplashScreen.getSplashScreen();
         splashWindow = new JWindow();
 
@@ -72,8 +74,8 @@ public class SpellbookApp {
         } else {
             Toolkit toolkit = Toolkit.getDefaultToolkit();
             bounds = new Rectangle(toolkit.getScreenSize().width / 2 - icon.getIconWidth() / 2,
-                    toolkit.getScreenSize().height / 2 - icon.getIconHeight() / 2,
-                    icon.getIconWidth(), icon.getIconHeight());
+                                   toolkit.getScreenSize().height / 2 - icon.getIconHeight() / 2,
+                                   icon.getIconWidth(), icon.getIconHeight());
         }
 
         splashWindow.setBounds((int) bounds.getX(), (int) bounds.getY(), (int) bounds.getWidth(), (int) bounds.getHeight());
