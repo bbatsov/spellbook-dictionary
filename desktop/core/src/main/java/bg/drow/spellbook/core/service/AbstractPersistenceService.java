@@ -1,9 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package bg.drow.spellbook.core.service;
 
+import bg.drow.spellbook.core.SpellbookConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,23 +12,25 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author bozhidar
+ * Base service class. Provides access to the application's database.
+ * It also wraps @Transactional methods in transactions automatically.
+ *
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
+ * @since 0.3
  */
 public class AbstractPersistenceService {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractPersistenceService.class);
+
+    //accessible in subclasses directly
     protected static EntityManager EM;
 
-    protected AbstractPersistenceService(String dbFile) {
+    protected AbstractPersistenceService() {
         // there can be only one entity manager ;-)
         if (EM == null) {
-            initEntityManager(dbFile);
+            initEntityManager(SpellbookConstants.SPELLBOOK_DB_PATH);
         } else {
             LOGGER.info("Entity manager is already initialized");
         }
-    }
-
-    protected AbstractPersistenceService() {
     }
 
     private static void initEntityManager(String dbFile) {

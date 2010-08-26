@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package bg.drow.spellbook.core.service.study;
 
 import bg.drow.spellbook.core.model.Dictionary;
@@ -20,18 +16,19 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
- * @author Sasho
+ * @author Alexander Nikolov
+ * @since 0.3
  */
 public class StudyService extends AbstractPersistenceService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(StudyService.class);
 
     private List<String> translations = new ArrayList<String>();
-    private static final Logger LOGGER = LoggerFactory.getLogger(StudyService.class);
 
     /**
      * Builds a service object.
      */
     public StudyService() {
-        super(null);
+        super();
     }
 
     public List<String> getAnothersPossiblesAnswers() {

@@ -53,8 +53,6 @@ import java.util.List;
  * @since 0.4
  */
 public class ImportDialog extends BaseDialog {
-    private static final String SPELLBOOK_DB_FILE = System.getProperty("user.home") + File.separator + ".spellbook/db/spellbook.h2.db";
-
     private LanguageComboBox fromComboBox;
     private LanguageComboBox toComboBox;
     private static final int BUFFER_SIZE = 20000;
@@ -64,7 +62,7 @@ public class ImportDialog extends BaseDialog {
 
     public ImportDialog(Frame owner, boolean modal) throws HeadlessException {
         super(owner, modal);
-        DictionaryServiceImpl.init(SPELLBOOK_DB_FILE);
+        DictionaryServiceImpl.init();
     }
 
     @Override

@@ -124,48 +124,6 @@
                 <version>1.7.1</version>
             </dependency>
 
-            <!-- hunspell -->
-            <dependency>
-                <groupId>com.sun.jna</groupId>
-                <artifactId>jna</artifactId>
-                <version>3.0.9</version>
-            </dependency>
-            <dependency>
-                <groupId>net.sourceforge.hunspell</groupId>
-                <artifactId>hunspell</artifactId>
-                <version>0.1</version>
-            </dependency>
-            <dependency>
-                <groupId>net.sourceforge.hunspell.jna</groupId>
-                <artifactId>jna-linux-i386</artifactId>
-                <version>0.1</version>
-            </dependency>
-            <dependency>
-                <groupId>net.sourceforge.hunspell</groupId>
-                <artifactId>hunspell-linux-i386</artifactId>
-                <version>0.1</version>
-            </dependency>
-            <dependency>
-                <groupId>net.sourceforge.hunspell.jna</groupId>
-                <artifactId>jna-linux-amd64</artifactId>
-                <version>0.1</version>
-            </dependency>
-            <dependency>
-                <groupId>net.sourceforge.hunspell</groupId>
-                <artifactId>hunspell-linux-amd64</artifactId>
-                <version>0.1</version>
-            </dependency>
-            <dependency>
-                <groupId>net.sourceforge.hunspell.jna</groupId>
-                <artifactId>jna-win32-x86</artifactId>
-                <version>0.1</version>
-            </dependency>
-            <dependency>
-                <groupId>net.sourceforge.hunspell</groupId>
-                <artifactId>hunspell-win32-x86</artifactId>
-                <version>0.1</version>
-            </dependency>
-
             <!-- test -->
             <dependency>
                 <groupId>junit</groupId>

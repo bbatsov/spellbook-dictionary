@@ -17,18 +17,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Implements the synchronization between the desktop Spellbook app
+ * and its web edition.
+ *
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
+ * @since 0.4
+ */
 public class SynchronizeService extends AbstractPersistenceService {
     private static final String UPDATE_URL = "http://spellbook.drow.com/update/";
 
-    private static SynchronizeService instance;
+    private static final SynchronizeService INSTANCE = new SynchronizeService();
+
     private static final DictionaryService DICTIONARY_SERVICE = DictionaryServiceImpl.getInstance();
 
     public static SynchronizeService getInstance() {
-        if (instance == null) {
-            instance = new SynchronizeService();
-        }
-
-        return instance;
+        return INSTANCE;
     }
 
     public Map<DictionaryEntry, DictionaryEntry.State> retrieveUpdatedEntries() {
@@ -125,13 +129,6 @@ public class SynchronizeService extends AbstractPersistenceService {
         List<DictionaryEntry> localChanges = getLocalChanges();
     }
 
-    public static void main(String[] args) {
-        SynchronizeService synchronizeService = getInstance();
-        synchronizeService.retrieveUpdatedEntries();
-
-
-    }
-
     public List<DictionaryEntry> getLocalChanges() {
         return EM.createQuery("select de from DictionaryEntry de where de.updatedByUser = true").getResultList();
     }
@@ -151,6 +148,4 @@ public class SynchronizeService extends AbstractPersistenceService {
             return syncStats.get(0).getCreated();
         }
     }
-
-
 }
