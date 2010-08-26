@@ -1,13 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
- * LearningWordsDialog.java
- *
- * Created on 2010-1-27, 17:01:30
- */
 package bg.drow.spellbook.ui.desktop.study;
 
 import bg.drow.spellbook.core.model.Dictionary;

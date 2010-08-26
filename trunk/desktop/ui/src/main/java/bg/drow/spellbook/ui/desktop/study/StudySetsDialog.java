@@ -1,13 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
- * StudySetsDialog.java
- *
- * Created on 2010-2-3, 10:21:38
- */
 package bg.drow.spellbook.ui.desktop.study;
 
 import bg.drow.spellbook.core.model.Dictionary;
