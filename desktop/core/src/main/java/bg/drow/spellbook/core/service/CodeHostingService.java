@@ -33,14 +33,19 @@ public class CodeHostingService {
 
     private static final CodeHostingService INSTANCE = new CodeHostingService();
 
-    public static CodeHostingService getInstance() throws MalformedURLException, AuthenticationException {
+    public static CodeHostingService getInstance() {
         return INSTANCE;
     }
 
-    private CodeHostingService() throws MalformedURLException, AuthenticationException {
-        service = new ProjectHostingService(project);
-        client = new ProjectHostingClient(service, project, username, creditentials);
-
+    private CodeHostingService() {
+        try {
+            service = new ProjectHostingService(project);
+            client = new ProjectHostingClient(service, project, username, creditentials);
+        } catch (MalformedURLException ex) {
+            // needs handling
+        } catch (AuthenticationException e) {
+            // needs handling
+        }
     }
 
     public void createIssue(String title, String content, String owner) throws IOException, ServiceException {

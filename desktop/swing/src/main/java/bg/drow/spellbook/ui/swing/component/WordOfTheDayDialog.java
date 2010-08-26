@@ -34,7 +34,7 @@ import java.util.Random;
 /**
  * The word of the day dialog displays random words selected from the default dictionary.
  *
- * @author Bozhidar Batsov
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  * @since 0.3
  */
 public class WordOfTheDayDialog extends BaseDialog {
