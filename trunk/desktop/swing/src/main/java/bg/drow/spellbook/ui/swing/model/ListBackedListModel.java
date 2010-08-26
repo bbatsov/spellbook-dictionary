@@ -6,7 +6,7 @@ import javax.swing.AbstractListModel;
 /**
  * A simple JList model backed by a list collection.
  *
- * @author Bozhidar Batsov
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  * @since 0.1
  */
 public class ListBackedListModel extends AbstractListModel {

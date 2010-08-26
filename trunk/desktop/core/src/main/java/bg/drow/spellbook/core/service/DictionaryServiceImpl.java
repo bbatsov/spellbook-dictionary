@@ -105,8 +105,9 @@ public class DictionaryServiceImpl extends AbstractPersistenceService implements
      */
     @Override
     public String getTranslation(String word, Dictionary d) {
-        return EM.createQuery("select de.translation from DictionaryEntry de"
-                + " where de.word = :word and de.dictionary = :dictionary", String.class).setParameter("word", word).setParameter("dictionary", d).getSingleResult();
+        return EM.createQuery("select de.translation from DictionaryEntry de " +
+                              "where LOWER(de.word) = LOWER(:word) and de.dictionary = :dictionary", String.class)
+            .setParameter("word", word).setParameter("dictionary", d).getSingleResult();
     }
 
     /**

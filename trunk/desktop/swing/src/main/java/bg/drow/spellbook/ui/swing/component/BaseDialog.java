@@ -26,7 +26,7 @@ import java.awt.event.ActionEvent;
 /**
  * Base dialog class in Spellbook.
  *
- * @author Bozhidar Batsov
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  * @since 0.4
  */
 public abstract class BaseDialog extends StandardDialog {

@@ -8,7 +8,7 @@ import javax.swing.text.PlainDocument;
  * Simple number filter for swing components, such as
  * text fields.
  *
- * @author Bozhidar Batsov
+ * @author <a mailto="bozhidar@drow.bg">Bozhidar Batsov</a>
  * @since 0.1
  */
 public class NumberDocument extends PlainDocument {

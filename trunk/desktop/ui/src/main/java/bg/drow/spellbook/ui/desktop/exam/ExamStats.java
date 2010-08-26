@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * A simple Java bean containing the information for an exam.
  *
- * @author Bozhidar Batsov
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  * @since 0.3
  */
 public class ExamStats {

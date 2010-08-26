@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * A dialog showing exam summary after an exam completion.
  *
- * @author Bozhidar Batsov
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  * @since 0.3
  */
 public class ExamSummaryDialog extends BaseDialog {

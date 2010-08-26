@@ -7,7 +7,8 @@ import org.slf4j.LoggerFactory;
 import javax.swing.SwingUtilities;
 
 /**
- * @author bozhidar
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
+ * @since 0.1
  */
 public class SpellbookDefaultExceptionHandler implements Thread.UncaughtExceptionHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellbookDefaultExceptionHandler.class);

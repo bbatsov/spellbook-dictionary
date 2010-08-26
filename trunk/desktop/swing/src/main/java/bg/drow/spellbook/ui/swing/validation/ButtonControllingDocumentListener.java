@@ -6,7 +6,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 
 /**
- * @author Bozhidar Batsov
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  * @version 0.3
  */
 public class ButtonControllingDocumentListener implements DocumentListener {

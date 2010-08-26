@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * @author Bozhidar Batsov
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  * @since 0.2
  */
 public class ExamDialog extends BaseDialog {
