@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package bg.drow.spellbook.ui.swing.component;
 
 import bg.drow.spellbook.core.model.Dictionary;
@@ -13,7 +8,8 @@ import javax.swing.JComboBox;
 
 /**
  *
- * @author bozhidar
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
+ * @since 0.3
  */
 public class DictionaryComboBox extends JComboBox {
     public DictionaryComboBox(List<Dictionary> dictionaries) {

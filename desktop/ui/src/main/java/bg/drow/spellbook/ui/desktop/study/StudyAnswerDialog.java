@@ -1,13 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
- * seeAnswerDialog.java
- *
- * Created on 2010-5-9, 22:44:57
- */
 package bg.drow.spellbook.ui.desktop.study;
 
 import bg.drow.spellbook.ui.swing.component.BaseDialog;

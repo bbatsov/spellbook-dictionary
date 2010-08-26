@@ -1,13 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
- * SelectLanguageDialog.java
- *
- * Created on 2010-7-11, 14:20:44
- */
 package bg.drow.spellbook.ui.desktop.study;
 
 import bg.drow.spellbook.core.model.Dictionary;
