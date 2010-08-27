@@ -9,7 +9,7 @@ import java.util.ResourceBundle;
 /**
  * A simple wrapper around resource bundles, useful for translation purposes.
  *
- * @author Bozhidar Batsov
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  * @since 0.1
  */
 public class Translator {

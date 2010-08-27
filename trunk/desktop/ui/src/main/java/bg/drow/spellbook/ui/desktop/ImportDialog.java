@@ -49,7 +49,7 @@ import java.util.List;
 /**
  * Import dictionary dialog.
  *
- * @author Bozhidar Batsov
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  * @since 0.4
  */
 public class ImportDialog extends BaseDialog {

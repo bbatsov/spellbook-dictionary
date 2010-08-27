@@ -39,7 +39,7 @@ import java.util.Locale;
  * important settings are taken into account(such as the initial look and feel and language)
  * and the application's main frame is created and displayed.
  *
- * @author Bozhidar Batsov
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  * @since 0.1
  */
 public class SpellbookApp {

@@ -7,7 +7,7 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 /**
- * @author bozhidar
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  */
 public class PreferencesManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(PreferencesManager.class);

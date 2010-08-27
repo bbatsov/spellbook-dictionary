@@ -17,7 +17,7 @@ import java.io.IOException;
 /**
  * Implements the integration layer with the host operating system clipboard.
  *
- * @author Bozhidar Batsov
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  * @since 0.1
  */
 public final class ClipboardIntegration implements ClipboardOwner {

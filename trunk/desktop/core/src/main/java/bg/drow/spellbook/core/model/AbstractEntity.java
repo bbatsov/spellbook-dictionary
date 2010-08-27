@@ -13,7 +13,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 /**
  *
- * @author bozhidar
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  */
 @MappedSuperclass
 public abstract class AbstractEntity implements Serializable {

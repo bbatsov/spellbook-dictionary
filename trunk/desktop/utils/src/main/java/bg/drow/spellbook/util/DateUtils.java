@@ -3,7 +3,7 @@ package bg.drow.spellbook.util;
 import java.util.Date;
 
 /**
- * @author Bozhidar Batsov
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  * @since 0.3
  */
 public class DateUtils {

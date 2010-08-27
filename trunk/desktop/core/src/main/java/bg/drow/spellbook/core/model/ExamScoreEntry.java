@@ -7,7 +7,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
 /**
- * @author Bozhidar Batsov
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  */
 @Entity(name = "ExamScoreEntry")
 @Table(name = "EXAM_SCORE_ENTRIES")

@@ -3,7 +3,7 @@ package bg.drow.spellbook.core.model;
 import bg.drow.spellbook.core.i18n.Translator;
 
 /**
- * @author Bozhidar Batsov
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  * @since 0.4
  */
 public enum SupportedFileType {

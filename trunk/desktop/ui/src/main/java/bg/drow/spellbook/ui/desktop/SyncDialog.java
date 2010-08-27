@@ -21,7 +21,7 @@ import java.awt.event.ActionListener;
 /**
  * Database synchronization dialog.
  *
- * @author Bozhidar Batsov
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  * @since 0.4
  */
 public class SyncDialog extends BaseDialog {

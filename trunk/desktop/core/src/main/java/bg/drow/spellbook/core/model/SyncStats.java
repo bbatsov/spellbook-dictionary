@@ -7,7 +7,7 @@ import javax.persistence.Table;
 /**
  * Contains simple statistics for a synchronization.
  *
- * @author Bozhidar Batsov
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  * @since 0.4
  */
 @Entity

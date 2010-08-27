@@ -10,7 +10,7 @@ import java.awt.geom.Line2D;
 /**
  * A component that displays a hangman drawing
  *
- * @author Bozhidar Batsov
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  * @since 0.4
  */
 public class HangmanDrawing extends JComponent {
