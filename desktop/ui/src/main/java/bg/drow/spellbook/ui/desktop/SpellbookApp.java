@@ -47,7 +47,7 @@ public class SpellbookApp {
 
     private static final Translator TRANSLATOR = Translator.getTranslator("SpellbookFrame");
 
-    private static SpellbookFrame tAppFrame;
+    private static SpellbookFrame appFrame;
     private static boolean dbPresent = false;
 
     private static JWindow splashWindow;
@@ -201,19 +201,19 @@ public class SpellbookApp {
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                tAppFrame = new SpellbookFrame(dbPresent);
+                appFrame = new SpellbookFrame(dbPresent);
 
-                tAppFrame.init();
+                appFrame.init();
 
                 closeSplashWindow();
 
                 if (!pm.getBoolean(PreferencesManager.Preference.START_IN_TRAY, false)) {
-                    tAppFrame.setVisible(true);
+                    appFrame.setVisible(true);
 
                     // these actions should only happen on startup, on restart we ignore them
                     if (startup) {
                         if (pm.getBoolean(PreferencesManager.Preference.CHECK_JAVA_VERSION, true)) {
-                            checkJavaRuntime(tAppFrame);
+                            checkJavaRuntime(appFrame);
                         }
 
                         if (pm.getBoolean(PreferencesManager.Preference.CHECK_FOR_UPDATES, true)) {
@@ -221,12 +221,12 @@ public class SpellbookApp {
                             new Thread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    tAppFrame.checkForUpdates(true);
+                                    appFrame.checkForUpdates(true);
                                 }
                             }).start();
                         }
 
-                        tAppFrame.showWordOfTheDay();
+                        appFrame.showWordOfTheDay();
                     }
                 }
 
