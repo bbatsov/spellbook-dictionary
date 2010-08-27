@@ -93,7 +93,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Spellbook's main application frame.
  *
- * @author Bozhidar Batsov
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  * @since 0.1
  */
 public class SpellbookFrame extends JFrame {

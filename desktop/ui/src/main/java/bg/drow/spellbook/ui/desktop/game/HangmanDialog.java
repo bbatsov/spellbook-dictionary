@@ -38,7 +38,7 @@ import java.util.Set;
 /**
  * The classic Hangman game.
  *
- * @author Bozhidar Batsov
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  * @since 0.4
  */
 public class HangmanDialog extends BaseDialog {

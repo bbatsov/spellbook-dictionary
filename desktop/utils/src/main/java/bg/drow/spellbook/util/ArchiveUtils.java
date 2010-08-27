@@ -16,7 +16,7 @@ import java.io.IOException;
  * A simple util class for dealing with archives.
  *
  * @author Miroslava Stancheva
- * @author Bozhidar Batsov
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  * @since 0.3
  */
 public class ArchiveUtils {

@@ -34,7 +34,7 @@ import java.util.List;
 /**
  * A dialog used to update existing words or add new ones.
  *
- * @author Bozhidar Batsov
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  * @since 0.3
  */
 public class AddUpdateWordDialog extends BaseDialog {

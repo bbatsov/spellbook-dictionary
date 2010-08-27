@@ -20,7 +20,7 @@ import java.util.logging.Level;
 /**
  * A helper class that extracts the preferences from the preferences dialog.
  *
- * @author Bozhidar Batsov
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  * @since 0.3
  */
 public class PreferencesExtractor {

@@ -4,7 +4,7 @@ package bg.drow.spellbook.core.model;
  * This class represents the application's current version.
  * It has three components - major version, minor version and revision.
  *
- * @author Bozhidar Batsov
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  * @since 0.4
  */
 public class Version implements Comparable<Version> {

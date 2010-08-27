@@ -4,7 +4,7 @@ import java.util.Comparator;
 
 /**
  *
- * @author bozhidar
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  */
 public class CaseInsensitiveStringComparator implements Comparator<String> {
 

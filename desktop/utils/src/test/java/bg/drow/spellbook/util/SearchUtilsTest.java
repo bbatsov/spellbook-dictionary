@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author bozhidar
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  */
 public class SearchUtilsTest {
     @Test

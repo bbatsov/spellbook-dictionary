@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  *
- * @author bozhidar
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  */
 public class SearchUtils {
     public static int findInsertionIndex(List<String> list, String elem) {

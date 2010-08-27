@@ -17,7 +17,7 @@ import java.util.Map;
  * Provides Spellbook's basic dictionary related functionality like looking for dictionaries, words, adding/updating/
  * deleting dictionary entries.
  *
- * @author bozhidar
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  */
 public class DictionaryServiceImpl extends AbstractPersistenceService implements DictionaryService {
     private static final Logger LOGGER = LoggerFactory.getLogger(DictionaryServiceImpl.class);

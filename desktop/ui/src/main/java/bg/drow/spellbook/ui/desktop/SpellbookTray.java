@@ -20,7 +20,7 @@ import java.awt.event.MouseEvent;
  * A thin layer of abstraction on top the application's tray icon. Here is
  * the handling of all events associated with it.
  *
- * @author Bozhidar Batsov
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  * @since 0.2
  */
 public class SpellbookTray {

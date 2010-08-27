@@ -14,7 +14,7 @@ import java.awt.event.MouseEvent;
 /**
  * A simple cut/copy/paste context popup menu for text components.
  *
- * @author Bozhidar Batsov
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  * @since 0.2
  */
 public class ContextMenuMouseListener extends MouseAdapter {

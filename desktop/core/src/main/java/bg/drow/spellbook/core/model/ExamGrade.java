@@ -5,7 +5,7 @@ import bg.drow.spellbook.core.i18n.Translator;
 /**
  * Description goes here...
  *
- * @author Bozhidar Batsov
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  * @since 3.3
  */
 public enum ExamGrade {

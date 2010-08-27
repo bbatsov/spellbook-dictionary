@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * @author bozhidar
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  */
 @Entity(name = "DictionaryEntry")
 @Table(name = "DICTIONARY_ENTRIES")
