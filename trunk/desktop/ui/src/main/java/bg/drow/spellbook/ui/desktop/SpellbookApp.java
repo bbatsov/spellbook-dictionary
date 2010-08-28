@@ -33,6 +33,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
 
 /**
  * The entry point in Spellbook. Here the preferences manager gets initialized, some
@@ -162,28 +164,22 @@ public class SpellbookApp {
 
         // don't show splash on restart and don't create/check lock
         if (startup) {
-            // we determine whether another instance of spellbook is running by checking for the presence
-            // of a lock file, which is created by the application upon startup and removed automatically
-            // upon exit
-            File lockFile = new File(SpellbookConstants.SPELLBOOK_HOME + File.separator + "spellbook.lock");
+            try {
+                // we determine whether another instance of spellbook is running by trying to obtain a lock
+                // on a specifically designated for the purpose file. If we cannot obtain the lock we assume that
+                // another instance of the application has already done that
+                RandomAccessFile lockFile = new RandomAccessFile(SpellbookConstants.SPELLBOOK_HOME + File.separator + "spellbook.lock", "rw");
 
-            if (lockFile.exists()) {
-                JOptionPane.showMessageDialog(null, TRANSLATOR.translate("AlreadyRunning(Message)"),
-                        TRANSLATOR.translate("Warning(Title)"), JOptionPane.WARNING_MESSAGE);
-                System.exit(0);
-            } else {
-                try {
-                    boolean ok = lockFile.createNewFile();
+                FileChannel channel = lockFile.getChannel();
 
-                    if (!ok) {
-                        throw new IllegalStateException("spellbook.lock file already exists!");
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if (channel.tryLock() == null) {
+                    JOptionPane.showMessageDialog(null, TRANSLATOR.translate("AlreadyRunning(Message)"),
+                                                  TRANSLATOR.translate("Warning(Title)"), JOptionPane.WARNING_MESSAGE);
+                    System.exit(0);
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
-            lockFile.deleteOnExit();
 
             createSplashWindow();
         }

@@ -29,8 +29,9 @@ import java.net.URL;
  * @since 0.3
  */
 public class AboutDialog extends BaseDialog {
-    private JTextPane infoTextPane = new JTextPane();
-    private JButton licenceButton = new JButton();
+    private final JTextPane infoTextPane = new JTextPane();
+    private final JButton licenceButton = new JButton();
+
     private static final int DIALOG_WIDTH = 500;
     private static final int DIALOG_HEIGHT = 500;
 
@@ -59,9 +60,12 @@ public class AboutDialog extends BaseDialog {
 
         infoTextPane.setContentType("text/html");
         infoTextPane.setEditable(false);
-        infoTextPane.setText(getTranslator().translate("About(Message)"));
+        infoTextPane.setText(getTranslator().translate("About(Message)", 
+                                                       System.getProperty("java.version"),
+                                                       System.getProperty("java.vm.name"),
+                                                       System.getProperty("java.vendor")));
 
-        /** Checks whether desktop is supported and enable button that launch browser */
+        // Checks whether desktop is supported and enable button that launch browser
         if (Desktop.isDesktopSupported()) {
             if (Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
                 licenceButton.setEnabled(true);
@@ -74,16 +78,10 @@ public class AboutDialog extends BaseDialog {
 
     @Override
     public JComponent createContentPanel() {
-        JPanel panel = new JPanel(new MigLayout("wrap 1", "[grow]", "[grow][]"));
+        JPanel panel = new JPanel(new MigLayout("wrap 1", "[grow]", "[grow]"));
 
         JScrollPane jScrollPane = new JScrollPane(infoTextPane);
         panel.add(jScrollPane, "grow");
-
-        panel.add(new JLabel("Java Version: " + System.getProperty("java.version")));
-
-        panel.add(new JLabel("JVM: " + System.getProperty("java.vm.name")));
-
-        panel.add(new JLabel("Vendor: " + System.getProperty("java.vendor")));
 
         panel.add(new JLabel(getTranslator().translate("Copyleft(Label)")), "center");
 
@@ -93,7 +91,6 @@ public class AboutDialog extends BaseDialog {
     @Override
     public ButtonPanel createButtonPanel() {
         ButtonPanel buttonPanel = new ButtonPanel(SwingConstants.CENTER);
-
 
         JButton creditsButton = new JButton();
 
@@ -121,6 +118,7 @@ public class AboutDialog extends BaseDialog {
         setDefaultAction(creditsButton.getAction());
         getRootPane().setDefaultButton(creditsButton);
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
         return buttonPanel;
     }
 
