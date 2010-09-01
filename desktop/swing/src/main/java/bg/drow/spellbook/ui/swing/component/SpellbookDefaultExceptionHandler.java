@@ -1,10 +1,9 @@
 package bg.drow.spellbook.ui.swing.component;
 
-import bg.drow.spellbook.core.service.CodeHostingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
 /**
  * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
@@ -46,7 +45,7 @@ public class SpellbookDefaultExceptionHandler implements Thread.UncaughtExceptio
 
         if (errorDialog.showDialog() == BaseDialog.RESULT_AFFIRMED) {
             try {
-                CodeHostingService.getInstance().createIssue(e);
+                //FeedbackService.getInstance().createIssue(e);
             } catch (Exception e0) {
                 LOGGER.error(e0.getMessage());
             }

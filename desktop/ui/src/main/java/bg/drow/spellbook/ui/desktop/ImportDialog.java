@@ -1,42 +1,22 @@
 package bg.drow.spellbook.ui.desktop;
 
 import bg.drow.spellbook.core.model.Dictionary;
+import bg.drow.spellbook.core.model.DictionaryEntry;
 import bg.drow.spellbook.core.model.Language;
 import bg.drow.spellbook.core.model.SupportedFileType;
 import bg.drow.spellbook.core.service.DictionaryServiceImpl;
-import bg.drow.spellbook.ui.swing.component.LanguageComboBox;
-import bg.drow.spellbook.core.model.DictionaryEntry;
 import bg.drow.spellbook.ui.swing.component.BaseDialog;
+import bg.drow.spellbook.ui.swing.component.LanguageComboBox;
 import com.jidesoft.dialog.ButtonPanel;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import java.awt.Frame;
-import java.awt.HeadlessException;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.io.BufferedReader;
-import java.io.EOFException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
@@ -62,7 +42,6 @@ public class ImportDialog extends BaseDialog {
 
     public ImportDialog(Frame owner, boolean modal) throws HeadlessException {
         super(owner, modal);
-        DictionaryServiceImpl.init();
     }
 
     @Override

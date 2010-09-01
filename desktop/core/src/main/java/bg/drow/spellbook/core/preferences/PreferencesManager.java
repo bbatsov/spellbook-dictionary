@@ -87,8 +87,6 @@ public class PreferencesManager {
         EMPTY_LINE,
         EXAM_WORDS,
         EXAM_DIFFICULTY,
-        EXAM_FROM_LANG,
-        EXAM_TO_LANG,
         EXAM_TIMER,
         FRAME_X,
         FRAME_Y,
@@ -102,8 +100,6 @@ public class PreferencesManager {
         LEARNING_RANDOM,
         REPEAT_MISSPELLED_WORDS,
         REPEAT_WORDS,
-        REMOTE_DB_USERNAME,
-        REMOTE_DB_PASSWORD,
         CHECK_JAVA_VERSION,
         SHOW_TOOLBAR,
         SHOW_STATUSBAR

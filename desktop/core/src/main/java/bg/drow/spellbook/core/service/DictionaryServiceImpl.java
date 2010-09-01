@@ -28,13 +28,13 @@ public class DictionaryServiceImpl extends AbstractPersistenceService implements
     public DictionaryServiceImpl() {
         super();
     }
-    
+
     /**
-     * Bootstraps the dictionary service. The method can be executed only once.
+     * Obtains the service single instance.
      *
-     * @param dictDbFile the dictionary database file
+     * @return service instance
      */
-    public static void init() {
+    public static DictionaryService getInstance() {
         if (instance == null) {
             instance = new DictionaryServiceImpl();
 
@@ -43,21 +43,14 @@ public class DictionaryServiceImpl extends AbstractPersistenceService implements
         } else {
             LOGGER.info("Dictionary service is already initialized");
         }
-    }
 
-    /**
-     * Obtains the service single instance.
-     *
-     * @return service instance
-     */
-    public static DictionaryService getInstance() {
         return instance;
     }
 
     /**
      * Retrieve a list of all available dictionaries.
      *
-     * @return a list of available dictionaries, emtpy list if none are available
+     * @return a list of available dictionaries, empty list if none are available
      */
     @Override
     public List<Dictionary> getDictionaries() {
@@ -106,7 +99,7 @@ public class DictionaryServiceImpl extends AbstractPersistenceService implements
     @Override
     public String getTranslation(String word, Dictionary d) {
         return EM.createQuery("select de.translation from DictionaryEntry de " +
-                              "where LOWER(de.word) = LOWER(:word) and de.dictionary = :dictionary", String.class)
+                              "where de.word = :word and de.dictionary = :dictionary", String.class)
             .setParameter("word", word).setParameter("dictionary", d).getSingleResult();
     }
 
