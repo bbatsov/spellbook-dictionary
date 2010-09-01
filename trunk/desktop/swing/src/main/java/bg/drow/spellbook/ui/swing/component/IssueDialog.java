@@ -1,20 +1,11 @@
 package bg.drow.spellbook.ui.swing.component;
 
-import bg.drow.spellbook.core.service.CodeHostingService;
 import com.jidesoft.dialog.ButtonPanel;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.border.LineBorder;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Frame;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -24,9 +15,9 @@ import java.awt.event.ActionListener;
  *         Time: 7:09:03 PM
  */
 public class IssueDialog extends BaseDialog {
-
     private static final int MIN_WIDTH = 350;
     private static final int MIN_HEIGHT = 400;
+
     private static final int BORDER_THICKNESS = 1;
 
     private JTextField titleTextField;
@@ -39,10 +30,6 @@ public class IssueDialog extends BaseDialog {
     public IssueDialog() {
         super((Frame) null, true);
 
-        initComponents0();
-    }
-
-    private void initComponents0() {
         titleTextField = new JTextField();
         contentTextArea = new JTextArea();
         submitButton = new JButton(getTranslator().translate("Submit(Button)"));
@@ -53,18 +40,18 @@ public class IssueDialog extends BaseDialog {
         contentTextArea.setBorder(new LineBorder(Color.BLACK, BORDER_THICKNESS));
 
         submitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                submitButtonActionPerformed();
-            }
-        });
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    submitButtonActionPerformed();
+                }
+            });
 
         cancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                cancelButtonActionPerformed();
-            }
-        });
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    cancelButtonActionPerformed();
+                }
+            });
 
         setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
     }
@@ -106,7 +93,7 @@ public class IssueDialog extends BaseDialog {
         }
 
         try {
-            CodeHostingService.getInstance().createIssue(title, content);
+            // TODO use feeback service
         } catch (Exception e) {
             showMessage(getTranslator().translate("Message(Error)"));
         }
