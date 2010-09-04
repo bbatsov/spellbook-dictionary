@@ -17,6 +17,7 @@ import bg.drow.spellbook.ui.swing.component.WordOfTheDayDialog;
 import bg.drow.spellbook.ui.swing.model.ListBackedListModel;
 import bg.drow.spellbook.ui.swing.util.IconManager;
 import bg.drow.spellbook.ui.swing.util.SwingUtil;
+import bg.drow.spellbook.util.CaseInsensitiveStringComparator;
 import bg.drow.spellbook.util.SearchUtils;
 import com.jidesoft.dialog.StandardDialog;
 import com.jidesoft.hints.ListDataIntelliHints;
@@ -36,6 +37,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.Executors;
@@ -364,16 +366,10 @@ public class SpellbookFrame extends JFrame {
 
         String approximation;
 
+        int index = Collections.binarySearch(words, searchString, new CaseInsensitiveStringComparator());
+
         // if we have an exact match for the search string or the search string in lowercase
-        if (words.contains(searchString) || words.contains(searchString.toLowerCase())) {
-            int index = words.indexOf(searchString);
-
-            // if the index is negative the match was for the lowercase version
-            if (index < 0) {
-                searchString = searchString.toLowerCase();
-                index = words.indexOf(searchString);
-            }
-
+        if (index >= 0) {
             // invoking this method will trigger the list value changed listener,
             // so there is no need to obtain the translation explicitly here
             wordsList.setSelectedIndex(index);
@@ -385,10 +381,10 @@ public class SpellbookFrame extends JFrame {
             exactMatch = true;
         } else if ((approximation = getApproximation(searchString)) != null) {
 
-            int index = words.indexOf(approximation);
+            int index2 = words.indexOf(approximation);
 
-            wordsList.setSelectedIndex(index);
-            wordsList.ensureIndexIsVisible(index);
+            wordsList.setSelectedIndex(index2);
+            wordsList.ensureIndexIsVisible(index2);
 
             wordSearchFieldStatusLabel.setIcon(OverlayableUtils.getPredefinedOverlayIcon(OverlayableIconsFactory.ATTENTION));
             wordSearchFieldStatusLabel.setToolTipText(TRANSLATOR.translate("PartialMatchFound(ToolTip)"));
@@ -475,9 +471,10 @@ public class SpellbookFrame extends JFrame {
 
             autoCorrectDictionary(searchString);
 
-            if (words.contains(searchString)) {
+            int index = Collections.binarySearch(words, searchString, new CaseInsensitiveStringComparator());
+
+            if (index >= 0) {
                 foundWord = searchString;
-                int index = words.indexOf(foundWord);
 
                 wordsList.setSelectedIndex(index);
                 wordsList.ensureIndexIsVisible(index);
@@ -488,10 +485,10 @@ public class SpellbookFrame extends JFrame {
                 wordSearchFieldStatusLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
             } else if ((approximation = getApproximation(searchString)) != null) {
                 foundWord = approximation;
-                int index = words.indexOf(foundWord);
+                int index2 = words.indexOf(foundWord);
 
-                wordsList.setSelectedIndex(index);
-                wordsList.ensureIndexIsVisible(index);
+                wordsList.setSelectedIndex(index2);
+                wordsList.ensureIndexIsVisible(index2);
 
                 match = true;
 
