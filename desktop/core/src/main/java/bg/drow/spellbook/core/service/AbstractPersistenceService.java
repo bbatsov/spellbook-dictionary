@@ -39,16 +39,10 @@ public class AbstractPersistenceService {
         String url = "jdbc:h2:" + dbFile.replace(".h2.db", "");
 
         // we need to override the db url from persistence.xml
-        if (dbFile != null) {
-            Map<String, String> properties = new HashMap<String, String>();
-            properties.put("hibernate.connection.url", url);
+        Map<String, String> properties = new HashMap<String, String>();
+        properties.put("hibernate.connection.url", url);
 
-            EM = Persistence.createEntityManagerFactory("Spellbook", properties).createEntityManager();
-        } else {
-            // if dbFile is null use the default configuration from persistence.xml
-            EM = Persistence.createEntityManagerFactory("Spellbook").createEntityManager();
-        }
-
+        EM = Persistence.createEntityManagerFactory("Spellbook", properties).createEntityManager();
     }
 
     protected static class TransactionInvocationHandler<T> implements InvocationHandler {
