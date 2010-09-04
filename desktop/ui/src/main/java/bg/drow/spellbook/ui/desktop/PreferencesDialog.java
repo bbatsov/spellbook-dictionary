@@ -1,50 +1,32 @@
 package bg.drow.spellbook.ui.desktop;
 
 import bg.drow.spellbook.core.model.Dictionary;
+import bg.drow.spellbook.core.model.Difficulty;
 import bg.drow.spellbook.core.model.Language;
 import bg.drow.spellbook.core.preferences.PreferencesManager;
+import bg.drow.spellbook.core.service.DictionaryService;
 import bg.drow.spellbook.core.service.DictionaryServiceImpl;
 import bg.drow.spellbook.ui.swing.component.BaseDialog;
-import bg.drow.spellbook.ui.swing.util.IconManager;
-import bg.drow.spellbook.core.model.Difficulty;
-import bg.drow.spellbook.core.service.DictionaryService;
 import bg.drow.spellbook.ui.swing.component.DictionaryComboBox;
 import bg.drow.spellbook.ui.swing.component.DifficultyComboBox;
+import bg.drow.spellbook.ui.swing.util.IconManager;
 import bg.drow.spellbook.ui.swing.util.LafUtil;
 import com.jidesoft.dialog.ButtonPanel;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.BorderFactory;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import java.awt.Font;
-import java.awt.Frame;
-import java.awt.GraphicsEnvironment;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ButtonGroup;
-import javax.swing.JRadioButton;
 
 /**
  * Spellbook's preferences dialog.
@@ -150,7 +132,14 @@ public class PreferencesDialog extends BaseDialog {
         // set the selected values from preferences
         languageComboBox.setSelectedItem(selectedLanguage);
 
-        defaultDictionaryComboBox.setSelectedItem(DICTIONARY_SERVICE.getDictionary(PM.get(PreferencesManager.Preference.DEFAULT_DICTIONARY, "English-Bulgarian")));
+        // select default dictionary if set
+        String defaultDictionaryName = PM.get(PreferencesManager.Preference.DEFAULT_DICTIONARY, "NONE");
+
+        if (defaultDictionaryName.equals("NONE")) {
+            defaultDictionaryComboBox.setSelectedItem(DICTIONARY_SERVICE.getDictionaries().get(0));
+        } else {
+            defaultDictionaryComboBox.setSelectedItem(DICTIONARY_SERVICE.getDictionary(defaultDictionaryName));
+        }
 
         minimizeToTrayCheckBox.setSelected(PM.getBoolean(PreferencesManager.Preference.MIN_TO_TRAY, false));
 
