@@ -1,5 +1,6 @@
 package bg.drow.spellbook.ui.desktop;
 
+import bg.drow.spellbook.core.Inflection;
 import bg.drow.spellbook.core.SpellbookConstants;
 import bg.drow.spellbook.core.i18n.Translator;
 import bg.drow.spellbook.core.model.Dictionary;
@@ -379,6 +380,14 @@ public class SpellbookFrame extends JFrame {
             wordSearchFieldStatusLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
 
             exactMatch = true;
+        } else if (words.contains(normalize(searchString))) {
+            int index2 = words.indexOf(normalize(searchString));
+
+            wordsList.setSelectedIndex(index2);
+            wordsList.ensureIndexIsVisible(index2);
+
+            wordSearchFieldStatusLabel.setIcon(OverlayableUtils.getPredefinedOverlayIcon(OverlayableIconsFactory.CORRECT));
+            wordSearchFieldStatusLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
         } else if ((approximation = getApproximation(searchString)) != null) {
 
             int index2 = words.indexOf(approximation);
@@ -480,6 +489,14 @@ public class SpellbookFrame extends JFrame {
                 wordsList.ensureIndexIsVisible(index);
 
                 match = true;
+
+                wordSearchFieldStatusLabel.setIcon(OverlayableUtils.getPredefinedOverlayIcon(OverlayableIconsFactory.CORRECT));
+                wordSearchFieldStatusLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
+            } else if (words.contains(normalize(searchString))) {
+                int index2 = words.indexOf(normalize(searchString));
+
+                wordsList.setSelectedIndex(index2);
+                wordsList.ensureIndexIsVisible(index2);
 
                 wordSearchFieldStatusLabel.setIcon(OverlayableUtils.getPredefinedOverlayIcon(OverlayableIconsFactory.CORRECT));
                 wordSearchFieldStatusLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
@@ -1530,5 +1547,19 @@ public class SpellbookFrame extends JFrame {
     private void updateHistoryButtonsState() {
         backButton.setEnabled(searchWordsIndex > 0);
         forwardButton.setEnabled(searchWordsIndex < searchedWords.size() - 1);
+    }
+
+    private String normalize(String word) {
+        Language from = selectedDictionary.getFromLanguage();
+
+        switch (from) {
+            case ENGLISH:
+                if (word.endsWith("ing")) {
+                    return word.substring(0, word.length() - 3);
+                } else {
+                    return Inflection.singularize(word);
+                }
+            default: return word;
+        }
     }
 }
