@@ -4,20 +4,10 @@ import bg.drow.spellbook.ui.swing.component.BaseDialog;
 import com.jidesoft.dialog.ButtonPanel;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
-import java.awt.Desktop;
-import java.awt.Frame;
-import java.awt.HeadlessException;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URI;
@@ -61,8 +51,8 @@ public class AboutDialog extends BaseDialog {
         infoTextPane.setContentType("text/html");
         infoTextPane.setEditable(false);
         infoTextPane.setText(getTranslator().translate("About(Message)", 
-                                                       System.getProperty("java.version"),
                                                        System.getProperty("java.vm.name"),
+                                                       System.getProperty("java.version"),
                                                        System.getProperty("java.vendor")));
 
         // Checks whether desktop is supported and enable button that launch browser
@@ -80,10 +70,8 @@ public class AboutDialog extends BaseDialog {
     public JComponent createContentPanel() {
         JPanel panel = new JPanel(new MigLayout("wrap 1", "[grow]", "[grow]"));
 
-        JScrollPane jScrollPane = new JScrollPane(infoTextPane);
-        panel.add(jScrollPane, "grow");
-
-        panel.add(new JLabel(getTranslator().translate("Copyleft(Label)")), "center");
+        panel.add(new JScrollPane(infoTextPane), "grow");
+        panel.add(new JLabel(getTranslator().translate("Copyright(Label)")), "center");
 
         return panel;
     }
