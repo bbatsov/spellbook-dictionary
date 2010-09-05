@@ -1,5 +1,6 @@
 package bg.drow.spellbook.ui.swing.component;
 
+import bg.drow.spellbook.core.service.FeedbackService;
 import com.jidesoft.dialog.ButtonPanel;
 import net.miginfocom.swing.MigLayout;
 
@@ -10,9 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * @author ikkari
- *         Date: Jun 5, 2010
- *         Time: 7:09:03 PM
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  */
 public class IssueDialog extends BaseDialog {
     private static final int MIN_WIDTH = 350;
@@ -22,20 +21,20 @@ public class IssueDialog extends BaseDialog {
 
     private JTextField titleTextField;
     private JTextArea contentTextArea;
+    private JTextField usernameTextField;
+    private JPasswordField passwordTextField;
     private JButton submitButton;
     private JButton cancelButton;
-    private JLabel titleLabel;
-    private JLabel contentLabel;
 
     public IssueDialog() {
         super((Frame) null, true);
 
         titleTextField = new JTextField();
         contentTextArea = new JTextArea();
+        usernameTextField = new JTextField();
+        passwordTextField = new JPasswordField();
         submitButton = new JButton(getTranslator().translate("Submit(Button)"));
         cancelButton = new JButton(getTranslator().translate("Cancel(Button)"));
-        titleLabel = new JLabel(getTranslator().translate("IssueSummary(Title)"));
-        contentLabel = new JLabel(getTranslator().translate("IssueDescription(Title)"));
 
         contentTextArea.setBorder(new LineBorder(Color.BLACK, BORDER_THICKNESS));
 
@@ -58,12 +57,17 @@ public class IssueDialog extends BaseDialog {
 
     @Override
     public JComponent createContentPanel() {
-        JPanel panel = new JPanel(new MigLayout("wrap 1", "[grow]", "[][][][grow]"));
+        JPanel panel = new JPanel(new MigLayout("wrap 1", "[grow]", "[][][][grow][][]"));
 
-        panel.add(titleLabel, "align left");
+        panel.add(new JLabel(getTranslator().translate("IssueSummary(Title)")), "align left");
         panel.add(titleTextField, "growx");
-        panel.add(contentLabel, "align left");
+        panel.add(new JLabel(getTranslator().translate("IssueDescription(Title)")), "align left");
         panel.add(contentTextArea, "grow");
+        panel.add(new JLabel(getTranslator().translate("Username(Label)")), "split 3, align right");
+        panel.add(usernameTextField, "growx");
+        panel.add(new JLabel("@gmail.com"));
+        panel.add(new JLabel(getTranslator().translate("Password(Label)")), "split 2, align right");
+        panel.add(passwordTextField, "growx");
 
         return panel;
     }
@@ -93,7 +97,9 @@ public class IssueDialog extends BaseDialog {
         }
 
         try {
-            // TODO use feeback service
+            FeedbackService feedbackService = new FeedbackService(usernameTextField.getText(), String.valueOf(passwordTextField.getPassword()));
+
+            feedbackService.createIssue(title, content);
         } catch (Exception e) {
             showMessage(getTranslator().translate("Message(Error)"));
         }
