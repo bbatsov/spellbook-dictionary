@@ -1554,8 +1554,11 @@ public class SpellbookFrame extends JFrame {
 
         switch (from) {
             case ENGLISH:
+                // todo make this segment more elegant/generic
                 if (word.endsWith("ing")) {
                     return word.substring(0, word.length() - 3);
+                } else if (word.endsWith("ed")) {
+                    return word.substring(0, word.length() - 2);
                 } else {
                     return Inflection.singularize(word);
                 }
