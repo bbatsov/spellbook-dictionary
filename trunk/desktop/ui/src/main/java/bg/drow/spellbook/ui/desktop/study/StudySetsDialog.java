@@ -5,37 +5,19 @@ import bg.drow.spellbook.core.model.Language;
 import bg.drow.spellbook.core.model.StudySet;
 import bg.drow.spellbook.core.preferences.PreferencesManager;
 import bg.drow.spellbook.core.service.DictionaryService;
-import bg.drow.spellbook.core.service.DictionaryServiceImpl;
 import bg.drow.spellbook.core.service.study.StudyService;
 import bg.drow.spellbook.ui.swing.component.BaseDialog;
 import com.jidesoft.swing.AutoCompletion;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.BorderFactory;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.table.TableColumn;
-import java.awt.Dialog;
-import java.awt.HeadlessException;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.MouseEvent;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,7 +50,7 @@ public class StudySetsDialog extends BaseDialog {
     public StudySetsDialog(Dialog parent, boolean modal) {
         super(parent, modal);
 
-        dictionaryService = DictionaryServiceImpl.getInstance();
+        dictionaryService = DictionaryService.getInstance();
         dictionaries = dictionaryService.getDictionaries();
         words = dictionaryService.getWordsFromDictionary(dictionaries.get(2));//!
 

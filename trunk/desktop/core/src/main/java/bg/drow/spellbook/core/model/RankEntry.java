@@ -1,26 +1,19 @@
 package bg.drow.spellbook.core.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Table;
-
 /**
+ * The rank entries are used by the exam and the games to set
+ * difficulties based on the frequency of a word in a language.
  *
- * @author iivalchev
+ * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
+ * @since 0.3
  */
-@Entity(name = "RankEntry")
-@Table(name = "RANK_ENTRIES")
 public class RankEntry extends AbstractEntity {
-    @Enumerated(EnumType.ORDINAL)
-    @Column(name = "word_language", nullable=false)
+    public static final String TABLE_NAME = "RANK_ENTRIES";
+
     private Language language;
 
-    @Column(nullable = false)
     private String word;
 
-    @Column(nullable = false)
     private int rank;
 
     public RankEntry() {

@@ -1,32 +1,28 @@
 package bg.drow.spellbook.core.model;
 
 import java.io.Serializable;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import org.hibernate.annotations.GenericGenerator;
 
 /**
- *
  * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  */
-@MappedSuperclass
 public abstract class AbstractEntity implements Serializable {
-    @Id
-    @GenericGenerator(name = "generator", strategy = "increment")
-    @GeneratedValue(generator = "generator")
     private long id;
 
-    @Temporal(TemporalType.TIMESTAMP)
     private Date created;
 
-    @Temporal(TemporalType.TIMESTAMP)
     private Date modified;
+
+    protected AbstractEntity() {
+    }
+
+    protected AbstractEntity(ResultSet rs) throws SQLException {
+        setId(rs.getLong("ID"));
+        setCreated(rs.getDate("CREATED"));
+        setModified(rs.getDate("MODIFIED"));
+    }
 
     public Date getCreated() {
         return created;
@@ -52,13 +48,19 @@ public abstract class AbstractEntity implements Serializable {
         this.modified = modified;
     }
 
-    @PrePersist
     public void prePersist() {
         setCreated(new Date());
     }
 
-    @PreUpdate
     public void preUpdate() {
         setModified(new Date());
+    }
+
+    public void persist() {
+
+    }
+
+    public void remove() {
+        
     }
 }

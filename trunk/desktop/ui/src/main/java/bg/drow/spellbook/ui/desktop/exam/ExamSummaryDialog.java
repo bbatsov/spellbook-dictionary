@@ -3,7 +3,6 @@ package bg.drow.spellbook.ui.desktop.exam;
 import bg.drow.spellbook.core.model.ExamGrade;
 import bg.drow.spellbook.core.model.ExamScoreEntry;
 import bg.drow.spellbook.core.service.DictionaryService;
-import bg.drow.spellbook.core.service.DictionaryServiceImpl;
 import bg.drow.spellbook.core.service.exam.ExamService;
 import bg.drow.spellbook.ui.swing.component.BaseDialog;
 import bg.drow.spellbook.ui.swing.model.ListBackedListModel;
@@ -36,7 +35,7 @@ import java.util.List;
 public class ExamSummaryDialog extends BaseDialog {
 
     private ExamService examService = ExamService.getInstance();
-    private DictionaryService dictionaryService = DictionaryServiceImpl.getInstance();
+    private DictionaryService dictionaryService = DictionaryService.getInstance();
 
     private JLabel incorrectWords;
     private JLabel correctWords;

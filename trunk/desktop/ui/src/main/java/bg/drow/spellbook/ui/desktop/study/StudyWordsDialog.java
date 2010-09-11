@@ -5,7 +5,6 @@ import bg.drow.spellbook.core.model.StudySet;
 import bg.drow.spellbook.core.model.StudySetEntry;
 import bg.drow.spellbook.core.preferences.PreferencesManager;
 import bg.drow.spellbook.core.service.DictionaryService;
-import bg.drow.spellbook.core.service.DictionaryServiceImpl;
 import bg.drow.spellbook.core.service.study.StudyService;
 import bg.drow.spellbook.ui.desktop.PreferencesDialog;
 import bg.drow.spellbook.ui.desktop.PreferencesExtractor;
@@ -16,23 +15,10 @@ import bg.drow.spellbook.ui.swing.util.IconManager;
 import com.jidesoft.dialog.ButtonPanel;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
-import java.awt.Dimension;
-import java.awt.Frame;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -40,7 +26,6 @@ import java.awt.event.WindowFocusListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import javax.swing.AbstractAction;
 
 /**
  * @author Sasho
@@ -106,7 +91,7 @@ public class StudyWordsDialog extends BaseDialog {
 
         this.parent = parent;
 
-        dictionaryService = DictionaryServiceImpl.getInstance();
+        dictionaryService = DictionaryService.getInstance();
         dictionaries = dictionaryService.getDictionaries();
 
         studyService = new StudyService();

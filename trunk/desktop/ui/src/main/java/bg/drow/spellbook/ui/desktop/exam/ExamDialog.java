@@ -4,30 +4,19 @@ import bg.drow.spellbook.core.model.Dictionary;
 import bg.drow.spellbook.core.model.Difficulty;
 import bg.drow.spellbook.core.model.Language;
 import bg.drow.spellbook.core.preferences.PreferencesManager;
-import bg.drow.spellbook.core.service.DictionaryServiceImpl;
+import bg.drow.spellbook.core.service.DictionaryService;
 import bg.drow.spellbook.core.service.exam.ExamService;
 import bg.drow.spellbook.ui.desktop.PreferencesDialog;
 import bg.drow.spellbook.ui.desktop.PreferencesExtractor;
-import bg.drow.spellbook.ui.swing.component.BaseDialog;
-import bg.drow.spellbook.ui.swing.util.IconManager;
-import bg.drow.spellbook.core.service.DictionaryService;
 import bg.drow.spellbook.ui.desktop.SpellbookFrame;
+import bg.drow.spellbook.ui.swing.component.BaseDialog;
 import bg.drow.spellbook.ui.swing.component.DifficultyComboBox;
+import bg.drow.spellbook.ui.swing.util.IconManager;
 import com.jidesoft.dialog.ButtonPanel;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.JTextField;
-import javax.swing.Timer;
-import java.awt.Color;
-import java.awt.Frame;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
@@ -41,7 +30,7 @@ import java.util.Set;
  */
 public class ExamDialog extends BaseDialog {
     private ExamService examService = ExamService.getInstance();
-    private final DictionaryService dictionaryService = DictionaryServiceImpl.getInstance();
+    private final DictionaryService dictionaryService = DictionaryService.getInstance();
     private static final PreferencesManager PM = PreferencesManager.getInstance();
 
     private int examWords;

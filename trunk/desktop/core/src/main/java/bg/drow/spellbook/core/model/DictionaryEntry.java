@@ -1,33 +1,21 @@
 package bg.drow.spellbook.core.model;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
  * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  */
-@Entity(name = "DictionaryEntry")
-@Table(name = "DICTIONARY_ENTRIES")
 public class DictionaryEntry extends AbstractEntity {
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    public static final String TABLE_NAME = "DICTIONARY_ENTRIES";
+
     private Dictionary dictionary;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "dictionaryEntry", fetch = FetchType.LAZY)
     private Set<StudySetEntry> dictionaryEntries = new HashSet<StudySetEntry>();
 
-    @Column(nullable = false, unique = true)
     private String word;
-    @Column(name = "word_translation", nullable = false, length = 10000)
     private String translation;
 
-    @Column(name = "updated_by_user", nullable = false)
     private boolean updatedByUser;
 
     public DictionaryEntry() {

@@ -44,16 +44,6 @@
             <artifactId>spellbook-utils</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
         </dependency>
@@ -66,18 +56,14 @@
         <dependency>
             <groupId>com.google.gdata</groupId>
             <artifactId>core</artifactId>
-            <version>1.0</version>
         </dependency>
-
         <dependency>
             <groupId>com.google.gdata</groupId>
             <artifactId>projecthosting</artifactId>
-            <version>2.1</version>
         </dependency>
         <dependency>
             <groupId>com.google</groupId>
             <artifactId>common</artifactId>
-            <version>1.0</version>
         </dependency>
 
         <!-- test -->

@@ -1,26 +1,14 @@
 package bg.drow.spellbook.core.model;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
-@Entity(name = "StudySetEntry")
-@Table(name = "STUDY_ENTRIES")
-
 /**
  *
  * @author Sasho
  */
 public class StudySetEntry extends AbstractEntity {
+    public static final String TABLE_NAME = "STUDY_ENTRIES";
 
-    @ManyToOne
-    @JoinColumn(name="STUDY_SET_ID")
     private StudySet studySet;
 
-    @ManyToOne(optional=false, fetch=FetchType.LAZY)
-    @JoinColumn(name="DICTIONARY_ENTRY_ID")
     private DictionaryEntry dictionaryEntry;
 
     public StudySetEntry() {

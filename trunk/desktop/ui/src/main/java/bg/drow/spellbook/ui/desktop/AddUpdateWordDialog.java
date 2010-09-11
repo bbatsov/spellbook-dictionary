@@ -2,7 +2,6 @@ package bg.drow.spellbook.ui.desktop;
 
 import bg.drow.spellbook.core.model.Dictionary;
 import bg.drow.spellbook.core.service.DictionaryService;
-import bg.drow.spellbook.core.service.DictionaryServiceImpl;
 import bg.drow.spellbook.ui.swing.component.BaseDialog;
 import bg.drow.spellbook.ui.swing.validation.ButtonControllingDocumentListener;
 import com.jidesoft.dialog.ButtonPanel;
@@ -12,20 +11,10 @@ import com.jidesoft.swing.OverlayableIconsFactory;
 import com.jidesoft.swing.OverlayableUtils;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
-import javax.swing.KeyStroke;
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import java.awt.Frame;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -49,7 +38,7 @@ public class AddUpdateWordDialog extends BaseDialog {
     private JButton okButton;
     private static final int FONT_SIZE = 11;
 
-    private static final DictionaryService DICTIONARY_SERVICE = DictionaryServiceImpl.getInstance();
+    private static final DictionaryService DICTIONARY_SERVICE = DictionaryService.getInstance();
     private static final int DEFAULT_WIDTH = 500;
     private static final int DEFAULT_HEIGHT = 500;
 

@@ -4,7 +4,7 @@ import bg.drow.spellbook.core.model.Dictionary;
 import bg.drow.spellbook.core.model.DictionaryEntry;
 import bg.drow.spellbook.core.model.Language;
 import bg.drow.spellbook.core.model.SupportedFileType;
-import bg.drow.spellbook.core.service.DictionaryServiceImpl;
+import bg.drow.spellbook.core.service.DictionaryService;
 import bg.drow.spellbook.ui.swing.component.BaseDialog;
 import bg.drow.spellbook.ui.swing.component.LanguageComboBox;
 import com.jidesoft.dialog.ButtonPanel;
@@ -216,7 +216,7 @@ public class ImportDialog extends BaseDialog {
         }
 
 
-        Dictionary dictionary = DictionaryServiceImpl.getInstance().createDictionary(from, to, dictionaryName, special, smallIconFileByteArray, bigIconFileByteArray);
+        Dictionary dictionary = DictionaryService.getInstance().createDictionary(from, to, dictionaryName, special, smallIconFileByteArray, bigIconFileByteArray);
         return dictionary;
     }
 
@@ -313,7 +313,7 @@ public class ImportDialog extends BaseDialog {
                 e.printStackTrace();
             }
 
-            DictionaryServiceImpl.getInstance().addWords(tDictionaryEntries);
+            DictionaryService.getInstance().addWords(tDictionaryEntries);
 
             getLogger().info("import finished");
         }
@@ -360,7 +360,7 @@ public class ImportDialog extends BaseDialog {
                     }
 
                     if (shouldExit) {
-                        DictionaryServiceImpl.getInstance().addWords(tDictionaryEntries);
+                        DictionaryService.getInstance().addWords(tDictionaryEntries);
                         return;
                     }
                 }
