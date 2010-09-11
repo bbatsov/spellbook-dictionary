@@ -986,7 +986,6 @@ public class SpellbookFrame extends JFrame {
         JMenu toolMenu = new JMenu();
         JMenuItem studyWordsMenuItem = new JMenuItem();
         JMenuItem examMenuItem = new JMenuItem();
-        JMenuItem spellcheckMenuItem = new JMenuItem();
 
         toolMenu.setMnemonic('t');
         toolMenu.setText(TRANSLATOR.translate("Tools(Menu)"));
@@ -1150,7 +1149,6 @@ public class SpellbookFrame extends JFrame {
         pasteButton.setText(null);
         JButton studyButton = new JButton();
         JButton examButton = new JButton();
-        JButton spellcheckButton = new JButton();
         lastToolbarSeparator = new JToolBar.Separator();
         memoryButton = new JButton();
 
