@@ -1,22 +1,15 @@
 package bg.drow.spellbook.core.service.exam;
 
-import bg.drow.spellbook.core.service.DictionaryService;
-import bg.drow.spellbook.core.service.DictionaryServiceImpl;
-import bg.drow.spellbook.core.service.Transactional;
 import bg.drow.spellbook.core.model.Dictionary;
 import bg.drow.spellbook.core.model.Difficulty;
 import bg.drow.spellbook.core.model.ExamScoreEntry;
 import bg.drow.spellbook.core.model.Language;
 import bg.drow.spellbook.core.service.AbstractPersistenceService;
+import bg.drow.spellbook.core.service.DictionaryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.EntityTransaction;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -39,7 +32,7 @@ public class ExamService extends AbstractPersistenceService {
     private ExamService() {
         super();
 
-        dictionaryService = DictionaryServiceImpl.getInstance();
+        dictionaryService = DictionaryService.getInstance();
     }
 
     public static ExamService getInstance() {
@@ -193,7 +186,7 @@ public class ExamService extends AbstractPersistenceService {
             throw new IllegalArgumentException("fromLanguage");
         }
 
-        List<Dictionary> dictionaries = EM.createQuery("select d from Dictionary d where d.fromLanguage = :fromLanguage", Dictionary.class).setParameter("fromLanguage", fromLanguage).getResultList();
+        List<Dictionary> dictionaries = null; //EM.createQuery("select d from Dictionary d where d.fromLanguage = :fromLanguage", Dictionary.class).setParameter("fromLanguage", fromLanguage).getResultList();
 
         List<Language> languagesTo = new ArrayList<Language>(dictionaries.size());
         for (Dictionary dictionary : dictionaries) {
@@ -214,24 +207,25 @@ public class ExamService extends AbstractPersistenceService {
             throw new IllegalArgumentException("difficulty == null");
         }
 
-        words = EM.createQuery("select re.word from RankEntry re where"
-                + " re.rank > :low and re.rank <= :high and LENGTH(re.word) >=3 and "
-                + "exists (select de.word from DictionaryEntry de where de.word = re.word and de.dictionary.fromLanguage = re.language and re.language = :language)").setParameter("low", difficulty.getLow()).setParameter("high", difficulty.getHigh()).setParameter("language", language).getResultList();
+//        words = EM.createQuery("select re.word from RankEntry re where"
+//                + " re.rank > :low and re.rank <= :high and LENGTH(re.word) >=3 and "
+//                + "exists (select de.word from DictionaryEntry de where de.word = re.word and de.dictionary.fromLanguage = re.language and re.language = :language)").setParameter("low", difficulty.getLow()).setParameter("high", difficulty.getHigh()).setParameter("language", language).getResultList();
 
         if (words.isEmpty()) {
             words = dictionaryService.getWordsFromDictionary(dictionary);
         }
     }
 
-    @Transactional
     public void addScoreboardResult(ExamScoreEntry examScoreEntry) {
-        EntityTransaction t = EM.getTransaction();
-        t.begin();
-        EM.persist(examScoreEntry);
-        t.commit();
+//        EntityTransaction t = EM.getTransaction();
+//        t.begin();
+//        EM.persist(examScoreEntry);
+//        t.commit();
     }
 
     public List<ExamScoreEntry> getExamScores() {
-        return EM.createQuery("select se from ExamScoreEntry se order by se.created asc", ExamScoreEntry.class).getResultList();
+        //return EM.createQuery("select se from ExamScoreEntry se order by se.created asc", ExamScoreEntry.class).getResultList();
+
+        return null;
     }
 }

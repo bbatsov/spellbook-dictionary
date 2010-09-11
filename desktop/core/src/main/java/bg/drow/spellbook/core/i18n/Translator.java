@@ -1,10 +1,6 @@
 package bg.drow.spellbook.core.i18n;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * A simple wrapper around resource bundles, useful for translation purposes.

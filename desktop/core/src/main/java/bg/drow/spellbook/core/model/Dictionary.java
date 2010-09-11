@@ -2,64 +2,48 @@ package bg.drow.spellbook.core.model;
 
 import bg.drow.spellbook.core.i18n.Translator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.Lob;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
- *
  * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  */
-@Entity(name = "Dictionary")
-@Table(name = "DICTIONARIES")
-@NamedQueries({
-    @NamedQuery(
-            name = "Dictionary.getAllDictionaries",
-            query = "select d from Dictionary as d"),
-    @NamedQuery(
-            name = "Dictionary.getDictionaryByLanguages",
-            query = "select d from Dictionary d where d.fromLanguage = :fromLanguage and d.toLanguage = :toLanguage")
-})
 public class Dictionary extends AbstractEntity {
     public static final Translator TRANSLATOR = Translator.getTranslator("Model");
 
-    @OneToMany(mappedBy = "dictionary", fetch = FetchType.LAZY)
+    public static final String TABLE_NAME = "DICTIONARIES";
+
     private Set<DictionaryEntry> dictionaryEntries = new HashSet<DictionaryEntry>();
 
-    @OneToMany(mappedBy = "dictionary", fetch = FetchType.LAZY)
     private Set<StudySet> studySets = new HashSet<StudySet>();
 
-    @Column(nullable = false)
     private String name;
 
-    @Enumerated(EnumType.ORDINAL)
-    @Column(name = "from_language")
     private Language fromLanguage;
 
-    @Enumerated(EnumType.ORDINAL)
-    @Column(name = "to_language")
     private Language toLanguage;
 
-    @Column(nullable = false)
     private boolean special;
 
-    @Lob
-    @Column(name = "icon_small", nullable = false, columnDefinition = "varbinary")
     private byte[] iconSmall;
 
-    @Lob
-    @Column(name = "icon_big", nullable = false, columnDefinition = "varbinary")
     private byte[] iconBig;
+
+    public Dictionary() {
+    }
+
+    public Dictionary(ResultSet rs) throws SQLException {
+        super(rs);
+
+        setFromLanguage(Language.values()[(rs.getInt("FROM_LANGUAGE"))]);
+        setToLanguage(Language.values()[(rs.getInt("TO_LANGUAGE"))]);
+        setName(rs.getString("NAME"));
+        setSpecial(rs.getBoolean("SPECIAL"));
+        setIconSmall(rs.getBytes("ICON_SMALL"));
+        setIconBig(rs.getBytes("ICON_BIG"));
+    }
 
     public String getName() {
         return name;
@@ -153,4 +137,5 @@ public class Dictionary extends AbstractEntity {
     public String toString() {
         return TRANSLATOR.translate(name + "(Dictionary)");
     }
+
 }

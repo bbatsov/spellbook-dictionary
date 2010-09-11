@@ -2,20 +2,15 @@ package bg.drow.spellbook.ui.desktop.study;
 
 import bg.drow.spellbook.core.model.Dictionary;
 import bg.drow.spellbook.core.service.DictionaryService;
-import bg.drow.spellbook.core.service.DictionaryServiceImpl;
 import bg.drow.spellbook.ui.swing.component.BaseDialog;
+import net.miginfocom.swing.MigLayout;
 
-import java.awt.Dialog;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import net.miginfocom.swing.MigLayout;
 
 /**
  *
@@ -33,7 +28,7 @@ public class SelectLanguageDialog extends BaseDialog {
     public SelectLanguageDialog(Dialog parent, boolean modal) {
         super(parent, modal);
 
-        dictionaryService = DictionaryServiceImpl.getInstance();
+        dictionaryService = DictionaryService.getInstance();
         dictionaries = dictionaryService.getDictionaries();
 
         setResizable(false);

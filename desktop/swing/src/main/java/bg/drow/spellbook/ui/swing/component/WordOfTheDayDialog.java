@@ -3,28 +3,15 @@ package bg.drow.spellbook.ui.swing.component;
 import bg.drow.spellbook.core.model.Dictionary;
 import bg.drow.spellbook.core.preferences.PreferencesManager;
 import bg.drow.spellbook.core.service.DictionaryService;
-import bg.drow.spellbook.core.service.DictionaryServiceImpl;
 import bg.drow.spellbook.ui.swing.util.IconManager;
 import bg.drow.spellbook.ui.swing.util.SwingUtil;
 import com.jidesoft.dialog.BannerPanel;
 import com.jidesoft.dialog.ButtonPanel;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.border.BevelBorder;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Frame;
-import java.awt.HeadlessException;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -172,7 +159,7 @@ public class WordOfTheDayDialog extends BaseDialog {
     private void showWord(String word) {
         bannerPanel.setSubtitle(getTranslator().translate("Banner(Message)", word));
 
-        translationPane.setText(SwingUtil.formatTranslation(word, DictionaryServiceImpl.getInstance().getTranslation(word, dictionary)));
+        translationPane.setText(SwingUtil.formatTranslation(word, DictionaryService.getInstance().getTranslation(word, dictionary)));
         translationPane.setCaretPosition(0);
     }
 }

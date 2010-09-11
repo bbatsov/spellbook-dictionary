@@ -16,6 +16,8 @@ public class LoginDialog extends BaseDialog {
 
     public LoginDialog(Dialog owner, boolean modal) throws HeadlessException {
         super(owner, modal);
+
+        setSize(200, 200);
     }
 
     @Override

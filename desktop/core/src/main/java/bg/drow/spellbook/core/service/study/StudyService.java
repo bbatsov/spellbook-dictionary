@@ -3,12 +3,9 @@ package bg.drow.spellbook.core.service.study;
 import bg.drow.spellbook.core.model.Dictionary;
 import bg.drow.spellbook.core.model.StudySet;
 import bg.drow.spellbook.core.service.AbstractPersistenceService;
-import bg.drow.spellbook.core.model.DictionaryEntry;
-import bg.drow.spellbook.core.model.StudySetEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.EntityTransaction;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -43,7 +40,9 @@ public class StudyService extends AbstractPersistenceService {
      * @return a list of the words for study
      */
     public List<String> getWordsForStudy(String studySetName) {
-        return EM.createQuery("select se.dictionaryEntry.word from StudySetEntry se where se.studySet.name = :name").setParameter("name", studySetName).getResultList();
+        //return EM.createQuery("select se.dictionaryEntry.word from StudySetEntry se where se.studySet.name = :name").setParameter("name", studySetName).getResultList();
+
+        return null;
     }
 
     /**
@@ -53,7 +52,9 @@ public class StudyService extends AbstractPersistenceService {
      * @return a list of the translations for study
      */
     public List<String> getTranslationsForStudy(String studySetName) {
-        return EM.createQuery("select se.dictionaryEntry.translation from StudySetEntry se where se.studySet.name = :name").setParameter("name", studySetName).getResultList();
+        // return EM.createQuery("select se.dictionaryEntry.translation from StudySetEntry se where se.studySet.name = :name").setParameter("name", studySetName).getResultList();
+
+        return null;
     }
 
     /**
@@ -63,7 +64,9 @@ public class StudyService extends AbstractPersistenceService {
      * @return current number of words for study from respective study set
      */
     public Long getCountOfTheWords(String studySetName) {
-        return (Long) EM.createQuery("select count(*) from StudySetEntry se where se.studySet.name = :name").setParameter("name", studySetName).getSingleResult();
+        // return (Long) EM.createQuery("select count(*) from StudySetEntry se where se.studySet.name = :name").setParameter("name", studySetName).getSingleResult();
+
+        return null;
     }
 
     /**
@@ -73,7 +76,9 @@ public class StudyService extends AbstractPersistenceService {
      * @see bg.drow.spellbook.core.model.StudySet
      */
     public List<String> getNamesOfStudySets() {
-        return EM.createQuery("select ss.name from StudySet ss").getResultList();
+        // return EM.createQuery("select ss.name from StudySet ss").getResultList();
+
+        return null;
     }
 
     /**
@@ -83,7 +88,9 @@ public class StudyService extends AbstractPersistenceService {
      * @see StudySet
      */
     public List<StudySet> getStudySets() {
-        return EM.createQuery("select ss from StudySet ss").getResultList();
+        // return EM.createQuery("select ss from StudySet ss").getResultList();
+
+        return null;
     }
 
     /**
@@ -93,7 +100,9 @@ public class StudyService extends AbstractPersistenceService {
      * @return a StudySet
      */
     public StudySet getStudySet(String name) {
-        return (StudySet) EM.createQuery("select ss from StudySet ss where ss.name = :name").setParameter("name", name).getSingleResult();
+        // return (StudySet) EM.createQuery("select ss from StudySet ss where ss.name = :name").setParameter("name", name).getSingleResult();
+
+        return null;
     }
 
     /**
@@ -111,19 +120,19 @@ public class StudyService extends AbstractPersistenceService {
             throw new IllegalArgumentException("word == null || word.isEmpty()");
         }
 
-        DictionaryEntry de = (DictionaryEntry) EM.createQuery("select de from DictionaryEntry de where de.word = :word and de.dictionary = :dictionary").setParameter("word", word).setParameter("dictionary", dictionary).getSingleResult();
-
-        StudySet ss = (StudySet) EM.createQuery("select ss from StudySet ss where ss.name = :StudySetName").setParameter("StudySetName", studySetName).getSingleResult();
-
-        StudySetEntry se = new StudySetEntry();
-        se.setDictionaryEntry(de);
-        se.setStudySet(ss);
-        ss.setStudySetEntry(se);
-        EntityTransaction t = EM.getTransaction();
-        t.begin();
-        EM.persist(se);
-        EM.persist(ss);
-        t.commit();
+//        DictionaryEntry de = (DictionaryEntry) EM.createQuery("select de from DictionaryEntry de where de.word = :word and de.dictionary = :dictionary").setParameter("word", word).setParameter("dictionary", dictionary).getSingleResult();
+//
+//        StudySet ss = (StudySet) EM.createQuery("select ss from StudySet ss where ss.name = :StudySetName").setParameter("StudySetName", studySetName).getSingleResult();
+//
+//        StudySetEntry se = new StudySetEntry();
+//        se.setDictionaryEntry(de);
+//        se.setStudySet(ss);
+//        ss.setStudySetEntry(se);
+//        EntityTransaction t = EM.getTransaction();
+//        t.begin();
+//        EM.persist(se);
+//        EM.persist(ss);
+//        t.commit();
     }
 
     /**
@@ -133,13 +142,13 @@ public class StudyService extends AbstractPersistenceService {
      * @param studySetName
      */
     public void deleteWord(String word, String studySetName, Dictionary dictionary) {
-        long wordID = (Long) EM.createQuery("select id from DictionaryEntry where word = :word and dictionary = :dictionary").setParameter("word", word.replaceAll("'", "''")).setParameter("dictionary", dictionary).getSingleResult();
-        long studySetID = (Long) EM.createQuery("select id from StudySet where name = :name").setParameter("name", studySetName).getSingleResult();
-
-        EntityTransaction t = EM.getTransaction();
-        t.begin();
-        EM.createNativeQuery("delete from Study_Entries  where study_set_id = :studySetID and dictionary_entry_id = :wordID").setParameter("studySetID", studySetID).setParameter("wordID", wordID).executeUpdate();
-        t.commit();
+//        long wordID = (Long) EM.createQuery("select id from DictionaryEntry where word = :word and dictionary = :dictionary").setParameter("word", word.replaceAll("'", "''")).setParameter("dictionary", dictionary).getSingleResult();
+//        long studySetID = (Long) EM.createQuery("select id from StudySet where name = :name").setParameter("name", studySetName).getSingleResult();
+//
+//        EntityTransaction t = EM.getTransaction();
+//        t.begin();
+//        EM.createNativeQuery("delete from Study_Entries  where study_set_id = :studySetID and dictionary_entry_id = :wordID").setParameter("studySetID", studySetID).setParameter("wordID", wordID).executeUpdate();
+//        t.commit();
     }
 
     /**
@@ -155,10 +164,10 @@ public class StudyService extends AbstractPersistenceService {
         ss.setName(name);
         ss.setDictionary(dictionary);
 
-        EntityTransaction t = EM.getTransaction();
-        t.begin();
-        EM.persist(ss);
-        t.commit();
+//        EntityTransaction t = EM.getTransaction();
+//        t.begin();
+//        EM.persist(ss);
+//        t.commit();
     }
 
     /**
@@ -168,11 +177,11 @@ public class StudyService extends AbstractPersistenceService {
      * @see StudySet
      */
     public void deleteStudySet(String studySetName) {
-        EntityTransaction t = EM.getTransaction();
-        t.begin();
-        EM.createNativeQuery("delete from Study_Entries where study_set_id = (select ss.id from Study_Sets ss where ss.name = :name)").setParameter("name", studySetName).executeUpdate();
-        EM.createQuery("delete from StudySet ss where ss.name = :name").setParameter("name", studySetName).executeUpdate();
-        t.commit();
+//        EntityTransaction t = EM.getTransaction();
+//        t.begin();
+//        EM.createNativeQuery("delete from Study_Entries where study_set_id = (select ss.id from Study_Sets ss where ss.name = :name)").setParameter("name", studySetName).executeUpdate();
+//        EM.createQuery("delete from StudySet ss where ss.name = :name").setParameter("name", studySetName).executeUpdate();
+//        t.commit();
     }
 
     public List<String> getPossiblesTranslations(String translation) {

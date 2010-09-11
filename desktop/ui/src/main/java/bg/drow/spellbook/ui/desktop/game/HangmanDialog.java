@@ -4,7 +4,6 @@ import bg.drow.spellbook.core.model.Dictionary;
 import bg.drow.spellbook.core.model.Difficulty;
 import bg.drow.spellbook.core.model.Language;
 import bg.drow.spellbook.core.service.DictionaryService;
-import bg.drow.spellbook.core.service.DictionaryServiceImpl;
 import bg.drow.spellbook.core.service.exam.ExamService;
 import bg.drow.spellbook.ui.swing.component.BaseDialog;
 import bg.drow.spellbook.ui.swing.component.DifficultyComboBox;
@@ -16,19 +15,10 @@ import com.jidesoft.swing.OverlayableIconsFactory;
 import com.jidesoft.swing.OverlayableUtils;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import java.awt.Font;
-import java.awt.Frame;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashSet;
@@ -43,7 +33,7 @@ import java.util.Set;
  */
 public class HangmanDialog extends BaseDialog {
     private ExamService examService = ExamService.getInstance();
-    private final DictionaryService dictionaryService = DictionaryServiceImpl.getInstance();
+    private final DictionaryService dictionaryService = DictionaryService.getInstance();
 
     private Set<Character> guessedChars = new HashSet<Character>();
     private int attempts = 0;

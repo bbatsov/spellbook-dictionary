@@ -7,7 +7,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import javax.persistence.EntityTransaction;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.BufferedInputStream;
@@ -29,7 +28,7 @@ public class SynchronizeService extends AbstractPersistenceService {
 
     private static final SynchronizeService INSTANCE = new SynchronizeService();
 
-    private static final DictionaryService DICTIONARY_SERVICE = DictionaryServiceImpl.getInstance();
+    private static final DictionaryService DICTIONARY_SERVICE = DictionaryService.getInstance();
 
     public static SynchronizeService getInstance() {
         return INSTANCE;
@@ -114,15 +113,10 @@ public class SynchronizeService extends AbstractPersistenceService {
             }
         }
 
-        EntityTransaction et = EM.getTransaction();
-        et.begin();
-
         SyncStats syncStats = new SyncStats();
         syncStats.setPulledEntries(updateEntries.values().size());
         syncStats.setPushedEntries(0);
 
-        EM.persist(syncStats);
-        et.commit();
     }
 
     public void pushUpdates() {
@@ -130,7 +124,9 @@ public class SynchronizeService extends AbstractPersistenceService {
     }
 
     public List<DictionaryEntry> getLocalChanges() {
-        return EM.createQuery("select de from DictionaryEntry de where de.updatedByUser = true").getResultList();
+        //return EM.createQuery("select de from DictionaryEntry de where de.updatedByUser = true").getResultList();
+
+        return null;
     }
 
     public int getNumberOfLocalChanges() {
@@ -138,14 +134,15 @@ public class SynchronizeService extends AbstractPersistenceService {
     }
 
     public Date getLastSyncDate() {
-        List<SyncStats> syncStats = EM.createQuery("select ss from SyncStats ss order by ss.created desc").getResultList();
-
-        System.out.println("Sync stats size " + syncStats.size());
-
-        if (syncStats.isEmpty()) {
-            return null;
-        } else {
-            return syncStats.get(0).getCreated();
-        }
+//        List<SyncStats> syncStats = EM.createQuery("select ss from SyncStats ss order by ss.created desc").getResultList();
+//
+//        System.out.println("Sync stats size " + syncStats.size());
+//
+//        if (syncStats.isEmpty()) {
+//            return null;
+//        } else {
+//            return syncStats.get(0).getCreated();
+//        }
+        return null;
     }
 }

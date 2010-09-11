@@ -1,37 +1,21 @@
 package bg.drow.spellbook.core.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Table;
-
 /**
  * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  */
-@Entity(name = "ExamScoreEntry")
-@Table(name = "EXAM_SCORE_ENTRIES")
 public class ExamScoreEntry extends AbstractEntity {
+    public static final String TABLE_NAME = "EXAM_SCORE_ENTRIES";
 
-    @Column(name = "total_words", nullable = false)
     private int totalWords;
 
-    @Column(name = "correct_words", nullable = false)
     private int correctWords;
 
-    @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.ORDINAL)
     private Difficulty difficulty;
 
-    @Column(name = "from_lang", nullable = false)
-    @Enumerated(EnumType.ORDINAL)
     private Language fromLanguage;
 
-    @Column(name = "to_lang", nullable = false)
-    @Enumerated(EnumType.ORDINAL)
     private Language toLanguage;
 
     public void setName(String name) {

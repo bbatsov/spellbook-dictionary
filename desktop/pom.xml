@@ -33,7 +33,7 @@
             <timezone>+1</timezone>
         </developer>
     </developers>
-    
+
     <modules>
         <module>core</module>
         <module>ui</module>
@@ -94,11 +94,6 @@
 
             <!-- database -->
             <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-entitymanager</artifactId>
-                <version>3.5.0-Final</version>
-            </dependency>
-            <dependency>
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>
                 <version>1.2.138</version>
@@ -129,6 +124,24 @@
                 <groupId>javax.help</groupId>
                 <artifactId>javahelp</artifactId>
                 <version>2.0.02</version>
+            </dependency>
+
+            <!--google-api-->
+            <dependency>
+                <groupId>com.google.gdata</groupId>
+                <artifactId>core</artifactId>
+                <version>1.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.gdata</groupId>
+                <artifactId>projecthosting</artifactId>
+                <version>2.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google</groupId>
+                <artifactId>common</artifactId>
+                <version>1.0</version>
             </dependency>
 
             <!-- misc -->

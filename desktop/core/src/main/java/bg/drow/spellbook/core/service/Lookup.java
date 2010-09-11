@@ -22,6 +22,6 @@ public class Lookup {
     }
 
     public static void init() {
-        register(DictionaryService.class, DictionaryServiceImpl.getInstance());
+        register(DictionaryService.class, DictionaryService.getInstance());
     }
 }

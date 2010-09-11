@@ -5,7 +5,6 @@ import bg.drow.spellbook.core.model.Difficulty;
 import bg.drow.spellbook.core.model.Language;
 import bg.drow.spellbook.core.preferences.PreferencesManager;
 import bg.drow.spellbook.core.service.DictionaryService;
-import bg.drow.spellbook.core.service.DictionaryServiceImpl;
 import bg.drow.spellbook.ui.swing.component.BaseDialog;
 import bg.drow.spellbook.ui.swing.component.DictionaryComboBox;
 import bg.drow.spellbook.ui.swing.component.DifficultyComboBox;
@@ -37,7 +36,7 @@ import java.util.logging.Logger;
 public class PreferencesDialog extends BaseDialog {
 
     private static final PreferencesManager PM = PreferencesManager.getInstance();
-    private static final DictionaryService DICTIONARY_SERVICE = DictionaryServiceImpl.getInstance();
+    private static final DictionaryService DICTIONARY_SERVICE = DictionaryService.getInstance();
     private JCheckBox alwaysOnTopCheckBox;
     private JCheckBox startMinimizedCheckBox;
     private JCheckBox clipboardIntegrationCheckBox;
