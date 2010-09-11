@@ -4,37 +4,17 @@ import bg.drow.spellbook.ui.swing.util.IconManager;
 import com.jidesoft.dialog.BannerPanel;
 import com.jidesoft.dialog.ButtonPanel;
 import com.jidesoft.icons.JideIconsFactory;
-import com.jidesoft.swing.DefaultOverlayable;
-import com.jidesoft.swing.FolderChooser;
-import com.jidesoft.swing.OverlayTextField;
-import com.jidesoft.swing.OverlayableIconsFactory;
-import com.jidesoft.swing.OverlayableUtils;
+import com.jidesoft.swing.*;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.ProgressMonitor;
-import javax.swing.SwingWorker;
+import javax.swing.*;
 import javax.swing.border.BevelBorder;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Frame;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 
 public class SelectDbDialog extends BaseDialog implements PropertyChangeListener {
@@ -47,7 +27,7 @@ public class SelectDbDialog extends BaseDialog implements PropertyChangeListener
     private String localDbFolder;
     private JButton okButton = createOkButton();
 
-    private static final String DB_URL = "http://spellbook-dictionary.googlecode.com/files/spellbook-db-0.4.tar.bz2";
+    private static final String DB_URL = "http://spellbook-dictionary.googlecode.com/files/spellbook-db-0.4.zip";
     private static final String DOWNLOAD_DIR = System.getProperty("java.io.tmpdir");
     private static final int FONT_SIZE = 14;
     private JLabel localDbFolderValidationLabel;
