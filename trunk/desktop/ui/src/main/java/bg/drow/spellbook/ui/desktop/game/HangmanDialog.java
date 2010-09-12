@@ -6,6 +6,7 @@ import bg.drow.spellbook.core.model.Language;
 import bg.drow.spellbook.core.service.DictionaryService;
 import bg.drow.spellbook.core.service.exam.ExamService;
 import bg.drow.spellbook.ui.swing.component.BaseDialog;
+import bg.drow.spellbook.ui.swing.component.DictionaryComboBox;
 import bg.drow.spellbook.ui.swing.component.DifficultyComboBox;
 import bg.drow.spellbook.ui.swing.util.IconManager;
 import com.jidesoft.dialog.ButtonPanel;
@@ -22,7 +23,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -40,8 +40,7 @@ public class HangmanDialog extends BaseDialog {
 
     private static final int MAX_ATTEMPTS = 7;
 
-    private JComboBox fromLanguageComboBox;
-    private JComboBox toLanguageComboBox;
+    private JComboBox dictionaryComboBox;
     private DifficultyComboBox difficultyComboBox;
     private JLabel guessIconLabel;
     private JLabel feedbackField;
@@ -63,8 +62,7 @@ public class HangmanDialog extends BaseDialog {
 
         getTranslator().reset();
 
-        fromLanguageComboBox = new JComboBox();
-        toLanguageComboBox = new JComboBox();
+        dictionaryComboBox = new DictionaryComboBox(examService.getSuitableDictionaries());
         difficultyComboBox = new DifficultyComboBox();
         startButton = new JButton();
         wordField = new JLabel();
@@ -75,8 +73,6 @@ public class HangmanDialog extends BaseDialog {
         guessButton = new JButton();
         guessIconLabel = new JLabel();
         feedbackField = new JLabel();
-
-        initLanguages();
     }
 
     @Override
@@ -86,23 +82,16 @@ public class HangmanDialog extends BaseDialog {
 
         contentPanel.add(new JLabel(getTranslator().translate("Languages(Label)")), "span, left");
         contentPanel.add(new JLabel(getTranslator().translate("From(Label)")), "left");
-        contentPanel.add(fromLanguageComboBox, "growx");
+        contentPanel.add(dictionaryComboBox, "growx");
 
-        fromLanguageComboBox.addActionListener(new ActionListener() {
+        dictionaryComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                final List<Language> languagesTo = examService.getToLanguages((Language) fromLanguageComboBox.getSelectedItem());
 
-                toLanguageComboBox.removeAllItems();
-
-                for (Language language : languagesTo) {
-                    toLanguageComboBox.addItem(language);
-                }
             }
         });
 
         contentPanel.add(new JLabel(getTranslator().translate("To(Label)")), "right");
-        contentPanel.add(toLanguageComboBox, "right, growx");
         contentPanel.add(new JLabel(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE48)), "center");
 
         contentPanel.add(new JLabel(getTranslator().translate("Difficulty(Label)")), "left");
@@ -205,27 +194,22 @@ public class HangmanDialog extends BaseDialog {
     }
 
     private void startGame() {
-        Dictionary selectedDictionary = dictionaryService.getDictionary((Language) fromLanguageComboBox.getSelectedItem(),
-                (Language) toLanguageComboBox.getSelectedItem());
+        Dictionary selectedDictionary = (Dictionary) dictionaryComboBox.getSelectedItem();
         assert selectedDictionary != null;
-
-        Language selectedLanguage = (Language) fromLanguageComboBox.getSelectedItem();
-        assert selectedLanguage != null;
 
         Difficulty difficulty = (Difficulty) difficultyComboBox.getSelectedItem();
         assert difficulty != null;
 
         getLogger().info("Selected difficulty " + difficulty);
-        getLogger().info("Selected language is " + selectedLanguage);
+        getLogger().info("Selected dictionary is " + selectedDictionary);
 
-        examService.getDifficultyWords(selectedDictionary, selectedLanguage, difficulty);
 
         hangmanDrawing.setStage(0);
         hangmanDrawing.repaint();
 
         // get the current word
-        examService.getExamWord(selectedDictionary);
-        currentWord = examService.examWord();
+        currentWord = examService.getWordsForExam(selectedDictionary, difficulty, 1).get(0);
+
         translationField.setText(dictionaryService.getTranslation(currentWord, selectedDictionary).split("\n")[selectedDictionary.getFromLanguage() == Language.ENGLISH ? 1 : 0]);
 
         nextGuess();
@@ -296,30 +280,11 @@ public class HangmanDialog extends BaseDialog {
     }
 
     private void enableComponents(Boolean enable) {
-        fromLanguageComboBox.setEnabled(enable);
-        toLanguageComboBox.setEnabled(enable);
+        dictionaryComboBox.setEnabled(enable);
         startButton.setEnabled(enable);
         stopButton.setEnabled(!enable);
         guessButton.setEnabled(!enable);
         guessField.setEnabled(!enable);
-    }
-
-    private void initLanguages() {
-        final List<Dictionary> availableDictionaries = dictionaryService.getDictionaries();
-        Set<Language> addedLanguages = new HashSet<Language>();
-        for (Dictionary dictionary : availableDictionaries) {
-            final Language languageFrom = dictionary.getFromLanguage();
-            if (!addedLanguages.contains(languageFrom)) {
-                addedLanguages.add(languageFrom);
-                fromLanguageComboBox.addItem(languageFrom);
-            }
-        }
-
-        final List<Language> languagesTo = examService.getToLanguages((Language) fromLanguageComboBox.getSelectedItem());
-        toLanguageComboBox.removeAllItems();
-        for (Language language : languagesTo) {
-            toLanguageComboBox.addItem(language);
-        }
     }
 
     @Override
