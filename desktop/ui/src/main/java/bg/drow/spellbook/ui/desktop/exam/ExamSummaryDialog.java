@@ -230,7 +230,7 @@ public class ExamSummaryDialog extends BaseDialog {
         JPanel panel = new JPanel(new MigLayout("wrap", "[grow]", "[200]"));
         panel.setName("SB");
 
-        java.util.List<ExamScoreEntry> examScoreEntryList = examService.getExamScores();
+        List<ExamScoreEntry> examScoreEntryList = examService.getExamScores();
 
         scoreboardTableModel = new ScoreboardTableModel(examScoreEntryList);
         panel.add(new JScrollPane(new JTable(scoreboardTableModel)), "grow");

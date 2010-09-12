@@ -10,6 +10,7 @@ import bg.drow.spellbook.ui.desktop.PreferencesDialog;
 import bg.drow.spellbook.ui.desktop.PreferencesExtractor;
 import bg.drow.spellbook.ui.desktop.SpellbookFrame;
 import bg.drow.spellbook.ui.swing.component.BaseDialog;
+import bg.drow.spellbook.ui.swing.component.DictionaryComboBox;
 import bg.drow.spellbook.ui.swing.component.DifficultyComboBox;
 import bg.drow.spellbook.ui.swing.util.IconManager;
 import com.jidesoft.dialog.ButtonPanel;
@@ -20,9 +21,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
@@ -33,9 +32,10 @@ public class ExamDialog extends BaseDialog {
     private final DictionaryService dictionaryService = DictionaryService.getInstance();
     private static final PreferencesManager PM = PreferencesManager.getInstance();
 
-    private int examWords;
+    private int examWordsCount;
     private Difficulty difficulty;
     private Dictionary selectedDictionary;
+    private List<String> examWords;
     private ExamStats examStats;
 
     private Frame parent;
@@ -46,8 +46,7 @@ public class ExamDialog extends BaseDialog {
     }
 
     private TimerStatus timerStatus;
-    private JComboBox fromLanguageComboBox;
-    private JComboBox toLanguageComboBox;
+    private JComboBox dictionaryComboBox;
     private DifficultyComboBox difficultyComboBox;
     private JLabel timerIconLabel;
     private JLabel answerIconLabel;
@@ -66,8 +65,7 @@ public class ExamDialog extends BaseDialog {
 
         this.parent = parent;
 
-        fromLanguageComboBox = new JComboBox();
-        toLanguageComboBox = new JComboBox();
+        dictionaryComboBox = new DictionaryComboBox(examService.getSuitableDictionaries());
         difficultyComboBox = new DifficultyComboBox();
         startButton = new JButton();
         translateField = new JTextField();
@@ -81,8 +79,6 @@ public class ExamDialog extends BaseDialog {
         pauseButton = new JButton();
         feedbackField = new JLabel();
         readExamPreferences();
-
-        initLanguages();
     }
 
     private void readExamPreferences() {
@@ -95,7 +91,7 @@ public class ExamDialog extends BaseDialog {
         timerIconLabel.setVisible(timerEnabled);
 
         timerStatus = timerEnabled ? TimerStatus.STOPPED : TimerStatus.DISABLED;
-        examWords = PM.getInt(PreferencesManager.Preference.EXAM_WORDS, 10);
+        examWordsCount = PM.getInt(PreferencesManager.Preference.EXAM_WORDS, 10);
     }
 
     @Override
@@ -105,23 +101,16 @@ public class ExamDialog extends BaseDialog {
 
         contentPanel.add(new JLabel(getTranslator().translate("Languages(Label)")), "span, left");
         contentPanel.add(new JLabel(getTranslator().translate("From(Label)")), "left");
-        contentPanel.add(fromLanguageComboBox, "growx");
+        contentPanel.add(dictionaryComboBox, "growx");
 
-        fromLanguageComboBox.addActionListener(new ActionListener() {
+        dictionaryComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                final List<Language> languagesTo = examService.getToLanguages((Language) fromLanguageComboBox.getSelectedItem());
-
-                toLanguageComboBox.removeAllItems();
-
-                for (Language language : languagesTo) {
-                    toLanguageComboBox.addItem(language);
-                }
+                selectedDictionary = (Dictionary) dictionaryComboBox.getSelectedItem();
             }
         });
 
         contentPanel.add(new JLabel(getTranslator().translate("To(Label)")), "right");
-        contentPanel.add(toLanguageComboBox, "right, growx");
         contentPanel.add(new JLabel(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE48)), "center");
 
         contentPanel.add(new JLabel(getTranslator().translate("Difficulty(Label)")), "left");
@@ -224,10 +213,7 @@ public class ExamDialog extends BaseDialog {
     private void startExam() {
         settingsButton.getAction().setEnabled(false);
 
-        selectedDictionary = dictionaryService.getDictionary((Language) fromLanguageComboBox.getSelectedItem(),
-                (Language) toLanguageComboBox.getSelectedItem());
-
-        Language selectedLanguage = (Language) fromLanguageComboBox.getSelectedItem();
+        Language selectedLanguage = (Language) dictionaryComboBox.getSelectedItem();
 
         difficulty = (Difficulty) difficultyComboBox.getSelectedItem();
 
@@ -235,17 +221,18 @@ public class ExamDialog extends BaseDialog {
         getLogger().info("Timer is " + timerStatus);
         getLogger().info("Selected language is " + selectedLanguage);
 
-        examService.getDifficultyWords(selectedDictionary, selectedLanguage, difficulty);
+        examWords = examService.getWordsForExam(selectedDictionary, difficulty, examWordsCount);
 
         examStats = new ExamStats();
         examStats.setDifficulty(difficulty);
         examStats.setDictionary(selectedDictionary);
 
-        nextWord();
+        // set the first word
+        translateField.setText(examWords.get(0));
 
         enableComponents(false);
 
-        examWords = PM.getInt(PreferencesManager.Preference.EXAM_WORDS, 10);
+        examWordsCount = PM.getInt(PreferencesManager.Preference.EXAM_WORDS, 10);
 
         if (timerStatus == TimerStatus.STARTED || timerStatus == TimerStatus.STOPPED) {
             timerRunButton();
@@ -257,7 +244,7 @@ public class ExamDialog extends BaseDialog {
             pauseButton.setEnabled(false);
         }
 
-        wordsProgressBar.setMaximum(examWords);
+        wordsProgressBar.setMaximum(examWordsCount);
         wordsProgressBar.setString("0/" + examStats.getTotalWords());
         wordsProgressBar.setValue(1);
         feedbackField.setText(getTranslator().translate("ExamStarted(Label)"));
@@ -287,17 +274,12 @@ public class ExamDialog extends BaseDialog {
         answerField.setText(null);
 
         // reread config
-        examWords = PM.getInt(PreferencesManager.Preference.EXAM_WORDS, examWords);
+        examWordsCount = PM.getInt(PreferencesManager.Preference.EXAM_WORDS, examWordsCount);
 
         // don't show results for empty exam sessions
         if (examStats.getTotalWords() > 0) {
             showExamResult();
         }
-    }
-
-    private void nextWord() {
-        examService.getExamWord(selectedDictionary);
-        translateField.setText(examService.examWord());
     }
 
     private void answered() {
@@ -309,10 +291,10 @@ public class ExamDialog extends BaseDialog {
             timerProgressBar.setValue(0);
         }
 
-        if (examStats.getTotalWords() >= examWords) {
+        if (examStats.getTotalWords() >= examWordsCount) {
             stopExam();
         } else {
-            nextWord();
+            translateField.setText(examWords.get(examStats.getTotalWords()));
         }
 
         answerField.setText(null);
@@ -320,9 +302,7 @@ public class ExamDialog extends BaseDialog {
     }
 
     private void displayTranslation() {
-        examService.possibleAnswers();
-
-        if (examService.isCorrect(answerField.getText())) {
+        if (examService.checkAnswer(selectedDictionary, answerField.getText())) {
             wordsProgressBar.setForeground(Color.GREEN);
             feedbackField.setText(getTranslator().translate("CorrectAnswer(String)"));
             answerIconLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconManager.IconSize.SIZE24));
@@ -359,8 +339,7 @@ public class ExamDialog extends BaseDialog {
     });
 
     private void enableComponents(Boolean enable) {
-        fromLanguageComboBox.setEnabled(enable);
-        toLanguageComboBox.setEnabled(enable);
+        dictionaryComboBox.setEnabled(enable);
         startButton.setEnabled(enable);
         stopButton.setEnabled(!enable);
         answerButton.setEnabled(!enable);
@@ -377,24 +356,6 @@ public class ExamDialog extends BaseDialog {
     private void showExamResult() {
         ExamSummaryDialog examSummaryDialog = new ExamSummaryDialog(this, examStats);
         examSummaryDialog.showExamResult();
-    }
-
-    private void initLanguages() {
-        final List<Dictionary> availableDictionaries = dictionaryService.getDictionaries();
-        Set<Language> addedLanguages = new HashSet<Language>();
-        for (Dictionary dictionary : availableDictionaries) {
-            final Language languageFrom = dictionary.getFromLanguage();
-            if (!addedLanguages.contains(languageFrom)) {
-                addedLanguages.add(languageFrom);
-                fromLanguageComboBox.addItem(languageFrom);
-            }
-        }
-
-        final List<Language> languagesTo = examService.getToLanguages((Language) fromLanguageComboBox.getSelectedItem());
-        toLanguageComboBox.removeAllItems();
-        for (Language language : languagesTo) {
-            toLanguageComboBox.addItem(language);
-        }
     }
 
     @Override
