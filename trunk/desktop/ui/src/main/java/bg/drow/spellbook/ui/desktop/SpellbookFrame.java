@@ -1461,7 +1461,7 @@ public class SpellbookFrame extends JFrame {
             }
 
             if (valid) {
-                LOGGER.info("Auto switching to complementing dictinary...");
+                LOGGER.info("Auto switching to complementing dictionary...");
                 selectDictionary(dictionaryService.getComplement(selectedDictionary), false);
             }
         }
@@ -1497,9 +1497,9 @@ public class SpellbookFrame extends JFrame {
         try {
             Desktop.getDesktop().browse(new URI(SpellbookConstants.HELP_URL));
         } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         } catch (URISyntaxException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
     }
 

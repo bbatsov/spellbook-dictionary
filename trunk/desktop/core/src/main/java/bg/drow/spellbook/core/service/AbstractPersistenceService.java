@@ -21,15 +21,15 @@ public class AbstractPersistenceService {
     protected static Connection dbConnection;
 
     protected AbstractPersistenceService() {
-        // there can be only one entity manager ;-)
+        // there can be only one db connection ;-)
         if (dbConnection == null) {
-            initEntityManager(SpellbookConstants.SPELLBOOK_DB_PATH);
+            initDbConnection(SpellbookConstants.SPELLBOOK_DB_PATH);
         } else {
             LOGGER.info("Entity manager is already initialized");
         }
     }
 
-    private static void initEntityManager(String dbFile) {
+    private static void initDbConnection(String dbFile) {
         LOGGER.info("dictionary database: " + dbFile.replace(".h2.db", ""));
 
         String url = "jdbc:h2:" + dbFile.replace(".h2.db", "");

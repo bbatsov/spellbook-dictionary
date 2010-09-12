@@ -112,7 +112,7 @@ public class DictionaryService extends AbstractPersistenceService {
                     words.add(rs.getString("WORD"));
                 }
             } catch (SQLException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                e.printStackTrace();
             }
 
             dictionaryWordsCache.put(d.getName(), words);
@@ -142,7 +142,7 @@ public class DictionaryService extends AbstractPersistenceService {
                 return null;
             }
         } catch (SQLException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
 
             return null;
         }
@@ -231,8 +231,15 @@ public class DictionaryService extends AbstractPersistenceService {
      * @param dictionary the dictionary to remove the word from
      */
     public void deleteWord(String word, Dictionary dictionary) {
-        //DictionaryEntry dictionaryEntry = EM.createQuery("select de from DictionaryEntry de where de.word = :word and de.dictionary = :dictionary", DictionaryEntry.class).setParameter("word", word).setParameter("dictionary", dictionary).getSingleResult();
-        //dictionaryEntry.remove();
+        try {
+            PreparedStatement ps = dbConnection.prepareStatement("DELETE FROM ? WHERE word=? and dictionary_id=?");
+
+            ps.setString(1, DictionaryEntry.TABLE_NAME);
+            ps.setString(2, word);
+            ps.setLong(3, dictionary.getId());
+        } catch (SQLException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     /**
@@ -401,7 +408,22 @@ public class DictionaryService extends AbstractPersistenceService {
         dictionary.setIconSmall(smallIcon);
         dictionary.setIconBig(bigIcon);
 
-        dictionary.persist();
+        try {
+            PreparedStatement ps = dbConnection.prepareStatement("INSERT INTO ? (name, from_language, to_language, special, icon_small, icon_big) " +
+                    "values(?, ?, ?, ?, ?, ?)");
+
+            ps.setString(1, Dictionary.TABLE_NAME);
+            ps.setString(2, name);
+            ps.setInt(3, from.ordinal());
+            ps.setInt(4, to.ordinal());
+            ps.setBoolean(5, special);
+            ps.setBytes(6, smallIcon);
+            ps.setBytes(7, bigIcon);
+
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         LOGGER.info("Created dictionary " + name + "with id " + dictionary.getId());
 
