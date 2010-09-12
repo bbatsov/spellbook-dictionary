@@ -61,6 +61,6 @@ public abstract class AbstractEntity implements Serializable {
     }
 
     public void remove() {
-        
+
     }
 }

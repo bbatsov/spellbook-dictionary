@@ -126,11 +126,11 @@ public class Dictionary extends AbstractEntity {
 
     @Override
     public int hashCode() {
-        int tresult = name.hashCode();
-        tresult = 31 * tresult + fromLanguage.hashCode();
-        tresult = 31 * tresult + toLanguage.hashCode();
-        tresult = 31 * tresult + (special ? 1 : 0);
-        return tresult;
+        int result = name.hashCode();
+        result = 31 * result + fromLanguage.hashCode();
+        result = 31 * result + toLanguage.hashCode();
+        result = 31 * result + (special ? 1 : 0);
+        return result;
     }
 
     @Override
