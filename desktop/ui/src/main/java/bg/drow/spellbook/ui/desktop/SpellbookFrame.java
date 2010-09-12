@@ -34,6 +34,8 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -1055,7 +1057,13 @@ public class SpellbookFrame extends JFrame {
         reportBugMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                //todo
+                try {
+                    Desktop.getDesktop().browse(new URI(SpellbookConstants.REPORT_ISSUE_URL));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -1486,7 +1494,13 @@ public class SpellbookFrame extends JFrame {
     }
 
     private void showHelpContents() {
-
+        try {
+            Desktop.getDesktop().browse(new URI(SpellbookConstants.HELP_URL));
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (URISyntaxException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
 
