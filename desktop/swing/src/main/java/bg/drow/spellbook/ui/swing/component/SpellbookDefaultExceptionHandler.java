@@ -1,6 +1,5 @@
 package bg.drow.spellbook.ui.swing.component;
 
-import bg.drow.spellbook.core.service.FeedbackService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,8 +11,6 @@ import javax.swing.*;
  */
 public class SpellbookDefaultExceptionHandler implements Thread.UncaughtExceptionHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellbookDefaultExceptionHandler.class);
-
-    private FeedbackService feedbackService;
 
     public SpellbookDefaultExceptionHandler() {
     }
@@ -48,17 +45,7 @@ public class SpellbookDefaultExceptionHandler implements Thread.UncaughtExceptio
 
         if (errorDialog.showDialog() == BaseDialog.RESULT_AFFIRMED) {
             try {
-                if (feedbackService == null) {
-                    LoginDialog loginDialog = new LoginDialog(null, true);
-
-                    if (loginDialog.showDialog() == BaseDialog.RESULT_AFFIRMED) {
-                        feedbackService = new FeedbackService(loginDialog.getUsername(), loginDialog.getPassword());
-
-                        feedbackService.createIssue(e);
-                    }
-                } else {
-                    feedbackService.createIssue(e);
-                }
+                //todo
             } catch (Exception e0) {
                 LOGGER.error(e0.getMessage());
             }

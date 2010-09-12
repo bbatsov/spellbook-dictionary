@@ -88,13 +88,5 @@
             <groupId>net.java.balloontip</groupId>
             <artifactId>balloontip</artifactId>
         </dependency>
-        <dependency>
-            <groupId>javax.help</groupId>
-            <artifactId>javahelp</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.jgoodies</groupId>
-            <artifactId>looks</artifactId>
-        </dependency>
     </dependencies>
 </project>
