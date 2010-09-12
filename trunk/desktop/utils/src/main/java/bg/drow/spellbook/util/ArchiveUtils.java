@@ -11,18 +11,15 @@ import java.util.zip.ZipFile;
 /**
  * A simple util class for dealing with archives.
  *
- * @author Miroslava Stancheva
  * @author <a href="mailto:bozhidar@drow.bg">Bozhidar Batsov</a>
  * @since 0.3
  */
 public class ArchiveUtils {
-    private static final String ARCHIVED_DB_NAME = "spellbook-db-0.4.zip";
     private static final String DB_FILE_NAME = "spellbook.h2.db";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ArchiveUtils.class);
 
-    public static final void copyInputStream(InputStream in, OutputStream out)
-            throws IOException {
+    public static final void copyInputStream(InputStream in, OutputStream out) throws IOException {
         byte[] buffer = new byte[1024];
         int len;
 
@@ -31,10 +28,6 @@ public class ArchiveUtils {
 
         in.close();
         out.close();
-    }
-
-    public static final void main(String[] args) {
-
     }
 
     /**
@@ -63,7 +56,8 @@ public class ArchiveUtils {
                     // Assume directories are stored parents first then children.
                     System.err.println("Extracting directory: " + entry.getName());
                     // This is not robust, just for demonstration purposes.
-                    (new File(currentPath + entry.getName())).mkdir();
+                    boolean created = (new File(currentPath + entry.getName())).mkdir();
+                    
                     continue;
                 }
 
