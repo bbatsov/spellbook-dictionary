@@ -48,10 +48,6 @@
             <url>http://download.java.net/maven/2/</url>
             <layout>default</layout>
         </repository>
-        <repository>
-            <id>spellbook-repo</id>
-            <url>http://spellbook-dictionary.googlecode.com/svn/trunk/desktop/spellbook-maven-repository</url>
-        </repository>
     </repositories>
 
     <build>
@@ -114,34 +110,6 @@
                 <groupId>com.miglayout</groupId>
                 <artifactId>miglayout</artifactId>
                 <version>3.7.1</version>
-            </dependency>
-            <dependency>
-                <groupId>com.jgoodies</groupId>
-                <artifactId>looks</artifactId>
-                <version>2.2.2</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.help</groupId>
-                <artifactId>javahelp</artifactId>
-                <version>2.0.02</version>
-            </dependency>
-
-            <!--google-api-->
-            <dependency>
-                <groupId>com.google.gdata</groupId>
-                <artifactId>core</artifactId>
-                <version>1.0</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.google.gdata</groupId>
-                <artifactId>projecthosting</artifactId>
-                <version>2.1</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google</groupId>
-                <artifactId>common</artifactId>
-                <version>1.0</version>
             </dependency>
 
             <!-- misc -->

@@ -52,20 +52,6 @@
             <artifactId>slf4j-simple</artifactId>
         </dependency>
 
-        <!--google-api-->
-        <dependency>
-            <groupId>com.google.gdata</groupId>
-            <artifactId>core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.gdata</groupId>
-            <artifactId>projecthosting</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google</groupId>
-            <artifactId>common</artifactId>
-        </dependency>
-
         <!-- test -->
         <dependency>
             <groupId>junit</groupId>

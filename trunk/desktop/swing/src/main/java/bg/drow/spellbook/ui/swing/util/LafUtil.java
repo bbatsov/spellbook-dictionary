@@ -1,6 +1,6 @@
 package bg.drow.spellbook.ui.swing.util;
 
-import javax.swing.UIManager;
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,17 +12,17 @@ import java.util.List;
  * @since 0.4
  */
 public class LafUtil {
-    private final transient static String[] names = {
-            "JGoodies Plastic",
-            "JGoodies PlasticXP",
-            "JGoodies Plastic3D",
-            "JGoodies Windows"};
-
-    private final transient static String[] classes = {
-            "com.jgoodies.looks.plastic.PlasticLookAndFeel",
-            "com.jgoodies.looks.plastic.PlasticXPLookAndFeel",
-            "com.jgoodies.looks.plastic.Plastic3DLookAndFeel",
-            "com.jgoodies.looks.windows.WindowsLookAndFeel"};
+//    private final transient static String[] names = {
+//            "JGoodies Plastic",
+//            "JGoodies PlasticXP",
+//            "JGoodies Plastic3D",
+//            "JGoodies Windows"};
+//
+//    private final transient static String[] classes = {
+//            "com.jgoodies.looks.plastic.PlasticLookAndFeel",
+//            "com.jgoodies.looks.plastic.PlasticXPLookAndFeel",
+//            "com.jgoodies.looks.plastic.Plastic3DLookAndFeel",
+//            "com.jgoodies.looks.windows.WindowsLookAndFeel"};
 
     public static List<UIManager.LookAndFeelInfo> getAvailableLookAndFeels() {
         final List<UIManager.LookAndFeelInfo> lookAndFeelInfos = new ArrayList<UIManager.LookAndFeelInfo>();
@@ -30,9 +30,9 @@ public class LafUtil {
         // build the look and feel section
         lookAndFeelInfos.addAll(Arrays.asList(UIManager.getInstalledLookAndFeels()));
 
-        for (int i = 0; i < names.length; i++) {
-            lookAndFeelInfos.add(new UIManager.LookAndFeelInfo(names[i], classes[i]));
-        }
+//        for (int i = 0; i < names.length; i++) {
+//            lookAndFeelInfos.add(new UIManager.LookAndFeelInfo(names[i], classes[i]));
+//        }
 
         return lookAndFeelInfos;
     }

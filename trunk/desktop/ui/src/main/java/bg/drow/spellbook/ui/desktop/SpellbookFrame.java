@@ -12,8 +12,6 @@ import bg.drow.spellbook.core.service.Lookup;
 import bg.drow.spellbook.ui.desktop.exam.ExamDialog;
 import bg.drow.spellbook.ui.desktop.game.HangmanDialog;
 import bg.drow.spellbook.ui.desktop.study.StudyWordsDialog;
-import bg.drow.spellbook.ui.swing.component.IssueDialog;
-import bg.drow.spellbook.ui.swing.component.JHLauncher;
 import bg.drow.spellbook.ui.swing.component.WordOfTheDayDialog;
 import bg.drow.spellbook.ui.swing.model.ListBackedListModel;
 import bg.drow.spellbook.ui.swing.util.IconManager;
@@ -1057,7 +1055,7 @@ public class SpellbookFrame extends JFrame {
         reportBugMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                new IssueDialog().showDialog();
+                //todo
             }
         });
 
@@ -1488,8 +1486,7 @@ public class SpellbookFrame extends JFrame {
     }
 
     private void showHelpContents() {
-        JHLauncher launcher = new JHLauncher();
-        launcher.setup();
+
     }
 
 

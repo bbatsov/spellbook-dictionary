@@ -35,10 +35,6 @@
             <artifactId>miglayout</artifactId>
         </dependency>
         <dependency>
-            <groupId>javax.help</groupId>
-            <artifactId>javahelp</artifactId>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
