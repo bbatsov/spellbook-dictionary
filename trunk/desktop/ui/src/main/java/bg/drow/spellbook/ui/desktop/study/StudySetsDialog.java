@@ -7,6 +7,7 @@ import bg.drow.spellbook.core.preferences.PreferencesManager;
 import bg.drow.spellbook.core.service.DictionaryService;
 import bg.drow.spellbook.core.service.study.StudyService;
 import bg.drow.spellbook.ui.swing.component.BaseDialog;
+import com.google.common.collect.Lists;
 import com.jidesoft.swing.AutoCompletion;
 import net.miginfocom.swing.MigLayout;
 
@@ -18,7 +19,6 @@ import javax.swing.event.PopupMenuListener;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,11 +28,11 @@ public class StudySetsDialog extends BaseDialog {
 
     private long countOFTheWords;
     private final DictionaryService dictionaryService;
-    private List<String> wordsForStudy = new ArrayList<String>();
-    private List<String> translationsForStudy = new ArrayList<String>();
-    private List<String> words = new ArrayList<String>();
-    private List<Dictionary> dictionaries = new ArrayList<Dictionary>();
-    private List<StudySet> studySets = new ArrayList<StudySet>();
+    private List<String> wordsForStudy = Lists.newArrayList();
+    private List<String> translationsForStudy = Lists.newArrayList();
+    private List<String> words = Lists.newArrayList();
+    private List<Dictionary> dictionaries = Lists.newArrayList();
+    private List<StudySet> studySets = Lists.newArrayList();
     private final StudyService studyService;
     private static final PreferencesManager PM = PreferencesManager.getInstance();
     private Dictionary selectedDictionary = null;

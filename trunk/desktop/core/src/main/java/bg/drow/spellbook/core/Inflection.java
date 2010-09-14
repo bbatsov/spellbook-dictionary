@@ -1,6 +1,7 @@
 package bg.drow.spellbook.core;
 
-import java.util.ArrayList;
+import com.google.common.collect.Lists;
+
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -11,9 +12,9 @@ import java.util.regex.Pattern;
  */
 public class Inflection {
 
-    private static final List<Inflection> plural = new ArrayList<Inflection>();
-    private static final List<Inflection> singular = new ArrayList<Inflection>();
-    private static final List<String> uncountable = new ArrayList<String>();
+    private static final List<Inflection> plural = Lists.newArrayList();
+    private static final List<Inflection> singular = Lists.newArrayList();
+    private static final List<String> uncountable = Lists.newArrayList();
 
     static {
         // plural is "singular to plural form"

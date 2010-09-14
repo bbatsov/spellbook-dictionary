@@ -4,6 +4,7 @@ import bg.drow.spellbook.core.model.Dictionary;
 import bg.drow.spellbook.core.service.DictionaryService;
 import bg.drow.spellbook.ui.swing.component.BaseDialog;
 import bg.drow.spellbook.ui.swing.validation.ButtonControllingDocumentListener;
+import com.google.common.collect.Lists;
 import com.jidesoft.dialog.ButtonPanel;
 import com.jidesoft.swing.DefaultOverlayable;
 import com.jidesoft.swing.OverlayTextField;
@@ -17,7 +18,6 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,7 +27,7 @@ import java.util.List;
  * @since 0.3
  */
 public class AddUpdateWordDialog extends BaseDialog {
-    private List<String> translationRows = new ArrayList<String>();
+    private List<String> translationRows = Lists.newArrayList();
     private boolean whetherAddWord = false;
     private JButton addButton;
     private JTextField newMeaningTextField;
@@ -195,7 +195,7 @@ public class AddUpdateWordDialog extends BaseDialog {
     }
 
     private List<String> splitTranslationOfRows(String translation) {
-        List<String> rows = new ArrayList<String>();
+        List<String> rows = Lists.newArrayList();
         int endIndex = 0;
         while (translation.contains("\n")) {
             endIndex = translation.indexOf("\n");

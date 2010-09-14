@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -105,7 +104,7 @@ public class DictionaryService extends AbstractPersistenceService {
         if (!DICTIONARY_CACHE.containsKey(d.getName())) {
             LOGGER.info("Caching dictionary " + d.getName());
 
-            List<String> words = new ArrayList<String>();
+            List<String> words = Lists.newArrayList();
 
             try {
                 PreparedStatement ps = dbConnection.prepareStatement("select word from Dictionary_Entries "
@@ -382,7 +381,7 @@ public class DictionaryService extends AbstractPersistenceService {
      * @return the dictionary's complement
      */
     public Dictionary getComplement(Dictionary dictionary) {
-        List<Dictionary> candidates = new ArrayList<Dictionary>();
+        List<Dictionary> candidates = Lists.newArrayList();
 
         List<Dictionary> dictionaries = getDictionaries();
 

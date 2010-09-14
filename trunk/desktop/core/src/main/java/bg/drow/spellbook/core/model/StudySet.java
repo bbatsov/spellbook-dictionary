@@ -1,6 +1,7 @@
 package bg.drow.spellbook.core.model;
 
-import java.util.ArrayList;
+import com.google.common.collect.Lists;
+
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
 public class StudySet extends AbstractEntity {
 
     private Dictionary dictionary;
-    private List<StudySetEntry> studySetEntries = new ArrayList<StudySetEntry>();
+    private List<StudySetEntry> studySetEntries = Lists.newArrayList();
     private String name;
 
     public void setStudySetEntry(StudySetEntry studySetEntries) {

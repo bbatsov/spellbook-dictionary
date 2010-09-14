@@ -5,6 +5,7 @@ import bg.drow.spellbook.core.preferences.PreferencesManager;
 import bg.drow.spellbook.core.service.DictionaryService;
 import bg.drow.spellbook.ui.swing.util.IconManager;
 import bg.drow.spellbook.ui.swing.util.SwingUtil;
+import com.google.common.collect.Lists;
 import com.jidesoft.dialog.BannerPanel;
 import com.jidesoft.dialog.ButtonPanel;
 import net.miginfocom.swing.MigLayout;
@@ -14,7 +15,6 @@ import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -27,7 +27,7 @@ import java.util.Random;
 public class WordOfTheDayDialog extends BaseDialog {
     private List<String> words;
     private Dictionary dictionary;
-    private List<String> wordsShown = new ArrayList<String>();
+    private List<String> wordsShown = Lists.newArrayList();
     private int currentIndex;
     private JTextPane translationPane;
     private BannerPanel bannerPanel;

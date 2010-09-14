@@ -10,6 +10,7 @@ import bg.drow.spellbook.ui.swing.component.DictionaryComboBox;
 import bg.drow.spellbook.ui.swing.component.DifficultyComboBox;
 import bg.drow.spellbook.ui.swing.util.IconManager;
 import bg.drow.spellbook.ui.swing.util.LafUtil;
+import com.google.common.collect.Lists;
 import com.jidesoft.dialog.ButtonPanel;
 import net.miginfocom.swing.MigLayout;
 
@@ -22,7 +23,6 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -169,7 +169,7 @@ public class PreferencesDialog extends BaseDialog {
 
         final List<LookAndFeelInfo> lookAndFeelInfos = LafUtil.getAvailableLookAndFeels();
 
-        List<String> lookAndFeelNames = new ArrayList<String>();
+        List<String> lookAndFeelNames = Lists.newArrayList();
         lookAndFeelNames.add("System");
 
         for (UIManager.LookAndFeelInfo lookAndFeelInfo : lookAndFeelInfos) {

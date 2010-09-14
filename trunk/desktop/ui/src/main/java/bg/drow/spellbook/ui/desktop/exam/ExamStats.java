@@ -3,8 +3,8 @@ package bg.drow.spellbook.ui.desktop.exam;
 import bg.drow.spellbook.core.model.Dictionary;
 import bg.drow.spellbook.core.model.Difficulty;
 import bg.drow.spellbook.core.model.ExamScoreEntry;
+import com.google.common.collect.Lists;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -17,8 +17,8 @@ import java.util.List;
 public class ExamStats {
     private Difficulty difficulty;
     private Dictionary dictionary;
-    private List<String> incorrectWords = new ArrayList<String>();
-    private List<String> correctWords = new ArrayList<String>();
+    private List<String> incorrectWords = Lists.newArrayList();
+    private List<String> correctWords = Lists.newArrayList();
     private Date startTime = new Date();
     private Date endTime;
 
