@@ -18,6 +18,7 @@ import bg.drow.spellbook.ui.swing.util.IconManager;
 import bg.drow.spellbook.ui.swing.util.SwingUtil;
 import bg.drow.spellbook.util.CaseInsensitiveStringComparator;
 import bg.drow.spellbook.util.SearchUtils;
+import com.google.common.collect.Lists;
 import com.jidesoft.dialog.StandardDialog;
 import com.jidesoft.hints.ListDataIntelliHints;
 import com.jidesoft.swing.*;
@@ -37,7 +38,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
@@ -63,7 +63,7 @@ public class SpellbookFrame extends JFrame {
     private ScheduledExecutorService memoryUsageExecutorService;
     private TrayIcon trayIcon;
     private boolean exactMatch = false;
-    private List<String> searchedWords = new ArrayList<String>();
+    private List<String> searchedWords = Lists.newArrayList();
     private int searchWordsIndex = -1;
     private static final int BYTES_IN_ONE_MEGABYTE = 1024 * 1024;
     private static DictionaryService dictionaryService;
@@ -1468,7 +1468,7 @@ public class SpellbookFrame extends JFrame {
     }
 
     private List<String> explodeString(String string) {
-        List<String> result = new ArrayList<String>();
+        List<String> result = Lists.newArrayList();
 
         for (int i = 0; i < string.length(); i++) {
             result.add(string.substring(i, i + 1));

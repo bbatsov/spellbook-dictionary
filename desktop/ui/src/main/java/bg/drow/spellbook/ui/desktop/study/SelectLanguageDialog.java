@@ -3,13 +3,13 @@ package bg.drow.spellbook.ui.desktop.study;
 import bg.drow.spellbook.core.model.Dictionary;
 import bg.drow.spellbook.core.service.DictionaryService;
 import bg.drow.spellbook.ui.swing.component.BaseDialog;
+import com.google.common.collect.Lists;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,7 +19,7 @@ import java.util.List;
 public class SelectLanguageDialog extends BaseDialog {
 
     private final DictionaryService dictionaryService;
-    private List<Dictionary> dictionaries = new ArrayList<Dictionary>();
+    private List<Dictionary> dictionaries = Lists.newArrayList();
     private Dictionary selectedDictionary = new Dictionary();
     private boolean dictionaryIsSelected = false;
     JComboBox selectLanguageComboBox = new JComboBox();

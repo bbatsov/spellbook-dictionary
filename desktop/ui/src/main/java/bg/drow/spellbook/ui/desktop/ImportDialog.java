@@ -7,6 +7,7 @@ import bg.drow.spellbook.core.model.SupportedFileType;
 import bg.drow.spellbook.core.service.DictionaryService;
 import bg.drow.spellbook.ui.swing.component.BaseDialog;
 import bg.drow.spellbook.ui.swing.component.LanguageComboBox;
+import com.google.common.collect.Lists;
 import com.jidesoft.dialog.ButtonPanel;
 import net.miginfocom.swing.MigLayout;
 
@@ -22,7 +23,6 @@ import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -252,7 +252,7 @@ public class ImportDialog extends BaseDialog {
 
             Dictionary dictionary = createDictionary(from, to, dictionaryName, special, smallIconPath, bigIconPath);
 
-            List<DictionaryEntry> tDictionaryEntries = new ArrayList<DictionaryEntry>();
+            List<DictionaryEntry> tDictionaryEntries = Lists.newArrayList();
 
             try {
                 RandomAccessFile file = new RandomAccessFile(fileName, "r");
@@ -329,7 +329,7 @@ public class ImportDialog extends BaseDialog {
             BufferedReader in = null;
             try {
                 in = new BufferedReader(new FileReader(fileName));
-                List<DictionaryEntry> tDictionaryEntries = new ArrayList<DictionaryEntry>();
+                List<DictionaryEntry> tDictionaryEntries = Lists.newArrayList();
                 String line;
                 boolean shouldExit = false;
                 int count = 0;

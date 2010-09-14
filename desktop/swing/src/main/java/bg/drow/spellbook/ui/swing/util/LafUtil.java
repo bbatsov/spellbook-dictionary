@@ -1,7 +1,8 @@
 package bg.drow.spellbook.ui.swing.util;
 
+import com.google.common.collect.Lists;
+
 import javax.swing.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class LafUtil {
 //            "com.jgoodies.looks.windows.WindowsLookAndFeel"};
 
     public static List<UIManager.LookAndFeelInfo> getAvailableLookAndFeels() {
-        final List<UIManager.LookAndFeelInfo> lookAndFeelInfos = new ArrayList<UIManager.LookAndFeelInfo>();
+        final List<UIManager.LookAndFeelInfo> lookAndFeelInfos = Lists.newArrayList();
 
         // build the look and feel section
         lookAndFeelInfos.addAll(Arrays.asList(UIManager.getInstalledLookAndFeels()));

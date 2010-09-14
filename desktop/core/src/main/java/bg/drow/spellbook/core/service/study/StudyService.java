@@ -3,6 +3,7 @@ package bg.drow.spellbook.core.service.study;
 import bg.drow.spellbook.core.model.Dictionary;
 import bg.drow.spellbook.core.model.StudySet;
 import bg.drow.spellbook.core.service.AbstractPersistenceService;
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +20,7 @@ import java.util.regex.Pattern;
 public class StudyService extends AbstractPersistenceService {
     private static final Logger LOGGER = LoggerFactory.getLogger(StudyService.class);
 
-    private List<String> translations = new ArrayList<String>();
+    private List<String> translations = Lists.newArrayList();
 
     /**
      * Builds a service object.
@@ -187,23 +188,23 @@ public class StudyService extends AbstractPersistenceService {
     public List<String> getPossiblesTranslations(String translation) {
         translation = translation.toLowerCase();
 
-        List<String> rows = new ArrayList<String>();
+        List<String> rows = Lists.newArrayList();
         rows = splitTranslationOfRows(translation);
 
-        List<String> rowsWithPossiblesTranslations = new ArrayList<String>();
+        List<String> rowsWithPossiblesTranslations = Lists.newArrayList();
         rowsWithPossiblesTranslations = getRowsWithPossiblesTranslations(rows);
 
-        List<String> rowsWithPossiblesTranslationsWithoutUnneededThings = new ArrayList<String>();
+        List<String> rowsWithPossiblesTranslationsWithoutUnneededThings = Lists.newArrayList();
         rowsWithPossiblesTranslationsWithoutUnneededThings = removingAllUnneededThings(rowsWithPossiblesTranslations);
 
-        List<String> possibleTranslations = new ArrayList<String>();
+        List<String> possibleTranslations = Lists.newArrayList();
         possibleTranslations = splitAllTranslations(rowsWithPossiblesTranslationsWithoutUnneededThings);
 
         return possibleTranslations;
     }
 
     private List<String> splitTranslationOfRows(String translation) {
-        List<String> rows = new ArrayList<String>();
+        List<String> rows = Lists.newArrayList();
         int endIndex = 0;
         while (translation.contains("\n")) {
             endIndex = translation.indexOf("\n");
@@ -215,7 +216,7 @@ public class StudyService extends AbstractPersistenceService {
     }
 
     private List<String> getRowsWithPossiblesTranslations(List<String> rows) {
-        List<String> rowsWithPossiblesTranslations = new ArrayList<String>();
+        List<String> rowsWithPossiblesTranslations = Lists.newArrayList();
         String id1 = " ";
         String id2 = " ";
         int beginIndex = 0;
@@ -271,7 +272,7 @@ public class StudyService extends AbstractPersistenceService {
     }
 
     private List<String> removingAllUnneededThings(List<String> rowsWithPossiblesTranslations) {
-        List<String> rowsWithPossiblesTranslationsWithoutAbbreviations = new ArrayList<String>();
+        List<String> rowsWithPossiblesTranslationsWithoutAbbreviations = Lists.newArrayList();
         String rowWithoutAbbreviations = null;
         int beginIndex = 0;
         int endIndex = 0;
@@ -332,7 +333,7 @@ public class StudyService extends AbstractPersistenceService {
 
     private List<String> splitAllTranslations(List<String> rowsWithPossiblesTranslationsWithoutAbbreviations) {
         String[] translationsFromRow = null;
-        List<String> possibleTranslations = new ArrayList<String>();
+        List<String> possibleTranslations = Lists.newArrayList();
         for (String row : rowsWithPossiblesTranslationsWithoutAbbreviations) {
             translationsFromRow = row.split("[,|!|?]+");
             for (String possibleTranslation : translationsFromRow) {
@@ -364,7 +365,7 @@ public class StudyService extends AbstractPersistenceService {
 
     public void possibleAnswers(String translation) {
 
-        translations = new ArrayList<String>();
+        translations = Lists.newArrayList();
         translation = translation.toLowerCase();
 
         //Removes the uneeded characters from the translation

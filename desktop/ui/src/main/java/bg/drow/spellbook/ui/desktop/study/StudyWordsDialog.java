@@ -12,6 +12,7 @@ import bg.drow.spellbook.ui.desktop.SpellbookFrame;
 import bg.drow.spellbook.ui.swing.component.BaseDialog;
 import bg.drow.spellbook.ui.swing.component.DictionaryComboBox;
 import bg.drow.spellbook.ui.swing.util.IconManager;
+import com.google.common.collect.Lists;
 import com.jidesoft.dialog.ButtonPanel;
 import net.miginfocom.swing.MigLayout;
 
@@ -23,7 +24,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -36,12 +36,12 @@ public class StudyWordsDialog extends BaseDialog {
     private final DictionaryService dictionaryService;
     private static final PreferencesManager PM = PreferencesManager.getInstance();
     private SelectedDictionary selectedDictionary = SelectedDictionary.EN_BG;
-    private List<String> wordsForLearning = new ArrayList<String>();
-    private List<String> translationForLearning = new ArrayList<String>();
-    private List<String> shuffleWordsForLearning = new ArrayList<String>();
-    private List<String> shuffleTranslationForLearning = new ArrayList<String>();
-    private List<Dictionary> dictionaries = new ArrayList<Dictionary>();
-    private List<StudySet> studySets = new ArrayList<StudySet>();
+    private List<String> wordsForLearning = Lists.newArrayList();
+    private List<String> translationForLearning = Lists.newArrayList();
+    private List<String> shuffleWordsForLearning = Lists.newArrayList();
+    private List<String> shuffleTranslationForLearning = Lists.newArrayList();
+    private List<Dictionary> dictionaries = Lists.newArrayList();
+    private List<StudySet> studySets = Lists.newArrayList();
     private int wordIndex = 0;
     private long countOfWords;
     private Integer correctAnswer;
@@ -232,7 +232,7 @@ public class StudyWordsDialog extends BaseDialog {
         if (studySetsComboBox.getItemAt(0) != null) {
             selectedStudySet = studyService.getStudySet((String) studySetsComboBox.getSelectedItem());
         }
-        List<Dictionary> possibleDictionaries = new ArrayList<Dictionary>();
+        List<Dictionary> possibleDictionaries = Lists.newArrayList();
         if (!selectedStudySet.getStudySetEntries().isEmpty()) {
             String languageForStudy = (String) selectedStudySet.getStudySetEntries().get(0).getDictionaryEntry().getDictionary().getFromLanguage().getName();
             for (Dictionary dict : dictionaries) {
@@ -537,8 +537,8 @@ public class StudyWordsDialog extends BaseDialog {
             showWordWhenStartTheStudy(wordsForLearning, translationForLearning);
         }
         if (randomRadioButton.isSelected()) {
-            shuffleWordsForLearning = new ArrayList<String>();
-            shuffleTranslationForLearning = new ArrayList<String>();
+            shuffleWordsForLearning = Lists.newArrayList();
+            shuffleTranslationForLearning = Lists.newArrayList();
             shuffle(wordsForLearning, translationForLearning);
             howToEnumerate = HowToEnumerate.RANDOM;
             wordIndex = 0;
@@ -578,8 +578,8 @@ public class StudyWordsDialog extends BaseDialog {
     private void shuffle(List<String> words, List<String> translations) {
         if (words.size() > 0 && translations.size() > 0) {
 
-            List<String> copyWords = new ArrayList<String>();
-            List<String> copyTranslations = new ArrayList<String>();
+            List<String> copyWords = Lists.newArrayList();
+            List<String> copyTranslations = Lists.newArrayList();
 
             for (String word : words) {
                 copyWords.add(word);
@@ -610,8 +610,8 @@ public class StudyWordsDialog extends BaseDialog {
             answerField.requestFocus();
         }
 
-        List<String> possibleAnswers = new ArrayList<String>();
-        List<String> anotherPossibleAnswers = new ArrayList<String>();
+        List<String> possibleAnswers = Lists.newArrayList();
+        List<String> anotherPossibleAnswers = Lists.newArrayList();
         if (dictionary == SelectedDictionary.BG_EN) {
             possibleAnswers.add(translations.get(wordIndex));
         } else {
