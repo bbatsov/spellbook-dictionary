@@ -4,6 +4,8 @@ import bg.drow.spellbook.core.model.Dictionary;
 import bg.drow.spellbook.core.model.DictionaryEntry;
 import bg.drow.spellbook.core.model.Language;
 import bg.drow.spellbook.core.model.RankEntry;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +27,8 @@ public class DictionaryService extends AbstractPersistenceService {
     private static final Logger LOGGER = LoggerFactory.getLogger(DictionaryService.class);
 
     private static final DictionaryService INSTANCE = new DictionaryService();
-    private static Map<String, List<String>> dictionaryWordsCache = new HashMap<String, List<String>>();
+
+    private static final Map<String, List<String>> DICTIONARY_CACHE = Maps.newHashMap();
 
     public DictionaryService() {
         super();
@@ -46,7 +49,7 @@ public class DictionaryService extends AbstractPersistenceService {
      * @return a list of available dictionaries, empty list if none are available
      */
     public List<Dictionary> getDictionaries() {
-        List<Dictionary> result = new ArrayList<Dictionary>();
+        List<Dictionary> result = Lists.newArrayList();
 
         try {
             PreparedStatement ps = dbConnection.prepareStatement("select * from DICTIONARIES");
@@ -63,8 +66,10 @@ public class DictionaryService extends AbstractPersistenceService {
         } catch (SQLException e) {
             e.printStackTrace();
 
-            return result;
+            System.exit(-1);
         }
+
+        return result;
     }
 
     /**
@@ -97,7 +102,7 @@ public class DictionaryService extends AbstractPersistenceService {
      * @return a list of the words in the dictionary
      */
     public List<String> getWordsFromDictionary(Dictionary d) {
-        if (!dictionaryWordsCache.containsKey(d.getName())) {
+        if (!DICTIONARY_CACHE.containsKey(d.getName())) {
             LOGGER.info("Caching dictionary " + d.getName());
 
             List<String> words = new ArrayList<String>();
@@ -115,12 +120,12 @@ public class DictionaryService extends AbstractPersistenceService {
                 e.printStackTrace();
             }
 
-            dictionaryWordsCache.put(d.getName(), words);
+            DICTIONARY_CACHE.put(d.getName(), words);
         } else {
             LOGGER.info("Loading from cache dictionary " + d.getName());
         }
 
-        return dictionaryWordsCache.get(d.getName());
+        return DICTIONARY_CACHE.get(d.getName());
     }
 
     /**
