@@ -17,6 +17,7 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Locale;
 
 /**
  * Base dialog class in Spellbook.
@@ -158,7 +159,7 @@ public abstract class BaseDialog extends StandardDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    Desktop.getDesktop().browse(new URI(SpellbookConstants.HELP_URL));
+                    Desktop.getDesktop().browse(new URI(SpellbookConstants.HELP_URL + (Locale.getDefault().getCountry().equals("BG") ? "Bulgarian" : "English")));
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 } catch (URISyntaxException e1) {
