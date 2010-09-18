@@ -95,11 +95,11 @@ public class ExamDialog extends BaseDialog {
 
     @Override
     public JComponent createContentPanel() {
-        JPanel contentPanel = new JPanel(new MigLayout("wrap 5", "[grow][grow][grow][grow][grow]", "[grow][][][][grow][grow][grow][grow][][grow][grow][]"));
+        JPanel contentPanel = new JPanel(new MigLayout("wrap 4", "[grow][grow][grow][grow]", "[grow][][][][grow][grow][grow][grow][][grow][grow][]"));
         contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         contentPanel.add(new JLabel(getTranslator().translate("Languages(Label)")), "span, left");
-        contentPanel.add(new JLabel(getTranslator().translate("From(Label)")), "left");
+        contentPanel.add(new JLabel(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE48)), "center");
         contentPanel.add(dictionaryComboBox, "growx");
 
         dictionaryComboBox.addActionListener(new ActionListener() {
@@ -109,13 +109,12 @@ public class ExamDialog extends BaseDialog {
             }
         });
 
-        contentPanel.add(new JLabel(getTranslator().translate("To(Label)")), "right");
-        contentPanel.add(new JLabel(IconManager.getImageIcon("dictionary.png", IconManager.IconSize.SIZE48)), "center");
-
         contentPanel.add(new JLabel(getTranslator().translate("Difficulty(Label)")), "left");
         contentPanel.add(difficultyComboBox, "growx");
 
-        contentPanel.add(startButton, "growx");
+        JPanel buttonPanel = new JPanel(new MigLayout("wrap 3", "[grow][grow][grow]", "[]"));
+
+        buttonPanel.add(startButton, "growx");
         startButton.setIcon(IconManager.getMenuIcon("media_play_green.png"));
         startButton.setText(getTranslator().translate("Start(Button)"));
         startButton.addActionListener(new ActionListener() {
@@ -125,7 +124,7 @@ public class ExamDialog extends BaseDialog {
             }
         });
 
-        contentPanel.add(pauseButton, "growx");
+        buttonPanel.add(pauseButton, "growx");
         pauseButton.setIcon(IconManager.getMenuIcon("media_pause.png"));
         pauseButton.setText(getTranslator().translate("Pause(Button)"));
         pauseButton.setEnabled(false);
@@ -136,7 +135,7 @@ public class ExamDialog extends BaseDialog {
             }
         });
 
-        contentPanel.add(stopButton, "growx");
+        buttonPanel.add(stopButton, "growx, wrap");
         stopButton.setIcon(IconManager.getMenuIcon("media_stop_red.png"));
         stopButton.setText(getTranslator().translate("Stop(Button)"));
         stopButton.setEnabled(false);
@@ -148,14 +147,16 @@ public class ExamDialog extends BaseDialog {
             }
         });
 
+        contentPanel.add(buttonPanel, "span");
+
         contentPanel.add(new JLabel(getTranslator().translate("OverTranslateField(Label)")), "span, left");
 
-        contentPanel.add(translateField, "span 5, left, growx");
+        contentPanel.add(translateField, "span, left, growx");
         translateField.setEditable(false);
 
         contentPanel.add(new JLabel(getTranslator().translate("OverAnswerField(Label)")), "span, left");
 
-        contentPanel.add(answerField, "span 5, left, growx");
+        contentPanel.add(answerField, "span, left, growx");
         answerField.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -163,7 +164,7 @@ public class ExamDialog extends BaseDialog {
             }
         });
 
-        contentPanel.add(answerIconLabel, "span 4, right");
+        contentPanel.add(answerIconLabel, "span 3, right");
         answerIconLabel.setIcon(IconManager.getImageIcon("bell2_grey.png", IconManager.IconSize.SIZE24));
         contentPanel.add(answerButton, "left, span, growx");
         answerButton.setIcon(IconManager.getMenuIcon("check2.png"));
