@@ -667,7 +667,6 @@ public class SpellbookFrame extends JFrame {
 
         wordsList.setModel(new ListBackedListModel(words));
         wordsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        wordsList.setToolTipText(TRANSLATOR.translate("WordsList(ToolTip)"));
         wordsList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent evt) {
@@ -693,7 +692,6 @@ public class SpellbookFrame extends JFrame {
             }
         });
 
-        wordSearchField.setToolTipText(TRANSLATOR.translate("WordSearch(ToolTip)"));
         wordSearchField.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
