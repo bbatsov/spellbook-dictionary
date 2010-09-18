@@ -40,6 +40,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -1495,7 +1496,7 @@ public class SpellbookFrame extends JFrame {
 
     private void showHelpContents() {
         try {
-            Desktop.getDesktop().browse(new URI(SpellbookConstants.HELP_URL));
+            Desktop.getDesktop().browse(new URI(SpellbookConstants.HELP_URL + (Locale.getDefault().getCountry().equals("BG") ? "Bulgarian" : "English")));
         } catch (IOException e) {
             e.printStackTrace();
         } catch (URISyntaxException e) {
