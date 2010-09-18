@@ -1,5 +1,6 @@
 package bg.drow.spellbook.ui.swing.component;
 
+import bg.drow.spellbook.core.SpellbookConstants;
 import bg.drow.spellbook.core.i18n.Translator;
 import bg.drow.spellbook.ui.swing.util.IconManager;
 import com.jidesoft.dialog.BannerPanel;
@@ -9,19 +10,13 @@ import com.jidesoft.icons.JideIconsFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
+import javax.swing.*;
 import javax.swing.border.BevelBorder;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dialog;
-import java.awt.Font;
-import java.awt.Frame;
-import java.awt.HeadlessException;
+import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * Base dialog class in Spellbook.
@@ -162,7 +157,13 @@ public abstract class BaseDialog extends StandardDialog {
         helpButton.setAction(new AbstractAction(getBaseTranslator().translate("Help(Button)")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // do something
+                try {
+                    Desktop.getDesktop().browse(new URI(SpellbookConstants.HELP_URL));
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                } catch (URISyntaxException e1) {
+                    e1.printStackTrace();
+                }
             }
         });
 
