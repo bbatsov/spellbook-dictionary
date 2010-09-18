@@ -4,7 +4,15 @@ import bg.drow.spellbook.core.model.Dictionary;
 import bg.drow.spellbook.core.model.Difficulty;
 import bg.drow.spellbook.core.model.ExamScoreEntry;
 import bg.drow.spellbook.core.service.AbstractPersistenceService;
+import bg.drow.spellbook.core.service.DictionaryService;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -25,7 +33,12 @@ public class ExamService extends AbstractPersistenceService {
      * @return
      */
     public List<Dictionary> getSuitableDictionaries() {
-        return null;
+        return Lists.newArrayList(Collections2.filter(DictionaryService.getInstance().getDictionaries(), new Predicate<Dictionary>() {
+            @Override
+            public boolean apply(Dictionary input) {
+                return !input.isSpecial();
+            }
+        }));
     }
 
     /**
@@ -37,11 +50,29 @@ public class ExamService extends AbstractPersistenceService {
      * @return a list of suitable words for the requested type of exam
      */
     public List<String> getWordsForExam(Dictionary dictionary, Difficulty difficulty, int size) {
-        return null;
+        List<String> result = Lists.newArrayList();
+
+        try {
+            PreparedStatement ps = dbConnection.prepareStatement("select word from DICTIONARY_ENTRIES d join RATING_ENTRIES r on d.id=r.dictionary_entry_id where d.dictionary_id=? and r.rating>? and r.rating<?");
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                result.add(rs.getString("WORD"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        Collections.shuffle(result);
+
+        return result;
     }
 
-    public boolean checkAnswer(Dictionary dictionary, String word) {
-        return false;
+    public boolean checkAnswer(Dictionary dictionary, String word, String guess) {
+        String translation = DictionaryService.getInstance().getTranslation(word, dictionary);
+
+        return translation.contains(guess);
     }
 
         public void addScoreboardResult(ExamScoreEntry examScoreEntry) {

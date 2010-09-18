@@ -2,7 +2,6 @@ package bg.drow.spellbook.ui.desktop.exam;
 
 import bg.drow.spellbook.core.model.Dictionary;
 import bg.drow.spellbook.core.model.Difficulty;
-import bg.drow.spellbook.core.model.Language;
 import bg.drow.spellbook.core.preferences.PreferencesManager;
 import bg.drow.spellbook.core.service.DictionaryService;
 import bg.drow.spellbook.core.service.exam.ExamService;
@@ -213,13 +212,11 @@ public class ExamDialog extends BaseDialog {
     private void startExam() {
         settingsButton.getAction().setEnabled(false);
 
-        Language selectedLanguage = (Language) dictionaryComboBox.getSelectedItem();
-
         difficulty = (Difficulty) difficultyComboBox.getSelectedItem();
 
         getLogger().info("Selected difficulty " + difficulty);
         getLogger().info("Timer is " + timerStatus);
-        getLogger().info("Selected language is " + selectedLanguage);
+        getLogger().info("Selected language is " + selectedDictionary);
 
         examWords = examService.getWordsForExam(selectedDictionary, difficulty, examWordsCount);
 
@@ -302,7 +299,7 @@ public class ExamDialog extends BaseDialog {
     }
 
     private void displayTranslation() {
-        if (examService.checkAnswer(selectedDictionary, answerField.getText())) {
+        if (examService.checkAnswer(selectedDictionary, translateField.getText(), answerField.getText())) {
             wordsProgressBar.setForeground(Color.GREEN);
             feedbackField.setText(getTranslator().translate("CorrectAnswer(String)"));
             answerIconLabel.setIcon(IconManager.getImageIcon("bell2_green.png", IconManager.IconSize.SIZE24));
