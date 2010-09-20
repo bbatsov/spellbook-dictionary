@@ -157,7 +157,7 @@ public class StudyWordsDialog extends BaseDialog {
         stopButton.setEnabled(false);
 
         String studySetName = (String) studySetsComboBox.getSelectedItem();
-        countOfWords = studyService.getCountOfTheWords(studySetName);
+        countOfWords = studyService.getCountOfTheWordsInStudySet(studySetName);
 
         int index = PM.getInt(PreferencesManager.Preference.DICTIONARIES, dictionariesComboBox.getSelectedIndex());
         dictionariesComboBox.setSelectedIndex(index);
@@ -494,14 +494,14 @@ public class StudyWordsDialog extends BaseDialog {
         setStudySetsInComboBox();
         if (!studySets.isEmpty()) {
             int index = PM.getInt(PreferencesManager.Preference.STUDY_SETS, studySetsComboBox.getSelectedIndex());
-            if (studySets.size() >= index) {
+            if (studySets.size() > index) {
                 studySetsComboBox.setSelectedIndex(index);
             } else {
                 studySetsComboBox.setSelectedIndex(0);
             }
         }
         String studySetName = (String) studySetsComboBox.getSelectedItem();
-        countOfWords = studyService.getCountOfTheWords(studySetName);
+        countOfWords = studyService.getCountOfTheWordsInStudySet(studySetName);
         checkingTheDatabase();
         PM.putInt(PreferencesManager.Preference.STUDY_SETS, studySetsComboBox.getSelectedIndex());
     }
@@ -531,7 +531,7 @@ public class StudyWordsDialog extends BaseDialog {
         if (inReverseOrderOfInputRadioButton.isSelected()) {
             howToEnumerate = HowToEnumerate.IN_REVERSE_ORDER_OF_INPUT;
 
-            long wordIndex1 = studyService.getCountOfTheWords(studySetName) - 1;
+            long wordIndex1 = studyService.getCountOfTheWordsInStudySet(studySetName) - 1;
             wordIndex = (int) wordIndex1;
 
             showWordWhenStartTheStudy(wordsForLearning, translationForLearning);

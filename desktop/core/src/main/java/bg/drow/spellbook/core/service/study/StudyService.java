@@ -1,12 +1,18 @@
 package bg.drow.spellbook.core.service.study;
 
 import bg.drow.spellbook.core.model.Dictionary;
+import bg.drow.spellbook.core.model.DictionaryEntry;
 import bg.drow.spellbook.core.model.StudySet;
+import bg.drow.spellbook.core.model.StudySetEntry;
 import bg.drow.spellbook.core.service.AbstractPersistenceService;
+import java.util.Date;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -18,8 +24,8 @@ import java.util.regex.Pattern;
  * @since 0.3
  */
 public class StudyService extends AbstractPersistenceService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(StudyService.class);
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(StudyService.class);
     private List<String> translations = Lists.newArrayList();
 
     /**
@@ -35,15 +41,30 @@ public class StudyService extends AbstractPersistenceService {
 
     /**
      * Retrieves all words for study. The words are cached for subsequent
-     * invokations of the method
+     * invokations of the method.
      *
      * @param studySetName a name which uniquely identifies a study set from which will taken the words
      * @return a list of the words for study
      */
     public List<String> getWordsForStudy(String studySetName) {
-        //return EM.createQuery("select se.dictionaryEntry.word from StudySetEntry se where se.studySet.name = :name").setParameter("name", studySetName).getResultList();
+        List<String> wordsForStudy = new ArrayList<String>();
 
-        return null;
+        try {
+            PreparedStatement ps = dbConnection.prepareStatement("select WORD from DICTIONARY_ENTRIES where ID in (select DICTIONARY_ENTRY_ID from STUDY_ENTRIES where STUDY_SET_ID = (select ID from STUDY_SETS where NAME=?))");
+            ps.setString(1, studySetName);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                wordsForStudy.add(rs.getString("WORD"));
+            }
+
+            return wordsForStudy;
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+            return wordsForStudy;
+        }
     }
 
     /**
@@ -53,9 +74,24 @@ public class StudyService extends AbstractPersistenceService {
      * @return a list of the translations for study
      */
     public List<String> getTranslationsForStudy(String studySetName) {
-        // return EM.createQuery("select se.dictionaryEntry.translation from StudySetEntry se where se.studySet.name = :name").setParameter("name", studySetName).getResultList();
+        List<String> translationsForStudy = new ArrayList<String>();
 
-        return null;
+        try {
+            PreparedStatement ps = dbConnection.prepareStatement("select WORD_TRANSLATION from DICTIONARY_ENTRIES where ID in (select DICTIONARY_ENTRY_ID from STUDY_ENTRIES where STUDY_SET_ID = (select ID from STUDY_SETS where NAME=?))");
+            ps.setString(1, studySetName);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                translationsForStudy.add(rs.getString("WORD_TRANSLATION"));
+            }
+
+            return translationsForStudy;
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+            return translationsForStudy;
+        }
     }
 
     /**
@@ -64,46 +100,136 @@ public class StudyService extends AbstractPersistenceService {
      * @param studySetName sets of which study set will be taken count of words
      * @return current number of words for study from respective study set
      */
-    public Long getCountOfTheWords(String studySetName) {
-        // return (Long) EM.createQuery("select count(*) from StudySetEntry se where se.studySet.name = :name").setParameter("name", studySetName).getSingleResult();
+    public Long getCountOfTheWordsInStudySet(String studySetName) {
+        Long count = 0L;
 
-        return null;
+        try {
+            PreparedStatement ps = dbConnection.prepareStatement("select count(*) from STUDY_ENTRIES where STUDY_SET_ID = (select ID from STUDY_SETS where NAME=?)");
+            ps.setString(1, studySetName);
+
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            count = rs.getLong("count(*)");
+
+            return count;
+        } catch (SQLException e) {
+            e.getStackTrace();
+
+            return count;
+        }
     }
 
     /**
-     * Retrieves all names of study sets
+     * Retrieves count of the study sets.
+     *
+     * @return current number of the study sets
+     */
+    public int getCountOfStudySets(){
+        int count = 0;
+
+        try {
+            PreparedStatement ps = dbConnection.prepareStatement("select count(*) from STUDY_SETS");
+
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            count = rs.getInt("count(*)");
+
+            return count;
+        } catch (SQLException e) {
+            e.getStackTrace();
+
+            return count;
+        }
+    }
+
+    /**
+     * Retrieves all names of the study sets.
      *
      * @return a list with the names of all study sets
-     * @see bg.drow.spellbook.core.model.StudySet
+     * StudySet
      */
     public List<String> getNamesOfStudySets() {
-        // return EM.createQuery("select ss.name from StudySet ss").getResultList();
+        List<String> namesOfStudySets = new ArrayList<String>();
 
-        return null;
+        try {
+
+            PreparedStatement ps = dbConnection.prepareStatement("select NAME from STUDY_SETS");
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                namesOfStudySets.add(rs.getString("NAME"));
+            }
+
+            return namesOfStudySets;
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+            return namesOfStudySets;
+        }
     }
 
     /**
-     * Retrieves all study sets
+     * Retrieves all study sets.
      *
      * @return a list of study sets
      * @see StudySet
      */
     public List<StudySet> getStudySets() {
-        // return EM.createQuery("select ss from StudySet ss").getResultList();
+        List<String> namesOfStudySets = getNamesOfStudySets();
+        List<StudySet> studySets = new ArrayList<StudySet>();
+        for (String name : namesOfStudySets) {
+            studySets.add(getStudySet(name));
+        }
 
-        return null;
+        return studySets;
     }
 
     /**
      * Retrieves a study set
      *
-     * @param name determined which study set will be returned
+     * @param studySetName determined which study set will be returned
      * @return a StudySet
      */
-    public StudySet getStudySet(String name) {
-        // return (StudySet) EM.createQuery("select ss from StudySet ss where ss.name = :name").setParameter("name", name).getSingleResult();
+    public StudySet getStudySet(String studySetName) {
+        List<StudySetEntry> studySetEntries = new ArrayList<StudySetEntry>();
+        StudySet studySet = new StudySet();
+        try {
+            PreparedStatement ps = dbConnection.prepareStatement("select * from STUDY_SETS where NAME=?");
+            ps.setString(1, studySetName);
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            studySet = new StudySet(rs);
 
-        return null;
+            ps = dbConnection.prepareStatement("select * from DICTIONARIES where ID = (select DICTIONARY_ID from STUDY_SETS where NAME=?)");
+            ps.setString(1, studySetName);
+            rs = ps.executeQuery();
+            rs.next();
+            Dictionary dictionary = new Dictionary(rs);
+
+            studySet.setDictionary(dictionary);
+
+            ps = dbConnection.prepareStatement("select * from DICTIONARY_ENTRIES where ID in (select DICTIONARY_ENTRY_ID from STUDY_ENTRIES where STUDY_SET_ID = (select ID from STUDY_SETS where NAME=?))");
+            ps.setString(1, studySetName);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                DictionaryEntry dictionaryEntry = new DictionaryEntry(rs);
+                dictionaryEntry.setDictionary(dictionary);
+
+                StudySetEntry studySetEntry = new StudySetEntry();
+                studySetEntry.setDictionaryEntry(dictionaryEntry);
+                studySetEntry.setStudySet(studySet);
+                studySetEntries.add(studySetEntry);
+            }
+
+            studySet.setStudySetEntries(studySetEntries);
+
+            return studySet;
+        } catch (SQLException e) {
+            e.getStackTrace();
+
+            return studySet;
+        }
     }
 
     /**
@@ -116,73 +242,135 @@ public class StudyService extends AbstractPersistenceService {
      */
     public void addWord(String word, Dictionary dictionary, String studySetName) {
 
-        if (word == null || word.isEmpty()) {
+        if (word == null || word.trim().isEmpty()) {
             LOGGER.error("word == null || word.isEmpty()");
             throw new IllegalArgumentException("word == null || word.isEmpty()");
         }
 
-//        DictionaryEntry de = (DictionaryEntry) EM.createQuery("select de from DictionaryEntry de where de.word = :word and de.dictionary = :dictionary").setParameter("word", word).setParameter("dictionary", dictionary).getSingleResult();
-//
-//        StudySet ss = (StudySet) EM.createQuery("select ss from StudySet ss where ss.name = :StudySetName").setParameter("StudySetName", studySetName).getSingleResult();
-//
-//        StudySetEntry se = new StudySetEntry();
-//        se.setDictionaryEntry(de);
-//        se.setStudySet(ss);
-//        ss.setStudySetEntry(se);
-//        EntityTransaction t = EM.getTransaction();
-//        t.begin();
-//        EM.persist(se);
-//        EM.persist(ss);
-//        t.commit();
+        if (dictionary == null) {
+            LOGGER.error("dictionary == null");
+            throw new IllegalArgumentException("dictionary == null");
+        }
+
+        if (studySetName == null || studySetName.isEmpty()) {
+            LOGGER.error("studySetName == null || studySetName.isEmpty()");
+            throw new IllegalArgumentException("studySetName == null || studySetName.isEmpty()");
+        }
+
+        try {
+            PreparedStatement ps = dbConnection.prepareStatement("select ID from DICTIONARY_ENTRIES where WORD=?");
+            ps.setString(1, word);
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            long dictionaryEntryID = rs.getLong("ID");
+
+            ps = dbConnection.prepareStatement("select ID from STUDY_SETS where NAME=?");
+            ps.setString(1, studySetName);
+            rs = ps.executeQuery();
+            rs.next();
+            int studySetId = rs.getInt("ID");
+
+            ps = dbConnection.prepareStatement("insert into STUDY_ENTRIES (ID, MODIFIED, CREATED, DICTIONARY_ENTRY_ID, STUDY_SET_ID) values(?, NULL, ?, ?, ?)");
+            ps.setLong(1, getLastIdFromTable("STUDY_ENTRIES") + 1);
+            long date = (new Date()).getTime();
+            ps.setDate(2, new java.sql.Date(date));
+            ps.setLong(3, dictionaryEntryID);
+            ps.setLong(4, studySetId);
+
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     /**
-     * Deletes a word which no want any more to study
+     * Retrieves last id from table which is determined with tableName parameter.
+     *
+     * @param tableName the name of the table from which will taken the last id
+     * @return last id from the table
+     */
+    private long getLastIdFromTable(String tableName){
+        long id = 0L;
+
+        try {
+            PreparedStatement ps = dbConnection.prepareStatement("select ID from " + tableName + " order by ID desc limit 1");
+
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+
+            id = rs.getLong("ID");
+
+            return id;
+        } catch (SQLException e) {
+            e.getStackTrace();
+
+            return id;
+        }
+    }
+
+    /**
+     * Deletes a word which no want any more to study.
      *
      * @param word         word to delete
-     * @param studySetName
+     * @param studySetName the name of study set from which we want to delete the word
+     * @param dictionary the dictionary of study set and of the word
      */
     public void deleteWord(String word, String studySetName, Dictionary dictionary) {
-//        long wordID = (Long) EM.createQuery("select id from DictionaryEntry where word = :word and dictionary = :dictionary").setParameter("word", word.replaceAll("'", "''")).setParameter("dictionary", dictionary).getSingleResult();
-//        long studySetID = (Long) EM.createQuery("select id from StudySet where name = :name").setParameter("name", studySetName).getSingleResult();
-//
-//        EntityTransaction t = EM.getTransaction();
-//        t.begin();
-//        EM.createNativeQuery("delete from Study_Entries  where study_set_id = :studySetID and dictionary_entry_id = :wordID").setParameter("studySetID", studySetID).setParameter("wordID", wordID).executeUpdate();
-//        t.commit();
+
+        try{
+            PreparedStatement ps = dbConnection.prepareStatement("delete from STUDY_ENTRIES where DICTIONARY_ENTRY_ID = (select ID from DICTIONARY_ENTRIES where WORD=? and DICTIONARY_ID=?)");
+            ps.setString(1, word);
+            ps.setLong(2, dictionary.getId());
+            ps.executeUpdate();
+
+        }catch(SQLException e){
+            e.getStackTrace();
+        }
     }
 
     /**
-     * Adds a new study set
+     * Adds a new study set.
      *
      * @param name study set's name
      * @param dictionary study set's dictionary
-     * @see bg.drow.spellbook.core.model.StudySet
+     * @see StudySet
+     * @see Dictionary
      */
     public void addStudySet(String name, Dictionary dictionary) {
 
-        StudySet ss = new StudySet();
-        ss.setName(name);
-        ss.setDictionary(dictionary);
+        try {
+            PreparedStatement ps = dbConnection.prepareStatement("insert into STUDY_SETS (ID, MODIFIED, CREATED, NAME, DICTIONARY_ID) values(?, NULL, ?, ?, ?)");
 
-//        EntityTransaction t = EM.getTransaction();
-//        t.begin();
-//        EM.persist(ss);
-//        t.commit();
+            ps.setLong(1, getLastIdFromTable("STUDY_SETS") + 1);
+            long date = (new Date()).getTime();
+            ps.setDate(2, new java.sql.Date(date));
+            ps.setString(3, name);
+            ps.setLong(4, dictionary.getId());
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            e.getStackTrace();
+        }
     }
 
     /**
-     * Deletes a study set
+     * Deletes a study set.
      *
      * @param studySetName determined which study set to be deleted
      * @see StudySet
      */
     public void deleteStudySet(String studySetName) {
-//        EntityTransaction t = EM.getTransaction();
-//        t.begin();
-//        EM.createNativeQuery("delete from Study_Entries where study_set_id = (select ss.id from Study_Sets ss where ss.name = :name)").setParameter("name", studySetName).executeUpdate();
-//        EM.createQuery("delete from StudySet ss where ss.name = :name").setParameter("name", studySetName).executeUpdate();
-//        t.commit();
+        try {
+            PreparedStatement ps = dbConnection.prepareStatement("delete from STUDY_ENTRIES where STUDY_SET_ID = (select ID from STUDY_SETS where NAME=?)");
+            ps.setString(1, studySetName);
+            ps.executeUpdate();
+
+            ps = dbConnection.prepareStatement("delete from STUDY_SETS where NAME=?");
+            ps.setString(1, studySetName);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.getStackTrace();
+        }
     }
 
     public List<String> getPossiblesTranslations(String translation) {
