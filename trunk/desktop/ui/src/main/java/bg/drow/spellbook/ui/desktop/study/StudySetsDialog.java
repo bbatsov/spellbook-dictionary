@@ -99,7 +99,11 @@ public class StudySetsDialog extends BaseDialog {
         setStudySetsInComboBox();
         if (!studySets.isEmpty()) {
             int index = PM.getInt(PreferencesManager.Preference.STUDY_SETS, studySetsComboBox.getSelectedIndex());
-            studySetsComboBox.setSelectedIndex(index);
+            if (index < studyService.getCountOfStudySets()) {
+                studySetsComboBox.setSelectedIndex(0);
+            } else {
+                studySetsComboBox.setSelectedIndex(index);
+            }
         }
 
         getTable().setOpaque(true);
@@ -131,9 +135,9 @@ public class StudySetsDialog extends BaseDialog {
         setWordsInTable(false);
 
         // wordsForLearning = dictDb.getWordsForLearning();
-        String name = (String) studySetsComboBox.getSelectedItem();
-        translationsForStudy = studyService.getTranslationsForStudy(name);
-        countOFTheWords = studyService.getCountOfTheWords(name);
+        String studySetName = (String) studySetsComboBox.getSelectedItem();
+        translationsForStudy = studyService.getTranslationsForStudy(studySetName);
+        countOFTheWords = studyService.getCountOfTheWordsInStudySet(studySetName);
 
         return topPanel;
     }
@@ -349,7 +353,7 @@ public class StudySetsDialog extends BaseDialog {
 
     private void deleteWordButtonActionPerformed(ActionEvent evt) {
         String studySetName = (String) studySetsComboBox.getSelectedItem();
-        long countOFTheRows = countOFTheWords = studyService.getCountOfTheWords(studySetName);
+        long countOFTheRows = countOFTheWords = studyService.getCountOfTheWordsInStudySet(studySetName);
         for (int i = 0; i < countOFTheRows; i++) {
             if ((Boolean) wordsTable.getValueAt(i, 3)) {
                 studyService.deleteWord((String) wordsTable.getValueAt(i, 1), studySetName, selectedDictionary);
@@ -447,7 +451,7 @@ public class StudySetsDialog extends BaseDialog {
         String studySetName = (String) studySetsComboBox.getSelectedItem();
         wordsForStudy = studyService.getWordsForStudy(studySetName);
         if (words.contains(word)) {
-            countOFTheWords = studyService.getCountOfTheWords(studySetName);
+            countOFTheWords = studyService.getCountOfTheWordsInStudySet(studySetName);
             if (wordsForStudy.contains(word)) {
                 JOptionPane.showMessageDialog(this, getTranslator().translate("AlreadyContainedWord(Message)"), null, JOptionPane.ERROR_MESSAGE);
             } else {
@@ -485,7 +489,7 @@ public class StudySetsDialog extends BaseDialog {
                     getTranslator().translate("Word(TableColumn)"), getTranslator().translate("Translation(TableColumn)"),
                     ""});
 
-        countOFTheWords = studyService.getCountOfTheWords(studySetName);
+        countOFTheWords = studyService.getCountOfTheWordsInStudySet(studySetName);
 
         List<String> translations;
         String translationsForTheTable;

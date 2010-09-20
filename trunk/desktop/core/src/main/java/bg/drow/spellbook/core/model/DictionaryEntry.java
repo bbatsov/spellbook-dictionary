@@ -1,5 +1,7 @@
 package bg.drow.spellbook.core.model;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,6 +21,13 @@ public class DictionaryEntry extends AbstractEntity {
     private boolean updatedByUser;
 
     public DictionaryEntry() {
+    }
+
+    public DictionaryEntry(ResultSet rs) throws SQLException{
+        super(rs);
+
+        setWord(rs.getString("WORD"));
+        setTranslation(rs.getString("WORD_TRANSLATION"));
     }
 
     public boolean isUpdatedByUser() {

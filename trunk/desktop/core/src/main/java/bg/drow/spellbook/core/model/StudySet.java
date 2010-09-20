@@ -1,7 +1,8 @@
 package bg.drow.spellbook.core.model;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import com.google.common.collect.Lists;
-
 import java.util.List;
 
 /**
@@ -10,12 +11,18 @@ import java.util.List;
  */
 public class StudySet extends AbstractEntity {
 
+    private String name;
     private Dictionary dictionary;
     private List<StudySetEntry> studySetEntries = Lists.newArrayList();
-    private String name;
 
-    public void setStudySetEntry(StudySetEntry studySetEntries) {
-        this.studySetEntries.add(studySetEntries);
+    public StudySet() {
+    }
+
+    public StudySet(ResultSet rs) throws SQLException {
+        super(rs);
+
+        setName(rs.getString("NAME"));
+
     }
 
     public String getName() {
@@ -36,5 +43,15 @@ public class StudySet extends AbstractEntity {
 
     public List<StudySetEntry> getStudySetEntries() {
         return studySetEntries;
+    }
+
+    public void setStudySetEntry(StudySetEntry studySetEntry) {
+        this.studySetEntries.add(studySetEntry);
+    }
+
+    public void setStudySetEntries(List<StudySetEntry> studySetEntries) {
+        for (StudySetEntry sse : studySetEntries) {
+            this.studySetEntries.add(sse);
+        }
     }
 }
