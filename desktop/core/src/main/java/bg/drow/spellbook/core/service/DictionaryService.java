@@ -51,7 +51,7 @@ public class DictionaryService extends AbstractPersistenceService {
         List<Dictionary> result = Lists.newArrayList();
 
         try {
-            PreparedStatement ps = dbConnection.prepareStatement("select * from DICTIONARIES");
+            PreparedStatement ps = dbConnection.prepareStatement("select * from " + Dictionary.TABLE_NAME);
 
             ResultSet rs = ps.executeQuery();
 
@@ -107,13 +107,15 @@ public class DictionaryService extends AbstractPersistenceService {
             List<String> words = Lists.newArrayList();
 
             try {
-                PreparedStatement ps = dbConnection.prepareStatement("select word from Dictionary_Entries "
-                                + "where dictionary_id = " + d.getId() + " order by LOWER(word) asc");
+                PreparedStatement ps = dbConnection.prepareStatement("select word from " + DictionaryEntry.TABLE_NAME
+                                + " where dictionary_id = ? order by LOWER(word) asc");
+
+                ps.setLong(1, d.getId());
 
                 ResultSet rs = ps.executeQuery();
 
                 while (rs.next()) {
-                    words.add(rs.getString("WORD"));
+                    words.add(rs.getString("word"));
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -136,7 +138,7 @@ public class DictionaryService extends AbstractPersistenceService {
      */
     public String getTranslation(String word, Dictionary d) {
         try {
-            PreparedStatement ps = dbConnection.prepareStatement("SELECT word_translation from DICTIONARY_ENTRIES where word=? and dictionary_id=?");
+            PreparedStatement ps = dbConnection.prepareStatement("SELECT word_translation from " + DictionaryEntry.TABLE_NAME + " where word=? and dictionary_id=?");
 
             ps.setString(1, word);
             ps.setLong(2, d.getId());
@@ -144,7 +146,7 @@ public class DictionaryService extends AbstractPersistenceService {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                return rs.getString("word_TRANSLATION");
+                return rs.getString("word_translation");
             } else {
                 return null;
             }
@@ -245,7 +247,7 @@ public class DictionaryService extends AbstractPersistenceService {
             ps.setString(2, word);
             ps.setLong(3, dictionary.getId());
         } catch (SQLException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
     }
 
@@ -263,7 +265,10 @@ public class DictionaryService extends AbstractPersistenceService {
         }
 
         try {
-            PreparedStatement ps = dbConnection.prepareStatement("SELECT * from DICTIONARY_ENTRIES WHERE word = '" + word + "' and dictionary_id = " + d.getId());
+            PreparedStatement ps = dbConnection.prepareStatement("SELECT * from " + DictionaryEntry.TABLE_NAME + " WHERE word = ? and dictionary_id = ?");
+
+            ps.setString(1, word);
+            ps.setLong(2, d.getId());
 
             ResultSet rs = ps.executeQuery();
 
@@ -394,12 +399,12 @@ public class DictionaryService extends AbstractPersistenceService {
             }
         }
 
-        for (Dictionary tCandidate : candidates) {
-            String[] langs = tCandidate.getName().split("-");
+        for (Dictionary candidate : candidates) {
+            String[] langs = candidate.getName().split("-");
 
             if (langs.length == 2 && (langs[0].equalsIgnoreCase(dictionary.getToLanguage().getName())) &&
                     langs[1].equalsIgnoreCase(dictionary.getFromLanguage().getName())) {
-                return tCandidate;
+                return candidate;
             }
         }
 
@@ -416,16 +421,15 @@ public class DictionaryService extends AbstractPersistenceService {
         dictionary.setIconBig(bigIcon);
 
         try {
-            PreparedStatement ps = dbConnection.prepareStatement("INSERT INTO ? (name, from_language, to_language, special, icon_small, icon_big) " +
+            PreparedStatement ps = dbConnection.prepareStatement("INSERT INTO " + Dictionary.TABLE_NAME + " (name, from_language, to_language, special, icon_small, icon_big) " +
                     "values(?, ?, ?, ?, ?, ?)");
 
-            ps.setString(1, Dictionary.TABLE_NAME);
-            ps.setString(2, name);
-            ps.setInt(3, from.ordinal());
-            ps.setInt(4, to.ordinal());
-            ps.setBoolean(5, special);
-            ps.setBytes(6, smallIcon);
-            ps.setBytes(7, bigIcon);
+            ps.setString(1, name);
+            ps.setInt(2, from.ordinal());
+            ps.setInt(3, to.ordinal());
+            ps.setBoolean(4, special);
+            ps.setBytes(5, smallIcon);
+            ps.setBytes(6, bigIcon);
 
             ps.executeUpdate();
         } catch (SQLException e) {
