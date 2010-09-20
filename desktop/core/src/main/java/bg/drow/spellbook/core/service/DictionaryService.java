@@ -136,7 +136,10 @@ public class DictionaryService extends AbstractPersistenceService {
      */
     public String getTranslation(String word, Dictionary d) {
         try {
-            PreparedStatement ps = dbConnection.prepareStatement("SELECT word_translation from DICTIONARY_ENTRIES where word='" + word + "' and dictionary_id=" + d.getId());
+            PreparedStatement ps = dbConnection.prepareStatement("SELECT word_translation from DICTIONARY_ENTRIES where word=? and dictionary_id=?");
+
+            ps.setString(1, word);
+            ps.setLong(2, d.getId());
 
             ResultSet rs = ps.executeQuery();
 
