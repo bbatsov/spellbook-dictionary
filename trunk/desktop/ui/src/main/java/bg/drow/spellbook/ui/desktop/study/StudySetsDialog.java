@@ -350,6 +350,9 @@ public class StudySetsDialog extends BaseDialog {
     private void deleteWordButtonActionPerformed(ActionEvent evt) {
         String studySetName = (String) studySetsComboBox.getSelectedItem();
         long countOFTheRows = countOFTheWords = studyService.getCountOfTheWordsInStudySet(studySetName);
+
+        setSelectedDictionary();
+
         for (int i = 0; i < countOFTheRows; i++) {
             if ((Boolean) wordsTable.getValueAt(i, 3)) {
                 studyService.deleteWord((String) wordsTable.getValueAt(i, 1), studySetName, selectedDictionary);
