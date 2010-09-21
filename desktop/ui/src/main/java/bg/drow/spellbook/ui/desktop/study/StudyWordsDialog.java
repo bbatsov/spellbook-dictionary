@@ -156,9 +156,6 @@ public class StudyWordsDialog extends BaseDialog {
         seeAnswerButton.setEnabled(false);
         stopButton.setEnabled(false);
 
-        String studySetName = (String) studySetsComboBox.getSelectedItem();
-        countOfWords = studyService.getCountOfTheWordsInStudySet(studySetName);
-
         int index = PM.getInt(PreferencesManager.Preference.DICTIONARIES, dictionariesComboBox.getSelectedIndex());
         dictionariesComboBox.setSelectedIndex(index);
 
@@ -490,19 +487,14 @@ public class StudyWordsDialog extends BaseDialog {
     }
 
     private void formWindowGainedFocus(WindowEvent evt) {
-        studySets = studyService.getStudySets();
+
         setStudySetsInComboBox();
-        if (!studySets.isEmpty()) {
-            int index = PM.getInt(PreferencesManager.Preference.STUDY_SETS, studySetsComboBox.getSelectedIndex());
-            if (studySets.size() > index) {
-                studySetsComboBox.setSelectedIndex(index);
-            } else {
-                studySetsComboBox.setSelectedIndex(0);
-            }
-        }
+        
         String studySetName = (String) studySetsComboBox.getSelectedItem();
         countOfWords = studyService.getCountOfTheWordsInStudySet(studySetName);
+
         checkingTheDatabase();
+
         PM.putInt(PreferencesManager.Preference.STUDY_SETS, studySetsComboBox.getSelectedIndex());
     }
 
@@ -798,11 +790,17 @@ public class StudyWordsDialog extends BaseDialog {
     }
 
     private void setStudySetsInComboBox() {
-        List<String> namesOfStudySets;
-        namesOfStudySets = studyService.getNamesOfStudySets();
+        List<String> namesOfStudySets = studyService.getNamesOfStudySets();
         studySetsComboBox.setModel(new DefaultComboBoxModel(namesOfStudySets.toArray()));
-        //int index = PM.getInt(Preference.STUDY_SETS, studySetsComboBox.getSelectedIndex());
-        //studySetsComboBox.setSelectedIndex(index);
+        studySets = studyService.getStudySets();
+        if (!studySets.isEmpty()) {
+            int index = PM.getInt(PreferencesManager.Preference.STUDY_SETS, studySetsComboBox.getSelectedIndex());
+            if (studySets.size() > index) {
+                studySetsComboBox.setSelectedIndex(index);
+            } else {
+                studySetsComboBox.setSelectedIndex(0);
+            }
+        }
     }
 
     @Override
