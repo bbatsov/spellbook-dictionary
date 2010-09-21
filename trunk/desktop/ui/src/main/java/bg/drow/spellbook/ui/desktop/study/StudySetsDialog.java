@@ -96,10 +96,10 @@ public class StudySetsDialog extends BaseDialog {
         setStudySetsInComboBox();
         if (!studySets.isEmpty()) {
             int index = PM.getInt(PreferencesManager.Preference.STUDY_SETS, studySetsComboBox.getSelectedIndex());
-            if (index < studyService.getCountOfStudySets()) {
-                studySetsComboBox.setSelectedIndex(0);
-            } else {
+            if (index < studyService.getCountOfStudySets() && index != -1) {
                 studySetsComboBox.setSelectedIndex(index);
+            } else if(index >= studySets.size() || index == -1){
+                studySetsComboBox.setSelectedIndex(0);
             }
         }
 
