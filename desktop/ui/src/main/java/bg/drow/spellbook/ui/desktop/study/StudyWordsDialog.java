@@ -728,7 +728,7 @@ public class StudyWordsDialog extends BaseDialog {
         answerField.setText(null);
     }
 
-    private String getTranscription(String word) {
+    private String getTranscription(String word) {//!
         String translation = null;
 
         if (selectedDictionary == SelectedDictionary.EN_BG) {
