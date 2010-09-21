@@ -197,9 +197,10 @@ public class StudyWordsDialog extends BaseDialog {
         jLabel1.setText(getTranslator().translate("Languages(Label)"));
         wordsPanel.add(jLabel1, "left,wrap");
 
-        List<Dictionary> possibleDictionaries = findPossibleDictionariesForComboBox();
-        dictionariesComboBox = new DictionaryComboBox(possibleDictionaries);
+       
+        dictionariesComboBox = new JComboBox();
         wordsPanel.add(dictionariesComboBox, "span,growx,wrap");
+        setPossibleDictionariesInComboBox();
 
         wordsButton = new JButton();
         wordsButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/dictionary.png")));
@@ -224,27 +225,20 @@ public class StudyWordsDialog extends BaseDialog {
         topPanel.add(wordsPanel, "w 240!,h 183!,sg");
     }
 
-    private List<Dictionary> findPossibleDictionariesForComboBox() {
+    private void setPossibleDictionariesInComboBox() {
         StudySet selectedStudySet = new StudySet();
+        List<Dictionary> possibleDictionaries = Lists.newArrayList();
         if (studySetsComboBox.getItemAt(0) != null) {
             selectedStudySet = studyService.getStudySet((String) studySetsComboBox.getSelectedItem());
-        }
-        List<Dictionary> possibleDictionaries = Lists.newArrayList();
-        if (!selectedStudySet.getStudySetEntries().isEmpty()) {
-            String languageForStudy = (String) selectedStudySet.getStudySetEntries().get(0).getDictionaryEntry().getDictionary().getFromLanguage().getName();
+
+            String languageForStudy = (String) selectedStudySet.getDictionary().getFromLanguage().getName();
             for (Dictionary dict : dictionaries) {
                 if (!dict.isSpecial() && dict.getName().contains(languageForStudy)) {
                     possibleDictionaries.add(dict);
                 }
             }
-        } else {
-            for (Dictionary dict : dictionaries) {
-                if (!dict.isSpecial()) {
-                    possibleDictionaries.add(dict);
-                }
-            }
         }
-        return possibleDictionaries;
+        dictionariesComboBox.setModel(new DefaultComboBoxModel(possibleDictionaries.toArray()));
     }
 
     private void initHowToEnumeratePanel() {
@@ -480,16 +474,16 @@ public class StudyWordsDialog extends BaseDialog {
         checkingTheDatabase();
         PM.putInt(PreferencesManager.Preference.STUDY_SETS, studySetsComboBox.getSelectedIndex());
         dictionariesComboBox.removeAllItems();
-        List<Dictionary> possibleDictionaries = findPossibleDictionariesForComboBox();
-        for (Dictionary dict : possibleDictionaries) {
-            dictionariesComboBox.addItem(dict);
-        }
+       
+        setPossibleDictionariesInComboBox();
     }
 
     private void formWindowGainedFocus(WindowEvent evt) {
 
         setStudySetsInComboBox();
         
+        setPossibleDictionariesInComboBox();
+
         String studySetName = (String) studySetsComboBox.getSelectedItem();
         countOfWords = studyService.getCountOfTheWordsInStudySet(studySetName);
 
@@ -795,9 +789,9 @@ public class StudyWordsDialog extends BaseDialog {
         studySets = studyService.getStudySets();
         if (!studySets.isEmpty()) {
             int index = PM.getInt(PreferencesManager.Preference.STUDY_SETS, studySetsComboBox.getSelectedIndex());
-            if (studySets.size() > index) {
+            if (studySets.size() > index && index != -1) {
                 studySetsComboBox.setSelectedIndex(index);
-            } else {
+            } else if (index >= studySets.size() || index == -1) {
                 studySetsComboBox.setSelectedIndex(0);
             }
         }
