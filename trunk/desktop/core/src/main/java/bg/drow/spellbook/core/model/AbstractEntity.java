@@ -47,20 +47,4 @@ public abstract class AbstractEntity implements Serializable {
     public void setModified(Date modified) {
         this.modified = modified;
     }
-
-    public void prePersist() {
-        setCreated(new Date());
-    }
-
-    public void preUpdate() {
-        setModified(new Date());
-    }
-
-    public void persist() {
-
-    }
-
-    public void remove() {
-
-    }
 }

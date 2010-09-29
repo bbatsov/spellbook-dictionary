@@ -558,4 +558,12 @@
             ('342', NULL, '2010-08-24', select id from DICTIONARY_ENTRIES where word = 'lentil' and dictionary_id = (select id from DICTIONARIES where name = 'English-Bulgarian'), 15);
         </sql>
     </changeSet>
+    <changeSet id="4" author="bozhidar">
+        <addColumn tableName="DICTIONARY_ENTRIES">
+            <column name="rank" type="int" defaultValue="1">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <dropTable tableName="RANK_ENTRIES"/>
+    </changeSet>
 </databaseChangeLog>

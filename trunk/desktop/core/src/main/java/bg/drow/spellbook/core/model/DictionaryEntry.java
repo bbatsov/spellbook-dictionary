@@ -17,6 +17,7 @@ public class DictionaryEntry extends AbstractEntity {
 
     private String word;
     private String translation;
+    private int rank;
 
     private boolean updatedByUser;
 
@@ -62,6 +63,13 @@ public class DictionaryEntry extends AbstractEntity {
         this.translation = wordTranslation;
     }
 
+    public int getRank() {
+        return rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
+    }
 
     public Set<StudySetEntry> getDictionaryEntries() {
         return dictionaryEntries;
