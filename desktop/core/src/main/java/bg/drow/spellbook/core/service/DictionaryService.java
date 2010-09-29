@@ -3,7 +3,6 @@ package bg.drow.spellbook.core.service;
 import bg.drow.spellbook.core.model.Dictionary;
 import bg.drow.spellbook.core.model.DictionaryEntry;
 import bg.drow.spellbook.core.model.Language;
-import bg.drow.spellbook.core.model.RankEntry;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.slf4j.Logger;
@@ -188,15 +187,10 @@ public class DictionaryService extends AbstractPersistenceService {
         de.setDictionary(d);
         de.setWord(word);
         de.setTranslation(translation);
+        de.setRank(1);
         de.setUpdatedByUser(true);
 
-        RankEntry re = new RankEntry();
-        re.setWord(word);
-        re.setRank(1);
-        re.setLanguage(d.getFromLanguage());
-
-        de.persist();
-        re.persist();
+        //TODO persist
     }
 
     /**
@@ -325,53 +319,6 @@ public class DictionaryService extends AbstractPersistenceService {
         return null;
     }
 
-    public void addRankEntry(String word, Language language) {
-        if (word == null || word.isEmpty()) {
-            LOGGER.error("word == null || word.isEmpty()");
-            throw new IllegalArgumentException("word == null || word.isEmpty()");
-        }
-
-        if (language == null) {
-            LOGGER.error("language is null");
-            throw new IllegalArgumentException("language is null");
-        }
-
-        RankEntry re = new RankEntry();
-        re.setLanguage(language);
-        re.setWord(word);
-        re.setRank(1);
-
-        re.persist();
-    }
-
-    public void addRankEntry(String word, Language language, int rank) {
-        if (word == null || word.isEmpty()) {
-            LOGGER.error("word == null || word.isEmpty()");
-            throw new IllegalArgumentException("word == null || word.isEmpty()");
-        }
-
-        if (language == null) {
-            LOGGER.error("language is null");
-            throw new IllegalArgumentException("language is null");
-        }
-
-        if (rank < 0) {
-            LOGGER.error("rank < 0");
-            throw new IllegalArgumentException("rank < 0");
-        }
-        RankEntry re = null;
-        try {
-            //re = EM.createQuery("select re from RankEntry re where re.word = :word and re.language = :language", RankEntry.class).setParameter("word", word).setParameter("language", language).getSingleResult();
-        } catch (Exception e) {
-            re = new RankEntry();
-            re.setLanguage(language);
-            re.setWord(word);
-        }
-        re.setRank(rank);
-
-        re.persist();
-    }
-
     /**
      * Checks if a dictionary is complemented(dual).
      *
@@ -443,17 +390,7 @@ public class DictionaryService extends AbstractPersistenceService {
 
     public void addWords(List<DictionaryEntry> dictionaryEntries) {
         for (DictionaryEntry tDictionaryEntry : dictionaryEntries) {
-            tDictionaryEntry.persist();
-
-            // only normal dictionaries contribute to the rank
-            if (!tDictionaryEntry.getDictionary().isSpecial()) {
-                RankEntry re = new RankEntry();
-                re.setLanguage(tDictionaryEntry.getDictionary().getFromLanguage());
-                re.setWord(tDictionaryEntry.getWord());
-                re.setRank(1);
-
-                re.persist();
-            }
+            //TODO persist
         }
     }
 }
