@@ -258,8 +258,9 @@ public class StudyService extends AbstractPersistenceService {
         }
 
         try {
-            PreparedStatement ps = dbConnection.prepareStatement("select ID from DICTIONARY_ENTRIES where WORD=?");
+            PreparedStatement ps = dbConnection.prepareStatement("select ID from DICTIONARY_ENTRIES where WORD=? and DICTIONARY_ID=?");
             ps.setString(1, word);
+            ps.setLong(2, dictionary.getId());
             ResultSet rs = ps.executeQuery();
             rs.next();
             long dictionaryEntryID = rs.getLong("ID");

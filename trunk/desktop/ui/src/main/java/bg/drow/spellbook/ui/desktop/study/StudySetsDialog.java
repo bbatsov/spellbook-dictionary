@@ -63,11 +63,11 @@ public class StudySetsDialog extends BaseDialog {
         StudySet studySet = studyService.getStudySet((String) studySetsComboBox.getSelectedItem());
         Dictionary dictionary = studySet.getDictionary();
         words = dictionaryService.getWordsFromDictionary(dictionary);
-        
+
         addWordButton.setEnabled(words.contains(wordSearchField.getText()));
 
         if (addWordButton.isEnabled()) {
-            
+
             wordTranslationTextPane.setText(dictionaryService.getTranslation(wordSearchField.getText(),
                     dictionary));
             wordTranslationTextPane.setCaretPosition(0);
@@ -98,7 +98,7 @@ public class StudySetsDialog extends BaseDialog {
             int index = PM.getInt(PreferencesManager.Preference.STUDY_SETS, studySetsComboBox.getSelectedIndex());
             if (index < studyService.getCountOfStudySets() && index != -1) {
                 studySetsComboBox.setSelectedIndex(index);
-            } else if(index >= studySets.size() || index == -1){
+            } else if (index >= studySets.size() || index == -1) {
                 studySetsComboBox.setSelectedIndex(0);
             }
         }
@@ -455,14 +455,9 @@ public class StudySetsDialog extends BaseDialog {
                 JOptionPane.showMessageDialog(this, getTranslator().translate("AlreadyContainedWord(Message)"), null, JOptionPane.ERROR_MESSAGE);
             } else {
                 countOFTheWords++;
-                Dictionary dictionary = null;
-                Language lang = (Language) dictionariesComboBox.getSelectedItem();
-                for (Dictionary dict : dictionaries) {
-                    if (!dict.isSpecial() && dict.getFromLanguage().getName().equals(lang.getName())) {
-                        dictionary = dict;
-                    }
-                }
-                studyService.addWord(word, dictionary, studySetName);
+                StudySet studySet = studyService.getStudySet(studySetName);
+                studyService.addWord(word, studySet.getDictionary(), studySetName);
+
                 boolean selectAllWords = false;
                 setWordsInTable(selectAllWords);
             }
