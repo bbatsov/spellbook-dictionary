@@ -10,7 +10,6 @@ import bg.drow.spellbook.ui.desktop.PreferencesDialog;
 import bg.drow.spellbook.ui.desktop.PreferencesExtractor;
 import bg.drow.spellbook.ui.desktop.SpellbookFrame;
 import bg.drow.spellbook.ui.swing.component.BaseDialog;
-import bg.drow.spellbook.ui.swing.component.DictionaryComboBox;
 import bg.drow.spellbook.ui.swing.util.IconManager;
 import com.google.common.collect.Lists;
 import com.jidesoft.dialog.ButtonPanel;
