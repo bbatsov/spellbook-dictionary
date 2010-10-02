@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -183,14 +182,18 @@ public class DictionaryService extends AbstractPersistenceService {
             return;
         }
 
-        final DictionaryEntry de = new DictionaryEntry();
-        de.setDictionary(d);
-        de.setWord(word);
-        de.setTranslation(translation);
-        de.setRank(1);
-        de.setUpdatedByUser(true);
+        try {
+            PreparedStatement ps = dbConnection.prepareStatement("INSERT INTO DICTIONARY_ENTRIES (word, word_translation, rank, updated_by_user, dictionary_id)" +
+                    "VALUES(?, ?, 1, true, ?)");
 
-        //TODO persist
+            ps.setString(1, word);
+            ps.setString(2, translation);
+            ps.setLong(3, d.getId());
+
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -219,12 +222,18 @@ public class DictionaryService extends AbstractPersistenceService {
             return;
         }
 
-        //DictionaryEntry de = EM.createQuery("select de from DictionaryEntry de "
-        //        + "where de.dictionary = :dictionary and de.word = :word", DictionaryEntry.class).setParameter("dictionary", d).setParameter("word", word).getSingleResult();
+        try {
+            PreparedStatement ps = dbConnection.prepareStatement("UPDATE DICTIONARY_ENTRIES SET word_translation=? where" +
+                    " word=? and dictionary_id=?");
 
-        //de.setTranslation(translation);
+            ps.setString(1, translation);
+            ps.setString(2, word);
+            ps.setLong(3, d.getId());
 
-        //update
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -276,47 +285,6 @@ public class DictionaryService extends AbstractPersistenceService {
 
             return false;
         }
-    }
-
-    public Map<String, Integer> getRatings(Language language) {
-        if (language == null) {
-            LOGGER.error("language == null");
-            throw new IllegalArgumentException("language == null");
-        }
-
-//        final List<RankEntry> ratingslist = EM.createQuery("select re from RankEntry re "
-//                + " where re.language = :language", RankEntry.class).setParameter("language", language).getResultList();
-
-        Map<String, Integer> ratingsMap = new HashMap<String, Integer>();
-//        for (RankEntry re : ratingslist) {
-//            ratingsMap.put(re.getWord(), re.getRank());
-//        }
-
-        return ratingsMap;
-    }
-
-    /**
-     * Retrieves a dictionary by its from and to languages.
-     *
-     * @param languageFrom from language
-     * @param languageTo   to language
-     * @return the dictionary that matches the languages
-     */
-    public Dictionary getDictionary(Language languageFrom, Language languageTo) {
-        if (languageFrom == null || languageTo == null) {
-            LOGGER.error("languageFrom == null || languageTo == null");
-            throw new IllegalArgumentException("languageFrom == null || languageTo == null");
-        }
-
-        List<Dictionary> dictionaries = getDictionaries();
-
-        for (Dictionary dictionary : dictionaries) {
-            if (dictionary.getFromLanguage().equals(languageFrom) && dictionary.getToLanguage().equals(languageTo)) {
-                return dictionary;
-            }
-        }
-
-        return null;
     }
 
     /**
