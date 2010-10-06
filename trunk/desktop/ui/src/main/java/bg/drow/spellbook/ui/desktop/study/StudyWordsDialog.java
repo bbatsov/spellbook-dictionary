@@ -155,9 +155,6 @@ public class StudyWordsDialog extends BaseDialog {
         seeAnswerButton.setEnabled(false);
         stopButton.setEnabled(false);
 
-        int index = PM.getInt(PreferencesManager.Preference.DICTIONARIES, dictionariesComboBox.getSelectedIndex());
-        dictionariesComboBox.setSelectedIndex(index);
-
         checkingTheDatabase();
         setDefaultPreferences();
 
@@ -198,6 +195,21 @@ public class StudyWordsDialog extends BaseDialog {
 
        
         dictionariesComboBox = new JComboBox();
+        dictionariesComboBox.addPopupMenuListener(new PopupMenuListener() {
+
+            @Override
+            public void popupMenuCanceled(PopupMenuEvent evt) {
+            }
+
+            @Override
+            public void popupMenuWillBecomeInvisible(PopupMenuEvent evt) {
+                dictionariesComboBoxPopupMenuWillBecomeInvisible(evt);
+            }
+
+            @Override
+            public void popupMenuWillBecomeVisible(PopupMenuEvent evt) {
+            }
+        });
         wordsPanel.add(dictionariesComboBox, "span,growx,wrap");
         setPossibleDictionariesInComboBox();
 
@@ -238,6 +250,9 @@ public class StudyWordsDialog extends BaseDialog {
             }
         }
         dictionariesComboBox.setModel(new DefaultComboBoxModel(possibleDictionaries.toArray()));
+        
+        int index = PM.getInt(PreferencesManager.Preference.DICTIONARIES, dictionariesComboBox.getSelectedIndex());
+        dictionariesComboBox.setSelectedIndex(index);
     }
 
     private void initHowToEnumeratePanel() {
@@ -477,6 +492,10 @@ public class StudyWordsDialog extends BaseDialog {
         setPossibleDictionariesInComboBox();
     }
 
+    private void dictionariesComboBoxPopupMenuWillBecomeInvisible(PopupMenuEvent evt) {
+        PM.putInt(PreferencesManager.Preference.DICTIONARIES, dictionariesComboBox.getSelectedIndex());
+    }
+    
     private void formWindowGainedFocus(WindowEvent evt) {
 
         setStudySetsInComboBox();
