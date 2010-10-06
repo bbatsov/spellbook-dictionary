@@ -90,8 +90,6 @@ public class StudySetsDialog extends BaseDialog {
 
         initWordsTablePanel();
 
-        AutoCompletion autoCompletion = new AutoCompletion(wordSearchField, words);
-        autoCompletion.setStrict(false);
 
         setStudySetsInComboBox();
         if (!studySets.isEmpty()) {
@@ -102,6 +100,12 @@ public class StudySetsDialog extends BaseDialog {
                 studySetsComboBox.setSelectedIndex(0);
             }
         }
+
+        //StudySet studySet = studyService.getStudySet((String) studySetsComboBox.getSelectedItem());
+        //Dictionary dictionary = studySet.getDictionary();
+        //words = dictionaryService.getWordsFromDictionary(dictionary);
+        //autoCompletion = new AutoCompletion(wordSearchField, words);
+        //autoCompletion.setStrict(false);
 
         getTable().setOpaque(true);
 
