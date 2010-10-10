@@ -502,9 +502,6 @@ public class StudyWordsDialog extends BaseDialog {
         
         setPossibleDictionariesInComboBox();
 
-        String studySetName = (String) studySetsComboBox.getSelectedItem();
-        countOfWords = studyService.getCountOfTheWordsInStudySet(studySetName);
-
         checkingTheDatabase();
 
         PM.putInt(PreferencesManager.Preference.STUDY_SETS, studySetsComboBox.getSelectedIndex());
@@ -521,6 +518,7 @@ public class StudyWordsDialog extends BaseDialog {
         String studySetName = (String) studySetsComboBox.getSelectedItem();
         wordsForLearning = studyService.getWordsForStudy(studySetName);
         translationForLearning = studyService.getTranslationsForStudy(studySetName);
+        countOfWords = studyService.getCountOfTheWordsInStudySet(studySetName);
 
         setComponentsEnable(false);
 
@@ -603,13 +601,12 @@ public class StudyWordsDialog extends BaseDialog {
     }
 
     private void getAnswer(List<String> words, List<String> translations, SelectedDictionary dictionary) {
-        String wordTranslation = answerField.getText();
-        wordTranslation = wordTranslation.toLowerCase();
+        String answer = answerField.getText();
+        answer = answer.toLowerCase();
 
-        String[] ourAnswers;
-        ourAnswers = wordTranslation.split("[,]+");
+        String[] ourAnswers= answer.split("[,]+");
 
-        if (wordTranslation.isEmpty()) {
+        if (answer.isEmpty()) {
             JOptionPane.showMessageDialog(this, getTranslator().translate("AnswerFeild(Message)"), null, JOptionPane.ERROR_MESSAGE);
             answerField.requestFocus();
         }
@@ -624,13 +621,13 @@ public class StudyWordsDialog extends BaseDialog {
             studyService.possibleAnswers(translation);
             anotherPossibleAnswers = studyService.getAnothersPossiblesAnswers();
         }
-        if (repeatWordCheckBox.isSelected() && !wordTranslation.isEmpty()) {
+        if (repeatWordCheckBox.isSelected() && !answer.isEmpty()) {
             repeatWordIndex();
         }
-        checkingWhetherAnswerIsCorrect(ourAnswers, possibleAnswers, anotherPossibleAnswers, wordTranslation);
+        checkingWhetherAnswerIsCorrect(ourAnswers, possibleAnswers, anotherPossibleAnswers, answer);
 
         if (howToEnumerate == HowToEnumerate.IN_ORDER_OF_INPUT) {
-            if (!wordTranslation.isEmpty()) {
+            if (!answer.isEmpty()) {
                 wordIndex++;
             }
             if (wordIndex < countOfWords) {
@@ -642,7 +639,7 @@ public class StudyWordsDialog extends BaseDialog {
             }
 
         } else if (howToEnumerate == HowToEnumerate.IN_REVERSE_ORDER_OF_INPUT) {
-            if (!wordTranslation.isEmpty()) {
+            if (!answer.isEmpty()) {
                 wordIndex--;
             }
             if (wordIndex >= 0) {
@@ -654,7 +651,7 @@ public class StudyWordsDialog extends BaseDialog {
             }
 
         } else {
-            if (!wordTranslation.isEmpty()) {
+            if (!answer.isEmpty()) {
                 wordIndex++;
             }
             if (wordIndex < countOfWords) {
