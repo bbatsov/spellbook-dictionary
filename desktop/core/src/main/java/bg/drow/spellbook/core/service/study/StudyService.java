@@ -50,7 +50,7 @@ public class StudyService extends AbstractPersistenceService {
         List<String> wordsForStudy = new ArrayList<String>();
 
         try {
-            PreparedStatement ps = dbConnection.prepareStatement("select WORD from DICTIONARY_ENTRIES where ID in (select DICTIONARY_ENTRY_ID from STUDY_ENTRIES where STUDY_SET_ID = (select ID from STUDY_SETS where NAME=?))");
+            PreparedStatement ps = dbConnection.prepareStatement("select SE.ID,DE.WORD from DICTIONARY_ENTRIES DE join STUDY_ENTRIES SE on DE.ID = SE.DICTIONARY_ENTRY_ID join STUDY_SETS SS on SE.STUDY_SET_ID = SS.ID where SS.NAME = ? order by SE.ID");
             ps.setString(1, studySetName);
 
             ResultSet rs = ps.executeQuery();
@@ -77,7 +77,7 @@ public class StudyService extends AbstractPersistenceService {
         List<String> translationsForStudy = new ArrayList<String>();
 
         try {
-            PreparedStatement ps = dbConnection.prepareStatement("select WORD_TRANSLATION from DICTIONARY_ENTRIES where ID in (select DICTIONARY_ENTRY_ID from STUDY_ENTRIES where STUDY_SET_ID = (select ID from STUDY_SETS where NAME=?))");
+            PreparedStatement ps = dbConnection.prepareStatement("select SE.ID,DE.WORD_TRANSLATION from DICTIONARY_ENTRIES DE join STUDY_ENTRIES SE on DE.ID = SE.DICTIONARY_ENTRY_ID join STUDY_SETS SS on SE.STUDY_SET_ID = SS.ID where SS.NAME = ? order by SE.ID");
             ps.setString(1, studySetName);
 
             ResultSet rs = ps.executeQuery();
