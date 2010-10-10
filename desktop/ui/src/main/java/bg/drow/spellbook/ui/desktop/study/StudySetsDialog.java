@@ -1,7 +1,6 @@
 package bg.drow.spellbook.ui.desktop.study;
 
 import bg.drow.spellbook.core.model.Dictionary;
-import bg.drow.spellbook.core.model.Language;
 import bg.drow.spellbook.core.model.StudySet;
 import bg.drow.spellbook.core.preferences.PreferencesManager;
 import bg.drow.spellbook.core.service.DictionaryService;
@@ -28,8 +27,6 @@ public class StudySetsDialog extends BaseDialog {
 
     private long countOFTheWords;
     private final DictionaryService dictionaryService;
-    private List<String> wordsForStudy = Lists.newArrayList();
-    private List<String> translationsForStudy = Lists.newArrayList();
     private List<String> words = Lists.newArrayList();
     private List<Dictionary> dictionaries = Lists.newArrayList();
     private List<StudySet> studySets = Lists.newArrayList();
@@ -135,6 +132,7 @@ public class StudySetsDialog extends BaseDialog {
 
         setWordsInTable(false);
 
+        List<String> translationsForStudy = Lists.newArrayList();
         String studySetName = (String) studySetsComboBox.getSelectedItem();
         translationsForStudy = studyService.getTranslationsForStudy(studySetName);
         countOFTheWords = studyService.getCountOfTheWordsInStudySet(studySetName);
@@ -452,7 +450,9 @@ public class StudySetsDialog extends BaseDialog {
     private void addWord() throws HeadlessException {
         String word = wordSearchField.getText();
         String studySetName = (String) studySetsComboBox.getSelectedItem();
+        List<String> wordsForStudy = Lists.newArrayList();
         wordsForStudy = studyService.getWordsForStudy(studySetName);
+
         if (words.contains(word)) {
             countOFTheWords = studyService.getCountOfTheWordsInStudySet(studySetName);
             if (wordsForStudy.contains(word)) {
@@ -480,7 +480,11 @@ public class StudySetsDialog extends BaseDialog {
         wordsTable.setModel(model);
 
         String studySetName = (String) studySetsComboBox.getSelectedItem();
+
+        List<String> wordsForStudy = Lists.newArrayList();
         wordsForStudy = studyService.getWordsForStudy(studySetName);
+
+        List<String> translationsForStudy = Lists.newArrayList();
         translationsForStudy = studyService.getTranslationsForStudy(studySetName);
 
         model.setColumnIdentifiers(new String[]{"",
