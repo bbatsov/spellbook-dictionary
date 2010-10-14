@@ -22,7 +22,8 @@ public class SelectLanguageDialog extends BaseDialog {
     private List<Dictionary> dictionaries = Lists.newArrayList();
     private Dictionary selectedDictionary = new Dictionary();
     private boolean dictionaryIsSelected = false;
-    JComboBox selectLanguageComboBox = new JComboBox();
+
+    private JComboBox selectLanguageComboBox = new JComboBox();
 
     /** Creates new form SelectLanguageDialog */
     public SelectLanguageDialog(Dialog parent, boolean modal) {

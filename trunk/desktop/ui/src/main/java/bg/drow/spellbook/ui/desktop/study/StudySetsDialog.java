@@ -61,11 +61,12 @@ public class StudySetsDialog extends BaseDialog {
         Dictionary dictionary = studySet.getDictionary();
         words = dictionaryService.getWordsFromDictionary(dictionary);
 
-        addWordButton.setEnabled(words.contains(wordSearchField.getText()));
+        String word = studyService.removeSpacesInTheBeginningAndEnd(wordSearchField.getText());
+        addWordButton.setEnabled(words.contains(word));
 
         if (addWordButton.isEnabled()) {
 
-            wordTranslationTextPane.setText(dictionaryService.getTranslation(wordSearchField.getText(),
+            wordTranslationTextPane.setText(dictionaryService.getTranslation(word,
                     dictionary));
             wordTranslationTextPane.setCaretPosition(0);
         }
@@ -448,7 +449,7 @@ public class StudySetsDialog extends BaseDialog {
     }
 
     private void addWord() throws HeadlessException {
-        String word = wordSearchField.getText();
+        String word = studyService.removeSpacesInTheBeginningAndEnd(wordSearchField.getText());
         String studySetName = (String) studySetsComboBox.getSelectedItem();
         List<String> wordsForStudy = Lists.newArrayList();
         wordsForStudy = studyService.getWordsForStudy(studySetName);
