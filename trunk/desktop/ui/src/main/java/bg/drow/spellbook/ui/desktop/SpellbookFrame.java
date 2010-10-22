@@ -494,10 +494,13 @@ public class SpellbookFrame extends JFrame {
                 wordSearchFieldStatusLabel.setIcon(OverlayableUtils.getPredefinedOverlayIcon(OverlayableIconsFactory.CORRECT));
                 wordSearchFieldStatusLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
             } else if (words.contains(normalize(searchString))) {
+                foundWord = normalize(searchString);
                 int index2 = words.indexOf(normalize(searchString));
 
                 wordsList.setSelectedIndex(index2);
                 wordsList.ensureIndexIsVisible(index2);
+
+                match = true;
 
                 wordSearchFieldStatusLabel.setIcon(OverlayableUtils.getPredefinedOverlayIcon(OverlayableIconsFactory.CORRECT));
                 wordSearchFieldStatusLabel.setToolTipText(TRANSLATOR.translate("MatchFound(ToolTip)"));
