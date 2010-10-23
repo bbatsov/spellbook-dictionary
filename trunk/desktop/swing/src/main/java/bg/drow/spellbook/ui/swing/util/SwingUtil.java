@@ -48,7 +48,7 @@ public class SwingUtil {
         StringBuffer result = new StringBuffer();
 
         String textFormatting;
-        if (PM.getBoolean(PreferencesManager.Preference.EMPTY_LINE, false)) {
+        if (PM.getBoolean(PreferencesManager.Preference.EMPTY_LINE, true)) {
             textFormatting = "<br/>";
         } else {
             textFormatting = "";

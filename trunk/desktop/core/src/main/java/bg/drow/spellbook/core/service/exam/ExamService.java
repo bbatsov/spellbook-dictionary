@@ -8,6 +8,8 @@ import bg.drow.spellbook.core.service.DictionaryService;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,7 +24,9 @@ import java.util.List;
 public class ExamService extends AbstractPersistenceService {
     private static final ExamService INSTANCE = new ExamService();
 
-    public static final ExamService getInstance() {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExamService.class);
+
+    public static ExamService getInstance() {
         return INSTANCE;
     }
 
@@ -30,7 +34,7 @@ public class ExamService extends AbstractPersistenceService {
      * A suitable dictionary for an exam is not special. Further down the line
      * additional restrictions might be added.
      *
-     * @return
+     * @return a list of all suitable dictionaries
      */
     public List<Dictionary> getSuitableDictionaries() {
         return Lists.newArrayList(Collections2.filter(DictionaryService.getInstance().getDictionaries(), new Predicate<Dictionary>() {
@@ -67,6 +71,22 @@ public class ExamService extends AbstractPersistenceService {
         Collections.shuffle(result);
 
         return result;
+    }
+
+    private int calculateAvgRating(Dictionary dictionary) {
+        try {
+            PreparedStatement ps = dbConnection.prepareStatement("select sum(rating) from RANK_ENTRIES r join DICTIONARY_ENTRIES de where r.dictionary_entry_id=de.id and de.dictionary_id=?");
+
+            ps.setLong(1, dictionary.getId());
+
+            ResultSet rs = ps.executeQuery();
+
+            return rs.getInt(0);
+        } catch (SQLException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        return 0;
     }
 
     public boolean checkAnswer(Dictionary dictionary, String word, String guess) {

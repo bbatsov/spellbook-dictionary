@@ -3,29 +3,17 @@ package bg.drow.spellbook.core.model;
 import bg.drow.spellbook.core.i18n.Translator;
 
 /**
- * @author Ivan Spasov
+ * @author Bozhidar Batsov
  * @since 0.2
  */
 public enum Difficulty {
-    EASY(30, Integer.MAX_VALUE, 45), MEDIUM(10, 30, 30), HARD(1, 10, 15);
+    EASY(60), MEDIUM(30), HARD(15);
 
-    private final int low;
-    private final int high;
     private final int time; // in seconds
     private static final Translator TRANSLATOR = Translator.getTranslator("Model");
 
-    private Difficulty(int low, int high, int time) {
-        this.low = low;
-        this.high = high;
+    private Difficulty(int time) {
         this.time = time;
-    }
-
-    public int getLow() {
-        return low;
-    }
-
-    public int getHigh() {
-        return high;
     }
 
     public int getTime() {
