@@ -35,7 +35,7 @@ public class StudySetsDialog extends BaseDialog {
     private Dictionary selectedDictionary = null;
     //components
     private JPanel studySetsPanel;
-    private JTextField addStudySetField;
+    //private JTextField addStudySetField;
     private JButton addWordButton;
     private JComboBox dictionariesComboBox;
     private JPanel topPanel;
@@ -43,6 +43,7 @@ public class StudySetsDialog extends BaseDialog {
     private JTextField wordSearchField;
     private JTextPane wordTranslationTextPane;
     private JTable wordsTable;
+    private JLabel languageIconLabel;
 
     public StudySetsDialog(Dialog parent, boolean modal) {
         super(parent, modal);
@@ -78,9 +79,7 @@ public class StudySetsDialog extends BaseDialog {
 
     @Override
     public JComponent createContentPanel() {
-        topPanel = new JPanel(new MigLayout("", "10[240]10[240]10", "10[]10[]0[]10"));
-
-        initLanguagesPanel();
+        topPanel = new JPanel(new MigLayout("", "10[490]10", "10[]10[]0[]10"));
 
         initStudySetsPanel();
 
@@ -89,7 +88,6 @@ public class StudySetsDialog extends BaseDialog {
         initWordsTablePanel();
 
 
-        setStudySetsInComboBox();
         if (!studySets.isEmpty()) {
             int index = PM.getInt(PreferencesManager.Preference.STUDY_SETS, studySetsComboBox.getSelectedIndex());
             if (index < studyService.getCountOfStudySets() && index != -1) {
@@ -141,34 +139,16 @@ public class StudySetsDialog extends BaseDialog {
         return topPanel;
     }
 
-    private void initLanguagesPanel() {
-        JPanel languagesPanel = new JPanel(new MigLayout("", "25[200]25", "[][]"));
-        languagesPanel.setBorder(BorderFactory.createEtchedBorder());
-
-        JLabel jLabel3 = new JLabel();
-        jLabel3.setText(getTranslator().translate("SelectLangueges(Label)")); // NOI18N
-        languagesPanel.add(jLabel3, "wrap");
-
-        dictionariesComboBox = new JComboBox();
-        languagesPanel.add(dictionariesComboBox, "span,growx");
-
-        for (Dictionary dict : dictionaries) {
-            if (!dict.isSpecial() && !dict.getFromLanguage().getName().equals("Bulgarian")) {
-                dictionariesComboBox.addItem(dict.getFromLanguage());
-            }
-        }
-        dictionariesComboBox.setSelectedIndex(0);
-
-        topPanel.add(languagesPanel, "growy");
-    }
-
     private void initStudySetsPanel() {
-        studySetsPanel = new JPanel(new MigLayout("", "25[100][100]25", "[][][][][]"));
+        studySetsPanel = new JPanel(new MigLayout("", "25[100][100][]25", "[][][][]"));
         studySetsPanel.setBorder(BorderFactory.createEtchedBorder());
 
         JLabel jLabel6 = new JLabel();
         jLabel6.setText(getTranslator().translate("StudySets(Label)")); // NOI18N
-        studySetsPanel.add(jLabel6, "wrap");
+        studySetsPanel.add(jLabel6, "span 2");
+
+        languageIconLabel = new JLabel();
+        studySetsPanel.add(languageIconLabel, "span 1 4, gapleft 50, wrap");
 
         studySetsComboBox = new JComboBox();
         studySetsComboBox.addPopupMenuListener(new PopupMenuListener() {
@@ -188,26 +168,23 @@ public class StudySetsDialog extends BaseDialog {
         });
         studySetsPanel.add(studySetsComboBox, "span 2,growx,wrap");
 
-        JLabel jLabel5 = new JLabel();
-        jLabel5.setText(getTranslator().translate("EnterName(Label)")); // NOI18N
-        studySetsPanel.add(jLabel5, "span 2,wrap");
+        setStudySetsInComboBox();
+        setSelectedDictionary();
+        setLanguageIcon();
 
-        addStudySetField = new JTextField();
-        studySetsPanel.add(addStudySetField, "span 2,growx,wrap");
-
-        JButton addStudySetButton = new JButton();
-        addStudySetButton.setText(getTranslator().translate("AddStudySet(Button)")); // NOI18N
-        addStudySetButton.addActionListener(new ActionListener() {
+        JButton addNewStudySetButton = new JButton();
+        addNewStudySetButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/add2.png")));
+        addNewStudySetButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent evt) {
-                addStudySetButtonActionPerformed(evt);
+                addNewStudySetButtonActionPerformed(evt);
             }
         });
-        studySetsPanel.add(addStudySetButton, "w 81!,sg,left");
+        studySetsPanel.add(addNewStudySetButton, "w 81!,sg,left");
 
         JButton deleteStudySetButton = new JButton();
-        deleteStudySetButton.setText(getTranslator().translate("DeleteStudySet(Button)")); // NOI18N
+        deleteStudySetButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/delete2.png")));
         deleteStudySetButton.addActionListener(new ActionListener() {
 
             @Override
@@ -276,7 +253,7 @@ public class StudySetsDialog extends BaseDialog {
         });
         addWordPanel.add(clearButton, "sg,top");
 
-        topPanel.add(addWordPanel, "span 2,sg,wrap");
+        topPanel.add(addWordPanel, "sg,wrap");
     }
 
     private void initWordsTablePanel() {
@@ -336,7 +313,7 @@ public class StudySetsDialog extends BaseDialog {
         });
         wordsTablePanel.add(deleteWordButton, "right,sg");
 
-        topPanel.add(wordsTablePanel, "span 2,sg,growx");
+        topPanel.add(wordsTablePanel, "sg,growx");
     }
 
     private void addWordButtonActionPerformed(ActionEvent evt) {
@@ -346,7 +323,6 @@ public class StudySetsDialog extends BaseDialog {
         } else {
             JOptionPane.showMessageDialog(this, getTranslator().translate("AddStudySetFirst(Message)"), null, JOptionPane.WARNING_MESSAGE);
             clear();
-            addStudySetField.requestFocus();
         }
     }
 
@@ -390,39 +366,36 @@ public class StudySetsDialog extends BaseDialog {
         }
     }
 
-    private void addStudySetButtonActionPerformed(ActionEvent evt) {
-        String name = addStudySetField.getText();
-        studySets = studyService.getStudySets();
-        boolean isAlreadyContainedStudySet = false;
-        for (int i = 0; i < studySets.size(); i++) {
-            if (studySets.get(i).getName().equals(name)) {
-                isAlreadyContainedStudySet = true;
-                JOptionPane.showMessageDialog(this, getTranslator().translate("AlreadyContainedStudySet(Message)"), null, JOptionPane.ERROR_MESSAGE);
-            }
-        }
-        if (name != null && !name.isEmpty() && !isAlreadyContainedStudySet) {
-            SelectLanguageDialog selectLanguageDialog = new SelectLanguageDialog(this, true);
-            selectLanguageDialog.showDialog(studySetsPanel);
-            boolean isSelectedDictionary = selectLanguageDialog.getDictionaryIsSelected();
-            if (isSelectedDictionary) {
-                studyService.addStudySet(name, selectLanguageDialog.getSelectedDictionary());
-                addStudySetField.setText(null);
-                setStudySetsInComboBox();
-                studySetsComboBox.setSelectedItem(name);
-                studySets = studyService.getStudySets();
-                boolean selectAllWords = false;
-                setWordsInTable(selectAllWords);
-                wordSearchField.requestFocus();
-            }
-        } else {
-            addStudySetField.requestFocus();
+    private void addNewStudySetButtonActionPerformed(ActionEvent evt) {
+
+        AddStudySetDialog addStudySetDialog = new AddStudySetDialog(this, true);
+        addStudySetDialog.showDialog(studySetsComboBox);
+
+        String name = addStudySetDialog.getStudySetName();
+
+        if (name != null && !name.isEmpty()) {
+
+            studyService.addStudySet(name, addStudySetDialog.getSelectedDictionary());
+            setStudySetsInComboBox();
+            studySetsComboBox.setSelectedItem(name);
+            selectedDictionary = addStudySetDialog.getSelectedDictionary();
+            setLanguageIcon();
+            studySets = studyService.getStudySets();
+            boolean selectAllWords = false;
+            setWordsInTable(selectAllWords);
+            wordSearchField.requestFocus();
+
         }
     }
 
     private void deleteStudySetButtonActionPerformed(ActionEvent evt) {
         String studySetName = (String) studySetsComboBox.getSelectedItem();
+        int studySetIndex = studySetsComboBox.getSelectedIndex();
         studyService.deleteStudySet(studySetName);
         setStudySetsInComboBox();
+        studySetsComboBox.setSelectedIndex(studySetIndex - 1);
+        setSelectedDictionary();
+        setLanguageIcon();
         boolean selectAllWords = false;
         setWordsInTable(selectAllWords);
         studySets = studyService.getStudySets();
@@ -431,7 +404,14 @@ public class StudySetsDialog extends BaseDialog {
     private void studySetsComboBoxPopupMenuWillBecomeInvisible(PopupMenuEvent evt) {
         boolean selectAllWords = false;
         setWordsInTable(selectAllWords);
-        //setSelectedDictionary();//!
+
+        setSelectedDictionary();
+        setLanguageIcon();
+    }
+
+    private void setLanguageIcon() {
+        String languageName = selectedDictionary.getFromLanguage().getName();
+        languageIconLabel.setIcon(new ImageIcon(getClass().getResource("/icons/48x48/" + languageName + "128.png")));
     }
 
     private void setStudySetsInComboBox() {
