@@ -28,16 +28,13 @@ public class StudySetsDialog extends BaseDialog {
     private long countOFTheWords;
     private final DictionaryService dictionaryService;
     private List<String> words = Lists.newArrayList();
-    private List<Dictionary> dictionaries = Lists.newArrayList();
     private List<StudySet> studySets = Lists.newArrayList();
     private final StudyService studyService;
     private static final PreferencesManager PM = PreferencesManager.getInstance();
     private Dictionary selectedDictionary = null;
     //components
     private JPanel studySetsPanel;
-    //private JTextField addStudySetField;
     private JButton addWordButton;
-    private JComboBox dictionariesComboBox;
     private JPanel topPanel;
     private JComboBox studySetsComboBox;
     private JTextField wordSearchField;
@@ -49,7 +46,6 @@ public class StudySetsDialog extends BaseDialog {
         super(parent, modal);
 
         dictionaryService = DictionaryService.getInstance();
-        dictionaries = dictionaryService.getDictionaries();
 
         studyService = new StudyService();
         studySets = studyService.getStudySets();
@@ -404,9 +400,13 @@ public class StudySetsDialog extends BaseDialog {
     private void studySetsComboBoxPopupMenuWillBecomeInvisible(PopupMenuEvent evt) {
         boolean selectAllWords = false;
         setWordsInTable(selectAllWords);
-
+        
+        Dictionary oldDictionary = selectedDictionary;
         setSelectedDictionary();
         setLanguageIcon();
+        if (!oldDictionary.equals(selectedDictionary)) {
+            clear();
+        }
     }
 
     private void setLanguageIcon() {
