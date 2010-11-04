@@ -109,23 +109,27 @@ public class AddStudySetDialog extends BaseDialog {
     public void addStudySetButtonActionPerformed(ActionEvent evt) {
         name = enterStudySetNameField.getText();
 
-        List<StudySet> studySets = studyService.getStudySets();
-        boolean isAlreadyContainedStudySet = false;
-        for (int i = 0; i < studySets.size(); i++) {
-            if (studySets.get(i).getName().equals(name)) {
-                isAlreadyContainedStudySet = true;
-                JOptionPane.showMessageDialog(this, getTranslator().translate("AlreadyContainedStudySet(Message)"), null, JOptionPane.ERROR_MESSAGE);
-            }
-        }
-
-        if (name != null && !name.isEmpty() && !isAlreadyContainedStudySet) {
-            String language = (String) selectLanguageComboBox.getSelectedItem();
-            for (Dictionary dict : dictionaries) {
-                if (!dict.isSpecial() && dict.getFromLanguage().getName().equals(language)) {
-                    selectedDictionary = dict;
+        if (name.isEmpty() || name == null) {
+            enterStudySetNameField.requestFocus();
+        } else {
+            List<StudySet> studySets = studyService.getStudySets();
+            boolean isAlreadyContainedStudySet = false;
+            for (int i = 0; i < studySets.size(); i++) {
+                if (studySets.get(i).getName().equals(name)) {
+                    isAlreadyContainedStudySet = true;
+                    JOptionPane.showMessageDialog(this, getTranslator().translate("AlreadyContainedStudySet(Message)"), null, JOptionPane.ERROR_MESSAGE);
                 }
             }
-            setVisible(false);
+
+            if (name != null && !name.isEmpty() && !isAlreadyContainedStudySet) {
+                String language = (String) selectLanguageComboBox.getSelectedItem();
+                for (Dictionary dict : dictionaries) {
+                    if (!dict.isSpecial() && dict.getFromLanguage().getName().equals(language)) {
+                        selectedDictionary = dict;
+                    }
+                }
+                setVisible(false);
+            }
         }
     }
 
