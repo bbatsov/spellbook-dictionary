@@ -59,7 +59,8 @@ public class AddStudySetDialog extends BaseDialog {
         topPanel.add(enterStudySetNameField, "growx");
 
         JButton addStudySetButton = new JButton();
-        addStudySetButton.setText(getTranslator().translate("addStudySet(Button)"));
+        addStudySetButton.setText(getTranslator().translate("AddStudySet(ToolTipText)"));
+        addStudySetButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/add2.png")));
         addStudySetButton.addActionListener(new ActionListener() {
 
             @Override

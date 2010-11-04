@@ -215,7 +215,7 @@ public class StudyWordsDialog extends BaseDialog {
 
         wordsButton = new JButton();
         wordsButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/dictionary.png")));
-        wordsButton.setText(getTranslator().translate("Words(Button)"));
+        wordsButton.setToolTipText(getTranslator().translate("Words(ToolTipText)"));
         wordsButton.addActionListener(new ActionListener() {
 
             @Override
@@ -223,7 +223,7 @@ public class StudyWordsDialog extends BaseDialog {
                 wordsButtonActionPerformed(evt);
             }
         });
-        wordsPanel.add(wordsButton, "center,w 105!,wrap");
+        wordsPanel.add(wordsButton, "center,w 90!,wrap");
 
         warningIconLabel = new JLabel();
         warningIconLabel.setIcon(new ImageIcon(getClass().getResource("/icons/24x24/warning.png")));
@@ -279,12 +279,12 @@ public class StudyWordsDialog extends BaseDialog {
     }
 
     private void initStudyPanel() {
-        JPanel studyPanel = new JPanel(new MigLayout("", "[left,105][right,105][][30]", "[][][][47][][][]"));
+        JPanel studyPanel = new JPanel(new MigLayout("", "[left][left][][30]", "[][][][47][][][]"));
         studyPanel.setBorder(BorderFactory.createEtchedBorder());
 
         startButton = new JButton();
         startButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/media_play_green.png")));
-        startButton.setText(getTranslator().translate("Start(Button)"));
+        startButton.setToolTipText(getTranslator().translate("Start(ToolTipText)"));
         startButton.addActionListener(new ActionListener() {
 
             @Override
@@ -292,11 +292,11 @@ public class StudyWordsDialog extends BaseDialog {
                 startButtonActionPerformed(evt);
             }
         });
-        studyPanel.add(startButton, "w 118!,sg");
+        studyPanel.add(startButton, "w 90!,sg");
 
         stopButton = new JButton();
         stopButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/media_stop_red.png")));
-        stopButton.setText(getTranslator().translate("Stop(Button)"));
+        stopButton.setToolTipText(getTranslator().translate("Stop(ToolTipText)"));
         stopButton.addActionListener(new ActionListener() {
 
             @Override
@@ -362,7 +362,7 @@ public class StudyWordsDialog extends BaseDialog {
 
         answerButton = new JButton();
         answerButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/check.png")));
-        answerButton.setText(getTranslator().translate("Answer(Button)"));
+        answerButton.setToolTipText(getTranslator().translate("Answer(ToolTipText)"));
         answerButton.addActionListener(new ActionListener() {
 
             @Override
@@ -373,8 +373,8 @@ public class StudyWordsDialog extends BaseDialog {
         studyPanel.add(answerButton, "sg");
 
         seeAnswerButton = new JButton();
-        //seeAnswerButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/lightbulb_on.png"))); 
-        seeAnswerButton.setText(getTranslator().translate("SeeAnswer(Button)"));
+        seeAnswerButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/lightbulb_on.png"))); 
+        seeAnswerButton.setToolTipText(getTranslator().translate("SeeAnswer(ToolTipText)"));
         seeAnswerButton.addActionListener(new ActionListener() {
 
             @Override
