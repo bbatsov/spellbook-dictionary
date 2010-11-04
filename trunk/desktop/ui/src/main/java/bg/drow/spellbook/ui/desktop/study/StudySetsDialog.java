@@ -6,8 +6,8 @@ import bg.drow.spellbook.core.preferences.PreferencesManager;
 import bg.drow.spellbook.core.service.DictionaryService;
 import bg.drow.spellbook.core.service.study.StudyService;
 import bg.drow.spellbook.ui.swing.component.BaseDialog;
+import bg.drow.spellbook.ui.swing.util.IconManager;
 import com.google.common.collect.Lists;
-import com.jidesoft.swing.AutoCompletion;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -169,6 +169,7 @@ public class StudySetsDialog extends BaseDialog {
         setLanguageIcon();
 
         JButton addNewStudySetButton = new JButton();
+        addNewStudySetButton.setToolTipText(getTranslator().translate("AddStudySet(ToolTipText)"));
         addNewStudySetButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/add2.png")));
         addNewStudySetButton.addActionListener(new ActionListener() {
 
@@ -180,6 +181,7 @@ public class StudySetsDialog extends BaseDialog {
         studySetsPanel.add(addNewStudySetButton, "w 81!,sg,left");
 
         JButton deleteStudySetButton = new JButton();
+        deleteStudySetButton.setToolTipText(getTranslator().translate("DeleteStudySet(ToolTipText)"));
         deleteStudySetButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/delete2.png")));
         deleteStudySetButton.addActionListener(new ActionListener() {
 
@@ -221,7 +223,8 @@ public class StudySetsDialog extends BaseDialog {
         addWordPanel.add(wordSearchField, "growx");
 
         addWordButton = new JButton();
-        addWordButton.setText(getTranslator().translate("Add(Button)")); // NOI18N
+        addWordButton.setToolTipText(getTranslator().translate("AddWord(ToolTipText)")); // NOI18N
+        addWordButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/add2.png")));
         addWordButton.addActionListener(new ActionListener() {
 
             @Override
@@ -239,7 +242,8 @@ public class StudySetsDialog extends BaseDialog {
         addWordPanel.add(wordTranslationScrollPane, "grow");
 
         JButton clearButton = new JButton();
-        clearButton.setText(getTranslator().translate("Clear(Button)")); // NOI18N
+        clearButton.setToolTipText(getTranslator().translate("Clear(ToolTipText)")); // NOI18N
+        clearButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/eraser.png")));
         clearButton.addActionListener(new ActionListener() {
 
             @Override
@@ -256,7 +260,8 @@ public class StudySetsDialog extends BaseDialog {
         JPanel wordsTablePanel = new JPanel(new MigLayout("", "0[500]0", "[][165][]"));
 
         JButton selectNothingButton = new JButton();
-        selectNothingButton.setText(getTranslator().translate("Nothing(Button)")); // NOI18N
+        selectNothingButton.setToolTipText(getTranslator().translate("Nothing(ToolTipText)")); // NOI18N
+        selectNothingButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/table_sql.png")));
         selectNothingButton.addActionListener(new ActionListener() {
 
             @Override
@@ -267,7 +272,8 @@ public class StudySetsDialog extends BaseDialog {
         wordsTablePanel.add(selectNothingButton, "w 81!,right,split 2,sg");
 
         JButton selectAllButton = new JButton();
-        selectAllButton.setText(getTranslator().translate("All(Button)")); // NOI18N
+        selectAllButton.setToolTipText(getTranslator().translate("All(ToolTipText)")); // NOI18N
+        selectAllButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/table_selection_all.png")));
         selectAllButton.addActionListener(new ActionListener() {
 
             @Override
@@ -299,7 +305,8 @@ public class StudySetsDialog extends BaseDialog {
         wordsTablePanel.add(wordsScrollPane, "growx,wrap");
 
         JButton deleteWordButton = new JButton();
-        deleteWordButton.setText(getTranslator().translate("Delete(Button)"));
+        deleteWordButton.setToolTipText(getTranslator().translate("DeleteWord(ToolTipText)"));
+        deleteWordButton.setIcon(new ImageIcon(getClass().getResource("/icons/16x16/delete2.png")));
         deleteWordButton.addActionListener(new ActionListener() {
 
             @Override
